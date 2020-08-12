@@ -1,0 +1,33 @@
+.registration {
+  &__type {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    > button {
+      margin-bottom: 12px;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 70%;
+    margin: 0 auto;
+
+    > input, select {
+      margin-bottom: 12px;
+    }
+  }
+
+  &__results {
+    margin-bottom: 12px;
+  }
+
+  &__actions {
+    > button:first-child {
+      margin-right: 12px;
+    }
+  }
+}

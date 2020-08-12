@@ -1,0 +1,86 @@
+{% load staticfiles %}
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{documento.receipt.receipt_type}} {{documento.receipt.formatted_number}}</title>
+    <link href="{% static 'anopa/pdf.css' %}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="receipt">
+
+      <header>
+        <div class="taxpayer-details group">
+          <address>
+            {% if documento.comunidad.contribuyente.extras %}
+              <img src="{{ documento.comunidad.contribuyente.extras.logo_as_data_uri }}" alt="Logo"><br>
+            {% else %}
+              <h3>{{ documento.comunidad }}</h3>
+            {% endif %}
+            {{ documento.comunidad.domicilio }}<br>
+          </address>
+
+          <div class="receipt-type">
+            <div class="identifier">
+              {{ documento.receipt.receipt_type.description|slice:"-1:" }}
+            </div>
+            <div class="code">
+              Código {{ documento.receipt.receipt_type.code }}
+            </div>
+          </div>
+
+          <div class="receipt-details">
+            <div class="receipt-type-description">
+              {{ documento.receipt.receipt_type.description }}
+            </div>
+            <strong>Nº</strong> {{ documento.formatoAfip }}<br>
+            {{ documento.receipt.issued_date|date:"d/m/Y" }}<br>
+            <small>
+              C.U.I.T.:{{ documento.comunidad.contribuyente.cuit }}<br>
+              Ingresos Brutos: Exento<br>
+              Inicio de actividad: {{documento.comunidad.contribuyente.active_since|date:"d/m/Y"}}
+            </small>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="client">
+
+          <div class="client-data">
+            <strong>DESTINATARIO:</strong>
+            {{ documento.destinatario }} <br>
+            <strong>{{ documento.destinatario.tipo_documento }}:</strong>
+            {{ documento.destinatario.numero_documento }} <br>
+          </div>
+        </div>
+
+        <hr>
+
+      </header>
+
+      {% if documento.descripcion %}
+        <p><strong>Descripcion:</strong></p>
+        <i>{{documento.descripcion}}</i>
+      {% endif %}
+
+
+      {% block content %}
+      {% endblock %}
+
+      <div class="taxpayer-details group">
+        <div class="receipt-details">
+          <table>      
+            {% block totals %}
+            {% endblock %}      
+          </table>
+        </div>
+      </div>            
+
+      {% block footer %}
+      {% endblock %}      
+
+    </div>
+  </body>
+</html>

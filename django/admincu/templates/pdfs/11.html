@@ -1,0 +1,84 @@
+{% extends 'pdfs/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+  {% with creditos=documento.creditos %}
+    <p><strong>Detalle de creditos generados:</strong></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Destinatario</th>
+          <th>Recurso</th>
+          <th>Periodo</th>
+          <th>Capital</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for credito in creditos %}
+          <tr>
+            <td>{{ credito.cuenta }}</td>
+            <td>{{ credito.ingreso }}{% if credito.detalle %}*{% endif %}</td>
+            <td>{{ credito.fecha_indicativa|date:"Y-m" }}</td>
+            <td>{{ credito.valor|intcomma }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p><strong>* Detalles:</strong></p>
+    <p>
+      <ul>
+        {% for credito in creditos %}
+          {% if credito.detalle %}
+            <li>{{credito.detalle}}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </p>
+
+    <p><strong>** Descuentos:</strong></p>
+    <p>
+      <ul>
+        {% for credito in creditos %}
+          {% if credito.fecha_gracia %}
+            <li>Descuento por pronto pago hasta el {{descuento|date:"d/m/Y"}}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </p>
+  {% endwith %}
+
+
+{% endblock %}
+
+
+{% block totals %}
+  <tr>
+    <th>Total Facturado:</th>
+    <th>{{ factura.receipt.total_amount|intcomma }}</th>
+  </tr>
+{% endblock %}      
+
+
+
+
+
+{% block footer %}
+  <footer>
+    <div class="{% if documento.creditos.count > 25 %}footer_varias_paginas{% else %}footer_recibo{% endif %}">
+    <hr>
+      <div class="cae">
+        <strong>CAE</strong>
+        {{ documento.receipt.validation.cae }}
+        <strong>Vto CAE</strong>
+        {{ documento.receipt.validation.cae_expiration|date:"d/m/Y" }}
+      </div>
+      <div class="barcode">
+        <img src="data:image/png;base64,{{barcode}}">
+      </div>
+    </div>
+  </footer>
+{% endblock %}      
+

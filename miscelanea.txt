@@ -1,0 +1,19 @@
+docker-compose -f devServer.yml build postgres
+docker-compose -f devServer.yml build redis
+docker-compose -f devServer.yml build django
+docker-compose -f devServer.yml build react
+
+docker-compose -f devServer.yml build nginx
+
+
+
+
+docker-compose -f devServer.yml up django
+
+
+Hacer cosas
+
+
+
+
+docker-compose -f devServer.yml up

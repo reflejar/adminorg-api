@@ -1,0 +1,18 @@
+.PlataformaTable {
+  .PlataformaTable__header {
+    display: grid;
+    grid-template-columns: .3fr repeat(3, 1fr);
+    grid-gap: 1em;
+    margin-bottom: 1em;
+  }
+
+  .PlataformaTable__body__row {
+    display: grid;
+    grid-template-columns: .3fr repeat(3, 1fr);
+    grid-gap: 1em;
+    & > .form-check {
+      margin: auto;
+      margin-top: -7px;
+    }
+  }
+}

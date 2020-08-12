@@ -1,0 +1,9 @@
+.*
+!.env
+!.pylintrc
+
+build
+npm-debug.log
+.dockerignore
+**/.git
+**/.DS_Store

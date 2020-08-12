@@ -1,0 +1,5 @@
+admin-cu.com www.admin-cu.com {
+    proxy / django:5000 {
+        transparent
+    }
+}

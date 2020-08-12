@@ -1,0 +1,51 @@
+.credito-invoice {
+  // & .credito__row {
+  //   overflow-y: scroll;
+  //   margin: 1em 0;
+  // }
+
+  & .credito__row__header__text {
+    color: #75787d;
+    font-weight: 400;
+  }
+
+  & .credito__row__container {
+    overflow-y: scroll;
+    margin: 1em 0;
+    max-height: 20vh;
+  }
+
+  & > div:not(:last-child) {
+    margin: 1em 0;
+    border-bottom: 1px solid #dee2e6;
+  }
+}
+
+// .invoice {
+//   margin-left: -16px;
+//   margin-right: -16px;
+
+//   &__basic {
+//     display: flex;
+//     padding: 20px 40px 36px 40px;
+
+//     div:first-child {
+//       background-color: red;
+//       flex: 1;
+//     }
+
+//     div:last-child {
+//       background-color: green;
+//       flex: 1;
+//     }
+//   }
+
+//   &__credit {
+//     padding: 36px 40px;
+//   }
+
+//   &__desc {
+//     padding: 36px 40px 20px 40px;
+//   }
+
+// }
