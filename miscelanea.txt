@@ -1,19 +1,26 @@
-docker-compose -f devServer.yml build postgres
-docker-compose -f devServer.yml build redis
-docker-compose -f devServer.yml build django
-docker-compose -f devServer.yml build react
+Descargar el proyecto desde git 
+    git clone https://anopa@bitbucket.org/anopa/admincufull.git
 
-docker-compose -f devServer.yml build nginx
+Instalar docker 
+    https://docs.docker.com/engine/install/ubuntu/
+    sudo apt-get install docker-compose
+    sudo service docker start
+
+Instalar Node y npm 
+    https://medium.com/@DanielSayidi/install-and-setup-react-app-on-ubuntu-18-04-3-lts-fcd2c875885a
+
+cd react/
+    npm install
+    sudo chown -R $mariano:$(id -gn $mariano) /home/mariano/.config (Esto lo solicitó react)
+    npm audit fix --force
+    sudo chown -R $USER:$(id -gn $USER) /home/mariano/.config (Me lo volvio a solicitar asi que lo ejecuté literal)
+
+    cd ../
 
 
-
-
-docker-compose -f devServer.yml up django
-
-
-Hacer cosas
-
-
-
-
-docker-compose -f devServer.yml up
+sudo docker-compose -f devServer.yml build postgres
+sudo docker-compose -f devServer.yml build redis
+sudo docker-compose -f devServer.yml build django
+sudo docker-compose -f devServer.yml run --rm django python manage.py migrate
+sudo docker-compose -f devServer.yml build react
+sudo docker-compose -f devServer.yml run --rm react npm rebuild node-sass
