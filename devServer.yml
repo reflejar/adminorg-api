@@ -53,6 +53,7 @@ services:
       - 3000:3000
     command: npm start
 
+  # Nginx lo puso oscar
   # nginx:
   #   image: nginx:latest
   #   ports:
