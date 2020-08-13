@@ -3,8 +3,10 @@ Descargar el proyecto desde git
 
 Instalar docker 
     https://docs.docker.com/engine/install/ubuntu/
-    sudo apt-get install docker-compose
-    sudo service docker start
+    Instalar docker-compose
+        sudo apt-get install docker-compose
+    Iniciar
+        sudo service docker start
 
 Instalar Node y npm 
     https://medium.com/@DanielSayidi/install-and-setup-react-app-on-ubuntu-18-04-3-lts-fcd2c875885a
@@ -22,5 +24,7 @@ sudo docker-compose -f devServer.yml build postgres
 sudo docker-compose -f devServer.yml build redis
 sudo docker-compose -f devServer.yml build django
 sudo docker-compose -f devServer.yml run --rm django python manage.py migrate
+sudo docker-compose -f devServer.yml run --rm django python manage.py createsuperuser
 sudo docker-compose -f devServer.yml build react
 sudo docker-compose -f devServer.yml run --rm react npm rebuild node-sass
+sudo docker-compose -f devServer.yml up
