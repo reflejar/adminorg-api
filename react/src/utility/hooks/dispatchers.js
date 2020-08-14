@@ -18,20 +18,24 @@ import { plataformaActions } from '../../redux/actions/plataforma';
 import { cajasActions } from '../../redux/actions/cajas';
 import { retencionesActions } from '../../redux/actions/retenciones';
 
+// Parametros
 export const useClientes = () => {
   const [loading, setLoading] = useState(false);
   const clientes = useSelector((state) => get(state, 'clientes.list', []));
+  const [listado, setListado] = useState(undefined);
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
-    if (clientes.length === 0) {
-      setLoading(true)
-      dispatch(clientesActions.get_all())
-        .finally(() => {
-          setLoading(false);
-        });
+    async function fetchCli() {
+      setLoading(true);
+      await dispatch(clientesActions.get_all())
+        .finally(() => setLoading(false));
     }
-  }, [clientes, dispatch, setLoading]);
+    if (!listado) {
+      fetchCli();
+      setListado([...clientes])
+    }
+  }, [setLoading, dispatch, listado, setListado, clientes]);
 
   return [clientes, loading];
 };
@@ -39,17 +43,21 @@ export const useClientes = () => {
 export const useDominios = () => {
   const [loading, setLoading] = useState(false);
   const dominios = useSelector((state) => get(state, 'dominios.list', []));
+  const [listado, setListado] = useState(undefined);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (dominios.length === 0) {
+    async function fetchDom() {
       setLoading(true)
-      dispatch(dominiosActions.get_all())
-        .finally(() => {
-          setLoading(false);
-        });
+      await dispatch(dominiosActions.get_all())
+        .finally(() => setLoading(false));
     }
-  }, [dominios, dispatch, setLoading]);
+    if (!listado) {
+      fetchDom();
+      setListado([...dominios])
+    }
+  }, [setLoading, dispatch, listado, setListado, dominios]);
+
 
   return [dominios, loading];
 };
@@ -57,35 +65,173 @@ export const useDominios = () => {
 export const useProveedores = () => {
   const [loading, setLoading] = useState(false);
   const proveedores = useSelector((state) => get(state, 'proveedores.list', []));
+  const [listado, setListado] = useState(undefined);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (proveedores.length === 0) {
+    async function fetchProv() {
       setLoading(true)
-      dispatch(proveedoresActions.get_all())
-        .finally(() => {
-          setLoading(false);
-        });
+      await dispatch(proveedoresActions.get_all())
+        .finally(() => setLoading(false));
     }
-  }, [proveedores, dispatch, setLoading]);
+    if (!listado) {
+      fetchProv();
+      setListado([...proveedores])
+    }
+  }, [setLoading, dispatch, listado, setListado, proveedores]);
+
 
   return [proveedores, loading];
 };
 
-
 export const usePuntosDeVenta = () => {
+  const [loading, setLoading] = useState(false);
   const puntos = useSelector((state) => get(state, 'puntos.list.results', []));
+  const [listado, setListado] = useState(undefined);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (puntos.length === 0) {
-      dispatch(puntosActions.get_all());
+    async function fetchPtos() {
+      setLoading(true);
+      await dispatch(puntosActions.get_all())
+        .finally(() => setLoading(false));
     }
-  }, [puntos, dispatch]);
+    if (!listado) {
+      fetchPtos();
+      setListado([...puntos])
+    }
+  }, [setLoading, dispatch, listado, setListado, puntos]);
 
-  return puntos;
+  return [puntos, loading];
 };
 
+export const useTitulos = () => {
+  const [loading, setLoading] = useState(false);
+  const titulos = useSelector((state) => get(state, 'utils.titulos', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchTit() {
+      setLoading(true);
+      await dispatch(titulosActions.get())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchTit();
+      setListado([...titulos])
+    }
+  }, [setLoading, dispatch, listado, setListado, titulos]);
+
+  return [titulos, loading];
+};
+
+export const useIngresos = () => {
+  const [loading, setLoading] = useState(false);
+  const ingresos = useSelector((state) => get(state, 'ingresos.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchIng() {
+      setLoading(true);
+      await dispatch(ingresosActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchIng();
+      setListado([...ingresos])
+    }
+  }, [setLoading, dispatch, listado, setListado, ingresos]);
+
+  return [ingresos, loading];
+};
+
+export const useGastos = () => {
+  const [loading, setLoading] = useState(false);
+  const gastos = useSelector((state) => get(state, 'gastos.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchGas() {
+      setLoading(true);
+      await dispatch(gastosActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchGas();
+      setListado([...gastos])
+    }
+  }, [setLoading, dispatch, listado, setListado, gastos]);
+
+  return [gastos, loading];
+};
+
+export const usePlataformas = () => {
+  const [loading, setLoading] = useState(false);
+  const plataforma = useSelector((state) => get(state, 'plataforma.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchPlat() {
+      setLoading(true);
+      await dispatch(plataformaActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchPlat();
+      setListado([...plataforma])
+    }
+  }, [setLoading, dispatch, listado, setListado, plataforma]);
+
+  return [plataforma, loading];
+};
+
+export const useCajas = () => {
+  const [loading, setLoading] = useState(false);
+  const cajas = useSelector((state) => get(state, 'cajas.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchCaj() {
+      setLoading(true);
+      await dispatch(cajasActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchCaj();
+      setListado([...cajas])
+    }
+  }, [setLoading, dispatch, listado, setListado, cajas]);
+
+  return [cajas, loading];
+};
+
+export const useRetenciones = () => {
+  const [loading, setLoading] = useState(false);
+  const retenciones = useSelector((state) => get(state, 'retenciones.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchRet() {
+      setLoading(true);
+      await dispatch(retencionesActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchRet();
+      setListado([...retenciones])
+    }
+  }, [setLoading, dispatch, listado, setListado, retenciones]);
+
+  return [retenciones, loading];
+};
+
+// Otros
 export const useEstadoCuenta = (selected) => {
   const [loading, setLoading] = useState(false);
 
@@ -106,8 +252,6 @@ export const useEstadoCuenta = (selected) => {
 
   return [cuentas, loading];
 };
-
-
 
 export const useSaldos = (capture, selected, date) => {
   const [loading, setLoading] = useState(false);
@@ -161,23 +305,6 @@ export const useDeudas = (capture, selected, date, condonacion=false) => {
   return [deudas, loading];
 };
 
-export const useTitulos = () => {
-  const [loading, setLoading] = useState(false);
-  const titulos = useSelector((state) => get(state, 'utils.titulos', []));
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (titulos && (!Array.isArray(titulos) || titulos.length === 0)) {
-      setLoading(true);
-
-      dispatch(titulosActions.get())
-        .finally(() => setLoading(false));
-    }
-  }, [titulos, dispatch]);
-
-  return [titulos, loading];
-};
-
 export const usePreconceptos = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -198,84 +325,6 @@ export const usePreconceptos = () => {
 
   return [preconceptos, loading];
 };
-
-export const useIngresos = () => {
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const ingresos = useSelector((state) => get(state, 'ingresos.list', []));
-
-  useEffect(() => {
-    setLoading(true);
-
-    dispatch(ingresosActions.get_all())
-      .finally(() => setLoading(false));
-
-  }, [dispatch]);
-
-  return [ingresos, loading];
-};
-
-export const useGastos = () => {
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const gastos = useSelector((state) => get(state, 'gastos.list', []));
-
-  useEffect(() => {
-    setLoading(true);
-
-    dispatch(gastosActions.get_all())
-      .finally(() => setLoading(false));
-
-  }, [dispatch]);
-
-  return [gastos, loading];
-};
-
-export const usePlataformas = () => {
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const plataforma = useSelector((state) => get(state, 'plataforma.list', []));
-
-  useEffect(() => {
-    setLoading(true);
-
-    dispatch(plataformaActions.get_all())
-      .finally(() => setLoading(false));
-  }, [dispatch]);
-
-  return [plataforma, loading];
-};
-
-export const useCajas = () => {
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const cajas = useSelector((state) => get(state, 'cajas.list', []));
-
-  useEffect(() => {
-    setLoading(true);
-
-    dispatch(cajasActions.get_all())
-      .finally(() => setLoading(false));
-  }, [dispatch]);
-
-  return [cajas, loading];
-};
-
-export const useRetenciones = () => {
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const retenciones = useSelector((state) => get(state, 'retenciones.list', []));
-
-  useEffect(() => {
-    setLoading(true);
-
-    dispatch(retencionesActions.get_all())
-      .finally(() => setLoading(false));
-  }, [dispatch]);
-
-  return [retenciones, loading];
-};
-
 
 export const useDisponibilidades = (date) => {
   const [loading, setLoading] = useState(false);
