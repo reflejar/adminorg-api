@@ -52,7 +52,7 @@ class UserSignupSerializer(serializers.Serializer):
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
     email = serializers.EmailField()
-    # comunidad = serializers.ChoiceField(Comunidad.objects.all())
+    comunidad = serializers.ChoiceField(Comunidad.objects.all())
     numero_documento = serializers.CharField(min_length=6, max_length=64)
     password = serializers.CharField(min_length=8, max_length=64)
     password_confirmation = serializers.CharField(min_length=8, max_length=64)
@@ -172,7 +172,7 @@ class UserLoginSerializer(serializers.Serializer):
 class PasswordRecoverySerializer(serializers.Serializer):
     '''Password recovery serializer'''
 
-    # comunidad = serializers.ChoiceField(Comunidad.objects.all())
+    comunidad = serializers.ChoiceField(Comunidad.objects.all())
     email = serializers.EmailField()
         
     def validate(self, data):

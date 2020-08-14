@@ -43,7 +43,7 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 	Estado de cuenta para Clientes, Proveedores y Cajas.
 	Deudas pendientes de cancelacion para Clientes y Proveedores.
 	'''
-	# cuentas = list(Naturaleza.objects.all().values_list('nombre', flat=True))
+	cuentas = list(Naturaleza.objects.all().values_list('nombre', flat=True))
 	titulos = ['titulo']
 	metodos = ['interes', 'retencion', 'descuento']
 	puntos = ['punto']

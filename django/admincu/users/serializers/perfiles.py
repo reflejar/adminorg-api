@@ -9,7 +9,7 @@ class PerfilModelSerializer(serializers.ModelSerializer):
 	'''Perfil model serializer'''
 	
 	domicilio = DomicilioModelSerializer(read_only=False)
-	# tipo_documento = serializers.ChoiceField(choices=list(DocumentType.objects.all().values_list('description', flat=True)))
+	tipo_documento = serializers.ChoiceField(choices=list(DocumentType.objects.all().values_list('description', flat=True)))
 	cuenta = serializers.SerializerMethodField()
 
 	class Meta:
