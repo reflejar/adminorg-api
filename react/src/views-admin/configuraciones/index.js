@@ -26,7 +26,7 @@ import Cliente from "../CRUDL/cliente/CU";
 import Dominio from "../CRUDL/dominio/CU";
 import Proveedor from "../CRUDL/proveedor/CU";
 import Caja from "../CRUDL/caja/CU";
-import Ingreso from "../CRUDL/dominio/CU";
+import Ingreso from "../CRUDL/ingreso/CU";
 import Gasto from "../CRUDL/gasto/CU";
 import Interese from "../CRUDL/dominio/CU";
 import Descuento from "../CRUDL/dominio/CU";

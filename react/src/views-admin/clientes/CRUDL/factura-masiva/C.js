@@ -22,7 +22,7 @@ const preconceptosHeaders = ['-', 'Destinatario', 'Ingreso', 'Periodo', 'Detalle
 
 const Create = (props) => {
   const clients = useClientList();
-  const puntos = usePuntosDeVenta();
+  const [puntos] = usePuntosDeVenta();
   const dispatch = useDispatch();
   const [preconceptos, preconceptosLoading] = usePreconceptos();
   const [dominios, dominiosLoading] = useDominios();

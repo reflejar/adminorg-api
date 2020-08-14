@@ -4,7 +4,7 @@ import { Row } from "reactstrap";
 import { usePuntosDeVenta } from '../../../../utility/hooks/dispatchers';
 
 const Encabezado = ({ documento, setDocumento, errors, onlyRead, types }) => {
-  const puntos = usePuntosDeVenta();
+  const [puntos] = usePuntosDeVenta();
 
   const handleChange = (event) => {
     const { name, value } = event.target;

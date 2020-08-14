@@ -17,7 +17,7 @@ const NotasCredito = memo(({ facturas, clientes }) => {
   const dispatch = useDispatch();
   const [table, setTable] = React.useState(false);
   const [fields, setFields] = React.useState(initialFields);
-  const puntos = usePuntosDeVenta();
+  const [puntos] = usePuntosDeVenta();
 
   const handleSearch = React.useCallback(async (event) => {
     event.preventDefault();

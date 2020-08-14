@@ -45,7 +45,7 @@ const FacturasStep = React.memo(({ facturas, clientes }) => {
   const dispatch = useDispatch();
   const [table, setTable] = React.useState(false);
   const [fields, setFields] = React.useState(initialFields);
-  const puntos = usePuntosDeVenta();
+  const [puntos] = usePuntosDeVenta();
 
   const ref = React.useRef(null);
 

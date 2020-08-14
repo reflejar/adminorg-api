@@ -64,7 +64,7 @@ const LStep = ({ causante, documentosTypes }) => {
   const dispatch = useDispatch();
   const [table, setTable] = useState(false);
   const [fields, setFields] = useState(initialFields);
-  const puntos = usePuntosDeVenta();
+  const [puntos] = usePuntosDeVenta();
   const [loading, setLoading] = useState(false);
   const [documentos, setDocumentos] = useState([]);
   const ref = useRef(null);

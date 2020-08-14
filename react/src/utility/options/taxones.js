@@ -13,3 +13,11 @@ export const cajas = [
     { id: 'stockeable', nombre: 'Stockeable' },
 ];
 
+
+export const ingresos = [
+    { id: null, nombre: "---"},
+    { id: 'interes_predeterminado', nombre: 'Cuenta de interes predeterminada' },
+    { id: 'prioritario', nombre: 'Con prioridad de cobro' },
+    { id: 'no_prioritario', nombre: 'Comun' },
+];
+
