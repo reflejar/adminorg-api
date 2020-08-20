@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { Button } from "reactstrap";
 
-import FacturacionMasiva from "../CRUDL/factura-masiva/C";
+import ComprobanteMasivo from "../CRUDL/factura-masiva/C";
 import BasicModal from '../../../components/modal/basic';
 
 // Helpers
@@ -13,7 +13,7 @@ const initialFields = {
   notion: ''
 };
 
-class FacturacionMasivaModal extends Component {
+class ComprobanteMasivoModal extends Component {
   constructor(props) {
     super(props);
 
@@ -67,17 +67,17 @@ class FacturacionMasivaModal extends Component {
     return (
       <Fragment>
         <BasicModal
-          header="Nueva Facturacion masiva"
+          header="Nuevo Comprobante masiva"
           open={this.state.modal}
           onToggle={this.handleToggle}
-          component={<FacturacionMasiva onClose={() => this.handleToggle(false)} />}
+          component={<ComprobanteMasivo onClose={() => this.handleToggle(false)} />}
           button={(
             <Button
               outline
               color="primary"
               disabled={true}
               onClick={this.handleToggle}>
-              Facturacion Masiva
+              Comprobante Masivo
             </Button>
           )}
         />
@@ -86,4 +86,4 @@ class FacturacionMasivaModal extends Component {
   }
 }
 
-export default FacturacionMasivaModal;
+export default ComprobanteMasivoModal;

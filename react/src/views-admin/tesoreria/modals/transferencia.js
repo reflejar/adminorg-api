@@ -30,10 +30,10 @@ class ModalTransferencia extends Component {
               disabled={isDisabled}
               onClose={() => this.handleToggle(false)}
             >
-              + Transferencia
+              Transferencia entre tesoros
             </Button>
           )}
-          header="Nueva Transferencia"
+          header="Nueva Transferencia entre tesoros"
           component={(<Transferencia onClose={() => this.handleToggle(false)} />)}
         />
       </Fragment>

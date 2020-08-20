@@ -43,7 +43,7 @@ class ModalDocumento extends Component {
               disabled={isDisabled}
               onClick={() => this.handleToggle(true)}
             >
-              + Documento
+              Agregar Comprobante
             </Button>
           )}
           open={modal}

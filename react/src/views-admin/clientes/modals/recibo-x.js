@@ -36,7 +36,7 @@ class ModalReciboX extends Component {
               disabled={isDisabled}
               onClose={() => this.handleToggle(false)}
             >
-              + Cobro
+              Agregar Cobro
             </Button>
           )}
           header="Nuevo cobro"

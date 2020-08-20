@@ -23,7 +23,7 @@ import { saldosActions } from '../../../../redux/actions/saldos';
 import { cuentasActions } from '../../../../redux/actions/cuentas';
 import { useDocumento } from '../hooks';
 
-const Factura = ({ destinatario, onlyRead, selected, sendFactura, onClose }) => {
+const Comprobante = ({ destinatario, onlyRead, selected, sendComprobante, onClose }) => {
   const dispatch = useDispatch();
   
   const {documento, setDocumento, errors, setErrors, loading, setLoading} = useDocumento(selected, destinatario, onlyRead);
@@ -59,9 +59,9 @@ const Factura = ({ destinatario, onlyRead, selected, sendFactura, onClose }) => 
     event.preventDefault();
     setLoading(true);
     
-    sendFactura(documento)
+    sendComprobante(documento)
       .then(() => {
-        toastr.success('¡Listo! Factura cargada con éxito');
+        toastr.success('¡Listo! Comprobante cargada con éxito');
         updateSituation();
         documento.contado ? onClose("cobrar") : onClose(false);        
       })
@@ -70,7 +70,7 @@ const Factura = ({ destinatario, onlyRead, selected, sendFactura, onClose }) => 
         setErrors(data);
       })
       .finally(() => setLoading(false))
-  }, [setLoading, sendFactura, documento, updateSituation, onClose, setErrors]);
+  }, [setLoading, sendComprobante, documento, updateSituation, onClose, setErrors]);
 
   if (loading) {
     return (
@@ -123,7 +123,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  sendFactura: (payload) => dispatch(documentosActions.send("cliente", payload))
+  sendComprobante: (payload) => dispatch(documentosActions.send("cliente", payload))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Factura);
+export default connect(mapStateToProps, mapDispatchToProps)(Comprobante);

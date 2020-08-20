@@ -30,7 +30,7 @@ class ModalPago extends Component {
               disabled={isDisabled}
               onClose={() => this.handleToggle(false)}
             >
-              + Pago
+              Agregar Pago
             </Button>
           )}
           header="Nuevo Pago"

@@ -3,7 +3,7 @@ import ReactTable from 'react-table';
 import checkboxHOC from 'react-table/lib/hoc/selectTable';
 
 import BasicModal from '../../../components/modal/basic';
-import Factura from '../CRUDL/transferencia/CU';
+import Comprobante from '../CRUDL/transferencia/CU';
 
 import 'react-table/react-table.css';
 
@@ -99,7 +99,7 @@ export default class Table extends React.Component {
   selectDocument = (type) => {
     const { documento } = this.state.modal.item;
     const documentos = {
-      "Factura C": <Factura
+      "Comprobante C": <Comprobante
         onlyRead={true}
         onClose={this.handleToggle}
         selected={documento}

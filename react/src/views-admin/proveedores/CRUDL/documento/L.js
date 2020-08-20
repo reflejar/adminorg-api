@@ -41,7 +41,7 @@ const getCSVData = (facturas, clientes) => {
 };
 
 
-const FacturasStep = React.memo(({ facturas, clientes }) => {
+const ComprobantesStep = React.memo(({ facturas, clientes }) => {
   const dispatch = useDispatch();
   const [table, setTable] = React.useState(false);
   const [fields, setFields] = React.useState(initialFields);
@@ -149,12 +149,12 @@ const FacturasStep = React.memo(({ facturas, clientes }) => {
         </CSVLink>
       </div>
 
-      <FacturaTable facturas={facturas} clientes={clientes} ref={ref} />
+      <ComprobanteTable facturas={facturas} clientes={clientes} ref={ref} />
     </div>
   );
 });
 
-class FacturaTable extends React.Component {
+class ComprobanteTable extends React.Component {
   render () {
     return (
       <Table responsive borderless>
@@ -192,4 +192,4 @@ const mapStateToProps = (state) => ({
   facturas: get(state, 'facturas.list.11.results', [])
 });
 
-export default connect(mapStateToProps)(FacturasStep);
+export default connect(mapStateToProps)(ComprobantesStep);

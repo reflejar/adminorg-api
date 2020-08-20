@@ -1,8 +1,8 @@
 export const documentosTypes = [
-    { id: 'Factura A', nombre: 'Factura A' },
-    { id: 'Factura B', nombre: 'Factura B' },
-    { id: 'Factura C', nombre: 'Factura C' },
-    { id: 'Factura X', nombre: 'Factura X' },
+    { id: 'Comprobante A', nombre: 'Comprobante A' },
+    { id: 'Comprobante B', nombre: 'Comprobante B' },
+    { id: 'Comprobante C', nombre: 'Comprobante C' },
+    { id: 'Comprobante X', nombre: 'Comprobante X' },
     { id: 'Liquidacion A', nombre: 'Liquidacion A' },
     { id: 'Liquidacion B', nombre: 'Liquidacion B' },
     { id: 'Retencion', nombre: 'Retencion' },

@@ -88,7 +88,7 @@ class Tesoreria extends Component {
                 onClick={() => {
                   this.toggle("3");
                 }}>
-                Informacion
+                Informacion del tesoro
               </NavLink>
             </NavItem>
           </Nav>

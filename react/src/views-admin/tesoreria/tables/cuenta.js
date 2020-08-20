@@ -6,11 +6,11 @@ import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import BasicModal from '../../../components/modal/basic';
 
 // Cosas de Clientes
-import ClienteFactura from '../../clientes/CRUDL/factura/CR';
+import ClienteComprobante from '../../clientes/CRUDL/factura/CR';
 import ClienteNotaCredito from '../../clientes/CRUDL/nota-credito/CR';
 import ClienteReciboX from '../../clientes/CRUDL/recibo-x/CR';
 import { 
-  facturasTypes as clientesFacturasTypes, 
+  facturasTypes as clientesComprobantesTypes, 
   notasCreditoTypes as clientesNotasCreditoTypes, 
   notasDebitoTypes as clientesNotasDebitoTypes, 
   recibosTypes as clientesRecibosTypes 
@@ -156,15 +156,15 @@ export default class Table extends React.Component {
     const { documento } = this.state.modal.item;
     let documentos = {};
     if (causante === "cliente") {
-      clientesFacturasTypes.forEach((type) => {
-        documentos[type.nombre] = <ClienteFactura
+      clientesComprobantesTypes.forEach((type) => {
+        documentos[type.nombre] = <ClienteComprobante
         onlyRead={true}
         onClose={this.handleToggle}
         selected={documento}
       />
       })
       clientesNotasDebitoTypes.forEach((type) => {
-        documentos[type.nombre] = <ClienteFactura
+        documentos[type.nombre] = <ClienteComprobante
         onlyRead={true}
         onClose={this.handleToggle}
         selected={documento}

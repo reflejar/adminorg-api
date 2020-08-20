@@ -188,7 +188,7 @@ const Create = (props) => {
         </div>
 
         <div className='form-group col-md-3'>
-          <label htmlFor='issued_date'>Fecha de Factura:</label>
+          <label htmlFor='issued_date'>Fecha de Comprobante:</label>
           <input
             type='date'
             className='form-control d-block'

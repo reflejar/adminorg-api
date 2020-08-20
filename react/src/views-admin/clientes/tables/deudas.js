@@ -4,7 +4,7 @@ import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import moment from 'moment';
 
 import BasicModal from '../../../components/modal/basic';
-import Factura from '../CRUDL/factura/CR';
+import Comprobante from '../CRUDL/factura/CR';
 import NotaCredito from '../CRUDL/nota-credito/CR';
 import ReciboX from '../CRUDL/recibo-x/CR';
 import { facturasTypes, notasCreditoTypes, notasDebitoTypes, recibosTypes } from '../CRUDL/_options/receipt_types';
@@ -114,14 +114,14 @@ export default class Table extends React.Component {
     const { documento } = this.state.modal.item;
     let documentos = {};
     facturasTypes.forEach((type) => {
-      documentos[type.nombre] = <Factura
+      documentos[type.nombre] = <Comprobante
       onlyRead={true}
       onClose={this.handleToggle}
       selected={documento}
     />
     })
     notasDebitoTypes.forEach((type) => {
-      documentos[type.nombre] = <Factura
+      documentos[type.nombre] = <Comprobante
       onlyRead={true}
       onClose={this.handleToggle}
       selected={documento}

@@ -65,7 +65,7 @@ class Clientes extends Component {
                   this.toggle("1");
                 }}
               >
-                Conceptos adeudados
+                Detalle a cobrar
               </NavLink>
             </NavItem>
             <NavItem>
@@ -77,7 +77,7 @@ class Clientes extends Component {
                   this.toggle("2");
                 }}
               >
-                Estado de cuenta
+                Cuenta historica
               </NavLink>
             </NavItem>
             <NavItem>
@@ -88,7 +88,7 @@ class Clientes extends Component {
                 onClick={() => {
                   this.toggle("3");
                 }}>
-                Informacion
+                Informacion del cliente
               </NavLink>
             </NavItem>
           </Nav>

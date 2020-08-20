@@ -3,7 +3,7 @@ import ReactTable from 'react-table';
 import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import moment from 'moment';
 
-import Facturas from '../../views-admin/clientes/CRUDL/factura/CR';
+import Comprobantes from '../../views-admin/clientes/CRUDL/factura/CR';
 import BasicModal from '../modal/basic';
 
 import 'react-table/react-table.css';
@@ -147,10 +147,10 @@ export default class Table extends React.Component {
         <BasicModal
           open={this.state.modal.open}
           onToggle={this.handleToggle}
-          header="Factura"
+          header="Comprobante"
           footer={false}
           component={(
-            <Facturas
+            <Comprobantes
               onlyRead
               onClose={this.handleToggle}
               item={this.state.modal.item}

@@ -30,12 +30,12 @@ class SideMenuContent extends Component {
     },    
     {
       link: "/clientes",
-      name: "Clientes",
+      name: "Cuentas a cobrar",
       icon: <Download size={18} />
     },
     {
       link: "/proveedores",
-      name: "Proveedores",
+      name: "Cuentas a pagar",
       icon: <Upload size={18} />
     },
     {

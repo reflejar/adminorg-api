@@ -30,7 +30,7 @@ class ModalNotaCredito extends Component {
               disabled={isDisabled}
               onClick={this.handleToggle}
             >
-              + Nota de credito
+              Agregar Nota de credito
             </Button>
           )}
           header="Nota de credito"

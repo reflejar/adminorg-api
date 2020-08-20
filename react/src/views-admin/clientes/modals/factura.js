@@ -1,17 +1,17 @@
 import React, { Component, Fragment } from "react";
 import { Button } from "reactstrap";
 
-import Factura from "../CRUDL/factura/CR";
+import Comprobante from "../CRUDL/factura/CR";
 import ReciboX from "../CRUDL/recibo-x/CR";
 import BasicModal from '../../../components/modal/basic';
 
-class ModalFactura extends Component {
+class ModalComprobante extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       modal: false,
-      component: <Factura onClose={(action) => this.handleToggle(action)}/>
+      component: <Comprobante onClose={(action) => this.handleToggle(action)}/>
     };
 
   }
@@ -20,7 +20,7 @@ class ModalFactura extends Component {
     if (typeof action === "boolean") {
       this.setState({
         modal: !this.state.modal,
-        component: <Factura onClose={(action) => this.handleToggle(action)}/>
+        component: <Comprobante onClose={(action) => this.handleToggle(action)}/>
       });
     } 
     if (action === "cobrar") {
@@ -45,12 +45,12 @@ class ModalFactura extends Component {
               disabled={isDisabled}
               onClick={() => this.handleToggle(true)}
             >
-              + Factura
+              Agregar Comprobante
             </Button>
           )}
           open={modal}
           onToggle={() => this.handleToggle(false)}
-          header="Nueva Factura"
+          header="Nuevo Comprobante"
           component={component}
           footer={false}
         />
@@ -59,4 +59,4 @@ class ModalFactura extends Component {
   }
 }
 
-export default ModalFactura;
+export default ModalComprobante;
