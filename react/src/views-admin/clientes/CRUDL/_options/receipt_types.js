@@ -1,6 +1,6 @@
 export const facturasTypes = [
-    { id: 'Comprobante C', nombre: 'Comprobante C' },
-    { id: 'Comprobante X', nombre: 'Comprobante X' },
+    { id: 'Factura C', nombre: 'Factura C' },
+    { id: 'Factura X', nombre: 'Factura X' },
 ];
 
 export const notasCreditoTypes = [

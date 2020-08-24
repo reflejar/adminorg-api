@@ -32,55 +32,54 @@ const get_all = () => async (dispatch) => {
     }
 }
 
-// const send = (values) => async (dispatch) => {
+const send = (values) => async (dispatch) => {
 
 
-//     let payload = {
-//         titulo: values.titulo,
-//         taxon: "socio",
-//         perfil: {
-//             nombre: values.nombre,
-//             apellido: values.apellido,
-//             razon_social: values.razon_social,
-//             numero_documento: values.numero_documento,
-//             fecha_nacimiento: values.fecha_nacimiento ? values.fecha_nacimiento : null,
-//             es_extranjero: values.es_extranjero,
-//             mail: values.mail,
-//             telefono: values.telefono,
-//             domicilio: {
-//                 localidad: values.localidad,
-//                 calle: values.calle,
-//                 numero: values.numero,
-//                 provincia: values.provincia
-//             },
+    let payload = {
+        titulo: values.titulo,
+        nombre: values.nombre,
+        numero: values.numero,
+        domicilio: {
+            provincia: values.domicilio_provincia,
+            localidad: values.domicilio_localidad,
+            calle: values.domicilio_calle,
+            numero: values.domicilio_numero,
+            piso: null,
+            oficina: null,
+            sector: null,
+            torre: null,
+            manzana: null,
+            parcela: null,
+            catastro: null,
+            superficie_total: null,
+            superficie_cubierta: null   
+        },
+    };
 
-//         }
-//     };
+    let response;
 
-//     let response;
+    if (values.id) {
+        response = await Service.put(apiEndpoint + values.id + "/", payload);
+    } else {
+        response = await Service.post(apiEndpoint, payload);
+    }
 
-//     if (values.id) {
-//         response = await Service.put(apiEndpoint + values.id + "/", payload);
-//     } else {
-//         response = await Service.post(apiEndpoint, payload);
-//     }
-
-//     if (response) {
-//         await dispatch(get_all())
-//         await dispatch({
-//             type: 'POST_DOMINIO',
-//             payload: response.data
-//         });
-//         response.result = "success"
-//     } else {
-//         response = {
-//             result: "error"
-//         }
-//     }
+    if (response) {
+        await dispatch(get_all())
+        await dispatch({
+            type: 'POST_DOMINIO',
+            payload: response.data
+        });
+        response.result = "success"
+    } else {
+        response = {
+            result: "error"
+        }
+    }
 
 
-//     return response
-// };
+    return response
+};
 
 
 
@@ -88,5 +87,5 @@ export const dominiosActions = {
     get_all,
     search,
     select,
-    // send,
+    send,
 }
