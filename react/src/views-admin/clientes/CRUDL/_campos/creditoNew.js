@@ -8,26 +8,27 @@ import Spinner from '../../../../components/spinner/spinner';
 import { AppendableRowField } from '../../../../components/form/AppendableRowField';
 import { mapToOptions } from '../../../../utility/mappers';
 
-import { useDominios, useIngresos } from '../../../../utility/hooks/dispatchers';
+import { useDominios, useIngresos, useCajas } from '../../../../utility/hooks/dispatchers';
 import { useAppendableField } from '../../../../components/form/hooks';
 
 const filterDomainInclusion = (arr, clientId) =>
-  arr.filter((x) => (x.propietario === clientId || x.ocupante === clientId));
+  arr.filter((x) => (x.propietario === clientId));
 
 const filterCompletedObject = (arr) =>
-  arr.filter((x) => (x.destinatario && x.ingreso && x.periodo && x.monto > 0));
+  arr.filter((x) => (x.destinatario && x.concepto && x.periodo && x.monto > 0));
 
 
 const CreditoNew = ({ documento, setDocumento, errors, destinatario, onlyRead }) => {
 
   const [dominios, loadingDominios] = useDominios();
   const [ingresos, loadingIngresos] = useIngresos();
+  const [cajas, loadingCajas] = useCajas();
 
   const cleanItem = {
     monto: undefined,
     detalle: '',
     destinatario: '',
-    ingreso: '',
+    concepto: '',
     cantidad: null,
     periodo: moment().format('YYYY-MM-DD'),
     fecha_gracia: moment().format('YYYY-MM-DD'),
@@ -63,7 +64,7 @@ const CreditoNew = ({ documento, setDocumento, errors, destinatario, onlyRead })
   }, [creditos, setDocumento])
 
   
-  if (loadingDominios || loadingIngresos) {
+  if (loadingDominios || loadingIngresos || loadingCajas) {
     return (
       <div className='loading-modal'>
         <Spinner />
@@ -110,16 +111,16 @@ const CreditoNew = ({ documento, setDocumento, errors, destinatario, onlyRead })
           }, 
           onlyRead ? {
             type: 'text',
-            name: 'ingreso',
-            placeholder: 'Ingreso',
-            header: 'Ingreso',
+            name: 'concepto',
+            placeholder: 'Concepto',
+            header: 'Concepto',
             disabled: onlyRead,
             handleChange: handleCreditosChange
           } : {
             type: 'select',
-            name: 'ingreso',
-            placeholder: 'Ingreso',
-            header: 'Ingreso',
+            name: 'concepto',
+            placeholder: 'Concepto',
+            header: 'Concepto',
             disabled: onlyRead,
             handleChange: handleCreditosChange,
             options: (
@@ -128,6 +129,11 @@ const CreditoNew = ({ documento, setDocumento, errors, destinatario, onlyRead })
                 {mapToOptions(ingresos).map((ingreso) => (
                   <option key={ingreso.value} value={ingreso.value}>
                     {ingreso.label}
+                  </option>
+                ))}
+                {mapToOptions(cajas).map((caja) => (
+                  <option key={caja.value} value={caja.value}>
+                    {caja.label}
                   </option>
                 ))}
               </>
@@ -142,15 +148,15 @@ const CreditoNew = ({ documento, setDocumento, errors, destinatario, onlyRead })
           }, {
             type: 'date',
             name: 'fecha_gracia',
-            placeholder: 'Fecha de Gracia',
-            header: 'Fecha de Gracia',
+            placeholder: 'Tope de descuento',
+            header: 'Tope de descuento',
             disabled: onlyRead,
             handleChange: handleCreditosChange
           }, {
             type: 'date',
             name: 'fecha_vencimiento',
-            placeholder: 'Fecha Vencimiento',
-            header: 'Fecha Vencimiento',
+            placeholder: 'Vencimiento p/intereses',
+            header: 'Vencimiento p/intereses',
             disabled: onlyRead,
             handleChange: handleCreditosChange
           },{
@@ -178,7 +184,7 @@ const CreditoNew = ({ documento, setDocumento, errors, destinatario, onlyRead })
             handleChange: handleCreditosChange
           }]}
           header={{
-            title: documento.id ? 'Creditos generados' : "Creditos a generar",
+            title: "Items del comprobante",
             appendButton: 'Agregar deuda'
           }}
         />

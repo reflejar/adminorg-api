@@ -8,28 +8,18 @@ import { useDispatch } from 'react-redux';
 import { clientesActions } from '../../../redux/actions/clientes';
 import { toastr } from "react-redux-toastr";
 
-import { Select } from '../../../components/Select';
 import Spinner from '../../../components/spinner/spinner';
 import { provincias } from '../../../utility/options/provincias';
 import { tipo_documentos } from '../../../utility/options/documentos';
-import { mapToOptions } from '../../../utility/mappers';
-import { useDominios, useTitulos } from '../../../utility/hooks/dispatchers';
+import { useTitulos } from '../../../utility/hooks/dispatchers';
 
 const empty = 'Campo requerido';
 
-const filterWithOcupantesAvailables = (arr) => arr.filter((x) => !x.ocupante);
-const filterWithPropietariosAvailables = (arr) => arr.filter((x) => !x.propietario);
-
 const CU = ({ selected, onClose }) => {
   const dispatch = useDispatch();
-  const [dominios, loadingDominios] = useDominios();
   const [titulos, loadingTitulos] = useTitulos();
-  let ocupante = [];
-  let propietario = [];
-  let options_ocupante = [];
-  let options_propietario = [];
 
-  if (loadingTitulos || loadingDominios) {
+  if (loadingTitulos) {
     return (
       <div className="loading-modal">
         <br/><br/>
@@ -38,27 +28,6 @@ const CU = ({ selected, onClose }) => {
     )
   }
 
-  
-  
-  if (selected && selected.vinculaciones){
-    ocupante = selected.vinculaciones
-        .filter((val) => val.definicion === 'ocupante')
-        .map((val) => ({ value: val.cuenta_vinculada, label: get(dominios.find(x => x.id === val.cuenta_vinculada), 'nombre') }));
-    propietario = selected.vinculaciones
-      .filter((val) => val.definicion === 'propietario')
-      .map((val) => ({ value: val.cuenta_vinculada, label: get(dominios.find(x => x.id === val.cuenta_vinculada), 'nombre') }));
-    options_ocupante = [
-      ...mapToOptions(filterWithOcupantesAvailables(dominios)),
-      ...mapToOptions(dominios.filter((x) => x.ocupante === selected.id))
-    ];
-    options_propietario = [
-      ...mapToOptions(filterWithPropietariosAvailables(dominios)),
-      ...mapToOptions(dominios.filter((x) => x.propietario === selected.id))
-    ];
-  } else {
-    options_ocupante = mapToOptions(filterWithOcupantesAvailables(dominios));
-    options_propietario = mapToOptions(filterWithPropietariosAvailables(dominios));
-  }
 
   return (
     <Formik
@@ -78,8 +47,6 @@ const CU = ({ selected, onClose }) => {
         domicilio_calle: get(selected, 'perfil.domicilio.calle', ''),
         domicilio_numero: get(selected, 'perfil.domicilio.numero', ''),
         titulo: get(selected, 'titulo', ''),
-        ocupante,
-        propietario
       }}
       validationSchema={Yup.object().shape({
         nombre: Yup.string().required(empty),
@@ -96,8 +63,6 @@ const CU = ({ selected, onClose }) => {
         domicilio_calle: Yup.string(),
         domicilio_numero: Yup.string(),
         titulo: Yup.number().required(empty),
-        propietario: Yup.array(),
-        ocupante: Yup.array()
       })}
       onSubmit={async (values, { setSubmitting }) => {
         try {
@@ -213,52 +178,7 @@ const CU = ({ selected, onClose }) => {
               </FormGroup>
             </Col>
 
-            <Col xs={12}>
-              <hr />
-            </Col>
 
-            <Col sm="6">
-
-
-              <FormGroup>
-                <Label for="ocupante">Ocupante</Label>
-                <Select
-                  isMulti
-                  placeholder=""
-                  name="ocupante"
-                  id="ocupante"
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  error={errors.ocupante && touched.ocupante}
-                  options={options_ocupante}    
-                  onChange={(option) => setFieldValue('ocupante', option)}
-                  value={values.ocupante}
-                />
-
-                {errors.ocupante && touched.ocupante ? <div className="error-feedback">{errors.ocupante}</div> : null}
-              </FormGroup>
-
-            </Col>
-
-            <Col sm="6">
-              <FormGroup>
-                <Label for="propietario">Propietario</Label>
-                <Select
-                  isMulti
-                  placeholder=""
-                  name="propietario"
-                  id="propietario"
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  error={errors.propietario && touched.propietario}
-                  options={options_propietario}
-                  onChange={(option) => setFieldValue('propietario', option)}
-                  value={values.propietario}
-                />
-
-                {errors.propietario && touched.propietario ? <div className="error-feedback">{errors.propietario}</div> : null}
-              </FormGroup>
-            </Col>
           </Row>
 
           <Button type="submit" color="primary" className="button-clip-loader" disabled={isSubmitting}>

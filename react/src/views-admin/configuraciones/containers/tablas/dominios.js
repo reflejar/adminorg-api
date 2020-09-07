@@ -7,18 +7,14 @@ import get from 'lodash/get';
 
 const TableDominio = ({toggle, setItem}) => {
   
-  const [clientes] = useClientes();
+  const [clientes, loadingClientes] = useClientes();
 
   const [items, loadingItems] = useDominios();
   
   const titles = [
     {
-      accessor: 'nombre',
-      Header: 'Nombre'
-    },
-    {
       accessor: 'numero',
-      Header: 'Numero'
+      Header: 'Identificacion'
     },
     {
       id: 'Propietario',
@@ -26,9 +22,9 @@ const TableDominio = ({toggle, setItem}) => {
       Header: 'Propietario'
     },  
     {
-      id: 'Ocupante',
-      accessor: (d) => get(clientes.find((x) => d.ocupante === x.id), 'full_name', 'S/O'),
-      Header: 'Ocupante'
+      id: 'Inquilino',
+      accessor: (d) => get(clientes.find((x) => d.inquilino === x.id), 'full_name', 'S/O'),
+      Header: 'Inquilino'
     },  
   ]
 
@@ -37,7 +33,7 @@ const TableDominio = ({toggle, setItem}) => {
       <Table
         titles={titles}
         items={items}
-        loadingItems={loadingItems}
+        loadingItems={loadingItems || loadingClientes}
         toggle={toggle}
         selectItem={setItem}
         causante={"dominio"}

@@ -52,7 +52,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		super(CuentaModelSerializer, self).__init__(*args, **kwargs)
 		
 		# Incorporacion de Nombre
-		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto', 'dominio']:
+		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto']:
 			self.fields['nombre'] = serializers.CharField(max_length=150, required=True)
 
 		# Incorporacion de Numero
@@ -78,16 +78,10 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			self.fields['interes'] = serializers.PrimaryKeyRelatedField(queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="interes"), allow_null=True)
 			self.fields['descuento'] = serializers.PrimaryKeyRelatedField(queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="descuento"), allow_null=True)
 	
-		# Incorporacion de Vinculaciones (para Socios)
-		if self.context['naturaleza'] in ['cliente']:
-		 	self.fields['vinculaciones'] = VinculoModelSerializer(context=self.context, read_only=False, many=True)
-
-		# Incorporacion de Propietario y Ocupante (para Dominios) - Solo Lectura
+		# Incorporacion de Propietario y Ocupante (para Dominios)
 		if self.context['naturaleza'] in ['dominio']:
 			self.fields['propietario'] = serializers.PrimaryKeyRelatedField(queryset=Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="cliente"), allow_null=True)
-			self.fields.get('propietario').read_only = True
-			self.fields['ocupante'] = serializers.PrimaryKeyRelatedField(queryset=Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="cliente"), allow_null=True)
-			self.fields.get('ocupante').read_only = True
+			self.fields['inquilino'] = serializers.PrimaryKeyRelatedField(queryset=Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="cliente"), allow_null=True)
 
 	def validate_nombre(self, nombre):
 		"""
@@ -139,22 +133,24 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			No puede haber con el mismo numero_documento 
 				clientes 
 				proveedores
+				Nota 07/09/2020. Se decidió que si se podia cargar con el mismo numero_documento
 		"""
 
-		if self.context['naturaleza'] in ['cliente', 'proveedor']:
-			try:
-				query = Cuenta.objects.get(
-							comunidad=self.context['comunidad'],
-							perfil__numero_documento=perfil['numero_documento'], 
-							naturaleza__nombre=self.context['naturaleza'], 
-						)
-			except:
-				query = None
+
+		# if self.context['naturaleza'] in ['cliente', 'proveedor']:
+		# 	try:
+		# 		query = Cuenta.objects.get(
+		# 					comunidad=self.context['comunidad'],
+		# 					perfil__numero_documento=perfil['numero_documento'], 
+		# 					naturaleza__nombre=self.context['naturaleza'], 
+		# 				)
+		# 	except:
+		# 		query = None
 			
-			if query:
-				if self.context['request'].method == 'POST' or self.instance != query:
-					raise serializers.ValidationError('El numero de documento seleccionado ya existe en el sistema')
-		
+		# 	if query:
+		# 		if self.context['request'].method == 'POST' or self.instance != query:
+		# 			raise serializers.ValidationError({'numero_documento': 'El numero de documento seleccionado ya existe en el sistema'})
+						
 		return perfil
 
 	def validate_retiene(self, retiene):
@@ -175,28 +171,6 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 						raise serializers.ValidationError('El metodo seleccionado ya pertenece a otro proveedor')
 		
 		return retiene
-
-	def validate_vinculaciones(self, vinculaciones):
-		"""
-			En la creacion de un cliente solo se pueden agregar vinculaciones (dominios) como
-				ocupante
-				propietario
-			siempre y cuando los mismos no esten ya en la misma condicion con otro cliente
-		"""
-		
-		for v in vinculaciones:
-
-			ocupante = v['cuenta_vinculada'].ocupante()
-			if v['definicion'] == "ocupante" and ocupante:
-				if self.context['request'].method == 'POST' or self.instance != ocupante:
-					raise serializers.ValidationError('El dominio numero {} ya posee un ocupante'.format(v["cuenta_vinculada"].numero))
-			
-			propietario = v['cuenta_vinculada'].propietario()
-			if v['definicion'] == "propietario" and propietario:
-				if self.context['request'].method == 'POST' or self.instance != propietario:
-					raise serializers.ValidationError('El dominio numero {} ya posee un propietario'.format(v["cuenta_vinculada"].numero))
-
-		return vinculaciones
 
 	@transaction.atomic
 	def create(self, validate_data):
@@ -298,18 +272,18 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 				instance.metodos.add(interes_data)
 
 
-		if self.context['naturaleza'] in ['cliente']:
-			for v in instance.vinculos.all():
-				instance.vinculos.remove(v)
+		# if self.context['naturaleza'] in ['cliente']:
+		# 	for v in instance.vinculos.all():
+		# 		instance.vinculos.remove(v)
 		
-			vinculaciones_data = validate_data['vinculaciones']
-			for v in vinculaciones_data:
-				taxon = Taxon.objects.get(nombre=v['definicion'])
-				vinculo = DefinicionVinculo.objects.create(
-						cuenta=instance,
-						cuenta_vinculada=v['cuenta_vinculada'],
-						definicion=taxon,
-						)
+		# 	vinculaciones_data = validate_data['vinculaciones']
+		# 	for v in vinculaciones_data:
+		# 		taxon = Taxon.objects.get(nombre=v['definicion'])
+		# 		vinculo = DefinicionVinculo.objects.create(
+		# 				cuenta=instance,
+		# 				cuenta_vinculada=v['cuenta_vinculada'],
+		# 				definicion=taxon,
+		# 				)
 
 
 		return instance

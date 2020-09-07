@@ -5,6 +5,6 @@ export const mapToOptions = (options) => {
 
   return options.map((option) => ({
       value: option.id,
-      label: option.nombre || option.name
+      label: option.full_name
   }));
 };

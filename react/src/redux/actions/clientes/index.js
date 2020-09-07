@@ -67,9 +67,9 @@ const get_client = (id) => async (dispatch) => {
 const send = (values) => async (dispatch) => {
   let vinculaciones = [];
 
-  if (Array.isArray(values.ocupante) && values.ocupante.length > 0) {
-    vinculaciones = [...vinculaciones, ...values.ocupante.map((x) => ({
-      definicion: 'ocupante',
+  if (Array.isArray(values.inquilino) && values.inquilino.length > 0) {
+    vinculaciones = [...vinculaciones, ...values.inquilino.map((x) => ({
+      definicion: 'inquilino',
       cuenta_vinculada: x.value
     }))];
   }

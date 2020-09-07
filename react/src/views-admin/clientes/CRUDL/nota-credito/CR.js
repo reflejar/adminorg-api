@@ -27,7 +27,7 @@ const NotaCredito = ({ destinatario, onlyRead, selected, sendNotaCredito, onClos
   const dispatch = useDispatch();
   
   const {documento, setDocumento, errors, setErrors, loading, setLoading} = useDocumento(selected, destinatario, onlyRead);
-  const errorButton = "La suma de los creditos a condonar deben ser estrictamente iguales al la suma del los resultados a generar";
+  const errorButton = "La suma de los creditos a cobrar deben ser estrictamente iguales al la suma del los resultados a generar";
 
   useEffect(() => {
     if (!documento.cobros) {   

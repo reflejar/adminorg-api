@@ -22,10 +22,9 @@ class EstadoDeudasModelSerializer(EstadoBaseModelSerializer):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		print(self.context['cuenta'])
 		if self.context['cuenta']:
 			if self.context['cuenta'].naturaleza.nombre == "cliente":
-				self.fields['ingreso'] = serializers.CharField(read_only=True, max_length=150)
+				self.fields['concepto'] = serializers.CharField(read_only=True, max_length=150)
 
 
 	def get_interes_generado(self, obj):

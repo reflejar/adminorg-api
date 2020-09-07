@@ -13,7 +13,7 @@ class CreditoModelSerializer(OperacionModelSerializer):
 		self.fields['fecha_vencimiento'] = serializers.ModelField(model_field=fields.get_field("fecha_vencimiento"), allow_null=True)
 		if self.context['retrieve']:
 			self.fields['destinatario'] = serializers.CharField(max_length=200, read_only=True)
-			self.fields['ingreso'] = serializers.CharField(max_length=200, read_only=True)
+			self.fields['concepto'] = serializers.CharField(max_length=200, read_only=True)
 		else:
 			self.fields['destinatario'] = serializers.PrimaryKeyRelatedField(
 					queryset=Cuenta.objects.filter(
@@ -22,10 +22,10 @@ class CreditoModelSerializer(OperacionModelSerializer):
 						), 
 					allow_null=False
 				)
-			self.fields['ingreso'] = serializers.PrimaryKeyRelatedField(
+			self.fields['concepto'] = serializers.PrimaryKeyRelatedField(
 					queryset=Cuenta.objects.filter(
 							comunidad=self.context['comunidad'], 
-							naturaleza__nombre="ingreso"
+							naturaleza__nombre__in=["ingreso", "caja"]
 						), 
 					allow_null=False
 				)

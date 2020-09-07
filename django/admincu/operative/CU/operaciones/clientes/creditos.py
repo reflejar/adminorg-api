@@ -21,8 +21,8 @@ class CU:
 	def create(self):
 		operaciones = []
 		for credito in self.creditos:
-			metodo_interes = self.get_metodo(cuenta=credito['ingreso'], naturaleza='interes')
-			metodo_descuento = self.get_metodo(cuenta=credito['ingreso'], naturaleza='descuento') 
+			metodo_interes = self.get_metodo(cuenta=credito['concepto'], naturaleza='interes')
+			metodo_descuento = self.get_metodo(cuenta=credito['concepto'], naturaleza='descuento') 
 			operacion_debe = Operacion.objects.create(
 				comunidad=self.comunidad,
 				documento = self.documento,
@@ -46,7 +46,7 @@ class CU:
 				comunidad=self.comunidad,
 				documento = self.documento,
 				asiento=self.identifier,
-				cuenta=credito['ingreso'],
+				cuenta=credito['concepto'],
 				valor=-credito['monto'],
 				detalle=credito['detalle'],
 				vinculo=operacion_debe,

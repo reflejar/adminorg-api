@@ -64,7 +64,7 @@ const FormasPago = ({ documento, setDocumento, errors, update }) => {
   return (
     <Row>
       <Col sm="12">
-        <h3 className="pl-0 credito__row__header__text">Descargas a generar</h3>
+        <h3 className="pl-0 credito__row__header__text">Transferir desde</h3>
         {loadingDisponibilidades || loadingTesoros ?
           <div className='loading-modal'>
             <Spinner />
@@ -82,7 +82,7 @@ const FormasPago = ({ documento, setDocumento, errors, update }) => {
                       toggle("1");
                   }}
                 >
-                  Descargas {update ? "creadas": "nuevas"} {update && insertBadge(documento.cajas)}
+                  Cuentas de caja {update && insertBadge(documento.cajas)}
                 </NavLink>
             </NavItem>
             <NavItem>
@@ -95,7 +95,7 @@ const FormasPago = ({ documento, setDocumento, errors, update }) => {
                       toggle("2");
                   }}
                 >
-                  {update ? "Descargas de": "Descargar"} Disponibilidades 
+                  {update ? "Utilizaciones de": "Utilizar"} Disponibilidades
                 </NavLink>
             </NavItem>           
           </Nav>

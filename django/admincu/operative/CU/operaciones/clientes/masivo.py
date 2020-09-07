@@ -86,7 +86,7 @@ class CU:
 
 			else:
 				for d in self.dominios:
-					if d.propietario() or d.ocupante():
+					if d.propietario() or d.inquilino():
 						if d['unidad'] == "dominio":
 							monto = d['monto']
 						else:

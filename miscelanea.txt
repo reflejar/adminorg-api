@@ -28,3 +28,11 @@ sudo docker-compose -f devServer.yml run --rm django python manage.py createsupe
 sudo docker-compose -f devServer.yml build react
 sudo docker-compose -f devServer.yml run --rm react npm rebuild node-sass
 sudo docker-compose -f devServer.yml up
+
+
+Anulacion de recibos (?)
+Agregar utilizacion de disponibilidades en proveedores
+Agregar metodo de interes y metodo de descuento
+
+
+Saldos con 0 siguen apareciendo

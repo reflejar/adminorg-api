@@ -42,14 +42,6 @@ class EstadoCuentaModelSerializer(EstadoBaseModelSerializer):
 
 		return self.saldo
 
+
 	def get_concepto(self, obj):
-		texto = "" 
-		if obj.ingreso():
-			texto += obj.ingreso().nombre
-		else:
-			texto += "SF"
-		if obj.vinculo:
-			texto += " {}".format(obj.vinculo.periodo()) 	
-		else:
-			texto += " {}".format(obj.periodo()) 
-		return texto
+		return str(obj.concepto())

@@ -128,7 +128,7 @@ const DebitoNew = ({ documento, setDocumento, errors, update }) => {
             handleChange: handleDebitosChange
           }]}
           header={{
-            title: documento.id ? 'Debitos generados' : "Debitos a generar",
+            title: "Items del comprobante",
             appendButton: 'Agregar deuda'
           }}
         />

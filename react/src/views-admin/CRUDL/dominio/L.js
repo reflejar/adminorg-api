@@ -6,10 +6,9 @@ import ReactToPrint from 'react-to-print';
 import get from 'lodash/get';
 
 const tableHeaders = [
-  { label: "Numero", key: "numero" },
-  { label: "Nombre", key: "nombre" },
+  { label: "Identificacion", key: "numero" },
   { label: "Propietario", key: "propietario" },
-  { label: "Ocupante", key: "ocupante" },
+  { label: "Ocupante", key: "inquilino" },
   { label: "Domicilio", key: "domicilio" },
 ];
  
@@ -33,9 +32,8 @@ class DominiosTable extends React.Component {
             return (
               <tr key={dominio.id}>
                 <th scope="row">{dominio.numero}</th>
-                <td>{dominio.nombre}</td>
                 <td>{dominio.propietario}</td>
-                <td>{dominio.ocupante}</td>
+                <td>{dominio.inquilino}</td>
                 <td>{dominio.domicilio}</td>
               </tr>
             );
@@ -56,12 +54,12 @@ const L = ({ clientes, dominios }) => {
     }
     const data = dominios.map((dominio) => {
       const propietario = get(clientes.find((x) => x.id === dominio.propietario), 'full_name', 'Sin propietario');
-      const ocupante = get(clientes.find((x) => x.id === dominio.ocupante), 'full_name', 'Sin ocupante');
+      const inquilino = get(clientes.find((x) => x.id === dominio.inquilino), 'full_name', 'Sin inquilino');
       const domicilio = `${dominio.domicilio.calle} ${dominio.domicilio.numero}. ${dominio.domicilio.provincia} - ${dominio.domicilio.localidad}`
       return ({
         ...dominio,
         propietario,
-        ocupante,
+        inquilino,
         domicilio
       })
     })    

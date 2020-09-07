@@ -1,4 +1,5 @@
 import { Service } from '../../services/general';
+import get from 'lodash/get';
 
 let apiEndpoint = 'operative/parametros/dominio/';
 
@@ -15,7 +16,11 @@ const select = (id) => ({
 const get_all = () => async (dispatch) => {
     const response = await Service.get(apiEndpoint);
     if (response) {    
-        const dominios = response.data.results.sort((a, b) => {
+
+        const dominios = response.data.results.map(c => {
+            let full_name = get(c, 'numero', "");
+            return ({...c, full_name})
+        }).sort((a, b) => {
             let comparison = 0;
             if (a.numero > b.numero) {
                 comparison = 1;
@@ -39,20 +44,22 @@ const send = (values) => async (dispatch) => {
         titulo: values.titulo,
         nombre: values.nombre,
         numero: values.numero,
+        propietario:values.propietario,
+        inquilino:values.inquilino,
         domicilio: {
             provincia: values.domicilio_provincia,
             localidad: values.domicilio_localidad,
             calle: values.domicilio_calle,
             numero: values.domicilio_numero,
-            piso: null,
-            oficina: null,
-            sector: null,
-            torre: null,
-            manzana: null,
-            parcela: null,
-            catastro: null,
-            superficie_total: null,
-            superficie_cubierta: null   
+            piso: values.piso,
+            oficina: values.oficina,
+            sector: values.sector,
+            torre: values.torre,
+            manzana: values.manzana,
+            parcela: values.parcela,
+            catastro: values.catastro,
+            superficie_total: values.superficie_total,
+            superficie_cubierta: values.superficie_cubierta,
         },
     };
 

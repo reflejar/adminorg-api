@@ -27,7 +27,7 @@ const ReciboX = ({ destinatario, onlyRead, selected, sendReciboX, deleteReciboX,
   const dispatch = useDispatch();
   
   const {documento, setDocumento, errors, setErrors, loading, setLoading} = useDocumento(selected, destinatario, onlyRead);
-  const errorButton = "La suma de las formas de cobros deben igualar o superar la suma de creditos a condonar";
+  const errorButton = "La suma de las formas de cobros deben igualar o superar la suma de creditos a cobrar";
 
   useEffect(() => {
     if (!documento.receipt.receipt_type) {   

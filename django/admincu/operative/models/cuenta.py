@@ -49,7 +49,7 @@ class Cuenta(BaseModel):
 		"""
 			Grupo de el socio con sus dominios
 		"""
-		grupo = self.vinculos.filter(naturaleza__nombre="dominio")
+		grupo = self.vinculo1.filter(definicion__nombre="dominio")
 		grupo |= Cuenta.objects.filter(id=self.id)
 		return grupo
 
@@ -117,10 +117,10 @@ class Cuenta(BaseModel):
 		except:
 			return
 
-	def ocupante(self):
-		"""Retorna la Cuenta de Cliente que es ocupante de un dominio"""
+	def inquilino(self):
+		"""Retorna la Cuenta de Cliente que es inquilino de un dominio"""
 		try:
-			return self.vinculo2.get(definicion__nombre='ocupante').cuenta
+			return self.vinculo2.get(definicion__nombre='inquilino').cuenta
 		except:
 			return
 

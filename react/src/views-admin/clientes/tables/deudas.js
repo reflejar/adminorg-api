@@ -37,8 +37,8 @@ export default class Table extends React.Component {
       Header: 'Documento',
       accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`
     }, {
-      Header: 'Ingreso',
-      accessor: 'ingreso'
+      Header: 'Concepto',
+      accessor: 'concepto'
     }, {
       Header: 'Periodo',
       id: 'Periodo',

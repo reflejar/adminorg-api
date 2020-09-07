@@ -34,8 +34,14 @@ class CU:
 			self.condonacion = True
 			self.resultados = validated_data['resultados']
 
-		self.cuenta_interes = Cuenta.objects.get(comunidad=self.comunidad, taxon__nombre="interes_predeterminado")
-		self.cuenta_descuento = Cuenta.objects.get(comunidad=self.comunidad, taxon__nombre="descuento_predeterminado")
+		try:
+			self.cuenta_interes = Cuenta.objects.get(comunidad=self.comunidad, taxon__nombre="interes_predeterminado")
+		except:
+			self.cuenta_interes = None
+		try:
+			self.cuenta_descuento = Cuenta.objects.get(comunidad=self.comunidad, taxon__nombre="descuento_predeterminado")
+		except:
+			self.cuenta_descuento = None
 		
 		self.suma_totales = 0
 		self.suma_cobros = 0
@@ -48,6 +54,13 @@ class CU:
 			'nd-automatica': None			
 		}
 		self.operaciones = []
+
+	def get_metodo(self, cuenta, naturaleza):
+		
+		try:
+			return cuenta.metodos.get(naturaleza=naturaleza)
+		except:
+			return
 
 
 	def hacer_cobros(self):

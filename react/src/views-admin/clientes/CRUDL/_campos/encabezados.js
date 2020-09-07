@@ -152,7 +152,7 @@ const Encabezado = ({ documento, setDocumento, errors, onlyRead, types }) => {
             />
 
             <label className="form-check-label" htmlFor="condonacion">
-              Condonacion
+              Sin intereses
             </label>
           </div>
         </div>}

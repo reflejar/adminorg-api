@@ -23,7 +23,6 @@ class PlataformasViewSet(custom_viewsets.CustomModelViewSet):
 	filterset_class = CobroPlataformaFilter
 
 	def get_queryset(self):
-		print(self.kwargs.keys())
 		'''Define el queryset segun parametro de url.'''
 		query = {
 			'comunidad': self.comunidad,

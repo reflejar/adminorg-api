@@ -52,7 +52,6 @@ class ClienteViewSet(BaseViewSet):
 
 		serializer = MasivoClienteModelSerializer(data=request.data, context=self.get_serializer_context())
 		serializer.is_valid(raise_exception=True)
-		# print(self.get_serializer_context())
 		context = {
 			'causante': self.causante,
 			'sin_destinatario': self.sin_destinatario,

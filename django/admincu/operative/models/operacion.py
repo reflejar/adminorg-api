@@ -50,16 +50,16 @@ class Operacion(BaseModel):
 		""" Devuelve la Cuenta(cliente, dominio) por la que se creó el credito """
 		return self.cuenta
 
-	def ingreso(self):
+	def concepto(self):
 		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
-		ingreso = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
-		if not ingreso:
+		conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
+		if not conceptos:
 			if self.vinculo:
-				ingreso = self.vinculo.vinculos.filter(cuenta__naturaleza__nombre="ingreso")
-				if ingreso:
-					return ingreso.first().cuenta
+				conceptos = self.vinculo.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"])
+				if conceptos:
+					return conceptos.first().cuenta
 			return None
-		return ingreso.first().cuenta
+		return conceptos.first().cuenta
 
 	def retencion(self):
 		""" Devuelve la Metodo(retencion) por la que se creó el debito """
@@ -131,7 +131,6 @@ class Operacion(BaseModel):
 			if not reconocimiento == 1: # por si se elije un reconocimiento distinto de 1, para agararse el interes aun no generado
 				periodos += 1
 			calculo = round((bruto*tasa*periodos)/(100*base_calculo//reconocimiento), 2)
-			print(calculo)
 
 			pagos_interes = list(self.pagos_interes(fecha=fecha))
 			for pago in pagos_interes: # Se restan los intereses pagados. 
@@ -142,7 +141,6 @@ class Operacion(BaseModel):
 				except: 
 					calculo = calculo + pago.valor
 
-			print(calculo)
 
 			if calculo < 0:
 				calculo = 0

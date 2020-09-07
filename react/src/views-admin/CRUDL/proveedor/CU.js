@@ -42,7 +42,7 @@ const CU = ({ selected, onClose }) => {
         .map((val) => ({ value: val, label: get(retenciones.find(x => x.id === val), 'nombre') }));
     optionsRetiene = [
       ...mapToOptions(filterAvailables(retenciones)),
-      ...mapToOptions(retenciones.filter((x) => x.ocupante === selected.id))
+      ...mapToOptions(retenciones.filter((x) => x.inquilino === selected.id))
     ];
   } else {
     optionsRetiene = mapToOptions(filterAvailables(retenciones));
@@ -208,7 +208,7 @@ const CU = ({ selected, onClose }) => {
 
 
               <FormGroup>
-                <Label for="ocupante">Retiene</Label>
+                <Label for="inquilino">Retiene</Label>
                 <Select
                   isMulti
                   placeholder=""

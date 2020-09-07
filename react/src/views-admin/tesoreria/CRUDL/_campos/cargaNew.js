@@ -100,7 +100,7 @@ const CargaNew = ({ documento, setDocumento, errors, update }) => {
             handleChange: handleCargasChange
           }]}
           header={{
-            title: documento.id ? 'Cargas generadas' : "Cargas a generar",
+            title: documento.id ? 'Destino de las transferencias' : "Transferir hacia",
             appendButton: 'Agregar carga'
           }}
         />

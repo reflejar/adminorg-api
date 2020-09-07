@@ -77,7 +77,7 @@ const HandleCobros = ({ documento, setDocumento, deudas, errors, onlyRead }) => 
     <Row>
       <Col sm="12">
         <h3 className="pl-0 credito__row__header__text">
-          {documento.id ? 'Creditos condonados' : "Creditos a condonar"}
+          {documento.id ? 'Items cobrados' : "Items pendientes de cobro"}
         </h3>
           {
             selectedDeudas.length > 0 ? 

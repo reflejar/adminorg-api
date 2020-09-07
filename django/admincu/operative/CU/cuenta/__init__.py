@@ -23,7 +23,7 @@ class CU:
 	domicilios = ['dominio']
 	metodos = ['proveedor', 'ingreso']
 	taxones = ['cliente', 'caja', 'ingreso', 'gasto']
-	vinculaciones = ['cliente']
+	vinculaciones = ['dominio']
 
 	def __init__(self, validate_data):
 
@@ -57,7 +57,19 @@ class CU:
 				self.metodos_data.append(r)
 
 		# Para agarrar las vinculaciones
-		self.vinculos_data = self.validate_data.pop('vinculaciones') if self.naturaleza.nombre in self.vinculaciones else []
+		if self.naturaleza.nombre in self.vinculaciones:
+			self.vinculos_data = [
+				{
+				'definicion': "propietario",
+				'cuenta_vinculada': self.validate_data.pop('propietario'),
+				},
+				{
+				'definicion': "inquilino",
+				'cuenta_vinculada': self.validate_data.pop('inquilino'),
+				}
+			]
+		else:
+			self.vinculos_data = []
 	
 	def make_domicilio(self):
 		# Esta funcion solo se ejecuta si el domicilio se establece en la cuenta y no en el perfil
@@ -85,11 +97,10 @@ class CU:
 		return filter(lambda x: x!=None, self.metodos_data)
 
 	def make_vinculaciones(self, cuenta):
-
 		for v in self.vinculos_data:
 			vinculo = DefinicionVinculo.objects.create(
-				cuenta=cuenta, # Socio
-				cuenta_vinculada=v['cuenta_vinculada'], # Dominio
+				cuenta=v['cuenta_vinculada'], # Socio
+				cuenta_vinculada=cuenta, # Dominio
 				definicion=Taxon.objects.get(nombre=v['definicion']),
 				)
 				
