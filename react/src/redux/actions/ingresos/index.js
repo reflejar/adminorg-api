@@ -38,8 +38,8 @@ const send = (values) => async (dispatch) => {
       titulo: values.titulo,
       nombre: values.nombre,
       taxon: values.taxon,
-      interes: null,
-      descuento:null
+      interes: values.interes,
+      descuento: values.descuento
     };
   
     let response;

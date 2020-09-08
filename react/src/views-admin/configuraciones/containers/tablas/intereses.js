@@ -1,45 +1,57 @@
-import { connect } from "react-redux";
-import { interesesActions } from "../../../../redux/actions/intereses";
+import React from "react";
+import get from 'lodash/get';
+
+import { useIntereses } from '../../../../utility/hooks/dispatchers';
 import Table from "./editSelectTable"
-
-const titles = [
-  {
-    accessor: 'nombre',
-    Header: 'Nombre'
-  },
-  {
-    accessor: 'tipo',
-    Header: 'Tipo'
-  },
-  {
-    accessor: 'plazo',
-    Header: 'Plazo estipulado'
-  },  
-  {
-    accessor: 'monto',
-    Header: 'Monto'
-  },
-  {
-    accessor: 'reconocimiento',
-    Header: 'Tipo de reconocimiento'
-  },      
-  {
-    accessor: 'base_calculo',
-    Header: 'Base de calculo'
-  },      
-]
-
-const mapStateToProps = (state) => ({
-    titles: titles,
-    items: state.intereses.list
-});
-
-const mapDispatchToProps = dispatch => ({
-  getItems: () => dispatch(interesesActions.get_all()),
-})
+import { tipos, periodizaciones } from '../../../../utility/options/metodos';
 
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Table);
+const TableIntereses = ({toggle, setItem}) => {
+  
+  const [items, loadingItems] = useIntereses();
+
+  const titles = [
+    {
+      accessor: 'nombre',
+      Header: 'Nombre'
+    },
+    {
+      id: 'Tipo',
+      accessor: (d) => get(tipos.find((x) => d.tipo === x.id), 'nombre'),
+      Header: 'Tipo'
+    },
+    {
+      accessor: 'plazo',
+      Header: 'Plazo estipulado'
+    },  
+    {
+      accessor: 'monto',
+      Header: 'Monto'
+    },
+    {
+      id: 'Base de calculo',
+      accessor: (d) => get(periodizaciones.find((x) => d.base_calculo === x.id), 'nombre'),
+      Header: 'Base de calculo'
+    },      
+    {
+      id: 'Tipo de reconocimiento',
+      accessor: (d) => get(periodizaciones.find((x) => d.reconocimiento === x.id), 'nombre'),
+      Header: 'Tipo de reconocimiento'
+    },      
+  ]
+
+  return (
+      <Table
+        titles={titles}
+        items={items}
+        loadingItems={loadingItems}
+        toggle={toggle}
+        selectItem={setItem}
+        causante={"interes"}
+      />
+
+  )
+}
+
+
+export default TableIntereses

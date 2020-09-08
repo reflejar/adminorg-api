@@ -18,7 +18,6 @@ class MetodoModelSerializer(serializers.ModelSerializer):
 			'tipo',
 			'plazo',
 			'monto',
-			'cuenta_set'
 		)    
 
 	def __init__(self, *args, **kwargs):
@@ -26,7 +25,7 @@ class MetodoModelSerializer(serializers.ModelSerializer):
 
 		# Incorporacion de Nombre
 		if self.context['naturaleza'] in ['interes']:
-			self.fields['reconocimiento'] = serializers.CharField(max_length=150, required=True)
+			self.fields['reconocimiento'] = serializers.IntegerField()
 			self.fields['base_calculo'] = serializers.IntegerField()
 
 

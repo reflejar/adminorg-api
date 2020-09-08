@@ -16,6 +16,8 @@ import { ingresosActions } from '../../redux/actions/ingresos';
 import { gastosActions } from '../../redux/actions/gastos';
 import { plataformaActions } from '../../redux/actions/plataforma';
 import { cajasActions } from '../../redux/actions/cajas';
+import { interesesActions } from '../../redux/actions/intereses';
+import { descuentosActions } from '../../redux/actions/descuentos';
 import { retencionesActions } from '../../redux/actions/retenciones';
 
 // Parametros
@@ -208,6 +210,48 @@ export const useCajas = () => {
   }, [setLoading, dispatch, listado, setListado, cajas]);
 
   return [cajas, loading];
+};
+
+export const useIntereses = () => {
+  const [loading, setLoading] = useState(false);
+  const intereses = useSelector((state) => get(state, 'intereses.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchInt() {
+      setLoading(true);
+      await dispatch(interesesActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchInt();
+      setListado([...intereses])
+    }
+  }, [setLoading, dispatch, listado, setListado, intereses]);
+
+  return [intereses, loading];
+};
+
+export const useDescuentos = () => {
+  const [loading, setLoading] = useState(false);
+  const descuentos = useSelector((state) => get(state, 'descuentos.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchDesc() {
+      setLoading(true);
+      await dispatch(descuentosActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchDesc();
+      setListado([...descuentos])
+    }
+  }, [setLoading, dispatch, listado, setListado, descuentos]);
+
+  return [descuentos, loading];
 };
 
 export const useRetenciones = () => {

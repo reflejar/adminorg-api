@@ -10,7 +10,7 @@ import { toastr } from "react-redux-toastr";
 
 import { ingresos } from '../../../utility/options/taxones';
 import Spinner from '../../../components/spinner/spinner';
-import { useTitulos } from '../../../utility/hooks/dispatchers';
+import { useTitulos, useIntereses, useDescuentos } from '../../../utility/hooks/dispatchers';
 
 const empty = 'Campo requerido';
 
@@ -18,8 +18,10 @@ const empty = 'Campo requerido';
 const CU = ({ selected, onClose }) => {
   const dispatch = useDispatch();
   const [titulos, loadingTitulos] = useTitulos();
+  const [intereses, loadingIntereses] = useIntereses();
+  const [descuentos, loadingDescuentos] = useDescuentos();
 
-  if (loadingTitulos) {
+  if (loadingTitulos || loadingIntereses || loadingDescuentos) {
     return (
       <div className="loading-modal">
         <br/><br/>
@@ -35,11 +37,15 @@ const CU = ({ selected, onClose }) => {
         nombre: get(selected, 'nombre', ''),
         taxon: get(selected, 'taxon', ''),
         titulo: get(selected, 'titulo', ''),
+        interes: get(selected, 'interes', ''),
+        descuento: get(selected, 'descuento', ''),
       }}
       validationSchema={Yup.object().shape({
         nombre: Yup.string(),
         taxon: Yup.string(),
         titulo: Yup.number().required(empty),
+        interes: Yup.number(),
+        descuento: Yup.number(),
       })}
       onSubmit={async (values, { setSubmitting }) => {
         try {
@@ -78,10 +84,7 @@ const CU = ({ selected, onClose }) => {
                   })}
                 </Field>
                 {errors.taxon && touched.taxon ? <div className="invalid-feedback">{errors.taxon}</div> : null}
-              </FormGroup>              
-            </Col>
-            <Col sm="6">
-              <h4>Otros datos</h4>
+              </FormGroup>     
               <FormGroup>
                 <Label for="titulo">Cuenta contable</Label>
                 <Field component="select" name="titulo" id="titulo" className={`form-control ${errors.titulo && touched.titulo && 'is-invalid'}`}>
@@ -91,7 +94,30 @@ const CU = ({ selected, onClose }) => {
                   })}
                 </Field>
                 {errors.titulo && touched.titulo ? <div className="invalid-feedback">{errors.titulo}</div> : null}
+              </FormGroup>                       
+            </Col>
+            <Col sm="6">
+              <h4>Otros datos</h4>
+              <FormGroup>
+                <Label for="interes">Metodologia de intereses</Label>
+                <Field component="select" name="interes" id="interes" className={`form-control ${errors.interes && touched.interes && 'is-invalid'}`}>
+                  <option defaultValue=""> --- </option>
+                  {intereses.map((interes, i) => {
+                    return <option key={i} value={interes.id}>{interes.full_name}</option>
+                  })}
+                </Field>
+                {errors.interes && touched.interes ? <div className="invalid-feedback">{errors.interes}</div> : null}
               </FormGroup>
+              <FormGroup>
+                <Label for="descuento">Metodologia de descuentos</Label>
+                <Field component="select" name="descuento" id="descuento" className={`form-control ${errors.descuento && touched.descuento && 'is-invalid'}`}>
+                  <option defaultValue=""> --- </option>
+                  {descuentos.map((descuento, i) => {
+                    return <option key={i} value={descuento.id}>{descuento.full_name}</option>
+                  })}
+                </Field>
+                {errors.descuento && touched.descuento ? <div className="invalid-feedback">{errors.descuento}</div> : null}
+              </FormGroup>              
             </Col>
 
             <Col xs={12}>

@@ -30,7 +30,7 @@ const Table = ({ titles, items, loadingItems, selectItem, toggle, causante }) =>
             className="mr-2"
             onClick={() => {
               selectItem({...row.original, causante});
-              toggle()
+              toggle(true)
             }}
             cursor='pointer'
           />

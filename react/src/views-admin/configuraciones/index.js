@@ -7,11 +7,11 @@ import {
 } from "reactstrap";
 import { connect } from 'react-redux'
 import get from 'lodash/get';
-import { Modal, ModalHeader, ModalBody } from "reactstrap";
+import { Modal, ModalHeader, ModalBody, Button } from "reactstrap";
 
 // Estructura
 import List from "./containers/list";
-import Options from "./containers/options";
+import Options from '../../components/board/options';
 
 import Clientes from "./containers/tablas/clientes";
 import Dominios from "./containers/tablas/dominios";
@@ -28,38 +28,42 @@ import Proveedor from "../CRUDL/proveedor/CU";
 import Caja from "../CRUDL/caja/CU";
 import Ingreso from "../CRUDL/ingreso/CU";
 import Gasto from "../CRUDL/gasto/CU";
-import Interese from "../CRUDL/dominio/CU";
-import Descuento from "../CRUDL/dominio/CU";
+import Interes from "../CRUDL/interes/CU";
+import Descuento from "../CRUDL/descuento/CU";
 
 
 const Configuraciones = ({selected}) => {
 
   const [modal, setModal] = useState(false)
-  const [item, setItem] = useState({})
+  const [item, setItem] = useState(null)
   
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    setItem(null);
+    setModal(!modal);
+  }
 
   const tables = {
-    cliente: <Clientes toggle={toggle} setItem={setItem} />,
-    dominio: <Dominios toggle={toggle} setItem={setItem} />,
-    proveedor: <Proveedores toggle={toggle} setItem={setItem} />,
-    caja: <Cajas toggle={toggle} setItem={setItem} />,
-    ingreso: <Ingresos toggle={toggle} setItem={setItem} />,
-    gasto: <Gastos toggle={toggle} setItem={setItem} />,
-    interes: <Intereses toggle={toggle} setItem={setItem} />,
-    descuento: <Descuentos toggle={toggle} setItem={setItem} />,
+    cliente: <Clientes toggle={setModal} setItem={setItem} />,
+    dominio: <Dominios toggle={setModal} setItem={setItem} />,
+    proveedor: <Proveedores toggle={setModal} setItem={setItem} />,
+    caja: <Cajas toggle={setModal} setItem={setItem} />,
+    ingreso: <Ingresos toggle={setModal} setItem={setItem} />,
+    gasto: <Gastos toggle={setModal} setItem={setItem} />,
+    interes: <Intereses toggle={setModal} setItem={setItem} />,
+    descuento: <Descuentos toggle={setModal} setItem={setItem} />,
   }
 
-  const edit = {
-    cliente: <Cliente onClose={toggle} selected={item} />,
-    dominio: <Dominio onClose={toggle} selected={item} />,
-    proveedor: <Proveedor onClose={toggle} selected={item} />,
-    caja: <Caja onClose={toggle} selected={item} />,
-    ingreso: <Ingreso onClose={toggle} selected={item} />,
-    gasto: <Gasto onClose={toggle} selected={item} />,
-    interes: <Interese onClose={toggle} selected={item} />,
-    descuento: <Descuento onClose={toggle} selected={item} />,
-  }
+
+  const modals = (editItem) => ({
+      cliente: <Cliente onClose={setModal} selected={editItem ? item : null} />,
+      dominio: <Dominio onClose={setModal} selected={editItem ? item : null} />,
+      proveedor: <Proveedor onClose={setModal} selected={editItem ? item : null} />,
+      caja: <Caja onClose={setModal} selected={editItem ? item : null} />,
+      ingreso: <Ingreso onClose={setModal} selected={editItem ? item : null} />,
+      gasto: <Gasto onClose={setModal} selected={editItem ? item : null} />,
+      interes: <Interes onClose={setModal} selected={editItem ? item : null} />,
+      descuento: <Descuento onClose={setModal} selected={editItem ? item : null} />,
+    })
   
   return (
     <Fragment>
@@ -88,10 +92,9 @@ const Configuraciones = ({selected}) => {
         backdrop="static"
       >
   
-      <ModalHeader toggle={toggle}>Editar</ModalHeader>
-  
+      <ModalHeader toggle={toggle}>{item ? "Editar" : "Nuevo"}</ModalHeader>
       <ModalBody>
-        { item && edit[item.causante] }
+        { item ? modals(true)[item.causante] : selected && modals(false)[selected.id] }
       </ModalBody>
       
     </Modal>    
@@ -103,8 +106,13 @@ const Configuraciones = ({selected}) => {
       </section>
     </PerfectScrollbar>
 
-    <Options edit={edit} />
-    
+    <Options
+      leftOps={[
+        <Button disabled={!selected} outline onClick={toggle} color="primary">Nuevo</Button>,
+      ]}
+      rightOps={[]}        
+    />
+
     </div>
   </Fragment>    
   )

@@ -16,7 +16,6 @@ const select = (id) => ({
 const get_all = () => async (dispatch) => {
     const response = await Service.get(apiEndpoint);
     if (response) {    
-
         const dominios = response.data.results.map(c => {
             let full_name = get(c, 'numero', "");
             return ({...c, full_name})
