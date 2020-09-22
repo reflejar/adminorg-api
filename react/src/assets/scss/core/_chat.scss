@@ -15,6 +15,15 @@ $sideber-border: #E4E7ED;
 		border-right: 1px solid $sideber-border;
     	z-index: 1;
 	}
+	.chat2-sidebar{
+		background: white;
+		position:fixed;
+		width: 500px;
+		vertical-align: top;
+		height: calc(100vh - 168px);
+		border-right: 1px solid $sideber-border;
+    	z-index: 1;
+	}	
 	.chat-fixed-search{
 		width: 300px;
 		position: fixed;
@@ -23,6 +32,14 @@ $sideber-border: #E4E7ED;
     	border-bottom: 1px solid $sideber-border;
     	border-right: 1px solid $sideber-border;
 	}
+	.chat2-fixed-search{
+		width: 500px;
+		position: fixed;
+    	z-index: 999;
+    	background: $white;
+    	border-bottom: 1px solid $sideber-border;
+    	border-right: 1px solid $sideber-border;
+	}	
 	.users-list-padding{
 		padding-top:63px;
 	}
@@ -38,6 +55,10 @@ $sideber-border: #E4E7ED;
 		margin-left: 300px;
 		border-bottom: 1px solid $sideber-border;
 	}
+	.chat2-name{
+		margin-left: 500px;
+		border-bottom: 1px solid $sideber-border;
+	}	
 	.chat-app-window{
 		margin-left: 300px;
 		padding: 0px;
@@ -46,6 +67,14 @@ $sideber-border: #E4E7ED;
 	    height: calc(100vh - 323px);
 	    background-color: #fff;
 	}
+	.chat2-app-window{
+		margin-left: 500px;
+		padding: 0px;
+	    overflow-y: scroll;
+	    text-align: center;
+	    height: calc(100vh - 323px);
+	    background-color: #fff;
+	}	
 	.chat-app-form{
 		margin-left: 300px;
 		position: relative;
@@ -55,6 +84,15 @@ $sideber-border: #E4E7ED;
 			margin-right: .5em;
 		}
 	}
+	.chat2-app-form{
+		margin-left: 500px;
+		position: relative;
+		padding: 20px 10px;
+		overflow: hidden;
+		div.btn-group .btn {
+			margin-right: .5em;
+		}
+	}	
 	.chats {
 	    padding: 0;
 	    .chat-body {
@@ -176,12 +214,24 @@ $sideber-border: #E4E7ED;
 			margin-right: 300px;
 			margin-left: 0px;
 		}
+		.chat-name{
+			margin-right: 500px;
+			margin-left: 0px;
+		}		
 		.chat-app-window{
 			margin-right: 300px;
 			margin-left: 0px;
 		}
+		.chat-app-window{
+			margin-right: 500px;
+			margin-left: 0px;
+		}		
 		.chat-app-form{
 			margin-right: 300px;
+			margin-left: 0px;
+		}
+		.chat-app-form{
+			margin-right: 500px;
 			margin-left: 0px;
 		}
 		.chats {

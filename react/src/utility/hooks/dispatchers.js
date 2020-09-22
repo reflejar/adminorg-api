@@ -10,7 +10,7 @@ import { puntosActions } from '../../redux/actions/puntos';
 import { deudasActions } from '../../redux/actions/deudas';
 import { saldosActions } from '../../redux/actions/saldos';
 import { cuentasActions } from '../../redux/actions/cuentas';
-import { titulosActions } from '../../redux/actions/utils/titulos';
+import { titulosActions } from '../../redux/actions/titulos';
 import { preconceptosActions } from '../../redux/actions/preconceptos';
 import { ingresosActions } from '../../redux/actions/ingresos';
 import { gastosActions } from '../../redux/actions/gastos';
@@ -107,16 +107,16 @@ export const usePuntosDeVenta = () => {
   return [puntos, loading];
 };
 
-export const useTitulos = () => {
+export const useTitulos = (supertitulos=false) => {
   const [loading, setLoading] = useState(false);
-  const titulos = useSelector((state) => get(state, 'utils.titulos', []));
+  const titulos = useSelector((state) => get(state, 'titulos.list', []));
   const [listado, setListado] = useState(undefined);
   const dispatch = useDispatch();
 
   useEffect(() => {
     async function fetchTit() {
       setLoading(true);
-      await dispatch(titulosActions.get())
+      await dispatch(titulosActions.get_all())
         .finally(() => setLoading(false));
     }
     if (!listado) {
@@ -278,18 +278,24 @@ export const useRetenciones = () => {
 // Otros
 export const useEstadoCuenta = (selected) => {
   const [loading, setLoading] = useState(false);
-
+  
   const { cuentas } = useSelector((state) => ({
     cuentas: get(state, 'cuentas.list', [])
   }));
-
+  
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     if (selected) {
       setLoading(true);
+      
+      const esTitulo = selected.hasOwnProperty("supertitulo");
+      let query = { destinatario: selected.id, fecha: moment().format('YYYY-MM-DD') }
+      if (esTitulo) {
+        query = {...query, titulo:1};
+      }
 
-      dispatch(cuentasActions.get({ destinatario: selected.id, fecha: moment().format('YYYY-MM-DD') }))
+      dispatch(cuentasActions.get(query))
         .finally(() => setLoading(false));
     }
   }, [selected, dispatch]);

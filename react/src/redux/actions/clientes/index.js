@@ -1,6 +1,5 @@
 import { Service } from '../../services/general';
 import get from 'lodash/get';
-import { dominiosActions } from '../dominios';
 
 const apiEndpoint = 'operative/parametros/cliente/';
 
@@ -15,7 +14,7 @@ const select = client => ({
 });
 
 const get_all = () => async (dispatch) => {
-  await dispatch(dominiosActions.get_all());
+
   const response = await Service.get(apiEndpoint);
   if (response) {
     const clientes = response.data.results.map(c => {

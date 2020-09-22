@@ -12,8 +12,10 @@ import cajas from './cajas';
 import intereses from './intereses';
 import descuentos from './descuentos';
 import configuraciones from './configuraciones';
+import contabilidad from './contabilidad';
 import user from './user';
-import utils from './utils';
+import utils from './utils'; // Eliminar esto
+import titulos from './titulos';
 import puntos from './puntos';
 import deudas from './deudas';
 import cuentas from './cuentas';
@@ -35,9 +37,11 @@ const appReducer = combineReducers({
    cajas,
    intereses,
    descuentos,
+   contabilidad,
    configuraciones,
    user,
-   utils,
+   utils, //Eliminar esto
+   titulos,
    puntos,
    deudas,
    cuentas,

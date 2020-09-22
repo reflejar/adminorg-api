@@ -167,7 +167,7 @@ const CU = ({ selected, onClose }) => {
                 {errors.domicilio_numero && touched.domicilio_numero ? <div className="invalid-feedback">{errors.domicilio_numero}</div> : null}
               </FormGroup>
               <FormGroup>
-                <Label for="titulo">Cuenta contable</Label>
+                <Label for="titulo">Titulo contable</Label>
                 <Field component="select" name="titulo" id="titulo" className={`form-control ${errors.titulo && touched.titulo && 'is-invalid'}`}>
                   <option defaultValue=""> --- </option>
                   {titulos.map((titulo, i) => {

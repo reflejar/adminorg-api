@@ -41,7 +41,7 @@ class Cuenta(BaseModel):
 		if self.perfil:
 			nombre += " {}".format(str(self.perfil)) 
 		else:
-			nombre += " {}".format(self.nombre) 
+			nombre += " {}".format(self.nombre if self.nombre else self.numero) 
 		return nombre
 
 	@property
@@ -49,7 +49,7 @@ class Cuenta(BaseModel):
 		"""
 			Grupo de el socio con sus dominios
 		"""
-		grupo = self.vinculo1.filter(definicion__nombre="dominio")
+		grupo = self.vinculos.filter(vinculo2__definicion__nombre="propietario")
 		grupo |= Cuenta.objects.filter(id=self.id)
 		return grupo
 

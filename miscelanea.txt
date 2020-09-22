@@ -30,9 +30,18 @@ sudo docker-compose -f devServer.yml run --rm react npm rebuild node-sass
 sudo docker-compose -f devServer.yml up
 
 
-Agregar metodo de interes y metodo de descuento
-Anulacion de recibos (?)
 Agregar utilizacion de disponibilidades en proveedores
 
 
 Saldos con 0 siguen apareciendo
+
+Backend
+    Titulo
+        numero y padre
+
+    Carpeta 
+        con arbol de dependencias
+        que pueda guardar mas carpetas adentro
+    
+    Analitica
+        Igual que en contabilidad

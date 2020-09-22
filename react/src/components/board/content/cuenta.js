@@ -8,10 +8,14 @@ const Cuenta = (props) => {
   const [cuentas, loading] = useEstadoCuenta(selected);
   
   if (loading) {
-    return <Spinner />;
+    return (
+    <div className='loading-modal'>
+      <Spinner />
+    </div>
+    );
   }
   return (
-    <Table data={cuentas} selected={props.selected} />
+    <Table data={cuentas} selected={selected} />
   );
 };
 

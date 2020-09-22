@@ -4,7 +4,7 @@ import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import { connect } from 'react-redux';
 
-import { titulosActions } from '../../../redux/actions/utils/titulos';
+import { titulosActions } from '../../../redux/actions/titulos';
 
 const empty = "Campo requerido";
 
@@ -58,7 +58,7 @@ class CRUDL extends Component {
   }
 }
 const mapStateToProps = (state) => ({
-  titulos: state.utils.titulos,
+  titulos: state.titulos.list,
 });
 
 const mapDispatchToProps = dispatch => ({

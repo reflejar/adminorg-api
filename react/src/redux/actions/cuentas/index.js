@@ -3,7 +3,10 @@ import { Service } from '../../services/general';
 let apiEndpoint = 'operative/estados/cuenta';
 
 const get = (params) => async (dispatch) => {
-  const path = `${apiEndpoint}/${params.destinatario}/?fecha=${params.fecha}`;
+  let path = `${apiEndpoint}/${params.destinatario}/?fecha=${params.fecha}`;
+  if (params.titulo) {
+    path = path + `&titulo=${params.titulo}`
+  }
 
   const response = await Service.get(path);
 

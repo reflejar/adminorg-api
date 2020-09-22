@@ -15,7 +15,7 @@ const select = (id) => ({
 const get_all = () => async (dispatch) => {
     const response = await Service.get(apiEndpoint);
     if (response) {
-        const ingresos = response.data.results.sort((a, b) => {
+        const ingresos = response.data.results.map(g => ({...g, full_name: g.nombre})).sort((a, b) => {
             let comparison = 0;
             if (a.nombre > b.nombre) {
                 comparison = 1;

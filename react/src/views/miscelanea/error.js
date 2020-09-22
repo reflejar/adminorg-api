@@ -47,7 +47,7 @@ const Error = props => {
                      <div className="error-footer bg-transparent">
                         <Row>
                            <p className="text-muted text-center col-12 py-1">
-                              © 2018 <Link to="/pages/error">Apex </Link>
+                              © 2020 <Link to="/pages/error">AdminCU </Link>
                               Crafted by <i className="ft-heart font-small-3" />
                               
                               <a
@@ -56,7 +56,7 @@ const Error = props => {
                                  target="_blank"
                               >
                                  {" "}
-                                 PIXINVENT
+                                 ADMINCU
                               </a>
                            </p>
                            <Col xs="12" className="text-center">

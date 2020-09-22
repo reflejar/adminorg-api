@@ -13,6 +13,7 @@ from admincu.operative.models import (
 	Naturaleza,
 	Cuenta,
 	Operacion,
+	Titulo
 )
 
 from admincu.operative.serializers.estados import (
@@ -89,7 +90,7 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 	http_method_names = ['get']
 
-	naturalezas = ['cliente', 'proveedor', 'caja']
+	# naturalezas = ['cliente', 'proveedor', 'caja', 'ingreso']
 	estados = {
 		'cuenta': EstadoCuentaModelSerializer,
 		'deudas': EstadoDeudasModelSerializer,
@@ -119,10 +120,16 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 
 	def get_object(self):
 		if self.kwargs["pk"].isdigit():
-			obj = get_object_or_404(
-					Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre__in=self.naturalezas), 
-					pk=self.kwargs["pk"]
-				)
+			if 'titulo' in self.request.GET.keys():
+				obj = get_object_or_404(
+						Titulo.objects.filter(comunidad=self.comunidad), 
+						pk=self.kwargs["pk"]
+					)
+			else:
+				obj = get_object_or_404(
+						Cuenta.objects.filter(comunidad=self.comunidad), 
+						pk=self.kwargs["pk"]
+					)
 		else:
 			obj = Totalidad(naturaleza=self.kwargs["pk"], comunidad=self.comunidad)
 		self.check_object_permissions(self.request, obj)
@@ -154,5 +161,3 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 		}
 		operaciones = self.get_serializer_class()(queryset, context=context, many=True)
 		return Response(operaciones.data)
-
-

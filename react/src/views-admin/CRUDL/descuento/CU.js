@@ -7,7 +7,7 @@ import get from 'lodash/get';
 import { useDispatch } from 'react-redux';
 import { descuentosActions } from '../../../redux/actions/descuentos';
 import { toastr } from "react-redux-toastr";
-import { tipos, periodizaciones } from '../../../utility/options/metodos';
+import { tipos } from '../../../utility/options/metodos';
 
 const empty = 'Campo requerido';
 

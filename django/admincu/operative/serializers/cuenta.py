@@ -224,7 +224,6 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			perfil = instance.perfil
 			domicilio = perfil.domicilio
 			perfil_data = validate_data['perfil']
-			instance.titulo = validate_data['titulo']
 			domicilio_data = perfil_data['domicilio']
 			domicilio.provincia = Provincia.objects.get(nombre=domicilio_data['provincia'])
 			domicilio.calle = domicilio_data.get('calle', domicilio.calle)
@@ -271,7 +270,9 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 				interes_data = validate_data['interes']
 				instance.metodos.add(interes_data)
 
-
+		# Actualizacion del titulo
+		instance.titulo = validate_data['titulo']
+		instance.save()
 		# if self.context['naturaleza'] in ['cliente']:
 		# 	for v in instance.vinculos.all():
 		# 		instance.vinculos.remove(v)
