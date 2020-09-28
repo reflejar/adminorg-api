@@ -1,3 +1,3 @@
 export const transferenciasTypes = [
-    { id: 'Transferencia', nombre: 'Transferencia' },
+    { id: 'Transferencia X', nombre: 'Transferencia X' },
 ];    

@@ -31,6 +31,7 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		# Fields comunes:
+		self.fields['pdf'] = serializers.FileField(read_only=True)
 		if not self.context['sin_destinatario']:
 			self.fields['destinatario'] = serializers.PrimaryKeyRelatedField(
 					queryset=Cuenta.objects.filter(
@@ -89,9 +90,7 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 			'currency': CurrencyType.objects.get(code="PES"),
 			'concept': ConceptType.objects.get(description="productos y servicios")
 		})
-		# if not 'concept' in receipt_data.keys():
-		# 	receipt_data['concept'] = ConceptType.objects.get(description="servicios")
-
+		
 		if self.context['comunidad'].contribuyente.certificate: # Si la comunidad tiene un certificado en el contribuyente de afip
 			if destinatario: # Si el documento tiene destinatario
 				if destinatario.naturaleza.nombre == "cliente" and self.context['receipt_type'].code in ['11', '12', '13']:

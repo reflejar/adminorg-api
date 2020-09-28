@@ -1,2 +1,58 @@
 {% extends 'pdfs/base.html' %}
 {% load humanize %}
+
+{% block content %}
+
+    <p><strong>Origenes de las transacciones:</strong></p>
+    <table>
+        <thead>
+        <tr>
+            <th>Cuenta</th>
+            <th>Detalle</th>
+            <th>Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for d in documento.utilizaciones_disponibilidades.all %}
+            <tr>
+              <td>{{d.vinculo.documento.receipt.receipt_type}} {{d.vinculo.documento.receipt.formatted_number}}</td>
+              <td>{{d.detalle|default:""}}</td>
+              <td>{{d.monto|intcomma}}</td>
+            </tr>
+          {% endfor %}        
+          {% for c in documento.cajas.all %}
+            <tr>
+              <td>{{c.cuenta}}</td>
+              <td>{{c.detalle|default:""}}</td>
+              <td>{{c.monto|intcomma}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+    
+    <hr />
+
+    <p><strong>Destino de las transacciones:</strong></p>
+    <table>
+        <thead>
+        <tr>
+            <th>Cuenta</th>
+            <th>Detalle</th>
+            <th>Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+          {% for c in documento.cargas.all %}
+            <tr>
+              <td>{{c.cuenta}}</td>
+              <td>{{c.detalle|default:""}}</td>
+              <td>{{c.monto|intcomma}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>    
+
+{% endblock %}
+
+
+

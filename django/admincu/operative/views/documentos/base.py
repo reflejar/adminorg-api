@@ -19,7 +19,7 @@ from admincu.operative.serializers import (
 	DestinoClienteModelSerializer,
 	OrigenProveedorModelSerializer,
 	TesoroModelSerializer,
-	InternoModelSerializer
+	AsientoModelSerializer
 )
 from admincu.operative.models import (
 	Documento,
@@ -47,7 +47,7 @@ class BaseViewSet(custom_viewsets.CustomModelViewSet):
 			kwargs = {
 				'comunidad': self.comunidad,
 			}
-			if self.causante != "caja":
+			if not self.causante in ["caja", "asiento"]:
 				kwargs.update({
 					'destinatario__naturaleza__nombre': self.causante
 				})

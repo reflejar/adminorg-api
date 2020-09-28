@@ -13,7 +13,7 @@ const Buttons = ({ documento, update, onClose, required, error, handleDelete }) 
       documento.receipt.receipt_type && 
       documento.receipt.point_of_sales && 
       documento.receipt.issued_date && 
-      (documento.receipt.receipt_type === "Orden de Pago" ? true : documento.receipt.receipt_number) && 
+      (documento.receipt.receipt_type === "Orden de Pago X" ? true : documento.receipt.receipt_number) && 
       documento.fecha_operacion && 
       required
       ){
@@ -31,15 +31,17 @@ const Buttons = ({ documento, update, onClose, required, error, handleDelete }) 
             Cancelar
           </button>
 
-          {update && documento.receipt.receipt_type === "Orden de Pago" && (
-            <button
+          {update && documento.pdf && (
+            <a
+              href={documento.pdf}
               type='button'
               className='btn btn-warning mr-2'
-              onClick={() => alert('Work in progress...')}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Imprimir
-            </button>
-          )}
+            </a>
+          )}          
 
           {update && (
             <button
@@ -47,7 +49,7 @@ const Buttons = ({ documento, update, onClose, required, error, handleDelete }) 
               className='btn btn-danger mr-2'
               onClick={() => { if (window.confirm('Esta seguro que desea eliminar este Documento?')) handleDelete() } }
             >
-              {documento.receipt.receipt_type === "Orden de Pago" ? "Anular" : "Eliminar"}
+              {documento.receipt.receipt_type === "Orden de Pago X" ? "Anular" : "Eliminar"}
             </button>
           )}      
 

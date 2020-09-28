@@ -16,7 +16,6 @@ export const useDocumento = (selected, destinatario, onlyRead) => {
         receipt: {
           receipt_type: '',
           point_of_sales: '',
-          concept: 'servicios',
           issued_date: moment(onlyRead ? (selected && selected.receipt.issued_date) : Date.now()).format('YYYY-MM-DD'),
         }
       });

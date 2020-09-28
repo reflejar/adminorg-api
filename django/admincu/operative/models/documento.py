@@ -316,38 +316,38 @@ class Documento(BaseModel):
 	def hacer_pdf(self):
 
 
-		# if self.receipt.receipt_type.code == "400":
-		# 	return 
+		if self.receipt.receipt_type.code == "400":
+			return 
 
-		# if self.destinatario:
-		# 	if self.destinatario.naturaleza.nombre == "proveedor" and self.receipt.receipt_type.code != "301":
-		# 		return 
-
-		# 	if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
-		# 		generator = ReceiptBarcodeGenerator(self.receipt)
-		# 		barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
-			
-		# archivo = []
-		# enteros = []
-		# documento = self
-		# html_string = render_to_string('pdfs/{}.html'.format(self.receipt.receipt_type.code), locals())
-		# html = HTML(string=html_string, base_url='https://www.admin-cu.com/')
-		# pdf = html.render()
-		# enteros.append(pdf)
-		# for p in pdf.pages:
-		# 	archivo.append(p)
+		if self.destinatario:
+			if self.destinatario.naturaleza.nombre == "proveedor" and self.receipt.receipt_type.code != "301":
+				return 			
 
 
-		# pdf = enteros[0].copy(archivo).write_pdf()
-		# ruta = "{}_{}_{}.pdf".format(
-		# 		str(self.comunidad.abreviatura),
-		# 		str(self.receipt.receipt_type.code),
-		# 		str(self.receipt.formatted_number)
-		# )
+		# if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
+		# 	generator = ReceiptBarcodeGenerator(self.receipt)
+		# 	barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
+		
+		archivo = []
+		enteros = []
+		documento = self
+		html_string = render_to_string('pdfs/{}.html'.format(self.receipt.receipt_type.code), locals())
+		html = HTML(string=html_string, base_url='http://localhost:8000/')
+		pdf = html.render()
+		enteros.append(pdf)
+		for p in pdf.pages:
+			archivo.append(p)
 
-		# self.pdf = SimpleUploadedFile(ruta, pdf, content_type='application/pdf')
-		# self.save()
-		pass
+
+		pdf = enteros[0].copy(archivo).write_pdf()
+		ruta = "{}_{}_{}.pdf".format(
+				str(self.comunidad.abreviatura),
+				str(self.receipt.receipt_type.code),
+				str(self.receipt.formatted_number)
+		)
+
+		self.pdf = SimpleUploadedFile(ruta, pdf, content_type='application/pdf')
+		self.save()
 
 	def anulacion_documentos(self, documentos_relacionados):
 		"""

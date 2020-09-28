@@ -2,29 +2,8 @@
 {% load humanize %}
 
 {% block content %}
-  
-  {% include 'pdfs/pagos.html' %}
-  
-  {% if documento.retenciones %}
-  <hr>
-  <p><strong>Retenciones generadas:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Retencion</th>
-        <th>Valor</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for retencion in documento.retenciones %}
-        <tr>
-            <td>{{ retencion.documento.receipt.receipt_type }}</td>
-            <td>-{{ retencion.monto|intcomma }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% endif %}
+
+  {% include 'pdfs/cobros.html' %}
 
 {% endblock %}
 
@@ -33,7 +12,7 @@
   <div class="taxpayer-details group">
     <div class="receipt-details">
       <hr>
-      <p><strong>Medios de pago:</strong></p>
+      <p><strong>Medios de cobro:</strong></p>
       <table>
         {% for s in documento.utilizaciones_saldos.all %}
           <tr>

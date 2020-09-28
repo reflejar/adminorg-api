@@ -21,3 +21,9 @@ export const ingresos = [
     { id: 'no_prioritario', nombre: 'Comun' },
 ];
 
+export const gastos = [
+    { id: null, nombre: "---"},
+    { id: 'comun', nombre: 'Comun' },
+    { id: 'descuento_predeterminado', nombre: 'Cuenta de descuento predeterminado' },
+];
+

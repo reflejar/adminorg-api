@@ -1,0 +1,33 @@
+{% load humanize %}
+
+<p><strong>Detalle de cobros:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Portador</th>
+      <th>Concepto</th>
+      <th>Periodo</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cobro in documento.cobros %}
+      <tr>
+        <td>{{ cobro.cuenta }}</td>
+        <td>{{ cobro.concepto|default:"" }}{% if cobro.detalle %}*{% endif %}</td>
+        <td>{{ cobro.fecha_indicativa|date:"Y-m" }}</td>
+        <td>{{ cobro.monto|intcomma }}</td>
+      </tr>
+    {% endfor %}
+    {% if documento.a_cuenta %}
+      {% with a_cuenta=documento.a_cuenta.first %}
+        <tr>
+          <td>Nuevo saldo a favor</td>
+          <td></td>
+          <td></td>
+          <td>{{ a_cuenta.monto|intcomma }}</td>
+        </tr>
+      {% endwith %}
+    {% endif %}
+  </tbody>
+</table>

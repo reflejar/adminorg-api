@@ -30,14 +30,16 @@ const Buttons = ({ documento, onlyRead, onClose, required, error, handleDelete }
             Cancelar
           </button>
 
-          {onlyRead && (
-            <button
+          {onlyRead && documento.pdf && (
+            <a
+              href={documento.pdf}
               type='button'
               className='btn btn-warning mr-2'
-              onClick={() => alert('Work in progress...')}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Imprimir
-            </button>
+            </a>
           )}
 
           {onlyRead && documento.receipt.receipt_type === "Recibo X" && (

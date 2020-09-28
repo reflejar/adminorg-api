@@ -32,6 +32,13 @@ import {
   transferenciasTypes as tesoreriaTransferenciasTypes, 
  } from '../../tesoreria/CRUDL/_options/receipt_types';
 
+ // Cosas de Contabilidad
+import ContabilidadAsiento from '../CRUDL/asiento/CU';
+import { 
+  asientosTypes as contabilidadAsientosTypes, 
+ } from '../CRUDL/_options/receipt_types';
+
+
 
 
 import 'react-table/react-table.css';
@@ -225,6 +232,16 @@ export default class Table extends React.Component {
       })
       return documentos[type]
     }    
+    if (causante === "asiento") {
+      contabilidadAsientosTypes.forEach((type) => {
+        documentos[type.nombre] = <ContabilidadAsiento
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }        
   }
 
   renderModal = () => {

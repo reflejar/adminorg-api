@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import moment from 'moment';
 import get from 'lodash/get';
@@ -10,7 +10,7 @@ import Spinner from '../../../../components/spinner/spinner';
 import { documentosActions } from '../../../../redux/actions/documentos';
 import Encabezado from '../_campos/encabezados';
 import Descripcion from '../_campos/descripcion';
-import CargaNew from '../_campos/cargaNew';
+import OperacionNew from '../_campos/operacionNew';
 
 import Buttons from '../_campos/buttons';
 import { asientosTypes } from '../_options/receipt_types';
@@ -18,74 +18,54 @@ import { asientosTypes } from '../_options/receipt_types';
 // Styles
 import './index.scss';
 
-import { deudasActions } from '../../../../redux/actions/deudas';
-import { saldosActions } from '../../../../redux/actions/saldos';
 import { cuentasActions } from '../../../../redux/actions/cuentas';
 import { useDocumento } from '../hooks';
 
-const Asiento = ({ destinatario, update, selected, sendAsiento, deleteAsiento, onClose }) => {
+const Asiento = ({ instancia, update, selected, sendAsiento, deleteAsiento, onClose }) => {
   const dispatch = useDispatch();
   
-  const {documento, setDocumento, errors, setErrors, loading, setLoading} = useDocumento(selected, destinatario, update);
-  const errorButton = "La suma de las cargas deben igualar a la suma de las descargas";
-
-  useEffect(() => {
-    if (!documento.cargas) {   
-      setDocumento((state) => ({
-        ...state,
-        receipt: {
-          ...state.receipt,
-          receipt_type: "Asiento",
-        },        
-        cargas: [],
-        cajas: [],
-        utilizaciones_disponibilidades: [],
-      }))
-    }
-
-  }, [documento, setDocumento]);    
+  const {documento, setDocumento, errors, setErrors, loading, setLoading} = useDocumento(selected, update);
+  const errorButton = "La suma del debe debe igualar a la suma del haber";
 
 
   const checkCondition = () => {
-    let totalCargas = 0;
-    let totalCajas = 0;
-    let totalUtilizacionesDisponibilidades = 0;
+    let totalDebe = 0;
+    let totalHaber = 0;
 
-    if (documento.cargas && documento.cargas.length > 0) {
-      totalCargas = documento.cargas.reduce((total, carga) => Number(total) + Number(carga.monto), 0);
+    if (documento.debe && documento.debe.length > 0) {
+      totalDebe = documento.debe.reduce((total, d) => Number(total) + Number(d.monto), 0);
     }
 
-    if (documento.cajas && documento.cajas.length > 0) {
-      totalCajas = documento.cajas.reduce((total, caja) => Number(total) + Number(caja.monto), 0);
+    if (documento.haber && documento.haber.length > 0) {
+      totalHaber = documento.haber.reduce((total, h) => Number(total) + Number(h.monto), 0);
     }    
 
-    if (documento.utilizaciones_disponibilidades && documento.utilizaciones_disponibilidades.length > 0) {
-      totalUtilizacionesDisponibilidades = documento.utilizaciones_disponibilidades.reduce((total, utilizacion_disponibilidad) => Number(total) + Number(utilizacion_disponibilidad.monto), 0);
-    }        
-
-    const totalFormasPago = totalCajas + totalUtilizacionesDisponibilidades;
-    if (totalCargas > 0) {
-      return totalCargas === totalFormasPago;
+    if (totalDebe > 0) {
+      return totalDebe === totalHaber;
     }
     return false
   } 
 
   const updateSituation = useCallback(() => {
-    dispatch(deudasActions.get({ destinatario: destinatario.id, fecha: moment().format('YYYY-MM-DD'), capture: true }));
-    dispatch(saldosActions.get({ destinatario: destinatario.id, fecha: moment().format('YYYY-MM-DD'), capture: true }));
-    dispatch(cuentasActions.get({ destinatario: destinatario.id, fecha: moment().format('YYYY-MM-DD') }));
-  }, [dispatch, destinatario] );
+    const esTitulo = instancia.hasOwnProperty("supertitulo");
+    let query = { destinatario: instancia.id, fecha: moment().format('YYYY-MM-DD') }
+    if (esTitulo) {
+      query = {...query, titulo:1};
+    }
+    dispatch(cuentasActions.get(query))    
+  }, [dispatch, instancia] );
 
   
   const handleSubmit = useCallback((event) => {
     event.preventDefault();
+
     setLoading(true);
 
     sendAsiento(documento)
       .then(() => {
         toastr.success('¡Listo! Asiento cargado con éxito');
         updateSituation();
-        documento.contado ? onClose("cobrar") : onClose(false);
+        onClose(false);
       })
       .catch((error) => {
         const { data } = error;
@@ -120,11 +100,10 @@ const Asiento = ({ destinatario, update, selected, sendAsiento, deleteAsiento, o
       <Encabezado 
         documento={documento} 
         setDocumento={setDocumento} 
-        errors={errors} 
         update={update}
         types={asientosTypes}/>
 
-      <CargaNew 
+      <OperacionNew 
         documento={documento} 
         setDocumento={setDocumento} 
         errors={errors} 
@@ -148,12 +127,13 @@ const Asiento = ({ destinatario, update, selected, sendAsiento, deleteAsiento, o
 };
 
 const mapStateToProps = state => ({
-  destinatario: get(state, 'cajas.instance', {}),
+  instancia: get(state, 'contabilidad.instance', {}),
 })
 
+
 const mapDispatchToProps = dispatch => ({
-  sendAsiento: (payload) => dispatch(documentosActions.send("tesoreria", payload)),
-  deleteAsiento: id => dispatch(documentosActions.remove("tesoreria", id)),
+  sendAsiento: (payload) => dispatch(documentosActions.send("asiento", payload)),
+  deleteAsiento: id => dispatch(documentosActions.remove("asiento", id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Asiento);

@@ -1,0 +1,27 @@
+{% load humanize %}
+
+<p><strong>Detalle de pagos:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Documento</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for pago in documento.pagos %}
+      <tr>
+        <td>{{ pago.vinculo.documento.receipt.receipt_type }} {{pago.vinculo.documento.receipt.formatted_number}}</td>
+        <td>{{ pago.monto|intcomma }}</td>
+      </tr>
+    {% endfor %}
+    {% if documento.a_cuenta %}
+      {% with a_cuenta=documento.a_cuenta.first %}
+        <tr>
+          <td>Nuevo saldo a favor</td>
+          <td>{{ a_cuenta.monto|intcomma }}</td>
+        </tr>
+      {% endwith %}
+    {% endif %}
+  </tbody>
+</table>

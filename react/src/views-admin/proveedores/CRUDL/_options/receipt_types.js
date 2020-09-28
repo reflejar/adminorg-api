@@ -21,5 +21,5 @@ export const notasCreditoTypes = [
 ];
 
 export const opTypes = [
-    { id: 'Orden de Pago', nombre: 'Orden de Pago' },
+    { id: 'Orden de Pago X', nombre: 'Orden de Pago X' },
 ];    

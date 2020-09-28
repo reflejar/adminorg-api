@@ -35,8 +35,7 @@ const get_all = () => async (dispatch) => {
 const send = (values) => async (dispatch) => {
 
     let payload = {
-      ...values,
-      taxon: "comun"
+      ...values
     };
   
     let response;

@@ -1,5 +1,6 @@
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 
 from django_afip.models import (
 	ReceiptType,
@@ -98,3 +99,11 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 		serializer_context = super().get_serializer_context()
 		serializer_context['naturaleza'] = self.kwargs['naturaleza']
 		return serializer_context
+
+
+
+	@action(detail=False, methods=['get'])
+	def total(self, request, *args, **kwargs):
+		""" Devulve todas las cuentas """
+		
+		return Response(status=status.HTTP_201_CREATED)

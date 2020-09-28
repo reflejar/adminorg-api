@@ -1,2 +1,26 @@
 {% extends 'pdfs/base.html' %}
 {% load humanize %}
+
+{% block content %}
+
+  {% include 'pdfs/cobros.html' %}
+
+{% endblock %}
+
+
+{% block totals %}
+
+  <tr>
+    <th>Total acreditado:</th>
+    <th>${{ documento.receipt.total_amount|intcomma }}</th>
+  </tr>
+  
+{% endblock %}
+
+
+{% block footer %}
+
+  {% include 'pdfs/barcode.html' with items=documento.cobros %}
+
+{% endblock %}      
+

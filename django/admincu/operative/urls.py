@@ -16,7 +16,7 @@ router.register(r'parametros/(?P<naturaleza>[-a-zA-Z0-0_]+)', parametros.Paramet
 router.register(r'documentos/cliente', documentos.ClienteViewSet, base_name='operative')
 router.register(r'documentos/proveedor', documentos.ProveedorViewSet, base_name='operative')
 router.register(r'documentos/tesoreria', documentos.TesoreriaViewSet, base_name='operative')
-router.register(r'documentos/interno', documentos.InternoViewSet, base_name='operative')
+router.register(r'documentos/asiento', documentos.AsientoViewSet, base_name='operative')
 
 router.register(r'preconceptos', preconceptos.PreConceptoViewSet, base_name='operative')
 

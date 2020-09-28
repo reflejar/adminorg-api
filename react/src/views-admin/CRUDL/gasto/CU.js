@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { gastosActions } from '../../../redux/actions/gastos';
 import { toastr } from "react-redux-toastr";
 
+import { gastos } from '../../../utility/options/taxones';
 import Spinner from '../../../components/spinner/spinner';
 import { useTitulos } from '../../../utility/hooks/dispatchers';
 
@@ -32,10 +33,12 @@ const CU = ({ selected, onClose }) => {
       enableReinitialize
       initialValues={{
         nombre: get(selected, 'nombre', ''),
+        taxon: get(selected, 'taxon', ''),
         titulo: get(selected, 'titulo', ''),
       }}
       validationSchema={Yup.object().shape({
         nombre: Yup.string().required(empty),
+        taxon: Yup.string(),
         titulo: Yup.number().required(empty),
       })}
       onSubmit={async (values, { setSubmitting }) => {
@@ -67,6 +70,15 @@ const CU = ({ selected, onClose }) => {
                 <Field name="nombre" id="nombre" className={`form-control ${errors.nombre && touched.nombre && 'is-invalid'}`} />
                 {errors.nombre && touched.nombre ? <div className="invalid-feedback">{errors.nombre}</div> : null}
               </FormGroup>
+              <FormGroup>
+                <Label for="taxon">Tipo de erogacion</Label>
+                <Field component="select" name="taxon" id="taxon" className={`form-control ${errors.taxon && touched.taxon && 'is-invalid'}`}>
+                  {gastos.map((gasto, i) => {
+                    return <option key={i} value={gasto.id}>{gasto.nombre}</option>
+                  })}
+                </Field>
+                {errors.taxon && touched.taxon ? <div className="invalid-feedback">{errors.taxon}</div> : null}
+              </FormGroup>                   
             </Col>
             <Col sm="6">
               <h4>Otros datos</h4>

@@ -3,7 +3,7 @@ import { FormGroup, Input, Label, FormFeedback } from 'reactstrap';
 
 import './styles.scss'
 
-const HEADERS = ['Seleccionar', 'Portador', 'Ingreso', 'Periodo', 'Detalle', 'Monto'];
+const HEADERS = ['Seleccionar', 'Portador', 'Concepto', 'Periodo', 'Detalle', 'Monto'];
 
 export const CreditosTable = ({ dataTable, errors, onlyRead }) => {
   
@@ -42,8 +42,8 @@ export const CreditosTable = ({ dataTable, errors, onlyRead }) => {
             <FormGroup>
               <Input
                 disabled
-                name="ingreso"
-                value={item.ingreso}
+                name="concepto"
+                value={item.concepto}
               />
             </FormGroup>
   

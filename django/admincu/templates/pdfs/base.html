@@ -34,7 +34,7 @@
             <div class="receipt-type-description">
               {{ documento.receipt.receipt_type.description }}
             </div>
-            <strong>Nº</strong> {{ documento.formatoAfip }}<br>
+            <strong>Nº</strong> {{ documento.receipt.formatted_number }}<br>
             {{ documento.receipt.issued_date|date:"d/m/Y" }}<br>
             <small>
               C.U.I.T.:{{ documento.comunidad.contribuyente.cuit }}<br>
@@ -49,10 +49,14 @@
         <div class="client">
 
           <div class="client-data">
-            <strong>DESTINATARIO:</strong>
-            {{ documento.destinatario }} <br>
-            <strong>{{ documento.destinatario.tipo_documento }}:</strong>
-            {{ documento.destinatario.numero_documento }} <br>
+            {% if documento.destinatario %}
+              <strong>DESTINATARIO:</strong>
+              {{ documento.destinatario }} <br>
+              <strong>{{ documento.destinatario.perfil.tipo_documento }}:</strong>
+              {{ documento.destinatario.perfil.numero_documento }} <br>
+            {% else %}
+              <strong>DOCUMENTO INTERNO</strong>
+            {% endif %}
           </div>
         </div>
 
@@ -60,15 +64,16 @@
 
       </header>
 
+      
+      
+      {% block content %}
+      {% endblock %}
+      
       {% if documento.descripcion %}
         <p><strong>Descripcion:</strong></p>
         <i>{{documento.descripcion}}</i>
       {% endif %}
-
-
-      {% block content %}
-      {% endblock %}
-
+      
       <div class="taxpayer-details group">
         <div class="receipt-details">
           <table>      

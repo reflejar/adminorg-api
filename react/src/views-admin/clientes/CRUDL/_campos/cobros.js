@@ -23,7 +23,7 @@ const HandleCobros = ({ documento, setDocumento, deudas, errors, onlyRead }) => 
       data = deudas.map((deuda) => ({
         vinculo: deuda.id,
         cuenta: deuda.cuenta,
-        ingreso: deuda.ingreso,
+        concepto: deuda.concepto,
         periodo: moment(deuda.periodo).format('YYYY-MM'),
         detalle: '',
         monto: deuda.saldo,
@@ -36,7 +36,7 @@ const HandleCobros = ({ documento, setDocumento, deudas, errors, onlyRead }) => 
           ...cobro,
           periodo: moment(cobro.origen.periodo).format('YYYY-MM'),
           cuenta: cobro.origen.destinatario,
-          ingreso: cobro.origen.ingreso,
+          concepto: cobro.origen.concepto,
           checked: true
         }))
       }

@@ -134,10 +134,10 @@ class Operacion(BaseModel):
 
 			pagos_interes = list(self.pagos_interes(fecha=fecha))
 			for pago in pagos_interes: # Se restan los intereses pagados. 
-				# credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.ingreso(), asiento=pago.asiento)
-				credito = Operacion.objects.filter(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.ingreso(), asiento=pago.asiento)
+				# credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
+				credito = Operacion.objects.filter(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
 				try: # No se restan si se ha producido un pago de capital en el asiento porque el interes es automaticamente calculado desde una fecha posterior.
-					credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.ingreso(), asiento=pago.asiento)
+					credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
 				except: 
 					calculo = calculo + pago.valor
 
@@ -205,3 +205,5 @@ class Operacion(BaseModel):
 			return self.documento.destinatario.naturaleza
 		if self.documento.receipt.receipt_type.code == "303":
 			return "caja"
+		if self.documento.receipt.receipt_type.code == "400":
+			return "asiento"			

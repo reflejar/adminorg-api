@@ -30,14 +30,14 @@ sudo docker-compose -f devServer.yml run --rm react npm rebuild node-sass
 sudo docker-compose -f devServer.yml up
 
 
+
+Que se puedan eliminar los asientos
+Arreglar pdfs
+
+
 Agregar utilizacion de disponibilidades en proveedores
 
-
-Saldos con 0 siguen apareciendo
-
 Backend
-    Titulo
-        numero y padre
 
     Carpeta 
         con arbol de dependencias

@@ -31,15 +31,17 @@ const Buttons = ({ documento, update, onClose, required, error, handleDelete }) 
             Cancelar
           </button>
 
-          {update && (
-            <button
+          {update && documento.pdf && (
+            <a
+              href={documento.pdf}
               type='button'
               className='btn btn-warning mr-2'
-              onClick={() => alert('Work in progress...')}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Imprimir
-            </button>
-          )}
+            </a>
+          )}      
 
           {update && (
             <button

@@ -37,7 +37,7 @@ const Item = ({ indentation, item, children, titulos, filterChildren, selected, 
                         selected={selected}
                         setSelected={setSelected}
                     />))}
-            {openItem && item.cuentas && item.cuentas.map(itemChild => (
+            {openItem && item.cuentas && item.cuentas.sort((a, b) => a.nombre.localeCompare(b.nombre)).map(itemChild => (
                     <Item 
                         indentation={indentation+10}
                         item={itemChild} 

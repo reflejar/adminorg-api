@@ -30,7 +30,7 @@ class CU:
 			self.utilizaciones_saldos = validated_data['utilizaciones_saldos']
 			self.utilizaciones_disponibilidades = validated_data['utilizaciones_disponibilidades']
 		
-		elif self.receipt.receipt_type.code == "13":
+		elif self.receipt.receipt_type.code in ["13", "53"]:
 			self.condonacion = True
 			self.resultados = validated_data['resultados']
 
@@ -146,6 +146,7 @@ class CU:
 					documento=self.documento,
 					asiento=self.identifier,
 					cuenta=i['vinculo'].cuenta,
+					fecha_indicativa=i['vinculo'].fecha_indicativa,
 					valor=-i['monto'],
 					detalle=i['detalle'],
 					vinculo=i['vinculo'],
@@ -213,9 +214,10 @@ class CU:
 
 		if self.suma_descuentos > 0:
 			today = date.today()
+			receipt_type = ReceiptType.objects.get(code="13")
 			nota_credito = Receipt.objects.create(
 					point_of_sales=self.receipt.point_of_sales,
-					receipt_type=ReceiptType.objects.get(code="13"),
+					receipt_type=receipt_type,
 					concept=self.receipt.concept,
 					document_type=self.receipt.document_type,
 					document_number=self.receipt.document_number,
@@ -248,9 +250,10 @@ class CU:
 		"""
 		if self.suma_intereses > 0:
 			today = date.today()
+			receipt_type = ReceiptType.objects.get(code="12")
 			nota_debito = Receipt.objects.create(
 					point_of_sales=self.receipt.point_of_sales,
-					receipt_type=ReceiptType.objects.get(code="12"),
+					receipt_type=receipt_type,
 					concept=self.receipt.concept,
 					document_type=self.receipt.document_type,
 					document_number=self.receipt.document_number,
@@ -281,13 +284,14 @@ class CU:
 			Valida los documentos derivados del principal en caso de que haya que hacerlo
 			Coloca el numero en caso de que no tenga
 		"""
-		if self.comunidad.contribuyente.certificate: 
-			try:
-				error = receipt_derivado.validate()
-			except:
-				error = True
-			if error:
-				raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
+		# if receipt_derivado.receipt_type.code in ["12", "13"]:
+		# 	if self.comunidad.contribuyente.certificate: 
+		# 		try:
+		# 			error = receipt_derivado.validate()
+		# 		except:
+		# 			error = True
+		# 		if error:
+		# 			raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
 
 		if not receipt_derivado.receipt_number:
 			last = Receipt.objects.filter(
@@ -295,7 +299,8 @@ class CU:
 				point_of_sales=receipt_derivado.point_of_sales,
 			).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
 			receipt_derivado.receipt_number = last + 1
-			receipt_derivado.save()			
+			receipt_derivado.save()
+				
 
 
 	def colocar_documentos(self):

@@ -32,10 +32,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 		if self.context['causante'] in ["cliente", "caja"]:
 			self.fields['point_of_sales'] = serializers.ChoiceField(choices=point_of_sales_owner)
 			self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
-			if 'receipt_type' in self.context.keys():
-				if self.context['receipt_type'].code in ["11", "12"]:
-					self.fields['concept'] = serializers.ChoiceField(choices=list(ConceptType.objects.all().values_list('description', flat=True)))
-		
+			
 		elif self.context['causante'] == "cliente-masivo":
 			self.fields['point_of_sales'] = serializers.ChoiceField(choices=point_of_sales_owner)
 	
@@ -54,8 +51,9 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 		elif self.context['causante'] == "estado":
 			self.fields['formatted_number'] = serializers.CharField(max_length=150, read_only=True)
 
-		elif self.context['causante'] == "interno":
-			self.fields['point_of_sales'] = serializers.ChoiceField(choices=point_of_sales_owner)
+		elif self.context['causante'] == "asiento":
+			self.fields['point_of_sales'] = serializers.CharField(max_length=4, required=True)
+			self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
 
 
 	def validate_point_of_sales(self, point_of_sales):
@@ -63,11 +61,12 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			Si el causante es un cliente entonces solo puede elegir uno de los puntos que tiene
 			Convierte el numero en objeto
 		"""
-		if self.context['causante'] in ["cliente", "cliente-masivo", "interno"] or self.context['receipt_type'].code in ["301", "303"]:
+		if self.context['causante'] in ["cliente", "cliente-masivo"] or self.context['receipt_type'].code in ["301", "303"]:
 			point_of_sales = PointOfSales.objects.get(owner=self.context['comunidad'].contribuyente, number=point_of_sales)
 		elif self.context['causante'] == "proveedor":
 			point_of_sales = PointOfSales.objects.get(owner__name="Proveedores", number=point_of_sales)
-	
+		elif self.context['causante'] == "asiento":
+			point_of_sales = PointOfSales.objects.get(owner__name="Asientos", number=point_of_sales)
 		return point_of_sales
 
 	def validate_concept(self, concept):
@@ -91,7 +90,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 		issued_date = data["issued_date"]
 		receipt_type = self.context['receipt_type']
 
-		if self.context['causante'] in ["cliente", "cliente-masivo", "interno"] or self.context['receipt_type'].code in ["301", "303"]:
+		if self.context['causante'] in ["cliente", "cliente-masivo", "asiento"] or self.context['receipt_type'].code in ["301", "303"]:
 			query = point_of_sales.receipts.filter(issued_date__gt=issued_date, receipt_type=receipt_type)
 			if query:
 				raise serializers.ValidationError({'issued_date': 'El punto de venta seleccionado ha generado {} con fecha posterior a la indicada'.format(receipt_type)})

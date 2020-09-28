@@ -38,7 +38,7 @@ const Encabezado = ({ documento, setDocumento, errors, update, types }) => {
               name='receipt_type'
               id='receipt_type'
               value={documento.receipt && documento.receipt.receipt_type}
-              disabled={documento.receipt.receipt_type === "Orden de Pago" ? true : false}
+              disabled={documento.receipt.receipt_type === "Orden de Pago X" ? true : false}
               onChange={handleNestedFieldChange('receipt')}>
                 <option value=''>---</option>
 
@@ -57,7 +57,7 @@ const Encabezado = ({ documento, setDocumento, errors, update, types }) => {
         <div className='form-group col-md-2'>
           <label htmlFor='point_of_sales'>P. VTA: </label>
             {
-              documento.receipt.receipt_type === "Orden de Pago" ?
+              documento.receipt.receipt_type === "Orden de Pago X" ?
                 <select
                   className={`form-control ${errors.receipt && errors.receipt.point_of_sales && 'is-invalid'}`}
                   name='point_of_sales'
@@ -103,7 +103,7 @@ const Encabezado = ({ documento, setDocumento, errors, update, types }) => {
             pattern="[0-9]*"
             mask="0000"
             maxLength={8}
-            disabled={documento.receipt.receipt_type === "Orden de Pago" ? true : false}
+            disabled={documento.receipt.receipt_type === "Orden de Pago X" ? true : false}
             value={documento.receipt.receipt_number}
             onChange={handleNestedFieldChange('receipt')} />
 
@@ -124,7 +124,7 @@ const Encabezado = ({ documento, setDocumento, errors, update, types }) => {
             className={`form-control d-block ${errors.receipt && errors.receipt.issued_date && 'is-invalid'}`}
             name='issued_date'
             id='issued_date'
-            disabled={documento.receipt.receipt_type === "Orden de Pago" ? (update?true:false) : false}
+            disabled={documento.receipt.receipt_type === "Orden de Pago X" ? (update?true:false) : false}
             value={documento.receipt.issued_date}
             onChange={handleNestedFieldChange('receipt')} />
 

@@ -35,7 +35,7 @@ const Transferencia = ({ destinatario, update, selected, sendTransferencia, dele
         ...state,
         receipt: {
           ...state.receipt,
-          receipt_type: "Transferencia",
+          receipt_type: "Transferencia X",
         },        
         cargas: [],
         cajas: [],
@@ -124,18 +124,18 @@ const Transferencia = ({ destinatario, update, selected, sendTransferencia, dele
         update={update}
         types={transferenciasTypes}/>
 
-      <CargaNew 
-        documento={documento} 
-        setDocumento={setDocumento} 
-        errors={errors} 
-        update={update}/>
-
       <FormasPago
         documento={documento}
         setDocumento={setDocumento}
         errors={errors}
         update={update} />
       
+      <CargaNew 
+        documento={documento} 
+        setDocumento={setDocumento} 
+        errors={errors} 
+        update={update}/>
+
       <Descripcion 
         documento={documento} 
         setDocumento={setDocumento}

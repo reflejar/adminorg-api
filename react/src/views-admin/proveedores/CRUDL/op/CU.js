@@ -35,7 +35,7 @@ const OP = ({ destinatario, update, selected, sendOP, deleteOP, onClose }) => {
         ...state,
         receipt: {
           ...state.receipt,
-          receipt_type: "Orden de Pago",
+          receipt_type: "Orden de Pago X",
         },
         pagos: [],
         cajas: [],
