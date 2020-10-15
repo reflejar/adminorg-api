@@ -24,13 +24,16 @@ import documentos from './documentos';
 import plataforma from './plataforma';
 import saldos from './saldos';
 import retenciones from './retenciones';
-
+import analitica from './analitica';
+import carpetas from './carpetas';
 
 const appReducer = combineReducers({
    toastr: toastrReducer, // <- Mounted at toastr.
    customizer,
    clientes,
+   carpetas,
    dominios,
+   analitica,
    proveedores,
    ingresos,
    gastos,

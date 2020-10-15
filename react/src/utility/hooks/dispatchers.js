@@ -19,6 +19,7 @@ import { cajasActions } from '../../redux/actions/cajas';
 import { interesesActions } from '../../redux/actions/intereses';
 import { descuentosActions } from '../../redux/actions/descuentos';
 import { retencionesActions } from '../../redux/actions/retenciones';
+import { carpetasActions } from '../../redux/actions/carpetas';
 
 // Parametros
 export const useClientes = () => {
@@ -126,6 +127,27 @@ export const useTitulos = (supertitulos=false) => {
   }, [setLoading, dispatch, listado, setListado, titulos]);
 
   return [titulos, loading];
+};
+
+export const useCarpetas = (supercarpetas=false) => {
+  const [loading, setLoading] = useState(false);
+  const carpetas = useSelector((state) => get(state, 'carpetas.list', []));
+  const [listado, setListado] = useState(undefined);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchCar() {
+      setLoading(true);
+      await dispatch(carpetasActions.get_all())
+        .finally(() => setLoading(false));
+    }
+    if (!listado) {
+      fetchCar();
+      setListado([...carpetas])
+    }
+  }, [setLoading, dispatch, listado, setListado, carpetas]);
+
+  return [carpetas, loading];
 };
 
 export const useIngresos = () => {

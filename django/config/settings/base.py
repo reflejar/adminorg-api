@@ -57,6 +57,7 @@ LOCAL_APPS = [
     'admincu.users.apps.UsersAppConfig',
     'admincu.operative.apps.OperativeAppConfig',
     'admincu.platforms.apps.PlatformsAppConfig',
+    'admincu.files.apps.FilesAppConfig',
     'admincu.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
