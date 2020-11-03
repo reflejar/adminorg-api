@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { Button } from "reactstrap";
 
-import Archivo from "../CRUDL/archivo/CU";
+import Archivo from "../../CRUDL/archivo/CU";
 import BasicModal from '../../../components/modal/basic';
 
 class ModalArchivo extends Component {

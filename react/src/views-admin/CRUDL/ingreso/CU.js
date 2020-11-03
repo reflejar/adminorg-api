@@ -69,7 +69,7 @@ const CU = ({ selected, onClose }) => {
       {({ errors, touched, handleSubmit, isSubmitting }) => (
         <Form onSubmit={handleSubmit}>
           <Row>
-            <Col sm="6">
+            <Col sm="12">
               <h4>Datos Principales</h4>
               <FormGroup>
                 <Label for="nombre">Nombre</Label>
@@ -85,19 +85,7 @@ const CU = ({ selected, onClose }) => {
                 </Field>
                 {errors.taxon && touched.taxon ? <div className="invalid-feedback">{errors.taxon}</div> : null}
               </FormGroup>     
-              <FormGroup>
-                <Label for="titulo">Titulo contable</Label>
-                <Field component="select" name="titulo" id="titulo" className={`form-control ${errors.titulo && touched.titulo && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
-                  {titulos.map((titulo, i) => {
-                    return <option key={i} value={titulo.id}>{titulo.nombre}</option>
-                  })}
-                </Field>
-                {errors.titulo && touched.titulo ? <div className="invalid-feedback">{errors.titulo}</div> : null}
-              </FormGroup>                       
-            </Col>
-            <Col sm="6">
-              <h4>Otros datos</h4>
+                          
               <FormGroup>
                 <Label for="interes">Metodologia de intereses</Label>
                 <Field component="select" name="interes" id="interes" className={`form-control ${errors.interes && touched.interes && 'is-invalid'}`}>
@@ -117,7 +105,17 @@ const CU = ({ selected, onClose }) => {
                   })}
                 </Field>
                 {errors.descuento && touched.descuento ? <div className="invalid-feedback">{errors.descuento}</div> : null}
-              </FormGroup>              
+              </FormGroup>    
+              <FormGroup>
+                <Label for="titulo">Titulo contable</Label>
+                <Field component="select" name="titulo" id="titulo" className={`form-control ${errors.titulo && touched.titulo && 'is-invalid'}`}>
+                  <option defaultValue=""> --- </option>
+                  {titulos.map((titulo, i) => {
+                    return <option key={i} value={titulo.id}>{titulo.nombre}</option>
+                  })}
+                </Field>
+                {errors.titulo && touched.titulo ? <div className="invalid-feedback">{errors.titulo}</div> : null}
+              </FormGroup>                                       
             </Col>
 
             <Col xs={12}>

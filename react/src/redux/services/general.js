@@ -24,6 +24,13 @@ const post = (apiEndpoint, payload) => {
     .catch((err) => { return err.response });
 }
 
+const postMultiData = (apiEndpoint, payload) => {
+    headers['Content-Type'] = 'multipart/form-data';
+    return axios.post(config.baseUrl + apiEndpoint, payload, { headers })
+    .then((response) => { return response })
+    .catch((err) => { return err.response });
+}
+
 const put = (apiEndpoint, payload) => {
     return axios.put(config.baseUrl + apiEndpoint, payload, { headers })
     .then((response) => { return response })
@@ -35,4 +42,5 @@ export const Service = {
     remove,
     post,
     put,
+    postMultiData,
 }

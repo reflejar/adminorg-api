@@ -56,7 +56,7 @@ const CU = ({ selected, onClose }) => {
       {({ errors, touched, handleSubmit, isSubmitting }) => (
         <Form onSubmit={handleSubmit}>
           <Row>
-            <Col sm="6">
+            <Col sm="12">
               <h4>Datos Principales</h4>
               <FormGroup>
                 <Label for="nombre">Nombre</Label>
@@ -76,10 +76,7 @@ const CU = ({ selected, onClose }) => {
                   })}
                 </Field>
                 {errors.tipo && touched.tipo ? <div className="invalid-feedback">{errors.tipo}</div> : null}
-              </FormGroup>                           
-            </Col>
-            <Col sm="6">
-              <h4>Datos Principales</h4>
+              </FormGroup>    
               <FormGroup>
                 <Label for="monto">Monto</Label>
                 <Field type="number" step="0.01" name="monto" id="monto" className={`form-control ${errors.monto && touched.monto && 'is-invalid'}`} />
@@ -102,7 +99,7 @@ const CU = ({ selected, onClose }) => {
                   })}
                 </Field>
                 {errors.reconocimiento && touched.reconocimiento ? <div className="invalid-feedback">{errors.reconocimiento}</div> : null}
-              </FormGroup>
+              </FormGroup>                                     
             </Col>
 
             <Col xs={12}>

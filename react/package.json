@@ -42,6 +42,7 @@
       "react-draft-wysiwyg": "^1.12.13",
       "react-dropzone": "^10.2.1",
       "react-feather": "^1.1.1",
+      "react-file-viewer": "^1.2.1",
       "react-horizontal-timeline": "^1.5.3",
       "react-input-mask": "^2.0.4",
       "react-perfect-scrollbar": "^1.1.1",

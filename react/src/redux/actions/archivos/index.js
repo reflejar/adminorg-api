@@ -48,7 +48,12 @@ const get_item = (id) => async (dispatch) => {
 
 const send = (values) => async (dispatch) => {
 
-  let payload = {...values};
+  // let payload = {...values};
+  let payload = new FormData();
+  payload.append('ubicacion', values.ubicacion);
+  payload.append('nombre', values.nombre);
+  payload.append('descripcion', values.descripcion);
+  payload.append('carpeta', values.carpeta);
 
   let response;
 
@@ -57,7 +62,7 @@ const send = (values) => async (dispatch) => {
     await dispatch(get_all());
     return;
   } else {
-    response = await Service.post(apiEndpoint, payload);
+    response = await Service.postMultiData(apiEndpoint, payload);
   }
 
   if (response) {

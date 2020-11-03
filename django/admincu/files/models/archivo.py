@@ -13,7 +13,7 @@ class Archivo(BaseModel):
 
 	nombre = models.CharField(max_length=100)
 	descripcion = models.TextField(blank=True, null=True)
-	carpeta = models.ForeignKey('self', blank=True, null=True, related_name="archivos", on_delete=models.SET_NULL)
+	carpeta = models.ForeignKey(Carpeta, blank=True, null=True, related_name="archivos", on_delete=models.SET_NULL)
 	ubicacion = models.FileField(upload_to="archivos/", blank=True, null=True)
 
 

@@ -17,9 +17,9 @@ import AnaliticaSearch from "./containers/search";
 import AnaliticaOptions from "./containers/options";
 
 // Contenidos
-// import Cuenta from '../../components/board/content/cuenta';
+import FileReader from '../../components/fileReader';
 import InfoCarpeta from "../CRUDL/carpeta/CU";
-import InfoArchivo from "../CRUDL/carpeta/CU";
+import InfoArchivo from "../CRUDL/archivo/CU";
 
 // import CuentaTable from './tables/cuenta';
 
@@ -85,10 +85,10 @@ class Analitica extends Component {
           <section className="chat-app-window">
             <TabContent activeTab={this.state.activeTab}>
               <TabPane tabId="1">
-                {/* { selected ? <Cuenta selected={selected} Table={CuentaTable} /> : "Por favor seleccione" } */}
+                { selected ? (selected.ubicacion ? <FileReader file={selected.ubicacion} /> : "Por favor seleccione") : "Que desea realizar?" }
               </TabPane>
               <TabPane tabId="2">
-                { selected ? (selected.supercarpeta ? <InfoCarpeta selected={selected} /> : <InfoArchivo selected={selected} />) : "Por favor seleccione" }
+                { selected ? (selected.carpeta ? <InfoArchivo selected={selected} /> : <InfoCarpeta selected={selected} />) : "Por favor seleccione" }
               </TabPane>
             </TabContent>
           </section>

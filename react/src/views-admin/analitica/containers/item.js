@@ -36,7 +36,7 @@ const Item = ({ indentation, item, children, carpetas, filterChildren, selected,
                         selected={selected}
                         setSelected={setSelected}
                     />))}
-            {/* {openItem && item.cuentas && item.cuentas.sort((a, b) => a.nombre.localeCompare(b.nombre)).map(itemChild => (
+            {openItem && item.archivos && item.archivos.sort((a, b) => a.nombre.localeCompare(b.nombre)).map(itemChild => (
                     <Item 
                         indentation={indentation+10}
                         item={itemChild} 
@@ -45,7 +45,7 @@ const Item = ({ indentation, item, children, carpetas, filterChildren, selected,
                         filterChildren={filterChildren}
                         selected={selected}
                         setSelected={setSelected}
-                    />))}                     */}
+                    />))}                    
         </Fragment>
     
       )

@@ -3,6 +3,11 @@ from admincu.utils.generics import custom_viewsets
 from django.shortcuts import get_object_or_404 
 from rest_framework import serializers
 from django.db import transaction
+from rest_framework.parsers import (
+	JSONParser,
+	FormParser,
+	MultiPartParser
+)
 
 from admincu.files.models import Archivo
 from admincu.files.serializers import ArchivoModelSerializer
@@ -14,6 +19,7 @@ class ArchivoViewSet(custom_viewsets.CustomModelViewSet):
 		Crea, actualiza, detalla y lista Documentos.
 	"""
 
+	parser_classes = [JSONParser, FormParser, MultiPartParser]
 	serializer_class = ArchivoModelSerializer
 
 
@@ -27,7 +33,7 @@ class ArchivoViewSet(custom_viewsets.CustomModelViewSet):
 			return Archivo.objects.filter(comunidad=self.comunidad)
 		except:
 			raise Http404
-
+		
 
 	@transaction.atomic
 	def update(self, request, *args, **kwargs):

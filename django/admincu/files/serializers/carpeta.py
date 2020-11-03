@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import Group
 
 from admincu.files.models import Carpeta
+from admincu.files.serializers import ArchivoModelSerializer
 
 class CarpetaModelSerializer(serializers.ModelSerializer):
 
@@ -21,9 +22,11 @@ class CarpetaModelSerializer(serializers.ModelSerializer):
 
 	def __init__(self, *args, **kwargs):
 		super(CarpetaModelSerializer, self).__init__(*args, **kwargs)
+		self.fields['archivos'] = ArchivoModelSerializer(context=self.context, read_only=True, many=True)
+		exposicion_choices = Group.objects.all().values_list('name', flat=True)
 		# self.fields['exposicion'] = serializers.MultipleChoiceField(
 		# 		required=True, 
-		# 		choices=list(Group.objects.all().values_list('name', flat=True))
+		# 		choices=exposicion_choices
 		# 	)
 		
 
