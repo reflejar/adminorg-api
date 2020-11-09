@@ -206,4 +206,10 @@ class Operacion(BaseModel):
 		if self.documento.receipt.receipt_type.code == "303":
 			return "caja"
 		if self.documento.receipt.receipt_type.code == "400":
-			return "asiento"			
+			return "asiento"
+
+	def titulo(self):
+		return self.cuenta.titulo
+
+	def naturaleza(self):
+		return self.cuenta.naturaleza.nombre

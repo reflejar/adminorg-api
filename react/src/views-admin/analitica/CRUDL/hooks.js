@@ -1,35 +1,37 @@
 import { useEffect, useState } from 'react';
+import moment from 'moment';
+
 import { useDispatch } from 'react-redux';
 import get from 'lodash/get';
-import { archivosActions } from '../../../redux/actions/archivos';
+// import { archivosActions } from '../../../redux/actions/archivos';
 
-export const useArchivo = (selected, onlyRead) => {
+export const useFiltro = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState({}); 
-    const [archivo, setArchivo] = useState({
-        id: get(selected, 'id', null),
-        nombre: onlyRead ? (selected && selected.nombre) : "",
-        descripcion: onlyRead ? (selected && selected.descripcion) : "",
-        ubicacion: onlyRead ? (selected && selected.ubicacion) : "",        
-        carpeta: onlyRead ? (selected && selected.carpeta) : "",        
+    const [filtro, setFiltro] = useState({
+        cuentas: [],
+        fechas: [{
+          start_date: "",
+          end_date: moment().format('YYYY-MM-DD'),
+        }]
+        
       });
 
-    useEffect(() => {
-    const fileId = get(selected, 'id');
+    // useEffect(() => {
+    // const fileId = get(selected, 'id');
     
-    if (onlyRead && fileId && !archivo.nombre) {
-        setLoading(true);
+    // if (onlyRead && fileId && !archivo.nombre) {
+    //     setLoading(true);
 
-        dispatch(archivosActions.get("archivos", fileId))
-        .then((doc) => setArchivo(doc))
-        .finally(() => setLoading(false));
-      }
+    //     dispatch(archivosActions.get("archivos", fileId))
+    //     .then((doc) => setReporte(doc))
+    //     .finally(() => setLoading(false));
+    //   }
 
 
-    }, [selected, onlyRead, archivo.nombre, dispatch]);      
+    // }, [selected, onlyRead, archivo.nombre, dispatch]);      
 
-    return {archivo, setArchivo, errors, setErrors, loading, setLoading};
+    return {filtro, setFiltro, loading, setLoading};
 
 };
 

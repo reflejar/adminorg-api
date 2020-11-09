@@ -103,6 +103,7 @@ class Analitica extends Component {
 
 const mapStateToProps = state => ({
   selected: get(state, 'analitica.instance', {}),
+  reporte: get(state, 'analitica.reporte', {}),
 })
 
 export default connect(mapStateToProps, null)(Analitica);

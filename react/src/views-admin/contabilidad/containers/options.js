@@ -1,7 +1,7 @@
 import React from "react";
 
 import ModalAsiento from '../modals/asiento';
-import ModalRegistros from '../modals/registros';
+import ModalReportes from '../modals/reportes';
 
 import { ButtonGroup } from "reactstrap";
 
@@ -14,7 +14,7 @@ const Options = () => {
           </ButtonGroup>
 
           <ButtonGroup>
-            <ModalRegistros />
+            <ModalReportes />
           </ButtonGroup>
         </section>
     );

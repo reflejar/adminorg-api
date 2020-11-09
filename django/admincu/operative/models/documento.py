@@ -46,6 +46,11 @@ class Documento(BaseModel):
 	def portador(self):
 		return str(self.destinatario)
 
+	def tipo(self):
+		return str(self.receipt.receipt_type)
+
+	def numero(self):
+		return str(self.receipt.formatted_number)		
 
 	# Funciones Serializadoras
 	def creditos(self):

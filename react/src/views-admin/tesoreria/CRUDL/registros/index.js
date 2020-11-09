@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
 // Components
-import { Button } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
+import {Briefcase, FileText} from "react-feather";
+import MinimalStatistics from "../../../../components/cards/minimalStatisticsCard2";
+
 import Cajas from '../../../CRUDL/caja/L';
 import Documentos from "../../../CRUDL/documento/L";
 import { transferenciasTypes } from '../_options/receipt_types';
@@ -10,8 +13,14 @@ import { transferenciasTypes } from '../_options/receipt_types';
 import './index.scss';
 
 const options = [
-  'Cajas',
-  'Documentos',
+  {
+    nombre: "Cajas",
+    icono: <Briefcase size={56} strokeWidth="1.3" className="primary" />
+  },
+  {
+    nombre: "Documentos",
+    icono: <FileText size={56} strokeWidth="1.3" className="primary" />
+  },        
 ];
 
 class Registros extends Component {
@@ -69,12 +78,17 @@ class Registros extends Component {
       <div className="registration">
         {step === 0 && (
           <div className="registration__type">
+          <Row>
             {options.map((option , idx) => (
-              <Button color="primary" key={idx} onClick={this.handleSelectType(idx)}>
-                {option}
-              </Button>
+              <Col sm="12" md="4" key={idx} >
+                <MinimalStatistics onClick={this.handleSelectType(idx)} statistics={option.nombre} statisticsColor="primary" iconSide="right">
+                  {option.icono}
+                </MinimalStatistics>
+              </Col>
+
             ))}
-          </div>
+          </Row>
+        </div>
         )}
         {step === 2 && type === 0 && <Cajas />}
         {step === 2 && type === 1 && <Documentos causante={"tesoreria"} documentosTypes={allDocumentosTypes} />}

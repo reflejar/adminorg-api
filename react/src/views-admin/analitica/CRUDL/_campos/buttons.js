@@ -8,15 +8,15 @@ const Buttons = ({ item, update, onClose, required, error, handleDelete }) => {
   
   const toggle = () => setTooltipOpen(!tooltipOpen);
 
-  useEffect(() => {   
-    if (
-      item.nombre && required
-      ){
-      setIsDisabled(false);
-    } else {
-      setIsDisabled(true);
-    }
-  }, [item, required]);        
+  // useEffect(() => {   
+  //   if (
+  //     item.nombre && required
+  //     ){
+  //     setIsDisabled(false);
+  //   } else {
+  //     setIsDisabled(true);
+  //   }
+  // }, [item, required]);        
 
   return (
     <Row>
@@ -41,7 +41,7 @@ const Buttons = ({ item, update, onClose, required, error, handleDelete }) => {
             className='btn btn-primary'
             id="submit-button"
             disabled={update || isDisabled}>
-            Guardar
+            Consultar
           </button>
           
         </div>

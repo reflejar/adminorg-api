@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
 // Components
-import { Button } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
+import {BookOpen, AlignJustify, TrendingUp} from "react-feather";
+import MinimalStatistics from "../../../../components/cards/minimalStatisticsCard2";
+
 import Clientes from '../../../CRUDL/cliente/L';
 import Dominios from '../../../CRUDL/dominio/L';
 import Documentos from "../../../CRUDL/documento/L";
@@ -11,10 +14,20 @@ import { facturasTypes, notasCreditoTypes, notasDebitoTypes, recibosTypes } from
 import './index.scss';
 
 const options = [
-  'Clientes',
-  'Dominios',
-  'Documentos',
+  {
+    nombre: "Sumas y Saldos",
+    icono: <BookOpen size={56} strokeWidth="1.3" className="primary" />
+  },
+  {
+    nombre: "Resultados",
+    icono: <TrendingUp size={56} strokeWidth="1.3" className="primary" />
+  },
+  {
+    nombre: "Mayores",
+    icono: <AlignJustify size={56} strokeWidth="1.3" className="primary" />
+  },          
 ];
+
 
 class Registros extends Component {
   constructor(props) {
@@ -70,13 +83,15 @@ class Registros extends Component {
     return (
       <div className="registration">
         {step === 0 && (
-          <div className="registration__type">
-            {options.map((option , idx) => (
-              <Button color="primary" key={idx} onClick={this.handleSelectType(idx)}>
-                {option}
-              </Button>
-            ))}
-          </div>
+          <Row>
+          {options.map((option , idx) => (
+            <Col sm="12" md="4" key={idx} >
+              <MinimalStatistics onClick={this.handleSelectType(idx)} statistics={option.nombre} statisticsColor="primary" iconSide="right">
+                {option.icono}
+              </MinimalStatistics>
+            </Col>
+          ))}
+        </Row>
         )}
 
         {step === 2 && type === 0 && <Clientes />}

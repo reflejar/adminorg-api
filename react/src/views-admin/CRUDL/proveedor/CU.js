@@ -208,7 +208,7 @@ const CU = ({ selected, onClose }) => {
 
 
               <FormGroup>
-                <Label for="inquilino">Retiene</Label>
+                <Label for="retiene">Retiene</Label>
                 <Select
                   isMulti
                   placeholder=""
