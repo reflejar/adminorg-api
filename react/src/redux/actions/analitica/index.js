@@ -16,11 +16,16 @@ const select = (id) => ({
 
 const get_data = (params) => async (dispatch) => {
 
+  const cuentas = params.cuentas.join();
+  const receiptTypes = params.receiptTypes.join();
+
   const query = qs.stringify({
-    cuenta__in: params.cuentas,
+    cuenta__in: cuentas,
     start_date: params.startDate,
     end_date: params.endDate,
+    documento__receipt__receipt_type__description__in: receiptTypes
   });
+
 
   const response = await Service.get(apiEndpoint + '?' + query);
 

@@ -52,6 +52,10 @@ const Fechas = ({ update, filtro, setFiltro }) => {
   return (
     <Row>
       <Col sm="12">
+        <hr />
+        <h3 className="mt-2">
+          Periodos
+        </h3>        
         <AppendableRowField
           appendButtonDisabled={update}
           popButtonDisabled={update}

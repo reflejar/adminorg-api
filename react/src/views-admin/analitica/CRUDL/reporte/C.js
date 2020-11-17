@@ -5,6 +5,7 @@ import { connect, useDispatch } from 'react-redux';
 import Spinner from '../../../../components/spinner/spinner';
 
 import { analiticaActions } from '../../../../redux/actions/analitica';
+import Tipo from '../_campos/tipo';
 import Fechas from '../_campos/fechas';
 import Cuentas from '../_campos/cuentas';
 import TiposDocumento from '../_campos/tipos_documento';
@@ -15,24 +16,26 @@ import Buttons from '../_campos/buttons';
 
 import { useFiltro } from '../hooks';
 
-const Reporte = ({ sendReporte, onClose }) => {
+const Reporte = ({ getDataReporte, onClose }) => {
   
   const {filtro, setFiltro, loading, setLoading} = useFiltro();
 
-
-  // const checkCondition = () => {
-  //   if (filtro.creditos && filtro.creditos.length > 0) {
-  //     return true;
-  //   }
-  //   return false;
-  // } 
+  const disableInOptions = ["sys", "rdos"];
+  const checkCondition = () => {
+    if (filtro.cuentas && filtro.cuentas.length > 0) {
+      return filtro.receiptTypes && filtro.receiptTypes.length > 0;
+    }
+    return false;
+  } 
   
 
   const handleSubmit = useCallback((event) => {
     event.preventDefault();
     setLoading(true);
+
+    filtro.fechas.forEach(f => console.log(f));
     
-    sendReporte(filtro)
+    getDataReporte(filtro)
       .then(() => {
         onClose(false);
       })
@@ -40,7 +43,7 @@ const Reporte = ({ sendReporte, onClose }) => {
         const { data } = error;
       })
       .finally(() => setLoading(false))
-  }, [setLoading, sendReporte, filtro, onClose]);
+  }, [setLoading, getDataReporte, filtro, onClose]);
 
   if (loading) {
     return (
@@ -53,6 +56,11 @@ const Reporte = ({ sendReporte, onClose }) => {
   return (
     <form className='credito-invoice container' onSubmit={handleSubmit}>
       {console.log(filtro)}
+      
+      <Tipo 
+        update={false}
+        filtro={filtro} 
+        setFiltro={setFiltro} />
 
       <Fechas 
         update={false}
@@ -61,17 +69,18 @@ const Reporte = ({ sendReporte, onClose }) => {
 
       <Cuentas 
         filtro={filtro} 
-        setFiltro={setFiltro} />
+        setFiltro={setFiltro} 
+        disableInOptions={disableInOptions}/>
 
       <TiposDocumento
         filtro={filtro} 
-        setFiltro={setFiltro}/>
+        setFiltro={setFiltro}
+        disableInOptions={disableInOptions}/>
       
       <Buttons 
         filtro={filtro}     
         onClose={onClose}
-        // required={checkCondition()} 
-        />
+        required={checkCondition()} />
 
     </form>
   );
@@ -79,7 +88,7 @@ const Reporte = ({ sendReporte, onClose }) => {
 
 
 const mapDispatchToProps = dispatch => ({
-  sendReporte: (payload) => dispatch(analiticaActions.send("cliente", payload))
+  getDataReporte: (payload) => dispatch(analiticaActions.get_data(payload))
 });
 
 export default connect(null, mapDispatchToProps)(Reporte);

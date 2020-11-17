@@ -8,15 +8,15 @@ const Buttons = ({ item, update, onClose, required, error, handleDelete }) => {
   
   const toggle = () => setTooltipOpen(!tooltipOpen);
 
-  // useEffect(() => {   
-  //   if (
-  //     item.nombre && required
-  //     ){
-  //     setIsDisabled(false);
-  //   } else {
-  //     setIsDisabled(true);
-  //   }
-  // }, [item, required]);        
+  useEffect(() => {   
+    if (
+      required
+      ){
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [item, required]);        
 
   return (
     <Row>

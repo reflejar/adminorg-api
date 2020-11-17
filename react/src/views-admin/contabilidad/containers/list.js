@@ -22,7 +22,7 @@ const List = ({selected}) => {
     return (
         <div className="list-group position-relative" id="users-list">
           <div className="users-list-padding">
-          <Table size="sm" responsive>
+          <Table size="sm" responsive borderless={true} hover={true}>
                <thead>
                   <tr>
                      <th>Titulo/Cuenta</th>
