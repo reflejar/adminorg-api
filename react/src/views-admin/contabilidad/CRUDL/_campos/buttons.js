@@ -11,7 +11,6 @@ const Buttons = ({ documento, onlyRead, onClose, required, error, handleDelete }
   useEffect(() => {   
     if (
       documento.receipt.receipt_type && 
-      documento.receipt.point_of_sales && 
       documento.receipt.issued_date && 
       documento.fecha_operacion && 
       required

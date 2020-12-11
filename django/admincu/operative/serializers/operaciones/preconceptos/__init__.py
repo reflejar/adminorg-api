@@ -19,8 +19,8 @@ class PreConceptoModelSerializer(CreditoModelSerializer):
 	@transaction.atomic
 	def create(self, validated_data):
 		operaciones = []
-		metodo_interes = self.get_metodo(cuenta=validated_data['ingreso'], naturaleza='interes')
-		metodo_descuento = self.get_metodo(cuenta=validated_data['ingreso'], naturaleza='descuento') 
+		metodo_interes = self.get_metodo(cuenta=validated_data['concepto'], naturaleza='interes')
+		metodo_descuento = self.get_metodo(cuenta=validated_data['concepto'], naturaleza='descuento') 
 		operacion_debe = Operacion.objects.create(
 			comunidad=self.context['comunidad'],
 			cuenta=validated_data['destinatario'],
@@ -38,9 +38,10 @@ class PreConceptoModelSerializer(CreditoModelSerializer):
 		operaciones.append(operacion_debe)
 		operacion_haber = Operacion.objects.create(
 			comunidad=self.context['comunidad'],
-			cuenta=validated_data['ingreso'],
+			cuenta=validated_data['concepto'],
 			valor=-validated_data['monto'],
 			detalle=validated_data['detalle'],
+			cantidad=validated_data['cantidad'],
 			vinculo=operacion_debe,
 			fecha_indicativa=validated_data['periodo'],
 			)
@@ -64,11 +65,12 @@ class PreConceptoModelSerializer(CreditoModelSerializer):
 		instance.fecha_vencimiento = validated_data['fecha_vencimiento']
 		instance.save()
 
-		instance_ingreso = instance.vinculos.filter(cuenta__naturaleza__nombre="ingreso").first()
-		instance_ingreso.cuenta = validated_data['ingreso']
-		instance_ingreso.valor = -validated_data['monto']
-		instance_ingreso.detalle = validated_data['detalle']
-		instance_ingreso.fecha_indicativa = validated_data['periodo']
-		instance_ingreso.save()
+		instance_concepto = instance.vinculos.filter(cuenta__naturaleza__nombre="ingreso").first()
+		instance_concepto.cuenta = validated_data['concepto']
+		instance_concepto.valor = -validated_data['monto']
+		instance_concepto.detalle = validated_data['detalle']
+		instance_concepto.cantidad = validated_data['cantidad']
+		instance_concepto.fecha_indicativa = validated_data['periodo']
+		instance_concepto.save()
 
 		return instance		

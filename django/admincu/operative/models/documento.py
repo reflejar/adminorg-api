@@ -18,6 +18,7 @@ from django_afip.pdf import ReceiptBarcodeGenerator
 from django.apps import apps
 
 from admincu.utils.models import BaseModel
+from admincu.operative.models.own_receipt import OwnReceipt 
 
 from itertools import chain
 
@@ -26,9 +27,12 @@ class Documento(BaseModel):
 		Modelo de Documentos
 		Representa TODOS los documentos posibles de la entidad
 		Todas las operaciones tienen documento, si no la tienen el documento se llama Asiento Contable
+		attr receipt es para realizar envio a afip (solo clientes)
+		attr own_receipt se establece SIEMPRE. (Copia la data de receipt en el caso de cliente, en los otros casos se establece directamente aqui) 
 	"""
 
-	receipt = models.ForeignKey(Receipt, blank=True, null=True, on_delete=models.PROTECT, related_name="documentos")
+	receipt_afip = models.ForeignKey(Receipt, blank=True, null=True, on_delete=models.PROTECT, related_name="documentos") # Solo para "clientes"
+	receipt = models.ForeignKey(OwnReceipt, blank=True, null=True, on_delete=models.PROTECT, related_name="documentos") # Todos
 	destinatario = models.ForeignKey("operative.Cuenta", blank=True, null=True, on_delete=models.SET_NULL, related_name="documentos")
 	pdf = models.FileField(upload_to="pdfs/documentos/", blank=True, null=True)
 	descripcion = models.CharField(max_length=150, blank=True, null=True)

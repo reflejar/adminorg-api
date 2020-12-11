@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Row, Col, FormGroup } from "reactstrap";
 import { tiposReporte } from '../_options/tipos_reporte';
 

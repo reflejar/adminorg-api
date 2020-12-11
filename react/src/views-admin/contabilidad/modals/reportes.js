@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
 
-import Reportes from "../CRUDL/registros/index";
+import Registros from "../CRUDL/registros/index";
 import BasicModal from '../../../components/modal/basic';
 
 
-class ModalReportes extends Component {
+class ModalRegistros extends Component {
   state = {
     modal: false
   }
@@ -21,15 +21,15 @@ class ModalReportes extends Component {
       <BasicModal
         open={this.state.modal}
         onToggle={this.handleToggle}
-        header="Reportes"
-        component={<Reportes onClose={() => this.handleToggle(false)} />}
+        header="Registros"
+        component={<Registros onClose={() => this.handleToggle(false)} />}
         button={(
           <Button
             outline
             color="primary"
             onClick={this.handleToggle}
           >
-            Reportes
+            Registros
           </Button>
         )}
       />
@@ -37,4 +37,4 @@ class ModalReportes extends Component {
   }
 }
 
-export default ModalReportes;
+export default ModalRegistros;

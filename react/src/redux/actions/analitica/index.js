@@ -18,27 +18,37 @@ const get_data = (params) => async (dispatch) => {
 
   const cuentas = params.cuentas.join();
   const receiptTypes = params.receiptTypes.join();
+  
+  params.fechas.forEach(async f => {
+    const query = qs.stringify({
+      cuenta__in: cuentas,
+      start_date: f.start_date,
+      end_date: f.end_date,
+      documento__receipt__receipt_type__description__in: receiptTypes
+    });
+    const response = await Service.get(apiEndpoint + '?' + query);
+    if (response.data) {
+      dispatch({
+        type: 'GET_AN_DATA',
+        payload: response.data.results
+      });
+    }
+  });
 
-  const query = qs.stringify({
-    cuenta__in: cuentas,
-    start_date: params.startDate,
-    end_date: params.endDate,
-    documento__receipt__receipt_type__description__in: receiptTypes
+  console.log(params);
+  dispatch({
+    type: 'SET_AN_ALL_FILTERS',
+    payload: params
   });
 
 
-  const response = await Service.get(apiEndpoint + '?' + query);
 
-  if (response.data) {
-    dispatch({
-      type: 'GET_ANALITICA',
-      payload: response.data.results
-    });
 
-  }
-
-  return response.data.results;
+  return;
 };
+
+
+
 
 export const analiticaActions = {
     get_data,

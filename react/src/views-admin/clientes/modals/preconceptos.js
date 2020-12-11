@@ -25,7 +25,6 @@ class ModalPreconceptos extends Component {
             <Button
               outline
               color="primary"
-              disabled={true}
               onClick={this.handleToggle}
             >
               Preconceptos

@@ -30,7 +30,7 @@ class ModalReporte extends Component {
               disabled={isDisabled}
               onClose={() => this.handleToggle(false)}
             >
-              Agregar reporte
+              Crear reporte
             </Button>
           )}
           header="Nuevo reporte"

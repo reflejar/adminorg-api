@@ -23,6 +23,7 @@ import Intereses from "./containers/tablas/intereses";
 import Descuentos from "./containers/tablas/descuentos";
 
 import Cliente from "../CRUDL/cliente/CU";
+import ClienteMasivo from "../CRUDL/cliente/M";
 import Dominio from "../CRUDL/dominio/CU";
 import Proveedor from "../CRUDL/proveedor/CU";
 import Caja from "../CRUDL/caja/CU";
@@ -36,10 +37,12 @@ const Configuraciones = ({selected}) => {
 
   const [modal, setModal] = useState(false)
   const [item, setItem] = useState(null)
+  const [method, setMethod] = useState("individual")
   
-  const toggle = () => {
+  const toggle = (method) => {
     setItem(null);
     setModal(!modal);
+    setMethod(method)
   }
 
   const tables = {
@@ -55,14 +58,38 @@ const Configuraciones = ({selected}) => {
 
 
   const modals = (editItem) => ({
-      cliente: <Cliente onClose={setModal} selected={editItem ? item : null} />,
-      dominio: <Dominio onClose={setModal} selected={editItem ? item : null} />,
-      proveedor: <Proveedor onClose={setModal} selected={editItem ? item : null} />,
-      caja: <Caja onClose={setModal} selected={editItem ? item : null} />,
-      ingreso: <Ingreso onClose={setModal} selected={editItem ? item : null} />,
-      gasto: <Gasto onClose={setModal} selected={editItem ? item : null} />,
-      interes: <Interes onClose={setModal} selected={editItem ? item : null} />,
-      descuento: <Descuento onClose={setModal} selected={editItem ? item : null} />,
+      cliente: {
+        individual: <Cliente onClose={setModal} selected={editItem ? item : null} />,
+        masivo: <ClienteMasivo onClose={setModal} />
+      },
+      dominio: {
+        individual: <Dominio onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "Dominios"
+      },
+      proveedor: {
+        individual: <Proveedor onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "Proveedores"
+      },
+      caja: {
+        individual: <Caja onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "Cajitas"
+      },
+      ingreso: {
+        individual: <Ingreso onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "Ingreso"
+      },
+      gasto: {
+        individual: <Gasto onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "Gasto"
+      },
+      interes: {
+        individual: <Interes onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "No se puede"
+      },
+      descuento: {
+        individual: <Descuento onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "No se puede"
+      },
     })
   
   return (
@@ -88,13 +115,13 @@ const Configuraciones = ({selected}) => {
     <Modal
         isOpen={modal}
         size="xl"
-        toggle={toggle}
+        toggle={() => toggle(method)}
         backdrop="static"
       >
   
-      <ModalHeader toggle={toggle}>{item ? "Editar" : "Nuevo"}</ModalHeader>
+      <ModalHeader toggle={() => toggle(method)}>{item ? "Editar" : "Nuevo"}</ModalHeader>
       <ModalBody>
-        { item ? modals(true)[item.causante] : selected && modals(false)[selected.id] }
+        { item ? modals(true)[item.causante]['individual'] : selected && modals(false)[selected.id][method] }
       </ModalBody>
       
     </Modal>    
@@ -108,7 +135,8 @@ const Configuraciones = ({selected}) => {
 
     <Options
       leftOps={[
-        <Button disabled={!selected} outline onClick={toggle} color="primary">Nuevo</Button>,
+        <Button disabled={!selected} outline onClick={() => toggle("individual")} color="primary">Nuevo</Button>,
+        <Button disabled={!selected} outline onClick={() => toggle("masivo")} color="primary">Importar</Button>,
       ]}
       rightOps={[]}        
     />

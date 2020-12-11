@@ -6,5 +6,6 @@ from .grupo import Grupo
 from .cuenta import Cuenta
 from .cuenta import DefinicionVinculo
 from .documento import Documento
+from .own_receipt import OwnReceipt
 from .operacion import Operacion
 from .cobro import Cobro

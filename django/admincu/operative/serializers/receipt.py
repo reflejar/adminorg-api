@@ -3,20 +3,20 @@ from datetime import date, timedelta
 from django.db.models import Max
 from rest_framework import serializers
 
-from admincu.utils.models import Comunidad
 from django_afip.models import (
 	ConceptType,
 	PointOfSales,
 	Receipt,
 	ReceiptType
 )
-
+from admincu.utils.models import Comunidad
+from admincu.operative.models import OwnReceipt 
 
 class ReceiptModelSerializer(serializers.ModelSerializer):
 	'''Receipt model serializer'''
 
 	class Meta:
-		model = Receipt
+		model = OwnReceipt
 
 		fields = (
 			'issued_date',
@@ -52,22 +52,12 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			self.fields['formatted_number'] = serializers.CharField(max_length=150, read_only=True)
 
 		elif self.context['causante'] == "asiento":
-			self.fields['point_of_sales'] = serializers.CharField(max_length=4, required=True)
 			self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
 
+	def get_point_of_sales(self, point_of_sales):
 
-	def validate_point_of_sales(self, point_of_sales):
-		"""
-			Si el causante es un cliente entonces solo puede elegir uno de los puntos que tiene
-			Convierte el numero en objeto
-		"""
-		if self.context['causante'] in ["cliente", "cliente-masivo"] or self.context['receipt_type'].code in ["301", "303"]:
-			point_of_sales = PointOfSales.objects.get(owner=self.context['comunidad'].contribuyente, number=point_of_sales)
-		elif self.context['causante'] == "proveedor":
-			point_of_sales = PointOfSales.objects.get(owner__name="Proveedores", number=point_of_sales)
-		elif self.context['causante'] == "asiento":
-			point_of_sales = PointOfSales.objects.get(owner__name="Asientos", number=point_of_sales)
-		return point_of_sales
+		return PointOfSales.objects.get(owner=self.context['comunidad'].contribuyente, number=point_of_sales)
+
 
 	def validate_concept(self, concept):
 		"""
@@ -86,17 +76,15 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 				10 dias anterior o posterior a la fecha actual
 		"""
 
-		point_of_sales = data["point_of_sales"]
-		issued_date = data["issued_date"]
-		receipt_type = self.context['receipt_type']
-
-		if self.context['causante'] in ["cliente", "cliente-masivo", "asiento"] or self.context['receipt_type'].code in ["301", "303"]:
-			query = point_of_sales.receipts.filter(issued_date__gt=issued_date, receipt_type=receipt_type)
+		if self.context['causante'] in ["cliente", "cliente-masivo"] or self.context['receipt_type'].code in ["301", "303"]:
+			point_of_sales = data["point_of_sales"]
+			issued_date = data["issued_date"]
+			receipt_type = self.context['receipt_type']
+			query = self.get_point_of_sales(point_of_sales).receipts.filter(issued_date__gt=issued_date, receipt_type=receipt_type)
 			if query:
 				raise serializers.ValidationError({'issued_date': 'El punto de venta seleccionado ha generado {} con fecha posterior a la indicada'.format(receipt_type)})
-			if self.context['causante'] == "cliente":
-				if date.today() + timedelta(days=10) < issued_date or issued_date < date.today() - timedelta(days=10):
-					raise serializers.ValidationError({'issued_date': 'No puede diferir en mas de 10 dias de la fecha de hoy'})
+			if date.today() + timedelta(days=10) < issued_date or issued_date < date.today() - timedelta(days=10):
+				raise serializers.ValidationError({'issued_date': 'No puede diferir en mas de 10 dias de la fecha de hoy'})
 
 		return data
 
@@ -104,22 +92,26 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 	def create(self, validate_data):
 		afip = validate_data.pop('afip') if 'afip' in validate_data.keys() else False  
 
-		receipt = Receipt.objects.create(**validate_data)
+		receipt = OwnReceipt.objects.create(**validate_data)
 
-		# if afip:
-		# 	try:
-		# 		error = receipt.validate()
-		# 	except:
-		# 		error = True
-		# 	if error:
-		# 		raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')			
+		receipt_afip = None
+		if afip:
+			validate_data['point_of_sales'] = self.get_point_of_sales(validate_data['point_of_sales'])
+			receipt_afip = Receipt.objects.create(**validate_data)
+			error = receipt_afip.validate()
+			try:
+				receipt.receipt_number = receipt_afip.receipt_number
+			except:
+				error = True
+			if error:
+				raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')			
 
 		if not receipt.receipt_number:
-			last = Receipt.objects.filter(
+			last = OwnReceipt.objects.filter(
 				receipt_type=receipt.receipt_type,
 				point_of_sales=receipt.point_of_sales,
 			).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
 			receipt.receipt_number = last + 1
-			receipt.save()
+		receipt.save()
 
-		return receipt
+		return receipt, receipt_afip

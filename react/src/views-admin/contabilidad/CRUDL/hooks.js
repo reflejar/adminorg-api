@@ -15,7 +15,6 @@ export const useDocumento = (selected, onlyRead) => {
         receipt: {
           receipt_type: 'Asiento',
           issued_date: moment(onlyRead ? (selected && selected.receipt.issued_date) : Date.now()).format('YYYY-MM-DD'),
-          point_of_sales: '0000',
         },
         debe: [],
         haber: [],        

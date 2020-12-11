@@ -62,8 +62,8 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		if self.context['sin_destinatario']:
 			destinatario = None
-			document_type = DocumentType.objects.get(code=80)
-			document_number = self.context['comunidad'].contribuyente.cuit
+			document_type = None
+			document_number = None
 		else:
 			destinatario = validated_data['destinatario']
 			document_type = destinatario.perfil.tipo_documento
@@ -97,11 +97,12 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 					receipt_data['afip'] = True
 				
 		
-		receipt = self.fields['receipt'].create(receipt_data)
+		receipt, receipt_afip = self.fields['receipt'].create(receipt_data)
 
 		documento = Documento.objects.create(
 			comunidad=self.context['comunidad'],
 			receipt=receipt,
+			receipt_afip=receipt_afip,
 			destinatario=destinatario,
 			fecha_operacion=fecha_operacion,
 			descripcion=descripcion,

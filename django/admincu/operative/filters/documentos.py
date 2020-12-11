@@ -11,6 +11,6 @@ class DocumentoFilter(FilterSet):
     class Meta:
         model = Documento
         fields = [
-            'receipt__point_of_sales__number',
+            'receipt__point_of_sales',
             'receipt__receipt_number',
         ]

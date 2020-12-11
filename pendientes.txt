@@ -1,0 +1,14 @@
+Resolver problema del login
+    Cuando no loguea se queda en loading
+Agregar taxon de "socio facturable" y campo en frontend para agregarlo
+    Modificar las logicas de captura del socio para facturar
+
+
+
+Para hacer una vez subido todo al nuevo servidor
+    Contabilidad:
+        Arreglar registros
+        Arreglar tab "informacion de titulo"
+    Tesoreria
+        Arreglar registros
+        Utilizacion de disponibilidades

@@ -1,5 +1,8 @@
 import React, { useCallback } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { 
+  connect, 
+  // useDispatch 
+} from 'react-redux';
 
 // Components
 import Spinner from '../../../../components/spinner/spinner';
@@ -32,8 +35,6 @@ const Reporte = ({ getDataReporte, onClose }) => {
   const handleSubmit = useCallback((event) => {
     event.preventDefault();
     setLoading(true);
-
-    filtro.fechas.forEach(f => console.log(f));
     
     getDataReporte(filtro)
       .then(() => {
@@ -55,7 +56,7 @@ const Reporte = ({ getDataReporte, onClose }) => {
 
   return (
     <form className='credito-invoice container' onSubmit={handleSubmit}>
-      {console.log(filtro)}
+      {/* {console.log(filtro)} */}
       
       <Tipo 
         update={false}

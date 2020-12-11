@@ -7,11 +7,11 @@ class CreditoModelSerializer(OperacionModelSerializer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		fields = Operacion()._meta
-		self.fields['cantidad'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0.01, allow_null=True)
+		self.fields['cantidad'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0, allow_null=True)
 		self.fields['periodo'] = serializers.ModelField(model_field=fields.get_field("fecha_indicativa"))
 		self.fields['fecha_gracia'] = serializers.ModelField(model_field=fields.get_field("fecha_gracia"), allow_null=True)
 		self.fields['fecha_vencimiento'] = serializers.ModelField(model_field=fields.get_field("fecha_vencimiento"), allow_null=True)
-		if self.context['retrieve']:
+		if 'retrieve' in self.context.keys():
 			self.fields['destinatario'] = serializers.CharField(max_length=200, read_only=True)
 			self.fields['concepto'] = serializers.CharField(max_length=200, read_only=True)
 		else:

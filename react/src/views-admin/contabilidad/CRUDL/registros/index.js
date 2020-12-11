@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 // Components
 import { Row, Col, Button } from 'reactstrap';
-import {BookOpen, AlignJustify, TrendingUp} from "react-feather";
+import {BookOpen, AlignJustify} from "react-feather";
 import MinimalStatistics from "../../../../components/cards/minimalStatisticsCard2";
 
 import Clientes from '../../../CRUDL/cliente/L';
@@ -15,17 +15,14 @@ import './index.scss';
 
 const options = [
   {
-    nombre: "Sumas y Saldos",
+    nombre: "Titulos",
+    icono: <AlignJustify size={56} strokeWidth="1.3" className="primary" />
+  },     
+  {
+    nombre: "Libro diario",
     icono: <BookOpen size={56} strokeWidth="1.3" className="primary" />
   },
-  {
-    nombre: "Resultados",
-    icono: <TrendingUp size={56} strokeWidth="1.3" className="primary" />
-  },
-  {
-    nombre: "Mayores",
-    icono: <AlignJustify size={56} strokeWidth="1.3" className="primary" />
-  },          
+       
 ];
 
 

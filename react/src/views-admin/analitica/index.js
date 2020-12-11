@@ -20,6 +20,7 @@ import AnaliticaOptions from "./containers/options";
 import FileReader from '../../components/fileReader';
 import InfoCarpeta from "../CRUDL/carpeta/CU";
 import InfoArchivo from "../CRUDL/archivo/CU";
+import TableData from "./tables";
 
 // import CuentaTable from './tables/cuenta';
 
@@ -40,7 +41,7 @@ class Analitica extends Component {
   }
 
   render() {
-    const { selected } = this.props;
+    const { selected, data } = this.props;
     return (
       <div className="chat-application">
         <div className="content-overlay" />
@@ -84,8 +85,10 @@ class Analitica extends Component {
         <PerfectScrollbar>
           <section className="chat-app-window">
             <TabContent activeTab={this.state.activeTab}>
+              {console.log(selected)}
               <TabPane tabId="1">
-                { selected ? (selected.ubicacion ? <FileReader file={selected.ubicacion} /> : "Por favor seleccione") : "Que desea realizar?" }
+                { data.length > 0 ? <TableData /> : (selected && selected.ubicacion && <FileReader file={selected.ubicacion} />)}
+                {/* { selected ? (selected.ubicacion ? <FileReader file={selected.ubicacion} /> : "Por favor seleccione") : "Que desea realizar?" } */}
               </TabPane>
               <TabPane tabId="2">
                 { selected ? (selected.carpeta ? <InfoArchivo selected={selected} /> : <InfoCarpeta selected={selected} />) : "Por favor seleccione" }
@@ -103,7 +106,7 @@ class Analitica extends Component {
 
 const mapStateToProps = state => ({
   selected: get(state, 'analitica.instance', {}),
-  reporte: get(state, 'analitica.reporte', {}),
+  data: get(state, 'analitica.data', {}),
 })
 
 export default connect(mapStateToProps, null)(Analitica);

@@ -64,21 +64,15 @@ const get_client = (id) => async (dispatch) => {
 };
 
 const send = (values) => async (dispatch) => {
-  let vinculaciones = [];
+  // let vinculaciones = [];
 
-  if (Array.isArray(values.inquilino) && values.inquilino.length > 0) {
-    vinculaciones = [...vinculaciones, ...values.inquilino.map((x) => ({
-      definicion: 'inquilino',
-      cuenta_vinculada: x.value
-    }))];
-  }
+  // if (Array.isArray(values.inquilino) && values.inquilino.length > 0) {
+  //   vinculaciones = [...vinculaciones, ...values.inquilino.map((x) => ({
+  //     definicion: 'inquilino',
+  //     cuenta_vinculada: x.value
+  //   }))];
+  // }
 
-  if (Array.isArray(values.propietario) && values.propietario.length > 0) {
-    vinculaciones = [...vinculaciones, ...values.propietario.map((x) => ({
-      definicion: 'propietario',
-      cuenta_vinculada: x.value
-    }))];
-  }
 
   let payload = {
     titulo: values.titulo,
@@ -100,7 +94,6 @@ const send = (values) => async (dispatch) => {
         provincia: values.domicilio_provincia
       },
     },
-    vinculaciones
   };
 
   let response;

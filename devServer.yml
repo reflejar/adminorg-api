@@ -53,6 +53,33 @@ services:
       - 3000:3000
     command: npm start
 
+  celeryworker:
+    <<: *django
+    image: admincu_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: admincu_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: admincu_local_flower
+    ports:
+      - "5555:5555"
+    command: /start-flower
+
   # Nginx lo puso oscar
   # nginx:
   #   image: nginx:latest
@@ -63,3 +90,4 @@ services:
   #     - ./frontend/build:/var/www/frontend
   #   depends_on:
   #     - react
+  

@@ -22,10 +22,10 @@ const csvValidations = Yup.object({
     .string('Destinantario debe ser un texto valido')
     .test('len', 'Destinatario debe ser valido', val => val.length > 0)
     .required('Destinantario es requerido'),
-  ingreso: Yup
-    .string('ingreso debe ser un texto valido')
-    .test('len', 'Ingreso debe ser valido', val => val.length > 0)
-    .required('ingreso es requerido'),
+  concepto: Yup
+    .string('concepto debe ser un texto valido')
+    .test('len', 'Concepto debe ser valido', val => val.length > 0)
+    .required('concepto es requerido'),
   periodo: Yup
     .string('periodo debe ser una fecha valida')
     .test('date', 'fecha de gracia debe ser una fecha valida', val => moment(new Date(val)).isValid())
@@ -43,10 +43,13 @@ const csvValidations = Yup.object({
   monto: Yup
     .number('Monto debe ser un numero valido')
     .moreThan(-1, 'Monto debe ser un numero mayor que cero (0)')
-    .required('Monto es requerido')
+    .required('Monto es requerido'),
+  cantidad: Yup
+    .number('Cantidad debe ser un numero valido')
+    .moreThan(-1, 'Cantidad debe ser un numero mayor que cero (0)')
 });
 
-const tableHeaders = ['Destinatario', 'Ingreso', 'Periodo', 'Detalle', 'Fecha V', 'Fecha G', 'Monto'];
+const tableHeaders = ['Destinatario', 'Concepto', 'Periodo', 'Detalle', 'Fecha V', 'Fecha G', 'Cantidad', 'Monto'];
 
 const initialState = {
   selectedRows: [],
@@ -59,27 +62,30 @@ const initialState = {
   data: [
     {
       monto: 0,
+      cantidad:0,
       detalle: '',
       destinatario: null,
-      ingreso: 0,
+      concepto: 0,
       periodo: moment().format('YYYY-MM-D'),
       fecha_gracia: moment().format('YYYY-MM-D'),
       fecha_vencimiento: moment().format('YYYY-MM-D')
     },
     {
       monto: 0,
+      cantidad:0,
       detalle: '',
       destinatario: null,
-      ingreso: 0,
+      concepto: 0,
       periodo: moment().format('YYYY-MM-D'),
       fecha_gracia: moment().format('YYYY-MM-D'),
       fecha_vencimiento: moment().format('YYYY-MM-D')
     },
     {
       monto: 0,
+      cantidad:0,
       detalle: '',
       destinatario: null,
-      ingreso: 0,
+      concepto: 0,
       periodo: moment().format('YYYY-MM-D'),
       fecha_gracia: moment().format('YYYY-MM-D'),
       fecha_vencimiento: moment().format('YYYY-MM-D')
@@ -102,15 +108,26 @@ const Preconceptos = ({ onClose }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const mappedNewPreconceptos = newPreconceptos.map((x) => ({
-      destinatario: x.destinatario,
-      monto: x.monto,
-      ingreso: x.ingreso,
-      detalle: x.detalle,
-      periodo: x.periodo,
-      fecha_gracia: x['fecha g'] || null,
-      fecha_vencimiento: x['fecha v'] || null
-    }));
+    const mappedNewPreconceptos = newPreconceptos.map((x) => {
+      let destinatario = "";
+      if (x.destinatario.charAt(0) === "#") {
+        const cleanDominio = x.destinatario.substring(1);
+        destinatario = get(dominios.find((val) => val.full_name.toString().toLowerCase() === cleanDominio.toLowerCase()), "id", "");
+      } else {
+        destinatario = get(clients.find((val) => val.full_name.toLowerCase() === x.destinatario.toLowerCase()), "id", "");
+      }
+
+      return ({
+        destinatario: destinatario,
+        monto: x.monto,
+        cantidad: x.cantidad,
+        concepto: get(ingresos.find((val) => val.full_name.toLowerCase() === x.concepto.toLowerCase()), "id", ""),
+        detalle: x.detalle,
+        periodo: x.periodo,
+        fecha_gracia: x['fecha g'] || null,
+        fecha_vencimiento: x['fecha v'] || null
+      })
+    });
 
     dispatch(preconceptosActions.post(mappedNewPreconceptos))
       .then(onClose);
@@ -178,7 +195,7 @@ const Preconceptos = ({ onClose }) => {
               let value = row[key];
 
               // Edge case casting
-              if (loweredKey === 'monto') {
+              if (loweredKey === 'monto' || loweredKey === "cantidad") {
                 value = Number(value);
               }
 
@@ -214,23 +231,36 @@ const Preconceptos = ({ onClose }) => {
 
       // All relational fields (e.g destinatario, expensa) match correctly and their ids exists
       csvArr.forEach((row, index) => {
-        const { destinatario, ingreso } = row;
+        const { destinatario, concepto } = row;
 
-        // The inserted 'ingreso' exists
-        const matchedIngreso = ingresos.some((val) => val.nombre.toLowerCase() === ingreso);
-        if (!matchedIngreso) {
-          error = `Ingreso "${ingreso}" no encontrado`;
+        // The inserted 'concepto' exists
+        const matchedConcepto = ingresos.some((val) => val.nombre.toLowerCase() === concepto.toLowerCase());
+        if (!matchedConcepto) {
+          error = `Concepto "${concepto}" no encontrado`;
           isWrong = true;
           errorRowLine = index + 1;
           return;
         }
+        if (destinatario.charAt(0) === "#") {
+          const cleanDominio = destinatario.substring(1);
+          const matchedDominio = dominios.some((val) => val.full_name.toString().toLowerCase() === cleanDominio.toLowerCase());
+          if (!matchedDominio) {
+            error = `Dominio "${destinatario}" no encontrado`;
+            isWrong = true;
+            errorRowLine = index + 1;
+            return;
+  
+          }
+        } else {
+          const matchedClient = clients.some((val) => val.full_name.toLowerCase() === destinatario.toLowerCase());
+          if (!matchedClient) {
+            error = `Cliente "${destinatario}" no encontrado`;
+            isWrong = true;
+            errorRowLine = index + 1;
+            return;
 
-        const matchedClient = clients.some((val) => val.full_name.toLowerCase() === destinatario.toLowerCase());
-        if (!matchedClient) {
-          error = `Cliente "${destinatario}" no encontrado`;
-          isWrong = true;
-          errorRowLine = index + 1;
-          return;
+        }
+
 
         }
       });
@@ -248,8 +278,6 @@ const Preconceptos = ({ onClose }) => {
   }
 
   const { loading, result, fileDropzone } = state;
-
-  console.log(csvErrorLine);
 
   if (!loading && result) {
     return (
@@ -284,7 +312,7 @@ const Preconceptos = ({ onClose }) => {
           </h4>
         )}
 
-        {preconceptos.length > 0 && (
+        {(preconceptos.length || newPreconceptos.length) > 0 && (
           <Table>
             <thead>
               <tr>
@@ -299,15 +327,18 @@ const Preconceptos = ({ onClose }) => {
 
             <tbody>
               {[...preconceptos, ...newPreconceptos].map((row, index) => {
-                let destinatario = get(clients.find((x) => x.id === row.destinatario), 'perfil.nombre', '');
+                let destinatario = get(clients.find((x) => x.id === row.destinatario), 'full_name', '');
                 if (!destinatario) {
-                  destinatario = get(dominios.find((x) => x.id === row.destinatario), 'nombre', '');
+                  destinatario = get(dominios.find((x) => x.id === row.destinatario), 'full_name', '');
+                  if (destinatario) {
+                    destinatario = "#" + destinatario
+                  }
                 }
 
-                const ingreso = get(ingresos.find((x) => x.id === row.ingreso), 'nombre', '');
+                const concepto = get(ingresos.find((x) => x.id === row.concepto), 'nombre', '');
 
                 return (
-                  <tr key={index}>
+                  <tr className={row.id ? "" : "warning"} key={index}>
                     <td>
                       <FormGroup check style={{ display: 'flex' }}>
                         <Label check>
@@ -320,11 +351,12 @@ const Preconceptos = ({ onClose }) => {
                       </FormGroup>
                     </td>
                     <td>{destinatario || row.destinatario}</td>
-                    <td>{ingreso || row.ingreso}</td>
+                    <td>{concepto || row.concepto}</td>
                     <td>{row.periodo}</td>
                     <td>{row.detalle}</td>
                     <td>{row.fecha_vencimiento || row['fecha v']}</td>
                     <td>{row.fecha_gracia || row['fecha g']}</td>
+                    <td>{row.cantidad}</td>
                     <td>{row.monto}</td>
                   </tr>
                 )

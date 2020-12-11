@@ -7,7 +7,7 @@ import get from 'lodash/get';
 import { useDispatch } from 'react-redux';
 import { archivosActions } from '../../../redux/actions/archivos';
 import { toastr } from "react-redux-toastr";
-import {ImportFileDropzone} from '../../../components/dropzone/ImportFileDropzone';
+//import {ImportFileDropzone} from '../../../components/dropzone/ImportFileDropzone';
 
 import Spinner from '../../../components/spinner/spinner';
 import { useCarpetas } from '../../../utility/hooks/dispatchers';
