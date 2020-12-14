@@ -74,6 +74,27 @@ const send = (values) => async (dispatch) => {
     return response
   };
 
+  const send_bulk = (values) => async (dispatch) => {
+
+    let payload = values.map(x => ({
+      nombre: x.nombre,
+      titulo: x.titulo,
+      taxon: x.taxon,
+    }))
+  
+    let response;
+    
+    response = await Service.post(apiEndpoint, payload);
+    if (response) {
+      await dispatch(get_all());
+      response.result = 'success'
+    } else {
+      response = {
+        result: 'error'
+      }
+    }
+    return response
+  };
 
 
 export const cajasActions = {
@@ -81,4 +102,5 @@ export const cajasActions = {
     search,
     select,
     send,
+    send_bulk,
 }

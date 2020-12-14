@@ -95,9 +95,49 @@ const send = (values) => async (dispatch) => {
     return response
   };
 
+
+  const send_bulk = (values) => async (dispatch) => {
+
+    let payload = values.map(x => ({
+      titulo: x.titulo,
+      perfil: {
+        nombre: x.nombre,
+        apellido: x.apellido,
+        razon_social: x.razon_social,
+        tipo_documento: x.tipo_documento,
+        numero_documento: x.numero_documento,
+        fecha_nacimiento: x.fecha_nacimiento ? x.fecha_nacimiento : null,
+        es_extranjero: x.es_extranjero,
+        mail: x.mail,
+        telefono: x.telefono,
+        domicilio: {
+          localidad: x.domicilio_localidad,
+          calle: x.domicilio_calle,
+          numero: x.domicilio_numero,
+          provincia: x.domicilio_provincia
+        },
+      },
+      retiene: []
+    }))
+  
+    let response;
+    
+    response = await Service.post(apiEndpoint, payload);
+    if (response) {
+      await dispatch(get_all());
+      response.result = 'success'
+    } else {
+      response = {
+        result: 'error'
+      }
+    }
+    return response
+  };  
+
 export const proveedoresActions = {
     get_all,
     send,
+    send_bulk,
     search,
     select,
 }

@@ -12,7 +12,7 @@ import { useTitulos } from "../../../utility/hooks/dispatchers";
 
 // Styles
 import { Table, Alert } from 'reactstrap';
-import { clientesActions } from '../../../redux/actions/clientes';
+import { proveedoresActions } from '../../../redux/actions/proveedores';
 
 const csvValidations = Yup.object({
   nombre: Yup
@@ -65,19 +65,19 @@ const tableHeaders = [
 const M = ({ onClose }) => {
   const [csvError, setCSVError] = useState();
   const [csvErrorLine, setCSVErrorLine] = useState();
-  const [newClientes, setNewClientes] = useState([]);
+  const [newProveedores, setNewProveedores] = useState([]);
   const [titulos, loadingTitulos] = useTitulos(true);
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const mappedNewClientes = newClientes.map((x) => ({
+    const mappedNewProveedores = newProveedores.map((x) => ({
         ...x,
         razon_social: x['razon social'],
         tipo_documento: x['tipo documento'],
         numero_documento: x['numero documento'],
-        fecha_nacimiento: moment(x['fecha nacimiento']).format('YYYY-MM-D') || null,
+        fecha_nacimiento: moment().format('YYYY-MM-D') || null,
         domicilio_provincia: x['provincia'],
         domicilio_localidad: x['localidad'],
         domicilio_calle: x['calle'],
@@ -85,7 +85,7 @@ const M = ({ onClose }) => {
         titulo: get(titulos.find((val) => val.full_name.toLowerCase() === x.titulo.toLowerCase()), "id", ""),
       }));
 
-    dispatch(clientesActions.send_bulk(mappedNewClientes))
+    dispatch(proveedoresActions.send_bulk(mappedNewProveedores))
       .then(onClose);
   }
 
@@ -166,7 +166,7 @@ const M = ({ onClose }) => {
 
       // Success! >)
 
-      setNewClientes(csvArr);
+      setNewProveedores(csvArr);
     };
   }
 
@@ -182,7 +182,7 @@ const M = ({ onClose }) => {
     <>
       <form onSubmit={handleSubmit}>
 
-        {(newClientes.length) > 0 && (
+        {(newProveedores.length) > 0 && (
           <Table responsive>
             <thead>
               <tr>
@@ -193,7 +193,7 @@ const M = ({ onClose }) => {
             </thead>
 
             <tbody>
-              {[...newClientes].map((row, index) => {
+              {[...newProveedores].map((row, index) => {
 
                 return (
                   <tr className={row.id ? "" : "warning"} key={index}>
@@ -236,7 +236,7 @@ const M = ({ onClose }) => {
             <button
               type='submit'
               className='btn btn-primary'
-              disabled={newClientes.length === 0}
+              disabled={newProveedores.length === 0}
             >
               Guardar
             </button>

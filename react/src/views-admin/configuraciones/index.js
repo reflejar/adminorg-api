@@ -25,10 +25,15 @@ import Descuentos from "./containers/tablas/descuentos";
 import Cliente from "../CRUDL/cliente/CU";
 import ClienteMasivo from "../CRUDL/cliente/M";
 import Dominio from "../CRUDL/dominio/CU";
+import DominioMasivo from "../CRUDL/dominio/M";
 import Proveedor from "../CRUDL/proveedor/CU";
+import ProveedorMasivo from "../CRUDL/proveedor/M";
 import Caja from "../CRUDL/caja/CU";
+import CajaMasivo from "../CRUDL/caja/M";
 import Ingreso from "../CRUDL/ingreso/CU";
+import IngresoMasivo from "../CRUDL/ingreso/M";
 import Gasto from "../CRUDL/gasto/CU";
+import GastoMasivo from "../CRUDL/gasto/M";
 import Interes from "../CRUDL/interes/CU";
 import Descuento from "../CRUDL/descuento/CU";
 
@@ -60,35 +65,35 @@ const Configuraciones = ({selected}) => {
   const modals = (editItem) => ({
       cliente: {
         individual: <Cliente onClose={setModal} selected={editItem ? item : null} />,
-        masivo: <ClienteMasivo onClose={setModal} />
+        masivo: <ClienteMasivo onClose={() => toggle("masivo")} />
       },
       dominio: {
         individual: <Dominio onClose={setModal} selected={editItem ? item : null} />,
-        masivo: "Dominios"
+        masivo: <DominioMasivo onClose={() => toggle("masivo")} />
       },
       proveedor: {
         individual: <Proveedor onClose={setModal} selected={editItem ? item : null} />,
-        masivo: "Proveedores"
+        masivo: <ProveedorMasivo onClose={() => toggle("masivo")} />
       },
       caja: {
         individual: <Caja onClose={setModal} selected={editItem ? item : null} />,
-        masivo: "Cajitas"
+        masivo: <CajaMasivo onClose={() => toggle("masivo")} />
       },
       ingreso: {
         individual: <Ingreso onClose={setModal} selected={editItem ? item : null} />,
-        masivo: "Ingreso"
+        masivo: <IngresoMasivo onClose={() => toggle("masivo")} />
       },
       gasto: {
         individual: <Gasto onClose={setModal} selected={editItem ? item : null} />,
-        masivo: "Gasto"
+        masivo: <GastoMasivo onClose={() => toggle("masivo")} />
       },
       interes: {
         individual: <Interes onClose={setModal} selected={editItem ? item : null} />,
-        masivo: "No se puede"
+        masivo: "No es posible realizar importacion de las metodologias de intereses"
       },
       descuento: {
         individual: <Descuento onClose={setModal} selected={editItem ? item : null} />,
-        masivo: "No se puede"
+        masivo: "No es posible realizar importacion de las metodologias de descuento"
       },
     })
   

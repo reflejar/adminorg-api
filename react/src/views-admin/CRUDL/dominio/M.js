@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import moment from 'moment';
 import get from 'lodash/get';
 import * as Yup from 'yup';
 import csvtojson from 'csvtojson';
@@ -9,83 +8,85 @@ import { useDispatch } from 'react-redux';
 import Spinner from '../../../components/spinner/spinner';
 import { ImportFileDropzone } from '../../../components/dropzone/ImportFileDropzone';
 import { useTitulos } from "../../../utility/hooks/dispatchers";
+import { useClientes } from "../../../utility/hooks/dispatchers"
 
 // Styles
 import { Table, Alert } from 'reactstrap';
-import { clientesActions } from '../../../redux/actions/clientes';
+import { dominiosActions } from '../../../redux/actions/dominios';
 
 const csvValidations = Yup.object({
-  nombre: Yup
-    .string('Nombre debe ser un texto valido')
-    .required('Nombre es requerido'),
-  apellido: Yup
-    .string('Apellido debe ser un texto valido')
-    .required('Apellido es requerido'),    
-  "razon social": Yup
-    .string('Razon Social debe ser un texto valido'),
-  "tipo documento": Yup
-    .string('Tipo Documento debe ser un texto valido')
-    .required('Tipo Documento es requerido'),
-  "numero documento": Yup
-    .number('Numero Documento debe ser un numero valido')
-    .moreThan(-1, 'Numero Documento debe ser un numero mayor que cero (0)')
-    .required('Numero Documento es requerido'),
-  "fecha nacimiento": Yup
-    .string('Fecha de nacimiento debe ser una fecha valida'),
-    // .test('date', 'Fecha de nacimiento debe ser una fecha valida', val => moment(new Date(val)).isValid())
-  mail: Yup
-    .string('Email debe ser una cuenta valida')
-    .email("Email invalido")
-    .required('Email es requerido'),    
-  telefono: Yup
-    .number('Telefono debe ser un numero valido')
+  numero: Yup
+    .number('Numero debe ser un numero valido')
+    .positive()
+    .required('Numero es requerido'),
+  propietario: Yup
+    .string('Propietario debe ser un socio valido'),
+  inquilino: Yup
+    .string('Inquilino debe ser un socio valido'),
+  "superficie total": Yup
+    .number('Superficie total debe ser un numero valido')
+    .transform((value, originalValue) => originalValue.trim() === "" ? null: value)
+    .nullable(),
+  "superficie cubierta": Yup
+    .number('Superficie cubierta debe ser un numero valido')
     .transform((value, originalValue) => originalValue.trim() === "" ? null: value)
     .nullable(),
   provincia: Yup
-    .string('Provincia debe ser un texto valido')
-    .required('Provincia es requerido'),    
+    .string("Provincia debe ser un texto valida"),
   localidad: Yup
-    .string('Localidad debe ser un texto valido'),
+    .string("Localidad debe ser un texto valido"),
   calle: Yup
-    .string('Calle debe ser un texto valido'),
-  numero: Yup
-    .number('Numero debe ser un numero valido')
+    .string("Calle debe ser un texto valido"),
+  "numero calle": Yup
+    .number('Numero de calle debe ser un numero valido')
+    .transform((value, originalValue) => originalValue.trim() === "" ? null: value)
     .nullable(),
+  piso: Yup
+    .string("Piso debe ser un texto valido"),
+  manzana: Yup
+    .string("Manzana debe ser un texto valido"),
+  oficina: Yup
+    .string("Oficina debe ser un texto valido"),
+  sector: Yup
+    .string("Sector debe ser un texto valido"),
+  torre: Yup
+    .string("Torre debe ser un texto valido"),
+  parcela: Yup
+    .string("Parcela debe ser un texto valido"),
+  catastro: Yup
+    .string("Catastro debe ser un texto valido"),
   titulo: Yup
     .string('Titulo debe ser un texto valido')
     .required('Titulo es requerido'),
 });
 
 const tableHeaders = [
-    'Nombre', 'Apellido', 'Razon Social', 'Tipo Documento', 
-    'Numero Documento', 'Fecha Nacimiento', 'Mail', 'Telefono', 
-    'Provincia', 'Localidad', 'Calle', 'Numero', 'Titulo'
+    'Numero', 'Propietario', 'Inquilino', 'Superficie Total', 'Superficie Cubierta', 
+    'Provincia', 'Localidad', 'Calle', 'Numero Calle', 'Piso',
+    'Manzana', 'Oficina', 'Sector', 'Torre', 'Parcela', 'Catastro', 'Titulo'
 ];
+
 
 const M = ({ onClose }) => {
   const [csvError, setCSVError] = useState();
   const [csvErrorLine, setCSVErrorLine] = useState();
-  const [newClientes, setNewClientes] = useState([]);
+  const [newDominios, setNewDominios] = useState([]);
   const [titulos, loadingTitulos] = useTitulos(true);
+  const [clientes, loadingClientes] = useClientes();
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const mappedNewClientes = newClientes.map((x) => ({
+    const mappedNewClientes = newDominios.map((x) => ({
         ...x,
-        razon_social: x['razon social'],
-        tipo_documento: x['tipo documento'],
-        numero_documento: x['numero documento'],
-        fecha_nacimiento: moment(x['fecha nacimiento']).format('YYYY-MM-D') || null,
-        domicilio_provincia: x['provincia'],
-        domicilio_localidad: x['localidad'],
-        domicilio_calle: x['calle'],
-        domicilio_numero: x['numero'],
+        numero_calle: x['numero calle'],
+        propietario: get(clientes.find((val) => val.full_name.toLowerCase() === x.propietario.toLowerCase()), "id", ""),
+        inquilino: get(clientes.find((val) => val.full_name.toLowerCase() === x.inquilino.toLowerCase()), "id", ""),
         titulo: get(titulos.find((val) => val.full_name.toLowerCase() === x.titulo.toLowerCase()), "id", ""),
       }));
 
-    dispatch(clientesActions.send_bulk(mappedNewClientes))
+    dispatch(dominiosActions.send_bulk(mappedNewClientes))
       .then(onClose);
   }
 
@@ -108,11 +109,6 @@ const M = ({ onClose }) => {
             return keys.reduce((acc, key) => {
               const loweredKey = key.toLowerCase();
               let value = row[key];
-
-              // Edge case casting
-              if (loweredKey === 'numero' || loweredKey === "numero documento") {
-                value = Number(value);
-              }
 
               return { ...acc, [loweredKey]: value };
             }, {});
@@ -146,7 +142,22 @@ const M = ({ onClose }) => {
 
       // All relational fields (e.g destinatario, expensa) match correctly and their ids exists
       csvArr.forEach((row, index) => {
-        const { titulo } = row;
+        const { titulo, propietario, inquilino } = row;
+        const matchedPropietario = clientes.some((val) => val.full_name.toLowerCase() === propietario.toLowerCase());
+        if (!matchedPropietario) {
+          error = `Propietario "${propietario}" no encontrado`;
+          isWrong = true;
+          errorRowLine = index + 1;
+          return;
+        }
+
+        const matchedInquilino = clientes.some((val) => val.full_name.toLowerCase() === inquilino.toLowerCase());
+        if (!matchedInquilino) {
+          error = `Inquilino "${inquilino}" no encontrado`;
+          isWrong = true;
+          errorRowLine = index + 1;
+          return;
+        }
 
         // The inserted 'titulo' exists
         const matchedTitulo = titulos.some((val) => val.nombre.toLowerCase() === titulo.toLowerCase());
@@ -166,11 +177,12 @@ const M = ({ onClose }) => {
 
       // Success! >)
 
-      setNewClientes(csvArr);
+      setNewDominios(csvArr);
     };
   }
 
-  if (loadingTitulos) {
+
+  if (loadingTitulos || loadingClientes) {
     return (
       <div className='loading-modal'>
         <Spinner />
@@ -182,7 +194,7 @@ const M = ({ onClose }) => {
     <>
       <form onSubmit={handleSubmit}>
 
-        {(newClientes.length) > 0 && (
+        {(newDominios.length) > 0 && (
           <Table responsive>
             <thead>
               <tr>
@@ -193,22 +205,27 @@ const M = ({ onClose }) => {
             </thead>
 
             <tbody>
-              {[...newClientes].map((row, index) => {
+              {[...newDominios].map((row, index) => {
+
 
                 return (
                   <tr className={row.id ? "" : "warning"} key={index}>
-                    <td>{row.nombre}</td>
-                    <td>{row.apellido}</td>
-                    <td>{row['razon social']}</td>
-                    <td>{row['tipo documento']}</td>
-                    <td>{row['numero documento']}</td>
-                    <td>{row['fecha nacimiento']}</td>
-                    <td>{row.email}</td>
-                    <td>{row.telefono}</td>
+                    <td>{row.numero}</td>
+                    <td>{row.propietario}</td>
+                    <td>{row.inquilino}</td>
+                    <td>{row["superficie total"]}</td>
+                    <td>{row["superficie cubierta"]}</td>
                     <td>{row.provincia}</td>
                     <td>{row.localidad}</td>
                     <td>{row.calle}</td>
-                    <td>{row.numero}</td>
+                    <td>{row["numero calle"]}</td>
+                    <td>{row.piso}</td>
+                    <td>{row.manzana}</td>
+                    <td>{row.oficina}</td>
+                    <td>{row.sector}</td>
+                    <td>{row.torre}</td>
+                    <td>{row.parcela}</td>
+                    <td>{row.catastro}</td>
                     <td>{row.titulo}</td>
                   </tr>
                 )
@@ -236,7 +253,7 @@ const M = ({ onClose }) => {
             <button
               type='submit'
               className='btn btn-primary'
-              disabled={newClientes.length === 0}
+              disabled={newDominios.length === 0}
             >
               Guardar
             </button>

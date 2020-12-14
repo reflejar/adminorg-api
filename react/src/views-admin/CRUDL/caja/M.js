@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import moment from 'moment';
 import get from 'lodash/get';
 import * as Yup from 'yup';
 import csvtojson from 'csvtojson';
@@ -9,83 +8,42 @@ import { useDispatch } from 'react-redux';
 import Spinner from '../../../components/spinner/spinner';
 import { ImportFileDropzone } from '../../../components/dropzone/ImportFileDropzone';
 import { useTitulos } from "../../../utility/hooks/dispatchers";
-
+import { cajas } from '../../../utility/options/taxones';
 // Styles
 import { Table, Alert } from 'reactstrap';
-import { clientesActions } from '../../../redux/actions/clientes';
+import { cajasActions } from '../../../redux/actions/cajas';
 
 const csvValidations = Yup.object({
   nombre: Yup
     .string('Nombre debe ser un texto valido')
     .required('Nombre es requerido'),
-  apellido: Yup
-    .string('Apellido debe ser un texto valido')
-    .required('Apellido es requerido'),    
-  "razon social": Yup
-    .string('Razon Social debe ser un texto valido'),
-  "tipo documento": Yup
-    .string('Tipo Documento debe ser un texto valido')
-    .required('Tipo Documento es requerido'),
-  "numero documento": Yup
-    .number('Numero Documento debe ser un numero valido')
-    .moreThan(-1, 'Numero Documento debe ser un numero mayor que cero (0)')
-    .required('Numero Documento es requerido'),
-  "fecha nacimiento": Yup
-    .string('Fecha de nacimiento debe ser una fecha valida'),
-    // .test('date', 'Fecha de nacimiento debe ser una fecha valida', val => moment(new Date(val)).isValid())
-  mail: Yup
-    .string('Email debe ser una cuenta valida')
-    .email("Email invalido")
-    .required('Email es requerido'),    
-  telefono: Yup
-    .number('Telefono debe ser un numero valido')
-    .transform((value, originalValue) => originalValue.trim() === "" ? null: value)
-    .nullable(),
-  provincia: Yup
-    .string('Provincia debe ser un texto valido')
-    .required('Provincia es requerido'),    
-  localidad: Yup
-    .string('Localidad debe ser un texto valido'),
-  calle: Yup
-    .string('Calle debe ser un texto valido'),
-  numero: Yup
-    .number('Numero debe ser un numero valido')
-    .nullable(),
+  tipo: Yup
+    .string('Tipo de Disponibilidad debe ser un texto valido')
+    .required('Titulo es requerido'),
   titulo: Yup
     .string('Titulo debe ser un texto valido')
     .required('Titulo es requerido'),
 });
 
-const tableHeaders = [
-    'Nombre', 'Apellido', 'Razon Social', 'Tipo Documento', 
-    'Numero Documento', 'Fecha Nacimiento', 'Mail', 'Telefono', 
-    'Provincia', 'Localidad', 'Calle', 'Numero', 'Titulo'
-];
+const tableHeaders = ['Nombre', 'Tipo', 'Titulo'];
 
 const M = ({ onClose }) => {
   const [csvError, setCSVError] = useState();
   const [csvErrorLine, setCSVErrorLine] = useState();
-  const [newClientes, setNewClientes] = useState([]);
+  const [newCajas, setNewCajas] = useState([]);
   const [titulos, loadingTitulos] = useTitulos(true);
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const mappedNewClientes = newClientes.map((x) => ({
+    const mappedNewCajas = newCajas.map((x) => ({
         ...x,
-        razon_social: x['razon social'],
-        tipo_documento: x['tipo documento'],
-        numero_documento: x['numero documento'],
-        fecha_nacimiento: moment(x['fecha nacimiento']).format('YYYY-MM-D') || null,
-        domicilio_provincia: x['provincia'],
-        domicilio_localidad: x['localidad'],
-        domicilio_calle: x['calle'],
-        domicilio_numero: x['numero'],
+        taxon: x.tipo,
         titulo: get(titulos.find((val) => val.full_name.toLowerCase() === x.titulo.toLowerCase()), "id", ""),
       }));
 
-    dispatch(clientesActions.send_bulk(mappedNewClientes))
+    dispatch(cajasActions.send_bulk(mappedNewCajas))
       .then(onClose);
   }
 
@@ -108,11 +66,6 @@ const M = ({ onClose }) => {
             return keys.reduce((acc, key) => {
               const loweredKey = key.toLowerCase();
               let value = row[key];
-
-              // Edge case casting
-              if (loweredKey === 'numero' || loweredKey === "numero documento") {
-                value = Number(value);
-              }
 
               return { ...acc, [loweredKey]: value };
             }, {});
@@ -146,12 +99,10 @@ const M = ({ onClose }) => {
 
       // All relational fields (e.g destinatario, expensa) match correctly and their ids exists
       csvArr.forEach((row, index) => {
-        const { titulo } = row;
-
-        // The inserted 'titulo' exists
-        const matchedTitulo = titulos.some((val) => val.nombre.toLowerCase() === titulo.toLowerCase());
-        if (!matchedTitulo) {
-          error = `Titulo "${titulo}" no encontrado`;
+        const { tipo } = row;
+        const matchedTipo = cajas.some((val) => val.nombre.toLowerCase() === tipo.toLowerCase());
+        if (!matchedTipo) {
+          error = `Tipo "${tipo}" no es posible`;
           isWrong = true;
           errorRowLine = index + 1;
           return;
@@ -166,7 +117,7 @@ const M = ({ onClose }) => {
 
       // Success! >)
 
-      setNewClientes(csvArr);
+      setNewCajas(csvArr);
     };
   }
 
@@ -182,7 +133,7 @@ const M = ({ onClose }) => {
     <>
       <form onSubmit={handleSubmit}>
 
-        {(newClientes.length) > 0 && (
+        {(newCajas.length) > 0 && (
           <Table responsive>
             <thead>
               <tr>
@@ -193,22 +144,12 @@ const M = ({ onClose }) => {
             </thead>
 
             <tbody>
-              {[...newClientes].map((row, index) => {
+              {[...newCajas].map((row, index) => {
 
                 return (
                   <tr className={row.id ? "" : "warning"} key={index}>
                     <td>{row.nombre}</td>
-                    <td>{row.apellido}</td>
-                    <td>{row['razon social']}</td>
-                    <td>{row['tipo documento']}</td>
-                    <td>{row['numero documento']}</td>
-                    <td>{row['fecha nacimiento']}</td>
-                    <td>{row.email}</td>
-                    <td>{row.telefono}</td>
-                    <td>{row.provincia}</td>
-                    <td>{row.localidad}</td>
-                    <td>{row.calle}</td>
-                    <td>{row.numero}</td>
+                    <td>{row.tipo}</td>
                     <td>{row.titulo}</td>
                   </tr>
                 )
@@ -236,7 +177,7 @@ const M = ({ onClose }) => {
             <button
               type='submit'
               className='btn btn-primary'
-              disabled={newClientes.length === 0}
+              disabled={newCajas.length === 0}
             >
               Guardar
             </button>

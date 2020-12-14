@@ -87,11 +87,49 @@ const send = (values) => async (dispatch) => {
     return response
 };
 
+const send_bulk = (values) => async (dispatch) => {
 
+    let payload = values.map(x => ({
+        titulo: x.titulo,
+        nombre: x.nombre,
+        numero: x.numero,
+        propietario:x.propietario,
+        inquilino:x.inquilino,
+        domicilio: {
+            provincia: x.provincia,
+            localidad: x.localidad,
+            calle: x.calle,
+            numero: x.numero_calle,
+            piso: x.piso,
+            oficina: x.oficina,
+            sector: x.sector,
+            torre: x.torre,
+            manzana: x.manzana,
+            parcela: x.parcela,
+            catastro: x.catastro,
+            superficie_total: x.superficie_total,
+            superficie_cubierta: x.superficie_cubierta,
+        },
+    }))
+  
+    let response;
+    
+    response = await Service.post(apiEndpoint, payload);
+    if (response) {
+      await dispatch(get_all());
+      response.result = 'success'
+    } else {
+      response = {
+        result: 'error'
+      }
+    }
+    return response
+  };
 
 export const dominiosActions = {
     get_all,
     search,
     select,
     send,
+    send_bulk
 }

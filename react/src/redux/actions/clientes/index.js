@@ -64,15 +64,6 @@ const get_client = (id) => async (dispatch) => {
 };
 
 const send = (values) => async (dispatch) => {
-  // let vinculaciones = [];
-
-  // if (Array.isArray(values.inquilino) && values.inquilino.length > 0) {
-  //   vinculaciones = [...vinculaciones, ...values.inquilino.map((x) => ({
-  //     definicion: 'inquilino',
-  //     cuenta_vinculada: x.value
-  //   }))];
-  // }
-
 
   let payload = {
     titulo: values.titulo,
@@ -122,10 +113,50 @@ const send = (values) => async (dispatch) => {
   return response
 };
 
+const send_bulk = (values) => async (dispatch) => {
+
+  let payload = values.map(x => ({
+    titulo: x.titulo,
+    taxon: 'socio',
+    perfil: {
+      nombre: x.nombre,
+      apellido: x.apellido,
+      razon_social: x.razon_social,
+      tipo_documento: x.tipo_documento,
+      numero_documento: x.numero_documento,
+      fecha_nacimiento: x.fecha_nacimiento ? x.fecha_nacimiento : null,
+      es_extranjero: x.es_extranjero,
+      mail: x.mail,
+      telefono: x.telefono,
+      domicilio: {
+        localidad: x.domicilio_localidad,
+        calle: x.domicilio_calle,
+        numero: x.domicilio_numero,
+        provincia: x.domicilio_provincia
+      },
+    },
+  }))
+
+  let response;
+  
+  response = await Service.post(apiEndpoint, payload);
+  if (response) {
+    await dispatch(get_all());
+    response.result = 'success'
+  } else {
+    response = {
+      result: 'error'
+    }
+  }
+  return response
+};
+
+
 export const clientesActions = {
   get_all,
   get_client,
   send,
+  send_bulk,
   search,
   select,
 };
