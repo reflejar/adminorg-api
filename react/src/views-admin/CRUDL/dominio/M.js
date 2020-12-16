@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import get from 'lodash/get';
 import * as Yup from 'yup';
 import csvtojson from 'csvtojson';
+import { CSVLink } from "react-csv";
 import { useDispatch } from 'react-redux';
 
 // Components
@@ -11,13 +12,12 @@ import { useTitulos } from "../../../utility/hooks/dispatchers";
 import { useClientes } from "../../../utility/hooks/dispatchers"
 
 // Styles
-import { Table, Alert } from 'reactstrap';
+import { Table } from 'reactstrap';
 import { dominiosActions } from '../../../redux/actions/dominios';
 
 const csvValidations = Yup.object({
   numero: Yup
-    .number('Numero debe ser un numero valido')
-    .positive()
+    .string('Numero debe ser un texto valido')
     .required('Numero es requerido'),
   propietario: Yup
     .string('Propietario debe ser un socio valido'),
@@ -68,8 +68,7 @@ const tableHeaders = [
 
 
 const M = ({ onClose }) => {
-  const [csvError, setCSVError] = useState();
-  const [csvErrorLine, setCSVErrorLine] = useState();
+  const [csvError, setCSVError] = useState([]);
   const [newDominios, setNewDominios] = useState([]);
   const [titulos, loadingTitulos] = useTitulos(true);
   const [clientes, loadingClientes] = useClientes();
@@ -92,8 +91,7 @@ const M = ({ onClose }) => {
 
   const handleDrop = (files) => {
     // Cleaning previous errors
-    setCSVError(null);
-    setCSVErrorLine(null);
+    setCSVError([]);
 
     const reader = new FileReader();
 
@@ -116,68 +114,55 @@ const M = ({ onClose }) => {
           })
         });
 
-      // Preconceptos CSV validations
-      let isWrong = false;
-      let error = null;
-      let errorRowLine;
+      let errors = [];
 
-      // All fields are present and of a valid type (Running with YUP validations)
       (await Promise.all(csvArr.map((row) => csvValidations.validate(row).catch((err) => err))))
         .find((val, index) => {
           if (val && val.errors && val.errors.length && val.message) {
-            isWrong = true;
-            error = val.message;
-            errorRowLine = index + 1;
-            return true;
+            const error = val.message;
+            const errorRowLine = index + 1;
+            const message = `Linea ${errorRowLine}: ` + error;
+            errors.push(message)
           }
-
-          return false;
         });
 
-      if (isWrong) {
-        setCSVError(error);
-        setCSVErrorLine(errorRowLine);
-        return;
-      }
 
       // All relational fields (e.g destinatario, expensa) match correctly and their ids exists
       csvArr.forEach((row, index) => {
         const { titulo, propietario, inquilino } = row;
-        const matchedPropietario = clientes.some((val) => val.full_name.toLowerCase() === propietario.toLowerCase());
-        if (!matchedPropietario) {
-          error = `Propietario "${propietario}" no encontrado`;
-          isWrong = true;
-          errorRowLine = index + 1;
-          return;
+        if (propietario) {
+          const matchedPropietario = clientes.some((val) => val.full_name.toLowerCase() === propietario.toLowerCase());
+          if (!matchedPropietario) {
+            const error = `Propietario "${propietario}" no encontrado`;
+            const errorRowLine = index + 1;
+            const message = `Linea ${errorRowLine}: ` + error;    
+            errors.push(message)
+          }
         }
-
-        const matchedInquilino = clientes.some((val) => val.full_name.toLowerCase() === inquilino.toLowerCase());
-        if (!matchedInquilino) {
-          error = `Inquilino "${inquilino}" no encontrado`;
-          isWrong = true;
-          errorRowLine = index + 1;
-          return;
+        if (inquilino) {
+          const matchedInquilino = clientes.some((val) => val.full_name.toLowerCase() === inquilino.toLowerCase());
+          if (!matchedInquilino) {
+            const error = `Inquilino "${inquilino}" no encontrado`;
+            const errorRowLine = index + 1;
+            const message = `Linea ${errorRowLine}: ` + error;    
+            errors.push(message)
+          }
         }
-
-        // The inserted 'titulo' exists
         const matchedTitulo = titulos.some((val) => val.nombre.toLowerCase() === titulo.toLowerCase());
         if (!matchedTitulo) {
-          error = `Titulo "${titulo}" no encontrado`;
-          isWrong = true;
-          errorRowLine = index + 1;
-          return;
+          const error = `Titulo "${titulo}" no encontrado`;
+          const errorRowLine = index + 1;
+          const message = `Linea ${errorRowLine}: ` + error;    
+          errors.push(message)
         }
       });
 
-      if (isWrong) {
-        setCSVError(error);
-        setCSVErrorLine(errorRowLine);
+      if (errors.length > 0) {
+        setCSVError([...errors]);
         return;
+      } else {
+        setNewDominios(csvArr);
       }
-
-      // Success! >)
-
-      setNewDominios(csvArr);
     };
   }
 
@@ -207,7 +192,6 @@ const M = ({ onClose }) => {
             <tbody>
               {[...newDominios].map((row, index) => {
 
-
                 return (
                   <tr className={row.id ? "" : "warning"} key={index}>
                     <td>{row.numero}</td>
@@ -234,15 +218,18 @@ const M = ({ onClose }) => {
           </Table>
         )}
 
-        {csvError && (
-          <Alert color="danger" style={{ color: 'white', margin: '0 3em' }}>
-            {csvError} {csvErrorLine && `(Linea ${csvErrorLine})`}
-          </Alert>
-        )}
+        <ul>
+          {csvError.length > 0 && csvError.map(error => (
+              <li className="danger">{error} </li>
+          ))}
+        </ul>
 
           <div className="ImportFileDropzone__container">
             <ImportFileDropzone onDrop={handleDrop} />
           </div>
+          <p>
+            Necesitas un archivo modelo? podes hacer <CSVLink filename={"importador-dominios.csv"} data={[tableHeaders]}>click aqui</CSVLink>
+          </p>          
 
         <div className='row'>
           <div className='col-12 text-right'>

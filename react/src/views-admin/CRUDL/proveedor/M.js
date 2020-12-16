@@ -3,15 +3,17 @@ import moment from 'moment';
 import get from 'lodash/get';
 import * as Yup from 'yup';
 import csvtojson from 'csvtojson';
+import { CSVLink } from "react-csv";
 import { useDispatch } from 'react-redux';
 
 // Components
 import Spinner from '../../../components/spinner/spinner';
 import { ImportFileDropzone } from '../../../components/dropzone/ImportFileDropzone';
 import { useTitulos } from "../../../utility/hooks/dispatchers";
+import { tipo_documentos } from '../../../utility/options/documentos';
 
 // Styles
-import { Table, Alert } from 'reactstrap';
+import { Table } from 'reactstrap';
 import { proveedoresActions } from '../../../redux/actions/proveedores';
 
 const csvValidations = Yup.object({
@@ -28,11 +30,10 @@ const csvValidations = Yup.object({
     .required('Tipo Documento es requerido'),
   "numero documento": Yup
     .number('Numero Documento debe ser un numero valido')
-    .moreThan(-1, 'Numero Documento debe ser un numero mayor que cero (0)')
+    .positive("Numero de documento debe ser un numero valido")
     .required('Numero Documento es requerido'),
   "fecha nacimiento": Yup
     .string('Fecha de nacimiento debe ser una fecha valida'),
-    // .test('date', 'Fecha de nacimiento debe ser una fecha valida', val => moment(new Date(val)).isValid())
   mail: Yup
     .string('Email debe ser una cuenta valida')
     .email("Email invalido")
@@ -63,8 +64,7 @@ const tableHeaders = [
 ];
 
 const M = ({ onClose }) => {
-  const [csvError, setCSVError] = useState();
-  const [csvErrorLine, setCSVErrorLine] = useState();
+  const [csvError, setCSVError] = useState([]);
   const [newProveedores, setNewProveedores] = useState([]);
   const [titulos, loadingTitulos] = useTitulos(true);
   const dispatch = useDispatch();
@@ -77,7 +77,7 @@ const M = ({ onClose }) => {
         razon_social: x['razon social'],
         tipo_documento: x['tipo documento'],
         numero_documento: x['numero documento'],
-        fecha_nacimiento: moment().format('YYYY-MM-D') || null,
+        fecha_nacimiento: moment(x['fecha nacimiento']).format('YYYY-MM-DD') || null,
         domicilio_provincia: x['provincia'],
         domicilio_localidad: x['localidad'],
         domicilio_calle: x['calle'],
@@ -91,8 +91,7 @@ const M = ({ onClose }) => {
 
   const handleDrop = (files) => {
     // Cleaning previous errors
-    setCSVError(null);
-    setCSVErrorLine(null);
+    setCSVError([]);
 
     const reader = new FileReader();
 
@@ -120,53 +119,44 @@ const M = ({ onClose }) => {
           })
         });
 
-      // Preconceptos CSV validations
-      let isWrong = false;
-      let error = null;
-      let errorRowLine;
+      let errors = [];
 
-      // All fields are present and of a valid type (Running with YUP validations)
       (await Promise.all(csvArr.map((row) => csvValidations.validate(row).catch((err) => err))))
         .find((val, index) => {
           if (val && val.errors && val.errors.length && val.message) {
-            isWrong = true;
-            error = val.message;
-            errorRowLine = index + 1;
-            return true;
+            const error = val.message;
+            const errorRowLine = index + 1;
+            const message = `Linea ${errorRowLine}: ` + error;
+            errors.push(message)
           }
-
-          return false;
         });
-
-      if (isWrong) {
-        setCSVError(error);
-        setCSVErrorLine(errorRowLine);
-        return;
-      }
 
       // All relational fields (e.g destinatario, expensa) match correctly and their ids exists
       csvArr.forEach((row, index) => {
         const { titulo } = row;
-
         // The inserted 'titulo' exists
         const matchedTitulo = titulos.some((val) => val.nombre.toLowerCase() === titulo.toLowerCase());
         if (!matchedTitulo) {
-          error = `Titulo "${titulo}" no encontrado`;
-          isWrong = true;
-          errorRowLine = index + 1;
-          return;
+          const error = `Titulo "${titulo}" no encontrado`;
+          const errorRowLine = index + 1;
+          const message = `Linea ${errorRowLine}: ` + error;    
+          errors.push(message)
         }
+        const matchedTipoDoc = tipo_documentos.some((val) => val.toLowerCase() === row["tipo documento"].toLowerCase());
+        if (!matchedTipoDoc) {
+          const error = `Tipo de Documento "${row["tipo documento"]}" no encontrado`;
+          const errorRowLine = index + 1;
+          const message = `Linea ${errorRowLine}: ` + error;    
+          errors.push(message)
+        }        
       });
 
-      if (isWrong) {
-        setCSVError(error);
-        setCSVErrorLine(errorRowLine);
+      if (errors.length > 0) {
+        setCSVError([...errors]);
         return;
+      } else {
+        setNewProveedores(csvArr);
       }
-
-      // Success! >)
-
-      setNewProveedores(csvArr);
     };
   }
 
@@ -216,16 +206,18 @@ const M = ({ onClose }) => {
             </tbody>
           </Table>
         )}
-
-        {csvError && (
-          <Alert color="danger" style={{ color: 'white', margin: '0 3em' }}>
-            {csvError} {csvErrorLine && `(Linea ${csvErrorLine})`}
-          </Alert>
-        )}
+        <ul>
+          {csvError.length > 0 && csvError.map(error => (
+              <li className="danger">{error} </li>
+          ))}
+        </ul>
 
           <div className="ImportFileDropzone__container">
             <ImportFileDropzone onDrop={handleDrop} />
           </div>
+          <p>
+            Necesitas un archivo modelo? podes hacer <CSVLink filename={"importador-proveedores.csv"} data={[tableHeaders]}>click aqui</CSVLink>
+          </p>          
 
         <div className='row'>
           <div className='col-12 text-right'>
