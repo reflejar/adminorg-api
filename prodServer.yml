@@ -1,6 +1,6 @@
 version: '3'
 
-# Esta exactamente igual que devServer.yml
+# Esta exactamente igual que devServer.yml. Excepto react
 volumes:
   local_postgres_data: {}
   local_postgres_data_backups: {}
@@ -28,7 +28,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: admincu_local_django
+    image: admincu_production_django
     depends_on:
       - postgres
     volumes:
@@ -45,9 +45,9 @@ services:
   react:
     build:
       context: .
-      dockerfile: ./compose/local/react/Dockerfile
+      dockerfile: ./compose/production/react/Dockerfile
     stdin_open: true 
-    image: admincu_local_react
+    image: admincu_production_react
     volumes:
       - ./react:/app/frontend
     ports:
@@ -56,7 +56,7 @@ services:
 
   celeryworker:
     <<: *django
-    image: admincu_local_celeryworker
+    image: admincu_production_celeryworker
     depends_on:
       - redis
       - postgres
@@ -66,7 +66,7 @@ services:
 
   celerybeat:
     <<: *django
-    image: admincu_local_celerybeat
+    image: admincu_production_celerybeat
     depends_on:
       - redis
       - postgres
@@ -76,7 +76,7 @@ services:
 
   flower:
     <<: *django
-    image: admincu_local_flower
+    image: admincu_production_flower
     ports:
       - "5555:5555"
     command: /start-flower

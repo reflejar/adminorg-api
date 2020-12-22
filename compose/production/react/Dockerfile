@@ -1,19 +1,20 @@
-FROM node:14.1-alpine AS builder
+# Pull de la imagen base
+FROM node:14.1-alpine
 
+# Seteado del directorio de trabajo
 WORKDIR /app/frontend
-COPY ./react/package.json ./react/package-lock.json ./
-RUN npm install
 
-ENV PATH="./node_modules/.bin:$PATH"
+# PATH de node_modules
+ENV PATH /app/frontend/node_modules/.bin:$PATH
 
-COPY . ./
-RUN npm run build
+# Copiado del package e instalacion
+COPY ./react/package.json ./
+COPY ./react/package-lock.json ./
+RUN npm --verbose install
 
-# FROM nginx:1.17-alpine
-# RUN apk --no-cache add curl
-# RUN curl -L https://github.com/a8m/envsubst/releases/download/v1.1.0/envsubst-`uname -s`-`uname -m` -o envsubst && \
-#     chmod +x envsubst && \
-#     mv envsubst /usr/local/bin
-# COPY ./nginx.config /etc/nginx/nginx.template
-# CMD ["/bin/sh", "-c", "envsubst < /etc/nginx/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
-# COPY --from=builder /app/frontend/build /usr/share/nginx/html
+# # # Instalacion
+# COPY ./react ./
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
