@@ -7,7 +7,7 @@ class ProveedorViewSet(BaseViewSet):
 		Crea, actualiza, detalla y lista Documentos.
 	"""
 
-	documentos = list(ReceiptType.objects.all().values_list('code', flat=True))
+	#documentos = list(ReceiptType.objects.all().values_list('code', flat=True))
 	serializer_class = OrigenProveedorModelSerializer
 	causante = 'proveedor'
 
