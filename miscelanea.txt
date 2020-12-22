@@ -22,6 +22,7 @@ cd react/
 
 sudo docker-compose -f devServer.yml build postgres
 sudo docker-compose -f devServer.yml build redis
+# Aqui hay que comentar algunas lineas (la ultima vez fueron 11 archivos) que consultan a la base de datos sin que la misma esté migrada
 sudo docker-compose -f devServer.yml build django
 sudo docker-compose -f devServer.yml run --rm django python manage.py migrate
 sudo docker-compose -f devServer.yml run --rm django python manage.py createsuperuser
