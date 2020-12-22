@@ -31,7 +31,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
     '''User View set'''
     
 
-    #queryset = User.objects.filter(is_active=True, is_verified=True)
+    queryset = User.objects.filter(is_active=True, is_verified=True)
     serializer_class = UserModelSerializer
     lookup_field = 'username'
 

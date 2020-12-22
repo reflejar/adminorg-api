@@ -26,7 +26,7 @@ class Totalidad():
 
 	def __init__(self, naturaleza, comunidad, *args, **kwargs):
 		self.comunidad = comunidad
-		#self.naturaleza = Naturaleza.objects.get(nombre=naturaleza)
+		self.naturaleza = Naturaleza.objects.get(nombre=naturaleza)
 		self.naturalezas = [self.naturaleza.nombre]
 		if self.naturaleza.nombre == "cliente":
 			self.naturalezas.append("dominio")

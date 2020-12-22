@@ -26,8 +26,8 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 		super().__init__(*args, **kwargs)
 
 		self.fields['total_amount'] = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
-		#self.fields['receipt_type'] = serializers.ChoiceField(choices=list(ReceiptType.objects.all().values_list('description', flat=True)))
-		#point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))
+		self.fields['receipt_type'] = serializers.ChoiceField(choices=list(ReceiptType.objects.all().values_list('description', flat=True)))
+		point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))
 		
 		if self.context['causante'] in ["cliente", "caja"]:
 			self.fields['point_of_sales'] = serializers.ChoiceField(choices=point_of_sales_owner)

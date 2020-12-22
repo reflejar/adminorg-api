@@ -10,7 +10,7 @@ class Exp:
 		Exportador/Importador ExP class, generador de barcode numerico.
 	"""
 
-	#clientes = set(list(Account.objects.all().values_list('app_code', flat=True)))
+	clientes = set(list(Account.objects.all().values_list('app_code', flat=True)))
 	fecha_archivo = datetime.now()
 
 	# Funciones de importacion
