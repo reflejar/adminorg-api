@@ -11,7 +11,7 @@ from admincu.users.permissions import IsAdministrativoUser
 class ComunidadViewSet(viewsets.ModelViewSet):
     '''Comunidad view set.'''
 
-    queryset = Comunidad.objects.all()
+    #queryset = Comunidad.objects.all()
     serializer_class = ComunidadModelSerializer
 
     def get_permissions(self):

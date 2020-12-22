@@ -9,7 +9,7 @@ from admincu.utils.models import Domicilio, Provincia
 class DomicilioModelSerializer(serializers.ModelSerializer):
 	'''Domicilio model serializer'''
 	
-	provincia = serializers.ChoiceField(choices=list(Provincia.objects.all().values_list('nombre', flat=True)))
+	#provincia = serializers.ChoiceField(choices=list(Provincia.objects.all().values_list('nombre', flat=True)))
 
 	class Meta:
 		model = Domicilio
