@@ -1,4 +1,4 @@
-export default (state = [], action) => {
+export default list = (state = [], action) => {
     switch (action.type) {
 
         case 'GET_INGRESOS':

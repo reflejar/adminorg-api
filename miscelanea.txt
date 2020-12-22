@@ -15,34 +15,17 @@ cd react/
     npm install
     sudo chown -R $mariano:$(id -gn $mariano) /home/mariano/.config (Esto lo solicitó react)
     npm audit fix --force
-    sudo chown -R $USER:$(id -gn $USER) /home/mariano/.config (Me lo volvio a solicitar asi que lo ejecuté literal)
+    sudo chown -R $USER:$(id -gn $USER) /home/anopa/.config (Me lo volvio a solicitar asi que lo ejecuté literal)
 
     cd ../
 
 
-sudo docker-compose -f devServer.yml build postgres
-sudo docker-compose -f devServer.yml build redis
+sudo docker-compose -f prodServer.yml build postgres
+sudo docker-compose -f prodServer.yml build redis
 # Aqui hay que comentar algunas lineas (la ultima vez fueron 11 archivos) que consultan a la base de datos sin que la misma esté migrada
-sudo docker-compose -f devServer.yml build django
-sudo docker-compose -f devServer.yml run --rm django python manage.py migrate
-sudo docker-compose -f devServer.yml run --rm django python manage.py createsuperuser
-sudo docker-compose -f devServer.yml build react
-sudo docker-compose -f devServer.yml run --rm react npm rebuild node-sass
-sudo docker-compose -f devServer.yml up
-
-
-
-Que se puedan eliminar los asientos
-Arreglar pdfs
-
-
-Agregar utilizacion de disponibilidades en proveedores
-
-Backend
-
-    Carpeta 
-        con arbol de dependencias
-        que pueda guardar mas carpetas adentro
-    
-    Analitica
-        Igual que en contabilidad
+sudo docker-compose -f prodServer.yml build django
+sudo docker-compose -f prodServer.yml run --rm django python manage.py migrate
+sudo docker-compose -f prodServer.yml run --rm django python manage.py createsuperuser
+sudo docker-compose -f prodServer.yml build react
+sudo docker-compose -f prodServer.yml run --rm react npm rebuild node-sass
+sudo docker-compose -f prodServer.yml up
