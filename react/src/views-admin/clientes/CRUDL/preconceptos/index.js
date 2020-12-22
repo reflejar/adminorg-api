@@ -3,18 +3,17 @@ import moment from 'moment';
 import get from 'lodash/get';
 import * as Yup from 'yup';
 import csvtojson from 'csvtojson';
+import { CSVLink } from "react-csv";
 
 // Components
 import Spinner from '../../../../components/spinner/spinner';
-import Response from '../../../../components/responses/responses';
 import { useDispatch } from 'react-redux';
 
 // Styles
 import './index.scss';
-import { Table, FormGroup, Label, Input, Alert } from 'reactstrap';
+import { Table, FormGroup, Label, Input } from 'reactstrap';
 import { ImportFileDropzone } from './ImportFileDropzone';
-import { usePreconceptos, useDominios, useIngresos } from '../../../../utility/hooks/dispatchers';
-import { useClientList } from '../../../../utility/hooks/selectors';
+import { usePreconceptos, useDominios, useIngresos, useClientes } from '../../../../utility/hooks/dispatchers';
 import { preconceptosActions } from '../../../../redux/actions/preconceptos';
 
 const csvValidations = Yup.object({
@@ -51,59 +50,16 @@ const csvValidations = Yup.object({
 
 const tableHeaders = ['Destinatario', 'Concepto', 'Periodo', 'Detalle', 'Fecha V', 'Fecha G', 'Cantidad', 'Monto'];
 
-const initialState = {
-  selectedRows: [],
-  fileDropzone: {
-    open: false,
-    file: null
-  },
-  loading: false,
-  result: null,
-  data: [
-    {
-      monto: 0,
-      cantidad:0,
-      detalle: '',
-      destinatario: null,
-      concepto: 0,
-      periodo: moment().format('YYYY-MM-D'),
-      fecha_gracia: moment().format('YYYY-MM-D'),
-      fecha_vencimiento: moment().format('YYYY-MM-D')
-    },
-    {
-      monto: 0,
-      cantidad:0,
-      detalle: '',
-      destinatario: null,
-      concepto: 0,
-      periodo: moment().format('YYYY-MM-D'),
-      fecha_gracia: moment().format('YYYY-MM-D'),
-      fecha_vencimiento: moment().format('YYYY-MM-D')
-    },
-    {
-      monto: 0,
-      cantidad:0,
-      detalle: '',
-      destinatario: null,
-      concepto: 0,
-      periodo: moment().format('YYYY-MM-D'),
-      fecha_gracia: moment().format('YYYY-MM-D'),
-      fecha_vencimiento: moment().format('YYYY-MM-D')
-    }
-  ]
-};
-
 const Preconceptos = ({ onClose }) => {
-  const [state, setState] = useState(initialState);
-  const [csvError, setCSVError] = useState();
-  const [csvErrorLine, setCSVErrorLine] = useState();
+  const [dropzone, setDropzone] = useState(false)
+  const [csvError, setCSVError] = useState([]);
   const [dominios, loadingDominios] = useDominios();
   const [ingresos, loadingIngresos] = useIngresos();
-  const [preconceptos, preconceptosLoading] = usePreconceptos();
+  const [clientes, loadingClientes] = useClientes();
+  const [preconceptos, loadingPreconceptos] = usePreconceptos();
   const [newPreconceptos, setNewPreconceptos] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const dispatch = useDispatch();
-  const clients = useClientList();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -114,7 +70,7 @@ const Preconceptos = ({ onClose }) => {
         const cleanDominio = x.destinatario.substring(1);
         destinatario = get(dominios.find((val) => val.full_name.toString().toLowerCase() === cleanDominio.toLowerCase()), "id", "");
       } else {
-        destinatario = get(clients.find((val) => val.full_name.toLowerCase() === x.destinatario.toLowerCase()), "id", "");
+        destinatario = get(clientes.find((val) => val.full_name.toLowerCase() === x.destinatario.toLowerCase()), "id", "");
       }
 
       return ({
@@ -156,13 +112,7 @@ const Preconceptos = ({ onClose }) => {
   }
 
   const togglefileDropzone = () => {
-    setState((oldState) => ({
-      ...oldState,
-      fileDropzone: {
-        ...oldState.fileDropzone,
-        open: !oldState.fileDropzone.open
-      }
-    }))
+    setDropzone(!dropzone)
   }
   const handleRowSelect = (index) => (event) => {
     const { checked } = event.target;
@@ -176,8 +126,7 @@ const Preconceptos = ({ onClose }) => {
 
   const handleDrop = (files) => {
     // Cleaning previous errors
-    setCSVError(null);
-    setCSVErrorLine(null);
+    setCSVError([]);
 
     const reader = new FileReader();
 
@@ -205,29 +154,20 @@ const Preconceptos = ({ onClose }) => {
           })
         });
 
-      // Preconceptos CSV validations
-      let isWrong = false;
-      let error = null;
-      let errorRowLine;
+      let errors = [];
 
       // All fields are present and of a valid type (Running with YUP validations)
       (await Promise.all(csvArr.map((row) => csvValidations.validate(row).catch((err) => err))))
         .find((val, index) => {
           if (val && val.errors && val.errors.length && val.message) {
-            isWrong = true;
-            error = val.message;
-            errorRowLine = index + 1;
+            const error = val.message;
+            const errorRowLine = index + 1;
+            const message = `Linea ${errorRowLine}: ` + error;
+            errors.push(message);
             return true;
           }
-
           return false;
         });
-
-      if (isWrong) {
-        setCSVError(error);
-        setCSVErrorLine(errorRowLine);
-        return;
-      }
 
       // All relational fields (e.g destinatario, expensa) match correctly and their ids exists
       csvArr.forEach((row, index) => {
@@ -236,66 +176,44 @@ const Preconceptos = ({ onClose }) => {
         // The inserted 'concepto' exists
         const matchedConcepto = ingresos.some((val) => val.nombre.toLowerCase() === concepto.toLowerCase());
         if (!matchedConcepto) {
-          error = `Concepto "${concepto}" no encontrado`;
-          isWrong = true;
-          errorRowLine = index + 1;
-          return;
+          const error = `Concepto "${concepto}" no encontrado`;
+          const errorRowLine = index + 1;
+          const message = `Linea ${errorRowLine}: ` + error;    
+          errors.push(message);
         }
         if (destinatario.charAt(0) === "#") {
           const cleanDominio = destinatario.substring(1);
           const matchedDominio = dominios.some((val) => val.full_name.toString().toLowerCase() === cleanDominio.toLowerCase());
           if (!matchedDominio) {
-            error = `Dominio "${destinatario}" no encontrado`;
-            isWrong = true;
-            errorRowLine = index + 1;
-            return;
+            const error = `Dominio "${destinatario}" no encontrado`;
+            const errorRowLine = index + 1;
+            const message = `Linea ${errorRowLine}: ` + error;    
+            errors.push(message);
   
           }
         } else {
-          const matchedClient = clients.some((val) => val.full_name.toLowerCase() === destinatario.toLowerCase());
+          const matchedClient = clientes.some((val) => val.full_name.toLowerCase() === destinatario.toLowerCase());
           if (!matchedClient) {
-            error = `Cliente "${destinatario}" no encontrado`;
-            isWrong = true;
-            errorRowLine = index + 1;
-            return;
-
+            const error = `Cliente "${destinatario}" no encontrado`;
+            const errorRowLine = index + 1;
+            const message = `Linea ${errorRowLine}: ` + error;
+            errors.push(message);
         }
 
 
         }
       });
 
-      if (isWrong) {
-        setCSVError(error);
-        setCSVErrorLine(errorRowLine);
+      if (errors.length > 0) {
+        setCSVError([...errors]);
         return;
+      } else {
+        setNewPreconceptos(csvArr);
       }
-
-      // Success! >)
-
-      setNewPreconceptos(csvArr);
     };
   }
 
-  const { loading, result, fileDropzone } = state;
-
-  if (!loading && result) {
-    return (
-      <div className='loading-modal'>
-        <Response
-          type={result}
-          message={
-            // Change this messages depending on the backend error
-            result === 'success'
-              ? 'Cargado con exito'
-              : 'Hubo un error. Por favor intente mas tarde'
-          }
-        />
-      </div>
-    )
-  }
-
-  if (loading || preconceptosLoading || loadingDominios || loadingIngresos) {
+  if (loadingPreconceptos || loadingDominios || loadingIngresos || loadingClientes) {
     return (
       <div className='loading-modal'>
         <Spinner />
@@ -327,7 +245,7 @@ const Preconceptos = ({ onClose }) => {
 
             <tbody>
               {[...preconceptos, ...newPreconceptos].map((row, index) => {
-                let destinatario = get(clients.find((x) => x.id === row.destinatario), 'full_name', '');
+                let destinatario = get(clientes.find((x) => x.id === row.destinatario), 'full_name', '');
                 if (!destinatario) {
                   destinatario = get(dominios.find((x) => x.id === row.destinatario), 'full_name', '');
                   if (destinatario) {
@@ -365,16 +283,21 @@ const Preconceptos = ({ onClose }) => {
           </Table>
         )}
 
-        {csvError && (
-          <Alert color="danger" style={{ color: 'white', margin: '0 3em' }}>
-            {csvError} {csvErrorLine && `(Linea ${csvErrorLine})`}
-          </Alert>
-        )}
+        <ul>
+          {csvError.length > 0 && csvError.map(error => (
+              <li className="danger">{error} </li>
+          ))}
+        </ul>
 
-        {fileDropzone.open && (
+        {dropzone && (
+          <>
           <div className="ImportFileDropzone__container">
             <ImportFileDropzone onDrop={handleDrop} />
           </div>
+            <p>
+            Necesitas un archivo modelo? podes hacer <CSVLink filename={"importador-clientes.csv"} data={[tableHeaders]}>click aqui</CSVLink>
+          </p>            
+          </>
         )}
 
         <div className='row'>
@@ -397,7 +320,7 @@ const Preconceptos = ({ onClose }) => {
               className='btn btn-warning mr-2'
               onClick={togglefileDropzone}
             >
-              importar
+              Importar
             </button>
 
             <button

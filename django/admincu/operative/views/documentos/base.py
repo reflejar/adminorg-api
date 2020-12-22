@@ -83,7 +83,6 @@ class BaseViewSet(custom_viewsets.CustomModelViewSet):
 				serializer_context['receipt_type'] = ReceiptType.objects.get(
 					description=self.request.data['receipt']['receipt_type'] 
 				)
-			serializer_context['retrieve'] = False
 
 		return serializer_context
 

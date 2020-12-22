@@ -3,7 +3,6 @@ import { Row, Col, Table, Input } from "reactstrap";
 import { useTitulos } from "../../../../utility/hooks/dispatchers";
 
 import { Folder, ChevronRight, ChevronDown, FileText } from "react-feather";
-import { receiptTypes } from '../_options/receipt_types';
 
 
 const recursiveSelection = (arr) => {
@@ -29,7 +28,7 @@ const Item = ({ indentation, item, children, titulos, filterChildren, selection,
     
     const SelectItem = () => {
       selection.some(selected => item === selected) ?
-      setSelection(selection.filter(x => x != item)) :
+      setSelection(selection.filter(x => x !== item)) :
       (item.hasOwnProperty("supertitulo") ? setSelection([...selection, ...recursiveSelection([item, ...filterChildren(titulos, item)])]): setSelection([...selection, item]))
     }
 
@@ -93,7 +92,7 @@ const filterCuentas = (arr) => {
 
 const Cuentas = ({ filtro, setFiltro, disableInOptions }) => {
   
-  const [titulos, loadingTitulos] = useTitulos(true);
+  const [titulos] = useTitulos(true);
   const [selection, setSelection] = useState([]);
   const [all, setAll] = useState(false)
 
@@ -105,7 +104,7 @@ const Cuentas = ({ filtro, setFiltro, disableInOptions }) => {
     if (filtro.tipo === "sys") {
       setSelection(recursiveSelection(titulos))
     }    
-  }, [filtro.tipo])
+  }, [filtro.tipo, titulos])
 
 
   const SelectAll = () => {

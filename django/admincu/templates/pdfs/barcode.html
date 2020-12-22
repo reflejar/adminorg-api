@@ -1,13 +1,13 @@
-{% if documento.receipt %}
-  {% if documento.receipt.validation %}
+{% if documento.receipt_afip %}
+  {% if documento.receipt_afip.validation %}
     <footer>
         <div class="{% if items.count > 25 %}footer_varias_paginas{% else %}footer_recibo{% endif %}">
         <hr>
           <div class="cae">
             <strong>CAE</strong>
-            {{ documento.receipt.validation.cae }}
+            {{ documento.receipt_afip.validation.cae }}
             <strong>Vto CAE</strong>
-            {{ documento.receipt.validation.cae_expiration|date:"d/m/Y" }}
+            {{ documento.receipt_afip.validation.cae_expiration|date:"d/m/Y" }}
           </div>
           <div class="barcode">
             <img src="data:image/png;base64,{{barcode}}">

@@ -16,7 +16,7 @@ class UtilizacionModelSerializer(OperacionModelSerializer):
 					), 
 				allow_null=False
 			)
-		if self.context['retrieve']:
+		if 'retrieve' in self.context.keys():
 			self.fields['origen'] = EstadoDeudasModelSerializer(context=self.context, read_only=True, many=False)
 			self.context['fecha'] = date.today()
 			self.context['condonacion'] = False

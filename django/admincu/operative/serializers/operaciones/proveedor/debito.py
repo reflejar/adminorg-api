@@ -19,10 +19,14 @@ class DebitoModelSerializer(OperacionModelSerializer):
 					), 
 				allow_null=False
 			)
-		if self.context['retrieve']:
+		
+		if 'retrieve' in self.context.keys():
 			self.fields['documento'] = DocumentoModelSerializer(read_only=True, context=self.context, many=False)
 			self.fields['documento'].fields.pop('destinatario')
 			self.fields['documento'].fields.pop('fecha_operacion')
 			self.fields['documento'].fields.pop('descripcion')
 			self.fields['documento'].fields['receipt'].fields.pop('total_amount')
 			self.fields['documento'].fields['receipt'].fields['formatted_number'] = serializers.CharField(max_length=150, read_only=True)
+
+
+

@@ -333,9 +333,9 @@ class Documento(BaseModel):
 				return 			
 
 
-		# if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
-		# 	generator = ReceiptBarcodeGenerator(self.receipt)
-		# 	barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
+		if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
+			generator = ReceiptBarcodeGenerator(self.receipt_afip)
+			barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
 		
 		archivo = []
 		enteros = []

@@ -123,7 +123,9 @@ const M = ({ onClose }) => {
             const errorRowLine = index + 1;
             const message = `Linea ${errorRowLine}: ` + error;
             errors.push(message)
+            return true;
           }
+          return false;
         });
 
 

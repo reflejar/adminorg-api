@@ -128,7 +128,9 @@ const M = ({ onClose }) => {
             const errorRowLine = index + 1;
             const message = `Linea ${errorRowLine}: ` + error;
             errors.push(message)
+            return true;
           }
+          return false;
         });
 
       // All relational fields (e.g destinatario, expensa) match correctly and their ids exists

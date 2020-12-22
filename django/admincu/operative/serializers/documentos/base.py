@@ -88,7 +88,7 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 			'service_end': receipt_data['issued_date'],
 			'expiration_date': receipt_data['issued_date'],
 			'currency': CurrencyType.objects.get(code="PES"),
-			'concept': ConceptType.objects.get(description="productos y servicios")
+			'concept': ConceptType.objects.get(description="Productos y servicios")
 		})
 		
 		if self.context['comunidad'].contribuyente.certificate: # Si la comunidad tiene un certificado en el contribuyente de afip
