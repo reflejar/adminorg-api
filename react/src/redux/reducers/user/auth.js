@@ -2,7 +2,7 @@ import { LOGIN, LOGOUT } from '../../types';
 
 const INITIAL_STATE = JSON.parse(localStorage.getItem('user'));
 
-export default (state = INITIAL_STATE, action) => {
+const auth = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case LOGIN:
             return {
@@ -18,3 +18,4 @@ export default (state = INITIAL_STATE, action) => {
             return state;
     }
 }
+export default auth
