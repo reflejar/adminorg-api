@@ -1,4 +1,4 @@
-const list = (state = [], action) => {
+const lista = (state = [], action) => {
     switch (action.type) {
 
         case 'GET_TITULOS':
@@ -11,4 +11,4 @@ const list = (state = [], action) => {
             return state;
     }
 }
-export default list
+export default lista
