@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 // Styles
 import './index.scss';
 import { Table, FormGroup, Label, Input } from 'reactstrap';
-import { ImportFileDropzone } from './ImportFileDropzone';
+import { ImportFileDropzone } from '../../../../components/dropzone/ImportFileDropzone';
 import { usePreconceptos, useDominios, useIngresos, useClientes } from '../../../../utility/hooks/dispatchers';
 import { preconceptosActions } from '../../../../redux/actions/preconceptos';
 
@@ -33,12 +33,12 @@ const csvValidations = Yup.object({
     .string('detalle debe ser un texto valido'),
   'fecha v': Yup
     .string('fecha de vencimiento debe ser una fecha valida')
-    .test('date', 'fecha de vencimiento debe ser una fecha valida', val => moment(new Date(val)).isValid())
-    .required('fecha de vencimiento es requerido'),
+    .test('date', 'fecha de vencimiento debe ser una fecha valida', val => moment(new Date(val)).isValid()),
+    // .required('fecha de vencimiento es requerido'),
   'fecha g': Yup
     .string('fecha de gracia debe ser una fecha valida')
-    .test('date', 'fecha de gracia debe ser una fecha valida', val => moment(new Date(val)).isValid())
-    .required('fecha de gracia es requerido'),
+    .test('date', 'fecha de gracia debe ser una fecha valida', val => moment(new Date(val)).isValid()),
+    // .required('fecha de gracia es requerido'),
   monto: Yup
     .number('Monto debe ser un numero valido')
     .moreThan(-1, 'Monto debe ser un numero mayor que cero (0)')
@@ -295,7 +295,7 @@ const Preconceptos = ({ onClose }) => {
             <ImportFileDropzone onDrop={handleDrop} />
           </div>
             <p>
-            Necesitas un archivo modelo? podes hacer <CSVLink filename={"importador-clientes.csv"} data={[tableHeaders]}>click aqui</CSVLink>
+            Necesitas un archivo modelo? podes hacer <CSVLink filename={"importador-preconceptos.csv"} data={[tableHeaders]}>click aqui</CSVLink>
           </p>            
           </>
         )}

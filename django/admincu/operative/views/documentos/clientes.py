@@ -44,21 +44,19 @@ class ClienteViewSet(BaseViewSet):
 	@action(detail=False, methods=['post'])
 	def masivo(self, request, *args, **kwargs):
 		""" Facturacion masiva """
-		if kwargs['code'] != "11":
-			raise serializers.ValidationError("Solo se pueden realizar Facturas C en forma masiva")
-		
+
 		self.causante = "cliente-masivo"
 		self.sin_destinatario = True
 
 		serializer = MasivoClienteModelSerializer(data=request.data, context=self.get_serializer_context())
 		serializer.is_valid(raise_exception=True)
-		context = {
-			'causante': self.causante,
-			'sin_destinatario': self.sin_destinatario,
-			'receipt_type': self.kwargs['code'],
-			'comunidad': self.comunidad.id,
-		}
-
-		facturacion_masiva.delay(data=request.data, context=context)
+		serializer.save()
+		# context = {
+		# 	'causante': self.causante,
+		# 	'sin_destinatario': self.sin_destinatario,
+		# 	'receipt_type': request.data['receipt']['receipt_type'],
+		# 	'comunidad': self.comunidad.id,
+		# }
+		# facturacion_masiva.delay(data=request.data, context=context)
 		
 		return Response(status=status.HTTP_201_CREATED)

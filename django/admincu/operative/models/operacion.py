@@ -115,35 +115,36 @@ class Operacion(BaseModel):
 		except:
 			return calculo
 
-		if fecha > self.fecha_vencimiento:
-			pagos = list(self.pagos_capital(fecha=fecha))
-			tasa = interes.monto
-			reconocimiento = interes.reconocimiento
-			base_calculo = interes.base_calculo
-			
-			if pagos: # No se deberan restar los intereses pagados (salvo los posteriores que no hayan alcanzado el capital).
-				bruto = self.subtotal(fecha=pagos[-1].fecha) 
-				periodos = (fecha - pagos[-1].fecha).days // reconocimiento # Se utiliza como fecha para el calculo de los periodos la del ultimo pago.
-			else: # Si no se realizo pago de capital, el interes es el total desde la fecha inicial. Se debera posteriormente restar los intereses pagados.
-				bruto = self.subtotal(fecha=self.fecha_vencimiento)
-				periodos = (fecha - self.fecha_vencimiento).days // reconocimiento
+		if self.fecha_vencimiento:
+			if fecha > self.fecha_vencimiento:
+				pagos = list(self.pagos_capital(fecha=fecha))
+				tasa = interes.monto
+				reconocimiento = interes.reconocimiento
+				base_calculo = interes.base_calculo
+				
+				if pagos: # No se deberan restar los intereses pagados (salvo los posteriores que no hayan alcanzado el capital).
+					bruto = self.subtotal(fecha=pagos[-1].fecha) 
+					periodos = (fecha - pagos[-1].fecha).days // reconocimiento # Se utiliza como fecha para el calculo de los periodos la del ultimo pago.
+				else: # Si no se realizo pago de capital, el interes es el total desde la fecha inicial. Se debera posteriormente restar los intereses pagados.
+					bruto = self.subtotal(fecha=self.fecha_vencimiento)
+					periodos = (fecha - self.fecha_vencimiento).days // reconocimiento
 
-			if not reconocimiento == 1: # por si se elije un reconocimiento distinto de 1, para agararse el interes aun no generado
-				periodos += 1
-			calculo = round((bruto*tasa*periodos)/(100*base_calculo//reconocimiento), 2)
+				if not reconocimiento == 1: # por si se elije un reconocimiento distinto de 1, para agararse el interes aun no generado
+					periodos += 1
+				calculo = round((bruto*tasa*periodos)/(100*base_calculo//reconocimiento), 2)
 
-			pagos_interes = list(self.pagos_interes(fecha=fecha))
-			for pago in pagos_interes: # Se restan los intereses pagados. 
-				# credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
-				credito = Operacion.objects.filter(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
-				try: # No se restan si se ha producido un pago de capital en el asiento porque el interes es automaticamente calculado desde una fecha posterior.
-					credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
-				except: 
-					calculo = calculo + pago.valor
+				pagos_interes = list(self.pagos_interes(fecha=fecha))
+				for pago in pagos_interes: # Se restan los intereses pagados. 
+					# credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
+					credito = Operacion.objects.filter(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
+					try: # No se restan si se ha producido un pago de capital en el asiento porque el interes es automaticamente calculado desde una fecha posterior.
+						credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
+					except: 
+						calculo = calculo + pago.valor
 
 
-			if calculo < 0:
-				calculo = 0
+				if calculo < 0:
+					calculo = 0
 
 		return Decimal("%.2f" % calculo)
 		
@@ -160,12 +161,13 @@ class Operacion(BaseModel):
 		except:
 			return calculo 
 			
-		if fecha <= self.fecha_gracia:
-			if descuento.tipo == "fijo":
-				calculo = round(descuento.monto, 2)
-			else:
-				capital = self.valor
-				calculo = round(capital * descuento.monto / 100, 2)
+		if self.fecha_gracia:
+			if fecha <= self.fecha_gracia:
+				if descuento.tipo == "fijo":
+					calculo = round(descuento.monto, 2)
+				else:
+					capital = self.valor
+					calculo = round(capital * descuento.monto / 100, 2)
 		return Decimal("%.2f" % calculo)
 
 

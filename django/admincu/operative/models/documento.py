@@ -64,6 +64,7 @@ class Documento(BaseModel):
 		identifier = self.operaciones.first().asiento
 		return self.get_model('Operacion').objects.filter(
 			asiento=identifier,
+			cuenta__in=self.destinatario.grupo,
 			# vinculo__isnull=True,
 			cuenta__naturaleza__nombre__in=['cliente', 'dominio'],
 			valor__gt=0,

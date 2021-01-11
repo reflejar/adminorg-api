@@ -1,0 +1,25 @@
+.CreditosTable {
+  .CreditosTable__header {
+    display: grid;
+    grid-template-columns: .3fr repeat(5, 1fr);
+    grid-gap: 1em;
+    margin-bottom: 1em;
+  }
+
+  .CreditosTable__body {
+    overflow-y: scroll;
+    max-height: 248px;
+    padding-right: 1em;
+
+    &__row {
+      display: grid;
+      grid-template-columns: .3fr repeat(5, 1fr);
+      grid-gap: 1em;
+
+      &>.form-check {
+        margin: auto;
+        margin-top: -7px;
+      }
+    }
+  }
+}

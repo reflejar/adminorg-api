@@ -7,7 +7,7 @@ from admincu.operative.models import (
 )
 
 from admincu.operative.CU.operaciones.clientes import masivo as operacionesMasivo
-
+from admincu.taskapp.tasks import hacer_pdfs
 
 class DistribucionSerializer(serializers.Serializer):
 
@@ -52,9 +52,13 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 
 	@transaction.atomic
 	def create(self, validated_data):
+		# print(validated_data)
+		# return Documento.objects.none()
+
 		documento = Documento(
 			comunidad=self.context['comunidad'],
-			fecha_operacion=fecha_operacion,
-		)					
-		operacionesMasivo.CU(documento, validated_data).create()
-		return 
+			fecha_operacion=validated_data['fecha_operacion'],
+		)
+		list_of_docs = operacionesMasivo.CU(documento, validated_data).create()
+		hacer_pdfs.delay(list_of_docs)
+		return list_of_docs

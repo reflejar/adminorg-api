@@ -1,8 +1,9 @@
 from django.contrib import admin
 from admincu.operative.models import Cuenta, DefinicionVinculo
+from import_export.admin import ImportExportMixin
 
 
-class CuentaAdmin(admin.ModelAdmin):
+class CuentaAdmin(ImportExportMixin, admin.ModelAdmin):
 	list_display = ['__str__']
 	list_filter = ['naturaleza', 'comunidad']
 

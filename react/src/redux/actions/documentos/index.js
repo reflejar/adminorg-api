@@ -50,7 +50,9 @@ const getList = (type, params) => async (dispatch) => {
 const send = (type, payload) => async (dispatch) => {
   set(payload, 'receipt.point_of_sales', Number(payload.receipt.point_of_sales));
   let endpoint = apiEndpoint + type + "/";
-  
+  if ("distribuciones" in payload) {
+    endpoint = endpoint + "masivo/"
+  }
   if (payload.id) {
     const response = await Service.put(endpoint + payload.id + "/", payload)
     if (response.status >= 400) throw response;  
@@ -58,6 +60,8 @@ const send = (type, payload) => async (dispatch) => {
     const response = await Service.post(endpoint, payload);
     if (response.status >= 400) throw response;
   }
+
+  
 
 };
 

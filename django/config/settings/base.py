@@ -45,6 +45,7 @@ DJANGO_APPS = [
     'django_afip',
     'django_mercadopago',
     'corsheaders',
+    'import_export'
 ]
 
 THIRD_PARTY_APPS = [

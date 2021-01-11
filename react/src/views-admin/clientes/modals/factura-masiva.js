@@ -67,7 +67,7 @@ class ComprobanteMasivoModal extends Component {
     return (
       <Fragment>
         <BasicModal
-          header="Nuevo Comprobante masiva"
+          header="Nuevo Comprobante masivo"
           open={this.state.modal}
           onToggle={this.handleToggle}
           component={<ComprobanteMasivo onClose={() => this.handleToggle(false)} />}
@@ -75,7 +75,6 @@ class ComprobanteMasivoModal extends Component {
             <Button
               outline
               color="primary"
-              disabled={true}
               onClick={this.handleToggle}>
               Comprobante Masivo
             </Button>
