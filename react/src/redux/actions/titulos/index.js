@@ -60,6 +60,7 @@ const send = (values) => async (dispatch) => {
     supertitulo: values.supertitulo,
     nombre: values.nombre,
     numero: values.numero,
+    predeterminado: values.predeterminado,
   };
 
   let response;

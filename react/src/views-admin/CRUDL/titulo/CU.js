@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import { useDispatch } from 'react-redux';
 import { titulosActions } from '../../../redux/actions/titulos';
 import { toastr } from "react-redux-toastr";
+import { naturalezas } from './_options';
 
 import Spinner from '../../../components/spinner/spinner';
 import { useTitulos } from '../../../utility/hooks/dispatchers';
@@ -31,14 +32,16 @@ const CU = ({ selected, onClose }) => {
     <Formik
       enableReinitialize
       initialValues={{
-        nombre: get(selected, 'nombre', ''),
         numero: get(selected, 'numero', ''),
+        nombre: get(selected, 'nombre', ''),
+        predeterminado: get(selected, 'predeterminado', ''),
         supertitulo: get(selected, 'supertitulo', ''),
       }}
       validationSchema={Yup.object().shape({
-        nombre: Yup.string().required(empty),
         numero: Yup.number().required(empty),
-        supertitulo: Yup.number().required(empty),
+        nombre: Yup.string().required(empty),
+        predeterminado: Yup.string(),
+        supertitulo: Yup.number().nullable(true),
       })}
       onSubmit={async (values, { setSubmitting }) => {
         try {
@@ -73,14 +76,24 @@ const CU = ({ selected, onClose }) => {
                 <Label for="numero">Numero</Label>
                 <Field name="numero" id="numero" className={`form-control ${errors.numero && touched.numero && 'is-invalid'}`} />
                 {errors.numero && touched.numero ? <div className="invalid-feedback">{errors.numero}</div> : null}
-              </FormGroup>              
+              </FormGroup>         
+              <FormGroup>
+                <Label for="predeterminado">Titulo predeterminado para</Label>
+                <Field component="select" name="predeterminado" id="predeterminado" className={`form-control ${errors.predeterminado && touched.predeterminado && 'is-invalid'}`}>
+                  <option value=""> --- </option>
+                  {naturalezas.map((n, i) => {
+                    return <option key={i} value={n.id}>{n.nombre}</option>
+                  })}
+                </Field>
+                {errors.predeterminado && touched.predeterminado ? <div className="invalid-feedback">{errors.predeterminado}</div> : null}
+              </FormGroup>                   
             </Col>
             <Col sm="6">
               <h4>Dependencia</h4>
               <FormGroup>
                 <Label for="supertitulo">Rubro al que pertenece</Label>
                 <Field component="select" name="supertitulo" id="supertitulo" className={`form-control ${errors.supertitulo && touched.supertitulo && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value=""> --- </option>
                   {titulos.filter(t => t.cuentas.length === 0).map((titulo, i) => {
                     return <option key={i} value={titulo.id}>{titulo.nombre}</option>
                   })}

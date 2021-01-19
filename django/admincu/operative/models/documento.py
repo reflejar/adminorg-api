@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import base64
 from datetime import date
 from weasyprint import HTML
+from django.db.models import Max
 
 from django.db import models
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -449,6 +450,19 @@ class Documento(BaseModel):
 		self.save()
 		receipt.delete()
 		self.delete()
+
+	def chequear_numeros(self):
+		if not self.receipt.receipt_number:
+			if self.receipt_afip:
+				self.receipt.receipt_number = self.receipt_afip.receipt_number
+			else:
+				last = OwnReceipt.objects.filter(
+					receipt_type=self.receipt.receipt_type,
+					point_of_sales=self.receipt.point_of_sales,
+				).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
+				self.receipt.receipt_number = last + 1
+			self.receipt.save()		
+
 
 
 

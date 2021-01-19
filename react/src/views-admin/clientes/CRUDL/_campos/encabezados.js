@@ -3,6 +3,11 @@ import { Row } from "reactstrap";
 
 import { usePuntosDeVenta } from '../../../../utility/hooks/dispatchers';
 
+const filterTypes = (arr, afip) =>
+  afip ? 
+  arr :
+  arr.filter(t => t.id.slice(-1) !== "C")
+
 const Encabezado = ({ documento, setDocumento, errors, onlyRead, types }) => {
   const [puntos] = usePuntosDeVenta();
 
@@ -37,6 +42,7 @@ const Encabezado = ({ documento, setDocumento, errors, onlyRead, types }) => {
   
   return (
     <Row>
+
         {types && <div className='form-group col-md-2'>
           <label htmlFor='receipt_type'>Tipo:</label>
           <select
@@ -47,8 +53,7 @@ const Encabezado = ({ documento, setDocumento, errors, onlyRead, types }) => {
               disabled={onlyRead ? true : (documento.receipt.receipt_type === "Recibo X" ? true : false)}
               onChange={handleNestedFieldChange('receipt')}>
                 <option value=''>---</option>
-
-                {types.map((type) => (
+                {filterTypes(types, JSON.parse(localStorage.getItem('user')).afip).map((type) => (
                   <option value={type.id} key={type.id}>{type.nombre}</option>
                 ))}            
           </select>

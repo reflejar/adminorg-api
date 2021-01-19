@@ -21,6 +21,7 @@ import Ingresos from "./containers/tablas/ingresos";
 import Gastos from "./containers/tablas/gastos";
 import Intereses from "./containers/tablas/intereses";
 import Descuentos from "./containers/tablas/descuentos";
+import Titulos from "./containers/tablas/titulos";
 
 import Cliente from "../CRUDL/cliente/CU";
 import ClienteMasivo from "../CRUDL/cliente/M";
@@ -36,6 +37,7 @@ import Gasto from "../CRUDL/gasto/CU";
 import GastoMasivo from "../CRUDL/gasto/M";
 import Interes from "../CRUDL/interes/CU";
 import Descuento from "../CRUDL/descuento/CU";
+import Titulo from "../CRUDL/titulo/CU";
 
 
 const Configuraciones = ({selected}) => {
@@ -59,6 +61,7 @@ const Configuraciones = ({selected}) => {
     gasto: <Gastos toggle={setModal} setItem={setItem} />,
     interes: <Intereses toggle={setModal} setItem={setItem} />,
     descuento: <Descuentos toggle={setModal} setItem={setItem} />,
+    titulo: <Titulos toggle={setModal} setItem={setItem} />,
   }
 
 
@@ -95,6 +98,10 @@ const Configuraciones = ({selected}) => {
         individual: <Descuento onClose={setModal} selected={editItem ? item : null} />,
         masivo: "No es posible realizar importacion de las metodologias de descuento"
       },
+      titulo: {
+        individual: <Titulo onClose={setModal} selected={editItem ? item : null} />,
+        masivo: "No es posible realizar importacion de los titulos contables"
+      },      
     })
   
   return (

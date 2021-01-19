@@ -16,6 +16,8 @@ const get_all = () => async (dispatch) => {
       {id: "interes",full_name: "Metodologia de Intereses"},
       {id: "descuento",full_name: "Metodologia de Descuentos"},
       {id: "retencion",full_name: "Configuracion de Retenciones"},
+      {id: "",full_name: "Area Contable"},
+      {id: "titulo",full_name: "Cuentas y titulos contables"},
     ]
 
     dispatch({

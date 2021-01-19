@@ -2,6 +2,7 @@ from rest_framework import serializers
 from admincu.operative.models import (
 	Cuenta,
 	Titulo,
+	Naturaleza
 )
 
 class CuentaModelSerializer(serializers.ModelSerializer):
@@ -43,6 +44,7 @@ class TituloModelSerializer(serializers.ModelSerializer):
 		super(TituloModelSerializer, self).__init__(*args, **kwargs)
 		self.fields['supertitulo'] = serializers.PrimaryKeyRelatedField(queryset=Titulo.objects.filter(comunidad=self.context['comunidad']), allow_null=True)
 		self.fields['cuentas'] = CuentaModelSerializer(read_only=True, many=True)
+		self.fields['predeterminado'] = serializers.ChoiceField(required=True, choices=list(Naturaleza.objects.all().values_list('nombre', flat=True)))
 		
 
 
@@ -83,12 +85,12 @@ class TituloModelSerializer(serializers.ModelSerializer):
 		"""
 			No puede colocar como supertitulo a un titulo que ya tiene cuentas asociadas 
 		"""
+		if supertitulo:
+			query = supertitulo.cuenta_set.all()
 
-		query = supertitulo.cuenta_set.all()
-
-		if query:
-			raise serializers.ValidationError('No se puede seleccionar un titulo que posee cuentas asociadas')
-			
+			if query:
+				raise serializers.ValidationError('No se puede seleccionar un titulo que posee cuentas asociadas')
+				
 		return supertitulo
 
 
@@ -98,3 +100,20 @@ class TituloModelSerializer(serializers.ModelSerializer):
 			comunidad = self.context['comunidad'],
 		)
 		return titulo
+
+
+
+	def update(self, instance, validate_data):
+		"""
+			Se actualiza: Cuenta, Perfil y Domicilio.
+			Se construye un cliente completo.
+		"""
+			
+		instance.numero = validate_data['numero']
+		instance.nombre = validate_data['nombre']
+		instance.supertitulo = validate_data['supertitulo']
+		instance.predeterminado = Naturaleza.objects.get(nombre=validate_data['predeterminado'])
+		instance.save()
+
+
+		return instance

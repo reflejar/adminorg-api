@@ -8,6 +8,7 @@ const setUserDetails = (data) => {
         user: data.user,
         profile: data.perfil,
         community: data.comunidad.nombre,
+        afip: data.comunidad.afip
     }
 };
 

@@ -14,6 +14,7 @@ class Titulo(BaseModel):
 	nombre = models.CharField(max_length=100)
 	numero = models.IntegerField(blank=True, null=True)
 	supertitulo = models.ForeignKey('self', blank=True, null=True, related_name="subtitulos", on_delete=models.SET_NULL)
+	predeterminado = models.ForeignKey("operative.Naturaleza", blank=True, null=True, related_name="titulos", on_delete=models.SET_NULL)
 
 	def __str__(self):
 

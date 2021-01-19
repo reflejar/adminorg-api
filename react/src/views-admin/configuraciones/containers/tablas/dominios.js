@@ -3,7 +3,7 @@ import React from "react";
 import { useDominios, useClientes } from '../../../../utility/hooks/dispatchers';
 import Table from "./editSelectTable";
 import get from 'lodash/get';
-
+import Spinner from "../../../../components/spinner/spinner";
 
 const TableDominio = ({toggle, setItem}) => {
   
@@ -27,6 +27,10 @@ const TableDominio = ({toggle, setItem}) => {
       Header: 'Inquilino'
     },  
   ]
+
+  if (loadingClientes) {
+    return <Spinner />
+  }
 
   return (
     <div>

@@ -2,14 +2,16 @@ from datetime import date
 from django.db.models import Max
 from django_afip.models import (
 	Receipt,
-	ReceiptType
+	ReceiptType,
+	PointOfSales
 )
 from rest_framework import serializers
 
 from admincu.operative.models import (
 	Documento, 
 	Operacion,
-	Cuenta
+	Cuenta,
+	OwnReceipt
 )
 from admincu.utils.generics.functions import *
 
@@ -23,6 +25,7 @@ class CU:
 		self.identifier = randomIdentifier(Operacion, 'asiento')
 		self.fecha_operacion = documento.fecha_operacion
 		self.cobros = validated_data['cobros']
+		self.punto_de_venta = self.comunidad.contribuyente.points_of_sales.get(number=self.receipt.point_of_sales)
 
 		if self.receipt.receipt_type.code == "54":
 			self.condonacion = validated_data['condonacion']
@@ -45,13 +48,18 @@ class CU:
 		
 		self.suma_totales = 0
 		self.suma_cobros = 0
-		self.suma_descuentos = 0
-		self.suma_intereses = 0
+		self.suma_descuentos_c = 0
+		self.suma_intereses_c = 0
+		self.suma_descuentos_x = 0
+		self.suma_intereses_x = 0
 
 		self.documentos = {
 			'original': self.documento,
-			'nc-automatica': None,
-			'nd-automatica': None			
+			'ncc-automatica': None,
+			'ndc-automatica': None,
+			'ncx-automatica': None,
+			'ndx-automatica': None,	
+
 		}
 		self.operaciones = []
 
@@ -81,7 +89,10 @@ class CU:
 
 			# Creación del descuento.
 			if descuento > 0:
-				self.suma_descuentos += descuento
+				if i['vinculo'].documento.receipt_afip:
+					self.suma_descuentos_c += descuento
+				else:
+					self.suma_descuentos_x += descuento
 				operacion_haber_descuento = Operacion(
 					comunidad=self.comunidad,
 					fecha=self.fecha_operacion,
@@ -109,7 +120,10 @@ class CU:
 
 			# Se aumenta la deuda del socio por el interes generado registra imputacion a la cuenta asignada a intereses si el interes es mayor a 0.
 			if interes > 0:
-				self.suma_intereses += interes
+				if i['vinculo'].documento.receipt_afip:
+					self.suma_intereses_c += interes
+				else:
+					self.suma_intereses_x += interes
 				operacion_debe_interes = Operacion(
 					comunidad=self.comunidad,
 					fecha=self.fecha_operacion,
@@ -154,7 +168,6 @@ class CU:
 				self.operaciones.append(operacion_haber_credito)
 			
 		
-
 	def hacer_cajas(self):
 		""" Realiza las operaciones de caja """
 		for i in self.cajas:
@@ -206,84 +219,181 @@ class CU:
 			self.operaciones.append(operacion_debe_resultado)
 
 
-	def hacer_nota_credito(self):
+	def hacer_notas_credito(self):
 		"""
 			Realiza el Receipt de la nota de credito automatica por los descuentos
 			Realiza el documento y la guarda en self.documentos['nc-automatica']
 		"""
 
-		if self.suma_descuentos > 0:
+		if self.suma_descuentos_c > 0:
 			today = date.today()
 			receipt_type = ReceiptType.objects.get(code="13")
-			nota_credito = Receipt.objects.create(
+			nota_credito_afip = Receipt.objects.create(
+					point_of_sales=self.punto_de_venta,
+					receipt_type=receipt_type,
+					concept=self.receipt.concept,
+					document_type=self.receipt.document_type,
+					document_number=self.receipt.document_number,
+					issued_date=today,
+					total_amount=self.suma_descuentos_c,
+					net_untaxed=0,
+					net_taxed=self.suma_descuentos_c,
+					exempt_amount=0,
+					service_start=today,
+					service_end=today,
+					expiration_date=today,
+					currency=self.receipt.currency,
+				)				
+			self.tratamiento_receipts_derivados(nota_credito_afip)
+			nota_credito = OwnReceipt.objects.create(
 					point_of_sales=self.receipt.point_of_sales,
 					receipt_type=receipt_type,
 					concept=self.receipt.concept,
 					document_type=self.receipt.document_type,
 					document_number=self.receipt.document_number,
 					issued_date=today,
-					total_amount=self.suma_descuentos,
+					total_amount=self.suma_descuentos_c,
 					net_untaxed=0,
-					net_taxed=self.suma_descuentos,
+					net_taxed=self.suma_descuentos_c,
 					exempt_amount=0,
 					service_start=today,
 					service_end=today,
 					expiration_date=today,
 					currency=self.receipt.currency,
 				)
-			self.tratamiento_receipts_derivados(nota_credito)
-
 			documento = Documento.objects.create(
 					comunidad=self.comunidad,
 					receipt=nota_credito,
+					receipt_afip=nota_credito_afip,
 					destinatario=self.documento.destinatario,
 					fecha_operacion=self.documento.fecha_operacion,
 					descripcion="Nota de Credito por Descuento",
 				)
-			self.documentos['nc-automatica'] = documento
+			documento.chequear_numeros()
+			self.documentos['ncc-automatica'] = documento
 
 
-	def hacer_nota_debito(self):
-		"""
-			Realiza el Receipt de la nota de debito automatica por los intereses
-			Realiza el documento y la guarda en self.documentos['nd-automatica']
-		"""
-		if self.suma_intereses > 0:
+		if self.suma_descuentos_x > 0:
 			today = date.today()
-			receipt_type = ReceiptType.objects.get(code="12")
-			nota_debito = Receipt.objects.create(
+			receipt_type = ReceiptType.objects.get(code="53")
+			nota_credito = OwnReceipt.objects.create(
 					point_of_sales=self.receipt.point_of_sales,
 					receipt_type=receipt_type,
 					concept=self.receipt.concept,
 					document_type=self.receipt.document_type,
 					document_number=self.receipt.document_number,
 					issued_date=today,
-					total_amount=self.suma_intereses,
+					total_amount=self.suma_descuentos_x,
 					net_untaxed=0,
-					net_taxed=self.suma_intereses,
+					net_taxed=self.suma_descuentos_x,
 					exempt_amount=0,
 					service_start=today,
 					service_end=today,
 					expiration_date=today,
 					currency=self.receipt.currency,
 				)
+			documento = Documento.objects.create(
+					comunidad=self.comunidad,
+					receipt=nota_credito,
+					receipt_afip=None,
+					destinatario=self.documento.destinatario,
+					fecha_operacion=self.documento.fecha_operacion,
+					descripcion="Nota de Credito por Descuento",
+				)
+			documento.chequear_numeros()
+			self.documentos['ncx-automatica'] = documento
 
+
+	def hacer_notas_debito(self):
+		"""
+			Realiza el Receipt de la nota de debito automatica por los intereses
+			Realiza el documento y la guarda en self.documentos['nd-automatica']
+		"""
+		if self.suma_intereses_c > 0:
+			today = date.today()
+			receipt_type = ReceiptType.objects.get(code="12")
+			nota_debito_afip = Receipt.objects.create(
+					point_of_sales=self.punto_de_venta,
+					receipt_type=receipt_type,
+					concept=self.receipt.concept,
+					document_type=self.receipt.document_type,
+					document_number=self.receipt.document_number,
+					issued_date=today,
+					total_amount=self.suma_intereses_c,
+					net_untaxed=0,
+					net_taxed=self.suma_intereses_c,
+					exempt_amount=0,
+					service_start=today,
+					service_end=today,
+					expiration_date=today,
+					currency=self.receipt.currency,
+				)
 			self.tratamiento_receipts_derivados(nota_debito)
+			nota_debito = OwnReceipt.objects.create(
+					point_of_sales=self.receipt.point_of_sales,
+					receipt_type=receipt_type,
+					concept=self.receipt.concept,
+					document_type=self.receipt.document_type,
+					document_number=self.receipt.document_number,
+					issued_date=today,
+					total_amount=self.suma_intereses_c,
+					net_untaxed=0,
+					net_taxed=self.suma_intereses_c,
+					exempt_amount=0,
+					service_start=today,
+					service_end=today,
+					expiration_date=today,
+					currency=self.receipt.currency,
+				)				
 			
 			documento = Documento.objects.create(
 					comunidad=self.comunidad,
 					receipt=nota_debito,
+					receipt_afip=nota_debito_afip,
 					destinatario=self.documento.destinatario,
 					fecha_operacion=self.documento.fecha_operacion,
 					descripcion="Nota de Debito por Intereses",
 				)
-			self.documentos['nd-automatica'] = documento
+			documento.chequear_numeros()
+			self.documentos['ndc-automatica'] = documento
+
+		if self.suma_intereses_x > 0:
+			today = date.today()
+			receipt_type = ReceiptType.objects.get(code="52")
+			nota_debito = OwnReceipt.objects.create(
+					point_of_sales=self.receipt.point_of_sales,
+					receipt_type=receipt_type,
+					concept=self.receipt.concept,
+					document_type=self.receipt.document_type,
+					document_number=self.receipt.document_number,
+					issued_date=today,
+					total_amount=self.suma_intereses_x,
+					net_untaxed=0,
+					net_taxed=self.suma_intereses_x,
+					exempt_amount=0,
+					service_start=today,
+					service_end=today,
+					expiration_date=today,
+					currency=self.receipt.currency,
+				)				
+			
+			documento = Documento.objects.create(
+					comunidad=self.comunidad,
+					receipt=nota_debito,
+					receipt_afip=None,
+					destinatario=self.documento.destinatario,
+					fecha_operacion=self.documento.fecha_operacion,
+					descripcion="Nota de Debito por Intereses",
+				)
+			documento.chequear_numeros()
+			self.documentos['ndx-automatica'] = documento			
 
 	def tratamiento_receipts_derivados(self, receipt_derivado):
 		"""
 			Valida los documentos derivados del principal en caso de que haya que hacerlo
 			Coloca el numero en caso de que no tenga
 		"""
+		pass
 		# if receipt_derivado.receipt_type.code in ["12", "13"]:
 		# 	if self.comunidad.contribuyente.certificate: 
 		# 		try:
@@ -293,13 +403,13 @@ class CU:
 		# 		if error:
 		# 			raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
 
-		if not receipt_derivado.receipt_number:
-			last = Receipt.objects.filter(
-				receipt_type=receipt_derivado.receipt_type,
-				point_of_sales=receipt_derivado.point_of_sales,
-			).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
-			receipt_derivado.receipt_number = last + 1
-			receipt_derivado.save()
+		# if not receipt_derivado.receipt_number:
+		# 	last = Receipt.objects.filter(
+		# 		receipt_type=receipt_derivado.receipt_type,
+		# 		point_of_sales=receipt_derivado.point_of_sales,
+		# 	).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
+		# 	receipt_derivado.receipt_number = last + 1
+		# 	receipt_derivado.save()
 				
 
 
@@ -312,13 +422,23 @@ class CU:
 			i.documento = self.documentos['original']
 
 		for i in self.operaciones: # Luego lo modifica en caso de que sea otro
-			if self.documentos['nc-automatica'] and i.cuenta == self.cuenta_descuento:
-				i.documento = self.documentos['nc-automatica']
-				i.vinculo.documento = self.documentos['nc-automatica']
+			if (self.documentos['ncc-automatica'] or self.documentos['ncx-automatica']) and i.cuenta == self.cuenta_descuento:
+				# Si esta operacion tiene cuenta de descuento
+				if i.vinculo.vinculo.documento.receipt_afip: # Si el vinculo del vinculo tiene receipt_afip entonces va C
+					i.documento = self.documentos['ncc-automatica']
+					i.vinculo.documento = self.documentos['ncc-automatica']
+				else: # Sino va X
+					i.documento = self.documentos['ncx-automatica']
+					i.vinculo.documento = self.documentos['ncx-automatica']
 				i.vinculo.save()
-			elif self.documentos['nd-automatica'] and i.cuenta == self.cuenta_interes:
-				i.documento = self.documentos['nd-automatica']
-				i.vinculo.documento = self.documentos['nd-automatica']
+			elif (self.documentos['ndc-automatica'] or self.documentos['ndx-automatica']) and i.cuenta == self.cuenta_interes:
+				# Si esta operacion tiene cuenta de interes
+				if i.vinculo.vinculo.documento.receipt_afip:
+					i.documento = self.documentos['ndc-automatica']
+					i.vinculo.documento = self.documentos['ndc-automatica']
+				else:
+					i.documento = self.documentos['ndx-automatica']
+					i.vinculo.documento = self.documentos['ndx-automatica']
 				i.vinculo.save()
 
 
@@ -345,7 +465,7 @@ class CU:
 			self.hacer_cajas()
 			self.hacer_utilizaciones()
 
-		elif self.receipt.receipt_type.code == "13":
+		elif self.receipt.receipt_type.code in ["13", "53"]:
 			self.hacer_resultados()
 
 		self.hacer_saldo_a_favor()
@@ -353,8 +473,8 @@ class CU:
 
 		# Creacion de nota de debito o de credito automatica
 		if self.receipt.receipt_type.code == "54":
-			self.hacer_nota_credito()
-			self.hacer_nota_debito()
+			self.hacer_notas_credito()
+			self.hacer_notas_debito()
 
 		self.colocar_documentos()
 

@@ -3,6 +3,7 @@ import React from "react";
 import { useIngresos, useIntereses, useDescuentos } from '../../../../utility/hooks/dispatchers';
 import Table from "./editSelectTable"
 import get from 'lodash/get';
+import Spinner from "../../../../components/spinner/spinner";
 
 
 const TableIngreso = ({toggle, setItem}) => {
@@ -28,6 +29,9 @@ const TableIngreso = ({toggle, setItem}) => {
       Header: 'Metodo de interes'
     },
   ]
+  if (loadingDescuentos || loadingIntereses) {
+    return <Spinner />
+  }
 
   return (
       <Table

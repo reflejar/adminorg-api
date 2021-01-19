@@ -171,6 +171,7 @@ class CU:
 					documento.receipt_afip = receipt_afip
 					documento.destinatario = s
 					documento.save()
+					documento.chequear_numeros()
 
 					operaciones_socio.update(documento=documento)
 					self.documentos_creados.append(documento.id)
