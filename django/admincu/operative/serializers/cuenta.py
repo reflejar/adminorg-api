@@ -208,7 +208,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		"""
 			
 		# Actualizacion de Nombre
-		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto', 'dominio']:
+		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto']:
 			instance.nombre = validate_data['nombre']
 				
 		# Actualizacion de Numero

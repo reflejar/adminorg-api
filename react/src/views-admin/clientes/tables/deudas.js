@@ -29,9 +29,8 @@ export default class Table extends React.Component {
     }
 
     getColumns = (selected) => [{
-      id: 'Portador',
       Header: 'Portador',
-      accessor: () => `${selected.full_name}`
+      accessor: "cuenta"
     }, {
       id: 'Documento',
       Header: 'Documento',
