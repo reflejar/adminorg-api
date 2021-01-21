@@ -94,12 +94,12 @@ class CU:
 						)
 
 			else:
-				for d in self.dominios:
-					if d.propietario() or d.inquilino():
+				for dominio in self.dominios:
+					if dominio.propietario() or dominio.inquilino():
 						if d['unidad'] == "dominio":
 							monto = d['monto']
 						else:
-							if d.domicilio.superficie_total:
+							if dominio.domicilio.superficie_total:
 								monto = d.domicilio.superficie_total * d['monto']
 							else:
 								monto = 0
@@ -107,7 +107,7 @@ class CU:
 						if monto != 0:
 							operacion_debe = Operacion.objects.create(
 								comunidad=self.comunidad,
-								cuenta=d,
+								cuenta=dominio,
 								asiento=self.identifier,
 								valor=monto,
 								fecha=self.documento_base.fecha_operacion,
@@ -129,6 +129,7 @@ class CU:
 								fecha_indicativa=self.documento_base.fecha_operacion,
 								fecha_gracia=d['fecha_gracia'],
 								fecha_vencimiento=d['fecha_vencimiento'],
+								vinculo=operacion_debe
 							)
 
 	def hacer_documentos(self):
