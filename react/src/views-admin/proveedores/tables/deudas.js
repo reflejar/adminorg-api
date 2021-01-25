@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactTable from 'react-table';
 import checkboxHOC from 'react-table/lib/hoc/selectTable';
+import {Numero} from "../../../utility/formats";
 
 import BasicModal from '../../../components/modal/basic';
 import Documento from '../CRUDL/documento/CU';
@@ -37,13 +38,43 @@ export default class Table extends React.Component {
       accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`
     }, {
       Header: 'Monto',
-      accessor: 'monto'
+      accessor: 'monto',
+      Cell: row => (
+        <div
+          style={{
+            width: '100%',
+            textAlign: "right"
+          }}
+        >
+          {Numero(row.value)}
+        </div>
+      )       
     }, {
       Header: 'Pagado/Utilizado',
-      accessor: 'pago_total'
+      accessor: 'pago_total',
+      Cell: row => (
+        <div
+          style={{
+            width: '100%',
+            textAlign: "right"
+          }}
+        >
+          {Numero(row.value)}
+        </div>
+      )       
     }, {
       Header: 'Saldo',
-      accessor: 'saldo'
+      accessor: 'saldo',
+      Cell: row => (
+        <div
+          style={{
+            width: '100%',
+            textAlign: "right"
+          }}
+        >
+          {Numero(row.value)}
+        </div>
+      )       
     }];    
 
   toggleAll = () => {

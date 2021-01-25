@@ -3,6 +3,7 @@ import ReactTable from 'react-table';
 import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import moment from 'moment';
 
+import {Numero} from "../../../utility/formats";
 import BasicModal from '../../../components/modal/basic';
 import Comprobante from '../CRUDL/factura/CR';
 import NotaCredito from '../CRUDL/nota-credito/CR';
@@ -12,6 +13,8 @@ import { facturasTypes, notasCreditoTypes, notasDebitoTypes, recibosTypes } from
 import 'react-table/react-table.css';
 
 const CheckboxTable = checkboxHOC(ReactTable);
+
+
 
 export default class Table extends React.Component {
     constructor(props) {
@@ -44,16 +47,56 @@ export default class Table extends React.Component {
       accessor: (d) => moment(d.fecha).format('YYYY-MM')
     }, {
       Header: 'Monto',
-      accessor: 'monto'
+      accessor: 'monto',
+      Cell: row => (
+        <div
+          style={{
+            width: '100%',
+            textAlign: "right"
+          }}
+        >
+          {Numero(row.value)}
+        </div>
+      )   
     }, {
       Header: 'Intereses/Descuentos',
-      accessor: 'interes_generado'
+      accessor: 'interes_generado',
+      Cell: row => (
+        <div
+          style={{
+            width: '100%',
+            textAlign: "right"
+          }}
+        >
+          {Numero(row.value)}
+        </div>
+      )   
     }, {
       Header: 'Pagado/Utilizado',
-      accessor: 'pago_total'
+      accessor: 'pago_total',
+      Cell: row => (
+        <div
+          style={{
+            width: '100%',
+            textAlign: "right"
+          }}
+        >
+          {Numero(row.value)}
+        </div>
+      )         
     }, {
       Header: 'Saldo',
-      accessor: 'saldo'
+      accessor: 'saldo',
+      Cell: row => (
+        <div
+          style={{
+            width: '100%',
+            textAlign: "right"
+          }}
+        >
+          {Numero(row.value)}
+        </div>
+      )    
     }];    
 
   toggleAll = () => {
@@ -176,6 +219,7 @@ export default class Table extends React.Component {
             if (rowInfo && column.id === 'Documento') {
               this.handleToggle(rowInfo);
             }
+            
           }
         }
       },

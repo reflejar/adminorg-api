@@ -60,6 +60,7 @@ LOCAL_APPS = [
     'admincu.platforms.apps.PlatformsAppConfig',
     'admincu.files.apps.FilesAppConfig',
     'admincu.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
+    'admincu._public.apps.PublicAPIAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -184,7 +185,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
-    ]    
+    ],
+    'COERCE_DECIMAL_TO_STRING': False,
 }
 
 # Configuracion de MercadoPago

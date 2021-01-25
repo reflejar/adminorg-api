@@ -13,5 +13,6 @@ urlpatterns = [
     path('utils/', include(('admincu.utils.urls', 'utils'), namespace='utils')),
     path('files/', include(('admincu.files.urls', 'files'), namespace='files')),
     path('operative/', include(('admincu.operative.urls', 'operative'), namespace='operative')),
+    path('api/', include(('admincu._public.urls', 'api'), namespace='api')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

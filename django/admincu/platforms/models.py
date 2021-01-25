@@ -2,6 +2,7 @@ from datetime import date
 from django.db import models
 from django_mercadopago.models import Account as AccountMP
 from admincu.platforms.expensas_pagas.models import Account as AccountEP
+# from admincu.platforms.simple_solutions.models import Account as AccountSS
 
 from admincu.utils.models import BaseModel
 
@@ -13,6 +14,10 @@ plataformas = {
 	'ep': {
 		"nombre": "ExpensasPagas",
 		"model": "AccountEP"
+	}, 
+	'ss': {
+		"nombre": "SimpleSolutions",
+		"model": "AccountSS"
 	}
 }
 

@@ -2,6 +2,8 @@ import React from 'react';
 import ReactTable from 'react-table';
 import moment from 'moment';
 import checkboxHOC from 'react-table/lib/hoc/selectTable';
+import {Numero} from "../../../utility/formats";
+
 
 import BasicModal from '../../../components/modal/basic';
 
@@ -57,13 +59,43 @@ const getColumns = () => [{
   accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`
 }, {
   Header: 'Debe',
-  accessor: 'debe'
+  accessor: 'debe',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )     
 }, {
   Header: 'Haber',
-  accessor: 'haber'
+  accessor: 'haber',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )     
 }, {
   Header: 'Saldo',
-  accessor: 'saldo'
+  accessor: 'saldo',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )     
 }];
 
 export default class Table extends React.Component {

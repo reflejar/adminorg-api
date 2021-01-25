@@ -31,3 +31,8 @@ class IsSocioUser(BasePermission):
     def has_permission(self, request, view):
         return request.user.groups.all()[0].name == 'socio'
     
+class IsPlatformClientUser(BasePermission):
+    '''Allow acces only platform client user'''
+
+    def has_permission(self, request, view):
+        return request.user.groups.all()[0].name == 'plataforma'
