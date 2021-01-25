@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <title>{{documento.receipt.receipt_type}} {{documento.receipt.formatted_number}}</title>
-    <link href="{% static 'anopa/pdf.css' %}" rel="stylesheet" type="text/css" />
+    <!-- <link href="{% static 'anopa/pdf.css' %}" rel="stylesheet" type="text/css" /> -->
     <style>
       html, body {
           font-family: "Open Sans",sans-serif;
@@ -228,7 +228,7 @@
 
           <div class="receipt-details">
             <div class="receipt-type-description">
-              {{ documento.receipt.receipt_type.description }}
+              {{ documento.receipt.receipt_type.description }} {% if documento.fecha_anulacion %} <strong style="color: #FF0000;" >| ANULADO |</strong>{% endif %}
             </div>
             <strong>Nº</strong> {{ documento.receipt.formatted_number }}<br>
             {{ documento.receipt.issued_date|date:"d/m/Y" }}<br>

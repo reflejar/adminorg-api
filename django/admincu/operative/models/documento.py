@@ -419,10 +419,12 @@ class Documento(BaseModel):
 		""" Esto duplica las operaciones pero reversadas y con la fecha recibida """
 		self.fecha_anulacion = fecha
 		self.save()
+		self.hacer_pdf()
 		identifier = self.operaciones.first().asiento
 		operaciones = self.get_model('Operacion').objects.filter(asiento=identifier)
 		documentos_generados = set([o.documento for o in operaciones])
 		documentos = self.anulacion_documentos(documentos_generados)
+
 
 		for i in operaciones:
 			id_i = int(i.id)

@@ -43,7 +43,7 @@ const Buttons = ({ documento, update, onClose, required, error, handleDelete }) 
             </a>
           )}          
 
-          {update && (
+          {update && !documento.fecha_anulacion && (
             <button
               type='button'
               className='btn btn-danger mr-2'

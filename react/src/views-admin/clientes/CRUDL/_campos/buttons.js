@@ -42,7 +42,7 @@ const Buttons = ({ documento, onlyRead, onClose, required, error, handleDelete }
             </a>
           )}
 
-          {onlyRead && documento.receipt.receipt_type === "Recibo X" && (
+          {onlyRead && !documento.fecha_anulacion && documento.receipt.receipt_type === "Recibo X" && (
             <button
               type='button'
               className='btn btn-danger mr-2'

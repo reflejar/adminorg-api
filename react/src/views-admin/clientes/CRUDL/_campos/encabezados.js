@@ -143,7 +143,7 @@ const Encabezado = ({ documento, setDocumento, errors, onlyRead, types }) => {
             onChange={handleChange} />
         </div>
 
-        {documento["condonacion"] !== undefined && <div className='form-group mt-4 pl-2  col-md-2'>
+        { !documento.id && documento["condonacion"] !== undefined && <div className='form-group mt-4 pl-2  col-md-2'>
           <div className="form-check">
             <input
               className="form-check-input"
@@ -161,6 +161,22 @@ const Encabezado = ({ documento, setDocumento, errors, onlyRead, types }) => {
             </label>
           </div>
         </div>}
+
+
+        { documento.id && documento.fecha_anulacion &&         
+          <div className='form-group col-md-2'>
+            <label className="danger" htmlFor='fecha_operacion'>Anulado el:</label>
+
+            <input
+              type='date'
+              className='form-control d-block'
+              name='fecha_anulacion'
+              id='fecha_anulacion'
+              value={documento.fecha_anulacion}
+              disabled={true} />
+          </div>
+}
+
 
     </Row>
       
