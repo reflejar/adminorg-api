@@ -1,7 +1,11 @@
-from __future__ import unicode_literals
+"""SimpleSolutions app."""
 
+# Django
 from django.apps import AppConfig
 
 
-class SimpleSolutionsConfig(AppConfig):
-    name = 'simple_solutions'
+class SimpleSolutionsAppConfig(AppConfig):
+    """SimpleSolutions app config."""
+
+    name = 'admincu.platforms.simple_solutions'
+    verbose_name = 'SimpleSolutions'

@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from admincu.operative.models import (
 	Documento,
-	Cuenta
+	Cuenta, 
+	OwnReceipt
 )
 from admincu.operative.serializers import ReceiptModelSerializer
 

@@ -97,7 +97,7 @@ class OrigenProveedorModelSerializer(DocumentoModelSerializer):
 		destinatario = data['destinatario']
 		receipt = data['receipt']
 
-		receipts = Receipt.objects.filter(
+		receipts = OwnReceipt.objects.filter(
 			receipt_type=receipt_type,
 			point_of_sales=receipt['point_of_sales'],
 			document_type=destinatario.perfil.tipo_documento,

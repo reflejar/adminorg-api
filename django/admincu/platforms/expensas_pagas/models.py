@@ -1,7 +1,13 @@
 from django.db import models
+from admincu.utils.models import BaseModel
 from admincu.operative.models import Documento
 
-class Account(models.Model):
+"""
+	DECIDI PONERLE BaseModel PARA AGILIZAR LAS COSAS.
+	EN CASO DE QUERER LIBERAR ESTA LIBRERIA DEBERIA SACARSE BaseModel
+"""
+
+class AccountEP(BaseModel):
 
 	nombre = models.CharField(max_length=50)
 	app_code = models.PositiveIntegerField(blank=True, null=True)
@@ -11,7 +17,7 @@ class Account(models.Model):
 		return self.nombre
 
 
-class Preference(models.Model):
+class Preference(BaseModel):
 
 	""" Agrega datos de exp necesarios al dcocumento."""
 
@@ -21,7 +27,7 @@ class Preference(models.Model):
 	inf_deuda = models.BooleanField(default=False)
 	pdf = models.FileField(upload_to="pdfs/expensas_pagas/", blank=True, null=True)
 
-class Payment(models.Model):
+class Payment(BaseModel):
 
 	""" Cobros Expensas Pagas Model."""
 

@@ -1,6 +1,6 @@
 from django.db import models
 from django_afip.models import TaxPayer
-from django_mercadopago.models import Account
+# from django_mercadopago.models import Account
 
 
 class TipoComunidad(models.Model):
@@ -18,7 +18,7 @@ class TipoComunidad(models.Model):
 class Comunidad(models.Model):
 
 	contribuyente = models.ForeignKey(TaxPayer, on_delete=models.PROTECT, blank=True, null=True)
-	mercado_pago = models.ForeignKey(Account, blank=True, null=True, on_delete=models.PROTECT)
+	# mercado_pago = models.ForeignKey(Account, blank=True, null=True, on_delete=models.PROTECT)
 
 	nombre = models.CharField(max_length=200)
 	domicilio = models.ForeignKey("utils.Domicilio", on_delete=models.PROTECT)

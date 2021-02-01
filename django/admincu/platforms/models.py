@@ -1,10 +1,16 @@
 from datetime import date
 from django.db import models
 from django_mercadopago.models import Account as AccountMP
-from admincu.platforms.expensas_pagas.models import Account as AccountEP
-# from admincu.platforms.simple_solutions.models import Account as AccountSS
+from admincu.platforms.expensas_pagas.models import AccountEP
+from admincu.platforms.simple_solutions.models import AccountSS
 
 from admincu.utils.models import BaseModel
+
+
+"""
+	Medianamente en desuso puesto que los modelos de cada plataforma
+	ya heredan de BaseModel asi que tienen comunidad y el registro de fechas
+"""
 
 plataformas = {
 	"mp": {

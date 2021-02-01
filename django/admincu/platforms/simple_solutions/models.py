@@ -1,25 +1,26 @@
+from django.db import models
 from admincu.utils.models import BaseModel
 
 
+class AccountSS(BaseModel):
 
-# class Account(BaseModel):
+	nombre = models.CharField(max_length=100)
+	carpeta = models.CharField(max_length=100)
 
-# 	nombre = models.CharField(max_length=100)
-# 	carpeta = models.CharField(max_length=100)
-
-# 	def __str__(self):
-# 		return self.nombre
-
+	def __str__(self):
+		return self.nombre
 
 
-# class Sent(BaseModel):
+class Sent(BaseModel):
 
-# 	"""
-# 		BaseModel ya tiene un fecha_creacion asi que no hace falta agregarle la fecha de envio
-# 	"""
+	"""
+		BaseModel ya tiene un fecha_creacion asi que no hace falta agregarle la fecha de envio
+	"""
 
-# 	documento = models.ForeignKey(Documento, related_name='envio_ss', on_delete=models.CASCADE)
-# 	observacion = models.TextField(blank=True, null=True) # Por ahora no se usa. Hecho para captar el hipotetico error y colocar el texto aqui
+	modelo = models.CharField(max_length=20)
+	id_modelo = models.PositiveIntegerField()
+	filtros = models.CharField(max_length=100) # Se utiliza actualmente para filtrar en el modelo Documento, que tiene diferentes tipos de documento
+	observacion = models.TextField(blank=True, null=True) # Por ahora no se usa. Hecho para captar el hipotetico error y colocar el texto aqui
 
-# 	def __str__(self):
-# 		return str(self.documento)
+	def __str__(self):
+		return str(self.documento)

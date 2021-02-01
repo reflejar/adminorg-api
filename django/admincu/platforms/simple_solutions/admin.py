@@ -5,8 +5,8 @@ from .models import *
 # 	list_display = ['__str__', 'comunidad']
 # 	list_filter = ['comunidad']
 
-# admin.site.register(Account, AccountAdmin)
+# admin.site.register(AccountSS, AccountSSAdmin)
 # admin.site.register(Sent, Admines)
 
-# admin.site.register(Account)
+# admin.site.register(AccountSS)
 # admin.site.register(Sent)
