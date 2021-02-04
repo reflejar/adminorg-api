@@ -100,7 +100,7 @@ class OwnReceipt(models.Model):
 		if self.receipt_number:
 			name = ""
 			if self.point_of_sales:
-				name += "{:04d}-".format(self.point_of_sales)
+				name += "{:04d}-".format(int(self.point_of_sales))
 			name += "{:08d}".format(self.receipt_number)
 			return name
 		return None
