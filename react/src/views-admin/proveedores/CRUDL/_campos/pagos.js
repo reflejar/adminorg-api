@@ -41,12 +41,13 @@ const HandlePagos = ({ documento, setDocumento, deudas, errors, update }) => {
               checked: true
             }
           }
+          else return {}
         })
       }
     // }
     const data = [...data_pagadas, ...data_nuevas];
     return data 
-  }, [update, deudas, documento]);
+  }, [deudas, documento]);
   
   const [selectedDeudas, setSelectedDeudas] = useState(getDeudas());
 
