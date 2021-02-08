@@ -25,8 +25,8 @@ export const DebitosTable = ({ dataTable, errors, update }) => {
                   onChange={() => item.onRowSelect(index)}
                   name={`row_${item.vinculo}`}
                   type="checkbox"
-                  disabled={update}
-                  checked={update ? true : item.checked}
+                  // disabled={update}
+                  checked={item.checked}
                 />
               </Label>
             </FormGroup>

@@ -18,9 +18,11 @@ const filterCompletedObject = (arr) =>
 const HandlePagos = ({ documento, setDocumento, deudas, errors, update }) => {
   
   const getDeudas = useCallback(() => {
-    let data = [];
-    if (!update) {
-      data = deudas.map((deuda) => ({
+    // let data = [];
+    let data_nuevas = [];
+    let data_pagadas = [];
+    // if (!update) {
+      data_nuevas = deudas.map((deuda) => ({
         vinculo: deuda.id,
         documento: `${deuda.documento.receipt.receipt_type} ${deuda.documento.receipt.formatted_number}`,
         detalle: '',
@@ -28,16 +30,22 @@ const HandlePagos = ({ documento, setDocumento, deudas, errors, update }) => {
         max: deuda.saldo,
         checked: false
       }))
-    } else {
+    // } else {
       if (documento && documento.pagos) {
-        data = documento.pagos.map((pago) => ({
-          ...pago,
-          documento: `${pago.origen.documento.receipt.receipt_type} ${pago.origen.documento.receipt.formatted_number}`,
-          checked: true
-        }))
+        // console.log(documento.pagos)
+        data_pagadas = documento.pagos.map((pago) => {
+          if (pago.origen) {
+            return {
+              ...pago,
+              documento: `${pago.origen.documento.receipt.receipt_type} ${pago.origen.documento.receipt.formatted_number}`,
+              checked: true
+            }
+          }
+        })
       }
-    }
-    return data
+    // }
+    const data = [...data_pagadas, ...data_nuevas];
+    return data 
   }, [update, deudas, documento]);
   
   const [selectedDeudas, setSelectedDeudas] = useState(getDeudas());

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tooltip } from 'reactstrap';
 
-const Buttons = ({ documento, onlyRead, onClose, required, error, handleDelete }) => {
+const Buttons = ({ documento, update, onClose, required, error, handleDelete }) => {
   
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -29,7 +29,7 @@ const Buttons = ({ documento, onlyRead, onClose, required, error, handleDelete }
             Cancelar
           </button>
 
-          {onlyRead && (
+          {update && (
             <button
               type='button'
               className='btn btn-warning mr-2'
@@ -39,13 +39,13 @@ const Buttons = ({ documento, onlyRead, onClose, required, error, handleDelete }
             </button>
           )}
 
-          {onlyRead && documento.receipt.receipt_type === "Recibo X" && (
+          {update && (
             <button
               type='button'
               className='btn btn-danger mr-2'
-              onClick={() => { if (window.confirm('Esta seguro que desea anular este Documento?')) handleDelete() } }
+              onClick={() => { if (window.confirm('Esta seguro que desea eliminar este Documento?')) handleDelete() } }
             >
-              Anular
+              Eliminar
             </button>
           )}      
 
@@ -54,7 +54,7 @@ const Buttons = ({ documento, onlyRead, onClose, required, error, handleDelete }
             type='submit'
             className='btn btn-primary'
             id="submit-button"
-            disabled={onlyRead || isDisabled}>
+            disabled={update || isDisabled}>
             Guardar
           </button>
   
