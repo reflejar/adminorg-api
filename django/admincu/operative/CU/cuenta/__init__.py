@@ -98,9 +98,10 @@ class CU:
 
 	def make_vinculaciones(self, cuenta):
 		for v in self.vinculos_data:
-			vinculo = DefinicionVinculo.objects.create(
-				cuenta=v['cuenta_vinculada'], # Socio
-				cuenta_vinculada=cuenta, # Dominio
-				definicion=Taxon.objects.get(nombre=v['definicion']),
-				)
+			if v['cuenta_vinculada']:
+				vinculo = DefinicionVinculo.objects.create(
+					cuenta=v['cuenta_vinculada'], # Socio
+					cuenta_vinculada=cuenta, # Dominio
+					definicion=Taxon.objects.get(nombre=v['definicion']),
+					)
 				

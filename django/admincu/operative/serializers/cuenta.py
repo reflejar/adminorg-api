@@ -243,8 +243,8 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			perfil.save()
 			instance.perfil = perfil
 
-		# Actualizacion de Domicilio (solo para Dominio)
 		if self.context['naturaleza'] in ['dominio']:
+			# Actualizacion de Domicilio (solo para Dominio)
 			domicilio = instance.domicilio
 			domicilio_data = validate_data['domicilio']
 			domicilio.provincia = Provincia.objects.get(nombre=domicilio_data['provincia'])
@@ -252,6 +252,27 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			domicilio.numero = domicilio_data.get('numero', domicilio.numero)
 			domicilio.localidad = domicilio_data.get('localidad', domicilio.localidad)
 			domicilio.save()
+
+			# # Actualizacion de las vinculaciones
+			for v in DefinicionVinculo.objects.filter(cuenta_vinculada=instance):
+				v.delete()
+			vinculos_data = [
+				{
+				'definicion': "propietario",
+				'cuenta_vinculada': validate_data.pop('propietario'),
+				},
+				{
+				'definicion': "inquilino",
+				'cuenta_vinculada': validate_data.pop('inquilino'),
+				}
+			]			
+			for v in vinculos_data:
+				if v['cuenta_vinculada']:
+					vinculo = DefinicionVinculo.objects.create(
+						cuenta=v['cuenta_vinculada'], # Socio
+						cuenta_vinculada=instance, # Dominio
+						definicion=Taxon.objects.get(nombre=v['definicion']),
+						)			
 
 		instance.save()
 		
