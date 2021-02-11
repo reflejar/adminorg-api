@@ -76,15 +76,16 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 				10 dias anterior o posterior a la fecha actual
 		"""
 
-		if self.context['causante'] in ["cliente", "cliente-masivo"] or self.context['receipt_type'].code in ["301", "303"]:
+		if self.context['causante'] in ["cliente", "cliente-masivo"]:
 			point_of_sales = data["point_of_sales"]
 			issued_date = data["issued_date"]
 			receipt_type = self.context['receipt_type']
 			query = self.get_point_of_sales(point_of_sales).receipts.filter(issued_date__gt=issued_date, receipt_type=receipt_type)
 			if query:
 				raise serializers.ValidationError({'issued_date': 'El punto de venta seleccionado ha generado {} con fecha posterior a la indicada'.format(receipt_type)})
-			if date.today() + timedelta(days=10) < issued_date or issued_date < date.today() - timedelta(days=10):
-				raise serializers.ValidationError({'issued_date': 'No puede diferir en mas de 10 dias de la fecha de hoy'})
+			if receipt_type.code in ["11","12","13"]:
+				if date.today() + timedelta(days=10) < issued_date or issued_date < date.today() - timedelta(days=10):
+					raise serializers.ValidationError({'issued_date': 'No puede diferir en mas de 10 dias de la fecha de hoy'})
 
 		return data
 

@@ -35,7 +35,6 @@ class ProveedorViewSet(BaseViewSet):
 		self.destroy_valid_pagos(obj)
 		self.destroy_valid_saldos(obj)
 		
-		raise serializers.ValidationError("El documento ya se encuentra anulado")
 		if obj.receipt.receipt_type.code == "301":
 			obj.anular(self.get_fecha())
 		else:

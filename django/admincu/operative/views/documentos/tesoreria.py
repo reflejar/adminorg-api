@@ -34,6 +34,5 @@ class TesoreriaViewSet(BaseViewSet):
 		self.destroy_valid_anulado(obj)
 		self.destroy_valid_disponibilidades(obj)
 
-		raise serializers.ValidationError("El documento ya se encuentra anulado")
 		obj.anular(self.get_fecha())
 		return Response(status=status.HTTP_204_NO_CONTENT)			
