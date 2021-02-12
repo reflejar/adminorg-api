@@ -174,30 +174,36 @@ const Preconceptos = ({ onClose }) => {
         const { destinatario, concepto } = row;
 
         // The inserted 'concepto' exists
-        const matchedConcepto = ingresos.some((val) => val.nombre.toLowerCase() === concepto.toLowerCase());
-        if (!matchedConcepto) {
-          const error = `Concepto "${concepto}" no encontrado`;
-          const errorRowLine = index + 1;
-          const message = `Linea ${errorRowLine}: ` + error;    
-          errors.push(message);
-        }
-        if (destinatario.charAt(0) === "#") {
-          const cleanDominio = destinatario.substring(1);
-          const matchedDominio = dominios.some((val) => val.full_name.toString().toLowerCase() === cleanDominio.toLowerCase());
-          if (!matchedDominio) {
-            const error = `Dominio "${destinatario}" no encontrado`;
+        if (concepto) {
+          const matchedConcepto = ingresos.some((val) => val.nombre.toLowerCase() === concepto.toLowerCase());
+          if (!matchedConcepto) {
+            const error = `Concepto "${concepto}" no encontrado`;
             const errorRowLine = index + 1;
             const message = `Linea ${errorRowLine}: ` + error;    
             errors.push(message);
-  
           }
-        } else {
-          const matchedClient = clientes.some((val) => val.full_name.toLowerCase() === destinatario.toLowerCase());
-          if (!matchedClient) {
-            const error = `Cliente "${destinatario}" no encontrado`;
-            const errorRowLine = index + 1;
-            const message = `Linea ${errorRowLine}: ` + error;
-            errors.push(message);
+
+        }
+        if (destinatario) {
+          if (destinatario.charAt(0) === "#") {
+            const cleanDominio = destinatario.substring(1);
+            const matchedDominio = dominios.some((val) => val.full_name.toString().toLowerCase() === cleanDominio.toLowerCase());
+            if (!matchedDominio) {
+              const error = `Dominio "${destinatario}" no encontrado`;
+              const errorRowLine = index + 1;
+              const message = `Linea ${errorRowLine}: ` + error;    
+              errors.push(message);
+    
+            }
+          } else {
+            const matchedClient = clientes.some((val) => val.full_name.toLowerCase() === destinatario.toLowerCase());
+            if (!matchedClient) {
+              const error = `Cliente "${destinatario}" no encontrado`;
+              const errorRowLine = index + 1;
+              const message = `Linea ${errorRowLine}: ` + error;
+              errors.push(message);
+          }
+
         }
 
 
