@@ -69,6 +69,7 @@ const CajaNew = ({ documento, setDocumento, tesoros, errors, update }) => {
             name: 'cuenta',
             placeholder: 'Cuenta',
             header: 'Cuenta',
+            disabled:documento.fecha_anulacion ? true : false,
             handleChange: handleCajasChange,
             options: (
               <>
@@ -85,18 +86,21 @@ const CajaNew = ({ documento, setDocumento, tesoros, errors, update }) => {
             name: 'detalle',
             placeholder: 'Detalle',
             header: 'Detalle',
+            disabled: documento.fecha_anulacion ? true : false,
             handleChange: handleCajasChange
           }, {
             type: 'date',
             name: 'fecha_vencimiento',
             placeholder: 'Fecha Vencimiento',
             header: 'Fecha Vencimiento',
+            disabled: documento.fecha_anulacion ? true : false,
             handleChange: handleCajasChange
           }, {
             type: 'number',
             name: 'monto',
             placeholder: 'Monto',
             min: 0,
+            disabled: documento.fecha_anulacion ? true : false,
             header: 'Monto',
             handleChange: handleCajasChange
           }]}

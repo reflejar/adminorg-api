@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row } from "reactstrap";
+import { Row, Badge } from "reactstrap";
 
 import { usePuntosDeVenta } from '../../../../utility/hooks/dispatchers';
 
@@ -144,9 +144,17 @@ const Encabezado = ({ documento, setDocumento, errors, update, types }) => {
             className='form-control d-block'
             name='fecha_operacion'
             id='fecha_operacion'
+            disabled={documento.fecha_anulacion ? true : false}
             value={documento.fecha_operacion}
             onChange={handleChange} />
         </div>
+
+        {documento.fecha_anulacion && 
+          <p>
+            <Badge pill color="danger">Pago anulado</Badge>
+
+          </p>
+        }
 
 
     </Row>

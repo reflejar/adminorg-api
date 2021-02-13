@@ -77,6 +77,7 @@ const UtilizacionesSaldos = ({ documento, setDocumento, saldos, errors, update }
       <Col sm="12">
         {selectedSaldos.length > 0 ? 
           <SaldosTable
+            documento={documento}
             errors={errors}
             update={update}
             dataTable={selectedSaldos.map((saldo) => ({

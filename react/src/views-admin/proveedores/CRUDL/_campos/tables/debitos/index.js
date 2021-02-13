@@ -5,7 +5,7 @@ import './styles.scss'
 
 const HEADERS = ['Seleccionar', 'Documento', 'Detalle', 'Monto'];
 
-export const DebitosTable = ({ dataTable, errors, update }) => {
+export const DebitosTable = ({ documento, dataTable, errors, update }) => {
   
 
   return (
@@ -25,7 +25,7 @@ export const DebitosTable = ({ dataTable, errors, update }) => {
                   onChange={() => item.onRowSelect(index)}
                   name={`row_${item.vinculo}`}
                   type="checkbox"
-                  // disabled={update}
+                  disabled={documento.fecha_anulacion ? true : false}
                   checked={item.checked}
                 />
               </Label>
@@ -36,6 +36,7 @@ export const DebitosTable = ({ dataTable, errors, update }) => {
                 disabled
                 name="documento"
                 value={item.documento}
+                disabled={documento.fecha_anulacion ? true : false}
               />
             </FormGroup>
             
@@ -46,6 +47,7 @@ export const DebitosTable = ({ dataTable, errors, update }) => {
                 placeholder="Detalle"
                 name="detalle"
                 value={item.detalle}
+                disabled={documento.fecha_anulacion ? true : false}
                 onChange={(event) => item.onInputChange(event, index)}
               />
   
@@ -60,6 +62,7 @@ export const DebitosTable = ({ dataTable, errors, update }) => {
                 name="monto"
                 value={item.monto}
                 step={0.01}
+                disabled={documento.fecha_anulacion ? true : false}
                 onChange={(event) => item.onInputChange(event, index)}
               />
   

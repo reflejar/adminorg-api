@@ -5,7 +5,7 @@ import './styles.scss'
 
 const HEADERS = ['Seleccionar', 'Retencion', 'Detalle', 'Monto'];
 
-export const RetencionesTable = ({ dataTable, errors, onlyRead }) => {
+export const RetencionesTable = ({ documento, dataTable, errors, update }) => {
   return (
   <div className="RetencionesTable">
     <div className="RetencionesTable__header">
@@ -43,7 +43,7 @@ export const RetencionesTable = ({ dataTable, errors, onlyRead }) => {
               placeholder="Detalle"
               name="detalle"
               value={item.detalle}
-              disabled={onlyRead}
+              disabled={documento.fecha_anulacion? true:false}
               onChange={(event) => item.onInputChange(event, index)}
             />
 
@@ -57,7 +57,7 @@ export const RetencionesTable = ({ dataTable, errors, onlyRead }) => {
               max={item.max}
               name="monto"
               value={item.monto}
-              disabled={onlyRead}
+              disabled={documento.fecha_anulacion? true:false}
               onChange={(event) => item.onInputChange(event, index)}
             />
 

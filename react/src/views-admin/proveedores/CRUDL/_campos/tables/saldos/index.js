@@ -5,7 +5,7 @@ import './styles.scss'
 
 const HEADERS = ['Seleccionar', 'Origen', 'Detalle', 'Monto'];
 
-export const SaldosTable = ({ dataTable, errors, onlyRead }) => {
+export const SaldosTable = ({ documento, dataTable, errors, update }) => {
   
   return (
   <div className="SaldosTable">
@@ -24,7 +24,7 @@ export const SaldosTable = ({ dataTable, errors, onlyRead }) => {
                 onChange={() => item.onRowSelect(index)}
                 name={`row_${item.vinculo}`}
                 type="checkbox"
-                disabled={onlyRead}
+                disabled={update}
                 checked={item.checked}
               />
             </Label>
@@ -34,6 +34,7 @@ export const SaldosTable = ({ dataTable, errors, onlyRead }) => {
               <Input
                 disabled
                 name="documento"
+                disabled={documento.fecha_operacion ? true: false}
                 value={item.documento}
               />
           </FormGroup>
@@ -44,8 +45,9 @@ export const SaldosTable = ({ dataTable, errors, onlyRead }) => {
               type="text"
               placeholder="Detalle"
               name="detalle"
-              disabled={onlyRead}
+              disabled={update}
               value={item.detalle}
+              disabled={documento.fecha_operacion ? true: false}
               onChange={(event) => item.onInputChange(event, index)}
             />
 
@@ -58,8 +60,9 @@ export const SaldosTable = ({ dataTable, errors, onlyRead }) => {
               type="number"
               max={item.max}
               name="monto"
-              disabled={onlyRead}
+              disabled={update}
               value={item.monto}
+              disabled={documento.fecha_operacion ? true: false}
               onChange={(event) => item.onInputChange(event, index)}
             />
 

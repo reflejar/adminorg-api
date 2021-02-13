@@ -72,6 +72,7 @@ const Retenciones = ({ documento, setDocumento, retenciones, errors, update }) =
       <Col sm="12">
         {selectedRetenciones.length > 0 ? 
           <RetencionesTable
+            documento={documento}
             errors={errors}
             update={update}
             dataTable={selectedRetenciones.map((retencion) => ({

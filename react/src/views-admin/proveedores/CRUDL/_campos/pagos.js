@@ -22,7 +22,8 @@ const HandlePagos = ({ documento, setDocumento, deudas, errors, update }) => {
     let data_nuevas = [];
     let data_pagadas = [];
     // if (!update) {
-      data_nuevas = deudas.map((deuda) => ({
+    if (!documento.fecha_anulacion ) {
+    data_nuevas = deudas.map((deuda) => ({
         vinculo: deuda.id,
         documento: `${deuda.documento.receipt.receipt_type} ${deuda.documento.receipt.formatted_number}`,
         detalle: '',
@@ -30,6 +31,7 @@ const HandlePagos = ({ documento, setDocumento, deudas, errors, update }) => {
         max: deuda.saldo,
         checked: false
       }))
+    }
     // } else {
       if (documento && documento.pagos) {
         // console.log(documento.pagos)
@@ -88,6 +90,7 @@ const HandlePagos = ({ documento, setDocumento, deudas, errors, update }) => {
           {
             selectedDeudas.length > 0 ? 
               <DebitosTable
+                documento={documento}
                 errors={errors && errors.pagos}
                 update={update}
                 dataTable={selectedDeudas.map((deuda) => ({
