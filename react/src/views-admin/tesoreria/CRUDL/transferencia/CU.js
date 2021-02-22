@@ -47,6 +47,9 @@ const Transferencia = ({ destinatario, update, selected, sendTransferencia, dele
 
 
   const checkCondition = () => {
+    if (documento.fecha_anulacion) {
+      return false
+    }    
     let totalCargas = 0;
     let totalCajas = 0;
     let totalUtilizacionesDisponibilidades = 0;

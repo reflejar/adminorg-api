@@ -48,6 +48,9 @@ const ReciboX = ({ destinatario, onlyRead, selected, sendReciboX, deleteReciboX,
   }, [documento, setDocumento]);   
 
   const checkCondition = () => {
+    if (documento.fecha_anulacion) {
+      return false
+    }    
     let totalCobros = 0;
     let totalCajas = 0;
     let totalUtilizacionesSaldos = 0;

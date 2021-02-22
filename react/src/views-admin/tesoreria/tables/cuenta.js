@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactTable from 'react-table';
 import moment from 'moment';
-import checkboxHOC from 'react-table/lib/hoc/selectTable';
+import CuentaTable from "../../../components/board/tables/cuenta";
 import {Numero} from "../../../utility/formats";
 
 import BasicModal from '../../../components/modal/basic';
@@ -36,8 +36,6 @@ import {
 
 
 import 'react-table/react-table.css';
-
-const CheckboxTable = checkboxHOC(ReactTable);
 
 const getColumns = () => [{
   Header: 'Fecha',
@@ -313,21 +311,12 @@ export default class Table extends React.Component {
       <React.Fragment>
         {this.state.modal && this.state.modal.item && this.renderModal()}
 
-        <CheckboxTable
-          showPagination
-          defaultPageSize={50}
-          ref={r => (this.checkboxTable = r)}
+        <CuentaTable
           data={data}
-          defaultSorted={[
-            {
-              id: "Fecha",
-              desc: true
-            }
-          ]}
           columns={getColumns()}
-          className="-striped -highlight"
-          {...checkboxProps}
-        />
+          ref={r => (this.checkboxTable = r)}
+          checkboxProps={checkboxProps}
+        />        
       </React.Fragment>
     );
   }

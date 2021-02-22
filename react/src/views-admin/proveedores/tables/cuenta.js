@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactTable from 'react-table';
 import moment from 'moment';
-import checkboxHOC from 'react-table/lib/hoc/selectTable';
+import CuentaTable from "../../../components/board/tables/cuenta";
 import {Numero} from "../../../utility/formats";
 
 import BasicModal from '../../../components/modal/basic';
@@ -12,7 +12,14 @@ import { documentosTypes, notasCreditoTypes, opTypes } from '../CRUDL/_options/r
 
 import 'react-table/react-table.css';
 
-const CheckboxTable = checkboxHOC(ReactTable);
+
+// Cosas de Tesoreria
+import Transferencia from '../../tesoreria/CRUDL/transferencia/CU';
+import { transferenciasTypes } from '../../tesoreria/CRUDL/_options/receipt_types';
+
+ // Cosas de Contabilidad
+import Asiento from '../../contabilidad/CRUDL/asiento/CU';
+import { asientosTypes } from '../../contabilidad/CRUDL/_options/receipt_types';
 
 const getColumns = () => [{
   Header: 'Fecha',
@@ -158,31 +165,53 @@ export default class Table extends React.Component {
     });
   };
 
-  selectDocument = (type) => {
+  selectDocument = (causante, type) => {
     const { documento } = this.state.modal.item;
     let documentos = {};
-    documentosTypes.forEach((type) => {
-      documentos[type.nombre] = <Documento
-      update={true}
-      onClose={this.handleToggle}
-      selected={documento}
-    />
-    })
-    notasCreditoTypes.forEach((type) => {
-      documentos[type.nombre] = <NotaCredito
-      update={true}
-      onClose={this.handleToggle}
-      selected={documento}
-    />
-    })
-    opTypes.forEach((type) => {
-      documentos[type.nombre] = <OP
-      update={true}
-      onClose={this.handleToggle}
-      selected={documento}
-    />
-    })
-    return documentos[type]
+    if (causante === "proveedor") {
+      documentosTypes.forEach((type) => {
+        documentos[type.nombre] = <Documento
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      notasCreditoTypes.forEach((type) => {
+        documentos[type.nombre] = <NotaCredito
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      opTypes.forEach((type) => {
+        documentos[type.nombre] = <OP
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }
+    if (causante === "caja") {
+      transferenciasTypes.forEach((type) => {
+        documentos[type.nombre] = <Transferencia
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }    
+    if (causante === "asiento") {
+      asientosTypes.forEach((type) => {
+        documentos[type.nombre] = <Asiento
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }    
   }
 
   renderModal = () => {
@@ -195,7 +224,7 @@ export default class Table extends React.Component {
             onToggle={this.handleToggle}
             header={`${receipt.receipt_type} - ${receipt.formatted_number}`}
             footer={false}
-            component={this.selectDocument(item.documento.receipt.receipt_type)}
+            component={this.selectDocument(item.causante, item.documento.receipt.receipt_type)}
           />          
         )
     } 
@@ -240,21 +269,12 @@ export default class Table extends React.Component {
       <React.Fragment>
         {this.state.modal && this.state.modal.item && this.renderModal()}
 
-        <CheckboxTable
-          showPagination
-          defaultPageSize={50}
-          ref={r => (this.checkboxTable = r)}
+        <CuentaTable
           data={data}
-          defaultSorted={[
-            {
-              id: "Fecha",
-              desc: true
-            }
-          ]}
           columns={getColumns()}
-          className="-striped -highlight"
-          {...checkboxProps}
-        />
+          ref={r => (this.checkboxTable = r)}
+          checkboxProps={checkboxProps}
+        />       
       </React.Fragment>
     );
   }

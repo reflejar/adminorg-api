@@ -47,6 +47,9 @@ const OP = ({ destinatario, update, selected, sendOP, deleteOP, onClose }) => {
   }, [documento, setDocumento]);   
 
   const checkCondition = () => {
+    if (documento.fecha_anulacion) {
+      return false
+    }
     let totalPagos = 0;
     let totalCajas = 0;
     let totalUtilizacionesSaldos = 0;

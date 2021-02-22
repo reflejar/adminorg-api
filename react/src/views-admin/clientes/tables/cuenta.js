@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactTable from 'react-table';
 import moment from 'moment';
-import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import {Numero} from "../../../utility/formats";
+import CuentaTable from "../../../components/board/tables/cuenta";
 
 import BasicModal from '../../../components/modal/basic';
 import Comprobante from '../CRUDL/factura/CR';
@@ -10,9 +9,16 @@ import NotaCredito from '../CRUDL/nota-credito/CR';
 import ReciboX from '../CRUDL/recibo-x/CR';
 import { facturasTypes, notasCreditoTypes, notasDebitoTypes, recibosTypes } from '../CRUDL/_options/receipt_types';
 
-import 'react-table/react-table.css';
+// Cosas de Tesoreria
+import Transferencia from '../../tesoreria/CRUDL/transferencia/CU';
+import { transferenciasTypes } from '../../tesoreria/CRUDL/_options/receipt_types';
 
-const CheckboxTable = checkboxHOC(ReactTable);
+ // Cosas de Contabilidad
+import Asiento from '../../contabilidad/CRUDL/asiento/CU';
+import { asientosTypes } from '../../contabilidad/CRUDL/_options/receipt_types';
+
+
+import 'react-table/react-table.css';
 
 const getColumns = () => [{
   Header: 'Fecha',
@@ -168,42 +174,65 @@ export default class Table extends React.Component {
     });
   };
 
-  selectDocument = (type) => {
+  selectDocument = (causante, type) => {
     const { documento } = this.state.modal.item;
     let documentos = {};
-    facturasTypes.forEach((type) => {
-      documentos[type.nombre] = <Comprobante
-      onlyRead={true}
-      onClose={this.handleToggle}
-      selected={documento}
-    />
-    })
-    notasDebitoTypes.forEach((type) => {
-      documentos[type.nombre] = <Comprobante
-      onlyRead={true}
-      onClose={this.handleToggle}
-      selected={documento}
-    />
-    })
-    notasCreditoTypes.forEach((type) => {
-      documentos[type.nombre] = <NotaCredito
-      onlyRead={true}
-      onClose={this.handleToggle}
-      selected={documento}
-    />
-    })
-    recibosTypes.forEach((type) => {
-      documentos[type.nombre] = <ReciboX
-      onlyRead={true}
-      onClose={this.handleToggle}
-      selected={documento}
-    />
-    })
-    return documentos[type]
+    if (causante === "cliente") {
+      facturasTypes.forEach((type) => {
+        documentos[type.nombre] = <Comprobante
+        onlyRead={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      notasDebitoTypes.forEach((type) => {
+        documentos[type.nombre] = <Comprobante
+        onlyRead={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      notasCreditoTypes.forEach((type) => {
+        documentos[type.nombre] = <NotaCredito
+        onlyRead={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      recibosTypes.forEach((type) => {
+        documentos[type.nombre] = <ReciboX
+        onlyRead={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }
+    if (causante === "caja") {
+      transferenciasTypes.forEach((type) => {
+        documentos[type.nombre] = <Transferencia
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }    
+    if (causante === "asiento") {
+      asientosTypes.forEach((type) => {
+        documentos[type.nombre] = <Asiento
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }
   }
 
   renderModal = () => {
     const { item } = this.state.modal;
+
     if (item && item.documento) {
       const { receipt } = item.documento
       return (
@@ -212,7 +241,7 @@ export default class Table extends React.Component {
             onToggle={this.handleToggle}
             header={`${receipt.receipt_type} - ${receipt.formatted_number}`}
             footer={false}
-            component={this.selectDocument(item.documento.receipt.receipt_type)}
+            component={this.selectDocument(item.causante, item.documento.receipt.receipt_type)}
           />          
         )
     } 
@@ -222,7 +251,6 @@ export default class Table extends React.Component {
     const { toggleSelection, toggleAll, isSelected } = this;
     const { selectAll } = this.state;
     const { data } = this.props;
-
     const checkboxProps = {
       selectAll,
       isSelected,
@@ -257,21 +285,12 @@ export default class Table extends React.Component {
       <React.Fragment>
         {this.state.modal && this.state.modal.item && this.renderModal()}
 
-        <CheckboxTable
-          showPagination
-          defaultPageSize={50}
-          ref={r => (this.checkboxTable = r)}
+        <CuentaTable
           data={data}
-          defaultSorted={[
-            {
-              id: "Fecha",
-              desc: true
-            }
-          ]}
           columns={getColumns()}
-          className="-striped -highlight"
-          {...checkboxProps}
-        />
+          ref={r => (this.checkboxTable = r)}
+          checkboxProps={checkboxProps}
+        />        
       </React.Fragment>
     );
   }

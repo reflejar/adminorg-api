@@ -1,14 +1,12 @@
 import React from 'react';
 import ReactTable from 'react-table';
-import checkboxHOC from 'react-table/lib/hoc/selectTable';
+import DeudasTable from "../../../components/board/tables/deudas";
 import {Numero} from "../../../utility/formats";
 
 import BasicModal from '../../../components/modal/basic';
 import Comprobante from '../CRUDL/transferencia/CU';
 
 import 'react-table/react-table.css';
-
-const CheckboxTable = checkboxHOC(ReactTable);
 
 export default class Table extends React.Component {
     constructor(props) {
@@ -195,14 +193,12 @@ export default class Table extends React.Component {
       <React.Fragment>
         {this.state.modal && this.state.modal.item && this.renderModal()}
 
-        <CheckboxTable
-          ref={r => (this.checkboxTable = r)}
+        <DeudasTable
           data={data}
           columns={this.getColumns(selected)}
-          defaultPageSize={50}
-          className="-striped -highlight"
-          {...checkboxProps}
-        />
+          ref={r => (this.checkboxTable = r)}
+          checkboxProps={checkboxProps}
+        /> 
       </React.Fragment>
     );
   }

@@ -124,7 +124,7 @@ class CU:
 								comunidad=self.comunidad,
 								cuenta=d['ingreso'],
 								asiento=self.identifier,
-								valor=d['monto'],
+								valor=-monto,
 								fecha=self.documento_base.fecha_operacion,
 								fecha_indicativa=self.documento_base.fecha_operacion,
 								fecha_gracia=d['fecha_gracia'],
@@ -175,6 +175,8 @@ class CU:
 					documento.chequear_numeros()
 
 					operaciones_socio.update(documento=documento)
+					for o in operaciones_socio:
+						o.vinculos.update(documento=documento)
 					self.documentos_creados.append(documento.id)
 
 
