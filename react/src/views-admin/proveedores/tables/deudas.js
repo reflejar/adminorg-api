@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import DeudasTable from "../../../components/board/tables/deudas";
 import {Numero} from "../../../utility/formats";
 
@@ -35,9 +36,9 @@ export default class Table extends React.Component {
     }
 
     getColumns = (selected) => [{
-      id: 'Portador',
-      Header: 'Portador',
-      accessor: () => `${selected.full_name}`
+      id: 'Fecha',
+      Header: 'Fecha',
+      accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
     }, {
       id: 'Documento',
       Header: 'Documento',

@@ -41,6 +41,10 @@ export default class Table extends React.Component {
       Header: 'Portador',
       accessor: "cuenta"
     }, {
+      Header: 'Fecha',
+      id: 'Fecha',
+      accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
+    }, {
       id: 'Documento',
       Header: 'Documento',
       accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`
@@ -50,7 +54,7 @@ export default class Table extends React.Component {
     }, {
       Header: 'Periodo',
       id: 'Periodo',
-      accessor: (d) => moment(d.fecha).format('YYYY-MM')
+      accessor: (d) => moment(d.fecha_indicativa).format('YYYY-MM')
     }, {
       Header: 'Monto',
       accessor: 'monto',

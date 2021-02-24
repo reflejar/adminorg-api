@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useRef, useCallback } from 'react';
+import moment from "moment";
 import { useDispatch } from 'react-redux';
 import ReactToPrint from 'react-to-print';
 import { CSVLink } from 'react-csv';
@@ -27,7 +28,7 @@ class DocumentosTable extends React.Component {
             return (
               <tr key={documento.id}>
                 <td>{documento.receipt.receipt_type}</td>
-                <td>{documento.receipt.issued_date}</td>
+                <td>{moment(documento.receipt.issued_date).format("DD/MM/YYYY")}</td>
                 <td>{documento.receipt.point_of_sales}</td>
                 <td>{documento.receipt.receipt_number}</td>
                 <td>{documento.portador}</td>

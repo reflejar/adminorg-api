@@ -3,7 +3,7 @@ import ReactTable from 'react-table';
 import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import ReactToPrint from 'react-to-print';
 import { CSVLink } from 'react-csv';
-import { Button } from 'reactstrap';
+import { Button, ButtonGroup } from 'reactstrap';
 import { Printer, FileText} from "react-feather";
 import {Numero} from "../../../utility/formats";
 
@@ -23,9 +23,8 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
   const refButton = useRef(null);
   return (
     <React.Fragment>
-      <div className="row">
-        <div className="col-sm-6">
-          <div className="bg-lighten-5 text-left">
+      <section className="bg-lighten-5 d-flex justify-content-between">
+        <ButtonGroup>
           <ReactToPrint
             trigger={() => <Button className="btn-sm" outline><Printer size={18} /></Button>}
             content={() => refButton.current}
@@ -39,22 +38,14 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
               <FileText size={18} />
             </Button>
           </CSVLink>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button className="btn-sm btn-warning" disabled outline title="Saldo adeudado">
+            {Numero(data.reduce((a,v) =>  a = a + v.saldo , 0 ))}
+          </Button>            
+        </ButtonGroup>
+      </section>
 
-          </div>
-        </div>
-        <div className="col-sm-6">
-          <div className="row">
-            <div className="col-sm-9 text-right">
-              Saldo total:
-            </div>
-            <div className='form-group col-md-3'>
-              <Button className="btn-sm" disabled outline>
-                {Numero(data.reduce((a,v) =>  a = a + v.saldo , 0 ))}
-              </Button>            
-            </div>
-          </div>
-        </div>
-      </div>
       <CheckboxTable
         showPagination
         defaultPageSize={50}

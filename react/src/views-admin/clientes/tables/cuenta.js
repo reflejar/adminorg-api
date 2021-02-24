@@ -23,9 +23,7 @@ import 'react-table/react-table.css';
 const getColumns = () => [{
   Header: 'Fecha',
   id: 'Fecha',
-  accessor: 'fecha',
-  desc: true,
-  render: props => <span>{moment.utc(props.value).format('MMMM Do YYYY')}</span>
+  accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
 }, {
   Header: 'Documento',
   id: 'Documento',
@@ -39,7 +37,7 @@ const getColumns = () => [{
 }, {
   Header: 'Periodo',
   id: 'Periodo',
-  accessor: (d) => moment(d.fecha).format('YYYY-MM')
+  accessor: (d) => moment(d.fecha_indicativa).format('YYYY-MM')
 }, {
   Header: 'Debe',
   accessor: 'debe',
