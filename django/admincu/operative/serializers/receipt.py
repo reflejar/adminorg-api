@@ -99,22 +99,11 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 		if afip:
 			validate_data['point_of_sales'] = self.get_point_of_sales(validate_data['point_of_sales'])
 			receipt_afip = Receipt.objects.create(**validate_data)
-			error = receipt_afip.validate()
 			try:
-				receipt.receipt_number = receipt_afip.receipt_number
+				error = receipt_afip.validate()
 			except:
-				error = True
-			if error:
 				raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')			
 
-		if not receipt.receipt_number:
-			last = OwnReceipt.objects.filter(
-				receipt_type=receipt.receipt_type,
-				point_of_sales=receipt.point_of_sales,
-				documentos__destinatario__naturaleza__nombre=self.context['causante'],
-				documentos__comunidad=self.context['comunidad']
-			).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
-			receipt.receipt_number = last + 1
 		receipt.save()
 
 		return receipt, receipt_afip

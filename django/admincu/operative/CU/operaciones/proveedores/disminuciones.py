@@ -1,15 +1,13 @@
 from datetime import date
-from django_afip.models import (
-	Receipt,
-	ReceiptType
-)
+from django_afip.models import ReceiptType
 from django.db.models import Max
 from rest_framework import serializers
 
 from admincu.operative.models import (
 	Documento, 
 	Operacion,
-	Cuenta
+	Cuenta,
+	OwnReceipt
 )
 from admincu.utils.generics.functions import *
 
@@ -98,15 +96,9 @@ class CU:
 
 			cuenta_retencion = i['retencion'].cuenta_set.first()
 			
-			last = Receipt.objects.filter(
-				receipt_type=receipt_type,
-				point_of_sales=self.receipt.point_of_sales,
-			).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
-
-			receipt = Receipt.objects.create(
+			receipt = OwnReceipt.objects.create(
 					point_of_sales=self.receipt.point_of_sales,
 					receipt_type=receipt_type,
-					receipt_number=last + 1,
 					concept=self.receipt.concept,
 					document_type=cuenta_retencion.perfil.tipo_documento,
 					document_number=cuenta_retencion.perfil.numero_documento,
@@ -128,6 +120,7 @@ class CU:
 					fecha_operacion=self.fecha_operacion,
 					descripcion="Retencion",
 				)
+			documento_retencion.chequear_numeros()
 
 			operacion_haber_retencion = Operacion(
 				comunidad=self.comunidad,

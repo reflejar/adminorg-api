@@ -405,8 +405,6 @@ class Documento(BaseModel):
 						try:
 							error = receipt.validate()
 						except:
-							error = True
-						if error:
 							raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
 						nota_credito.receipt = receipt
 						nota_credito.save()
@@ -457,10 +455,16 @@ class Documento(BaseModel):
 			if self.receipt_afip:
 				self.receipt.receipt_number = self.receipt_afip.receipt_number
 			else:
-				last = OwnReceipt.objects.filter(
-					receipt_type=self.receipt.receipt_type,
-					point_of_sales=self.receipt.point_of_sales,
-				).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
+				last = Documento.objects.filter(
+					comunidad=self.comunidad,
+					receipt__receipt_type=self.receipt.receipt_type,
+					receipt__point_of_sales=self.receipt.point_of_sales,
+					destinatario__naturaleza=self.destinatario.naturaleza if self.destinatario else None
+				).aggregate(Max('receipt__receipt_number'))['receipt__receipt_number__max'] or 0
+				# last = OwnReceipt.objects.filter(
+				# 	receipt_type=self.receipt.receipt_type,
+				# 	point_of_sales=self.receipt.point_of_sales,
+				# ).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
 				self.receipt.receipt_number = last + 1
 			self.receipt.save()		
 

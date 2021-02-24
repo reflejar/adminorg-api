@@ -109,4 +109,5 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 			fecha_operacion=fecha_operacion,
 			descripcion=descripcion,
 		)		
+		documento.chequear_numeros()
 		return documento

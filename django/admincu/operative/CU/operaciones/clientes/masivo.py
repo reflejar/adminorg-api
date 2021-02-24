@@ -156,15 +156,7 @@ class CU:
 					# 		error = receipt_afip.validate()
 					# 		receipt.receipt_number = receipt_afip.receipt_number
 					# 	except:
-					# 		error = True
-
-					if not receipt.receipt_number:
-						last = OwnReceipt.objects.filter(
-							receipt_type=receipt.receipt_type,
-							point_of_sales=receipt.point_of_sales,
-						).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
-						receipt.receipt_number = last + 1
-						receipt.save()					
+					# 		error = True	
 					
 					documento = self.documento_base
 					documento.pk = None
