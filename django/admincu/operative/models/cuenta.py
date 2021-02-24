@@ -84,7 +84,7 @@ class Cuenta(BaseModel):
 				cuenta__in=self.grupo, 
 				# fecha__lte=fecha,
 				documento__isnull=False,
-			).order_by('fecha', 'id')
+			).order_by('-fecha', 'id')
 
 		
 	def estado_saldos(self, fecha=date.today()):
