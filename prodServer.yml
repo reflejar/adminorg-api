@@ -39,7 +39,7 @@ services:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
     ports:
-      - "8001:8002"
+      - "8001:8001"
     command: /start
 
   react:
