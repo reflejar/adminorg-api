@@ -1,12 +1,12 @@
 from datetime import date
 import ftplib
+import paramiko
 import json
-
-from django.conf import settings # No recuerdo para que esta esto
 
 from .models import *
 from admincu.operative.models import Documento
 from admincu.platforms.expensas_pagas.models import Preference
+from admincu.files.models import Archivo
 
 class Conexion():
 	"""
@@ -15,9 +15,9 @@ class Conexion():
 
 	clientes = AccountSS.objects.all()
 	hoy = date.today()
-	ftp_servidor = "simplesolutions.com.ar"
-	ftp_usuario = "admincu@simplesolutions.com.ar"
-	ftp_clave = "hG39_{S&}A-8"
+	hostname = "s-ddd967132e9f42198.server.transfer.us-east-1.amazonaws.com"
+	usuario = "admincu"
+	# key_path = settings.MEDIA_ROOT + "/admincu_ss"
 	opciones = [
 		{
 			'modelo': 'Documento',
@@ -59,7 +59,7 @@ class Conexion():
 					documentos = eval(opcion['modelo']).objects.filter(**kwargs)
 					if documentos:
 						a_enviar, envios = self.procesar(cliente.nombre, documentos, opcion, cliente.comunidad)
-						self.upload(cliente.nombre, a_enviar, opcion['carpeta'], envios)
+						self.upload(cliente.nombre, a_enviar, opcion['carpeta'], envios, cliente.comunidad)
 						
 					
 
@@ -87,22 +87,22 @@ class Conexion():
 
 		return documentos_procesados, envios
 
-	def upload(self, carpeta_cliente, documentos_procesados, carpeta_documento, envios):	
+	def upload(self, carpeta_cliente, documentos_procesados, carpeta_documento, envios, comunidad):	
 		''' Sube el archivo al servidor de SS. '''
 		try:
-			conexion = ftplib.FTP(self.ftp_servidor, self.ftp_usuario, self.ftp_clave)
-			conexion.cwd(carpeta_cliente)
-			conexion.cwd(carpeta_documento)
-			# Subimos los archivos
+			ssh_connect = paramiko.SSHClient()
+			ssh_connect.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+			key = paramiko.RSAKey.from_private_key_file(Archivo.objects.get(comunidad=comunidad, nombre="Clave SS").ubicacion.path)
+			ssh_connect.connect(hostname=self.hostname, username=self.usuario, pkey=key)
+			sftp = ssh_connect.open_sftp()
 			for d in documentos_procesados:
-				archivo = open(d['path'], "rb")
-				ftpCommand = "STOR {}".format(d['nombre'])
-				respuesta = conexion.storbinary(ftpCommand, fp=archivo)
+				remotepath = "/{}/{}/{}".format(carpeta_cliente, carpeta_documento, d['nombre'])
+				respuesta = sftp.put(d['path'], remotepath=remotepath)
 			
-			conexion.quit()
+			ssh_connect.close()
 			self.save(envios)
 		except:
-			print('Error al subir archivo')
+			print('Error al subir archivo')					
 
 	def save(self, envios):
 		Sent.objects.bulk_create(envios)

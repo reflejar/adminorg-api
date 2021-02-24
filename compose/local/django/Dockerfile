@@ -9,7 +9,7 @@ RUN apk update \
   # Pillow dependencies
   && apk add jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
   # CFFI dependencies
-  && apk add libffi-dev py-cffi \
+  && apk add libffi-dev py-cffi  \
   # Translations dependencies
   && apk add gettext \
   # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
@@ -17,13 +17,15 @@ RUN apk update \
   # AdminCU. Agregados
   && apk add libxml2-dev libxslt-dev py3-lxml cairo-dev pango-dev gdk-pixbuf-dev g++ \
   # Fuentes
-  && apk add ttf-opensans
+  && apk add ttf-opensans \
+  # OpenSSL
+  build-base libressl-dev libffi-dev cargo openssl-dev 
 
 
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
-RUN pip install Cython
+RUN pip install Cython cffi paramiko
 RUN pip install -r /requirements/local.txt
 
 COPY ./compose/production/django/entrypoint /entrypoint

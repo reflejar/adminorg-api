@@ -111,6 +111,8 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			last = OwnReceipt.objects.filter(
 				receipt_type=receipt.receipt_type,
 				point_of_sales=receipt.point_of_sales,
+				documentos__destinatario__naturaleza__nombre=self.context['causante'],
+				documentos__comunidad=self.context['comunidad']
 			).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
 			receipt.receipt_number = last + 1
 		receipt.save()

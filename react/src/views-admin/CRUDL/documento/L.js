@@ -32,6 +32,7 @@ class DocumentosTable extends React.Component {
                 <td>{documento.receipt.receipt_number}</td>
                 <td>{documento.portador}</td>
                 <td>{documento.receipt.total_amount}</td>
+                <td>{documento.fecha_anulacion && "Anulado"}</td>
               </tr>
             );
           })}
@@ -57,7 +58,8 @@ const headers = [
   { label: 'Punto de Venta', key: 'receipt.point_of_sales' },
   { label: 'Numero', key: 'receipt.receipt_number' },
   { label: 'Portador', key: 'destinatario' },
-  { label: 'Total', key: 'receipt.total_amount' }
+  { label: 'Total', key: 'receipt.total_amount' },
+  { label: 'Obs', key: 'fecha_anulacion' },
 ];
 
 const LStep = ({ causante, documentosTypes }) => {

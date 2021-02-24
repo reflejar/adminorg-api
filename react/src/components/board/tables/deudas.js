@@ -5,6 +5,7 @@ import ReactToPrint from 'react-to-print';
 import { CSVLink } from 'react-csv';
 import { Button } from 'reactstrap';
 import { Printer, FileText} from "react-feather";
+import {Numero} from "../../../utility/formats";
 
 const CheckboxTable = checkboxHOC(ReactTable);
 
@@ -22,22 +23,38 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
   const refButton = useRef(null);
   return (
     <React.Fragment>
-        <section className="bg-lighten-5 text-left">
-        <ReactToPrint
-          trigger={() => <Button className="btn-sm" outline><Printer size={18} /></Button>}
-          content={() => refButton.current}
-        />
-        <CSVLink
-          headers={tableHeaders}
-          data={dataForTable}
-          target="_blank"
-          filename="admincu-documentos.csv">
-          <Button className="btn-sm" outline>
-            <FileText size={18} />
-          </Button>
-        </CSVLink>
+      <div className="row">
+        <div className="col-sm-6">
+          <div className="bg-lighten-5 text-left">
+          <ReactToPrint
+            trigger={() => <Button className="btn-sm" outline><Printer size={18} /></Button>}
+            content={() => refButton.current}
+          />
+          <CSVLink
+            headers={tableHeaders}
+            data={dataForTable}
+            target="_blank"
+            filename="admincu-documentos.csv">
+            <Button className="btn-sm" outline>
+              <FileText size={18} />
+            </Button>
+          </CSVLink>
 
-        </section>
+          </div>
+        </div>
+        <div className="col-sm-6">
+          <div className="row">
+            <div className="col-sm-9 text-right">
+              Saldo total:
+            </div>
+            <div className='form-group col-md-3'>
+              <Button className="btn-sm" disabled outline>
+                {Numero(data.reduce((a,v) =>  a = a + v.saldo , 0 ))}
+              </Button>            
+            </div>
+          </div>
+        </div>
+      </div>
       <CheckboxTable
         showPagination
         defaultPageSize={50}

@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactTable from 'react-table';
 import moment from 'moment';
 import CuentaTable from "../../../components/board/tables/cuenta";
 import {Numero} from "../../../utility/formats";

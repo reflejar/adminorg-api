@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactTable from 'react-table';
 import DeudasTable from "../../../components/board/tables/deudas";
 import {Numero} from "../../../utility/formats";
 
