@@ -13,6 +13,7 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
     "admin-cu.com",
+    "admin.admin-cu.com"
 ]
 
 # Cache
