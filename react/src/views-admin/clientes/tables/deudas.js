@@ -54,7 +54,7 @@ export default class Table extends React.Component {
     }, {
       Header: 'Periodo',
       id: 'Periodo',
-      accessor: (d) => moment(d.fecha_indicativa).format('YYYY-MM')
+      accessor: (d) => d.periodo ? moment(d.periodo).format('YYYY-MM') : null
     }, {
       Header: 'Monto',
       accessor: 'monto',

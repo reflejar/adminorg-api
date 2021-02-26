@@ -42,12 +42,6 @@ const TableCuenta = ({data, columns, ref, checkboxProps}) => {
         defaultPageSize={50}
         ref={ref}
         data={data}
-        defaultSorted={[
-          {
-            id: "Fecha",
-            desc: true
-          }
-        ]}
         columns={columns}
         className="-striped -highlight"
         {...checkboxProps}
