@@ -14,6 +14,6 @@ class AnaliticaFilter(FilterSet):
         model = Operacion
         fields = {
             'cuenta': ['in'],
-            #'documento__receipt__receipt_type__description': ['exact', 'in']
+            'documento__receipt__receipt_type__description': ['exact', 'in']
         }
         # fields = ('cuenta',)

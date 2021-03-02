@@ -14,6 +14,7 @@ class AnaliticaModelSerializer(serializers.ModelSerializer):
 	cuenta = CuentaModelSerializer()
 	documento = DocumentoModelSerializer()
 	titulo = TituloModelSerializer()
+	saldo = serializers.SerializerMethodField()
 	
 	class Meta:
 		model = Operacion
@@ -35,5 +36,10 @@ class AnaliticaModelSerializer(serializers.ModelSerializer):
 			'fecha_vencimiento',
 			'fecha_gracia',
 			'detalle',
-			'descripcion'
+			'descripcion',
+			'saldo'
 		)
+
+	def get_saldo(self, obj):
+
+		return obj.saldo(fecha=self.context['end_date'])

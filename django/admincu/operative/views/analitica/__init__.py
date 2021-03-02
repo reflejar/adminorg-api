@@ -35,6 +35,12 @@ class AnaliticaViewSet(custom_viewsets.CustomModelViewSet):
 		except:
 			raise Http404
 
+	def get_serializer_context(self):
+		'''Agregado de naturaleza 'cliente' al context serializer.'''
+		serializer_context = super().get_serializer_context()
+		serializer_context['end_date'] = self.request.GET['end_date']
+		return serializer_context
+
 	# def get_object(self):
 	# 	obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
 	# 	self.check_object_permissions(self.request, obj)

@@ -1,5 +1,5 @@
 import React, {Fragment} from "react";
-
+import moment from 'moment';
 
 import { Row, Col, Table } from "reactstrap";
 
@@ -20,6 +20,7 @@ const Operaciones = ({data}) => {
                 <tr>
                   <th>Fecha</th>
                   <th>Cuenta</th>
+                  <th>Periodo</th>
                   <th>Titulo</th>
                   <th>Tipo Doc</th>
                   <th>Doc N°</th>
@@ -27,6 +28,7 @@ const Operaciones = ({data}) => {
                   <th>Valor</th>
                   <th>Debe</th>
                   <th>Haber</th>
+                  <th>Adeudado</th>
                   <th>Detalle</th>
                   <th>Descripcion</th>
                 </tr>
@@ -34,8 +36,9 @@ const Operaciones = ({data}) => {
               <tbody>
                 {data.map(x => (
                   <tr>
-                    <td>{x.fecha}</td>
+                    <td>{moment(x.fecha).format("DD/MM/YYYY")}</td>
                     <td>{x.cuenta.nombre}</td>
+                    <td>{moment(x.fecha_indicativa).format('YYYY-MM')}</td>
                     <td>{x.titulo.nombre}</td>
                     <td>{x.documento.tipo}</td>
                     <td>{x.documento.numero}</td>
@@ -43,6 +46,7 @@ const Operaciones = ({data}) => {
                     <td>{x.monto}</td>
                     <td>{x.debe}</td>
                     <td>{x.haber}</td>
+                    <td>{x.saldo}</td>
                     <td>{x.detalle}</td>
                     <td>{x.descripcion}</td>
                   </tr>
