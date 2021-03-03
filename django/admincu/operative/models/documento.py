@@ -414,7 +414,8 @@ class Documento(BaseModel):
 
 	def anular(self, fecha=date.today()):
 		""" Esto duplica las operaciones pero reversadas y con la fecha recibida """
-		self.fecha_anulacion = fecha
+		fecha = self.fecha_operacion # Como react no esta trayendo la fecha deseada por el administrativo, hacemos que impacte el mismo dia de la realizacion del documento
+		self.fecha_anulacion = fecha # Logica bien hecha... hay que hacer que react envie la fecha
 		self.save()
 		self.hacer_pdf()
 		identifier = self.operaciones.first().asiento
