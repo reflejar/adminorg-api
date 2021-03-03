@@ -75,6 +75,7 @@ class Operacion(BaseModel):
 				vinculo=self, 
 				cuenta=self.cuenta, 
 				fecha__lte=fecha, 
+				documento__fecha_anulacion__isnull=True
 			).exclude(vinculos__cuenta__in=cuentas_intereses).order_by('fecha')
 
 	def pago_capital(self, fecha=date.today()):
@@ -95,6 +96,7 @@ class Operacion(BaseModel):
 			cuenta=self.cuenta, 
 			vinculos__cuenta__in=cuentas_intereses, 
 			fecha__lte=fecha, 
+			documento__fecha_anulacion__isnull=True
 			).order_by('fecha')		
 
 	def pago_interes(self, fecha=date.today()):
