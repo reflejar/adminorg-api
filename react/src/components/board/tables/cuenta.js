@@ -39,10 +39,11 @@ const TableCuenta = ({data, columns, ref, checkboxProps}) => {
       </section>
       <CheckboxTable
         showPagination
-        defaultPageSize={50}
+        defaultPageSize={50}        
         ref={ref}
         data={data}
         columns={columns}
+        sortable={false}
         className="-striped -highlight"
         {...checkboxProps}
       />

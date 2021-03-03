@@ -15,7 +15,7 @@ const Cuenta = (props) => {
     );
   }
   return (
-    <Table data={cuentas.reverse()} selected={selected} />
+    <Table data={cuentas} selected={selected} />
   );
 };
 
