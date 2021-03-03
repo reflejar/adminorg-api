@@ -1,4 +1,5 @@
 from django.http import Http404
+from datetime import datetime
 from django.shortcuts import get_object_or_404 
 from django.db import transaction
 
@@ -38,7 +39,8 @@ class AnaliticaViewSet(custom_viewsets.CustomModelViewSet):
 	def get_serializer_context(self):
 		'''Agregado de naturaleza 'cliente' al context serializer.'''
 		serializer_context = super().get_serializer_context()
-		serializer_context['end_date'] = self.request.GET['end_date']
+		end_date = datetime.strptime(self.request.GET['end_date'], "%Y-%m-%d").date()
+		serializer_context['end_date'] = end_date
 		return serializer_context
 
 	# def get_object(self):
