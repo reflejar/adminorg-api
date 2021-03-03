@@ -20,7 +20,7 @@ const LazyClientes = lazy(() => import("../views-admin/clientes"));
 const LazyProveedores = lazy(() => import("../views-admin/proveedores"));
 const LazyTesoreria = lazy(() => import("../views-admin/tesoreria"));
 const LazyContabilidad = lazy(() => import("../views-admin/contabilidad"));
-const LazyAnalitica = lazy(() => import("../views-admin/analitica"));
+const LazyInformes = lazy(() => import("../views-admin/informes"));
 const LazyComunicacion = lazy(() => import("../views/comunicacion"));
 const LazyConfiguracion = lazy(() => import("../views-admin/configuraciones"));
 const LazyDeudas = lazy(() => import ("../views-socio/deudas"));
@@ -92,11 +92,11 @@ class Router extends Component {
                />
                <MainLayoutRoutes
                   exact
-                  path="/analitica"
+                  path="/informes"
                   groups={['administrativo']}
                   render={matchprops => (
                      <Suspense fallback={<Spinner />}>
-                        <LazyAnalitica {...matchprops} />
+                        <LazyInformes {...matchprops} />
                      </Suspense>
                   )}
                />

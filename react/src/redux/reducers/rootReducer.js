@@ -24,7 +24,7 @@ import documentos from './documentos';
 import plataforma from './plataforma';
 import saldos from './saldos';
 import retenciones from './retenciones';
-import analitica from './analitica';
+import informes from './informes';
 import carpetas from './carpetas';
 
 const appReducer = combineReducers({
@@ -33,7 +33,7 @@ const appReducer = combineReducers({
    clientes,
    carpetas,
    dominios,
-   analitica,
+   informes,
    proveedores,
    ingresos,
    gastos,

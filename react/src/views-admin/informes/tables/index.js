@@ -83,7 +83,7 @@ class TableData extends Component {
 }
 
 const mapStateToProps = state => ({
-   data: get(state, 'analitica.data', {}),
+   data: get(state, 'informes.data', {}),
 }) 
  
 export default connect(mapStateToProps, null)(TableData);

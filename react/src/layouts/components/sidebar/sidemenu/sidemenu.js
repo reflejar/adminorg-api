@@ -24,8 +24,8 @@ class SideMenuContent extends Component {
 
   administrativo = [ 
     {
-      link: "/analitica",
-      name: "Analitica",
+      link: "/informes",
+      name: "Informes",
       icon: <BarChart2 size={18} />
     },    
     {

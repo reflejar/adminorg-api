@@ -7,7 +7,7 @@ import {
 // Components
 import Spinner from '../../../../components/spinner/spinner';
 
-import { analiticaActions } from '../../../../redux/actions/analitica';
+import { informesActions } from '../../../../redux/actions/informes';
 import Tipo from '../_campos/tipo';
 import Fechas from '../_campos/fechas';
 import Cuentas from '../_campos/cuentas';
@@ -90,7 +90,7 @@ const Reporte = ({ getDataReporte, onClose }) => {
 
 
 const mapDispatchToProps = dispatch => ({
-  getDataReporte: (payload) => dispatch(analiticaActions.get_data(payload))
+  getDataReporte: (payload) => dispatch(informesActions.get_data(payload))
 });
 
 export default connect(null, mapDispatchToProps)(Reporte);

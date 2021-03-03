@@ -12,9 +12,9 @@ import { connect } from 'react-redux'
 import get from 'lodash/get';
 
 // Estructura
-import AnaliticaList from "./containers/list";
-import AnaliticaSearch from "./containers/search";
-import AnaliticaOptions from "./containers/options";
+import InformesList from "./containers/list";
+import InformesSearch from "./containers/search";
+import InformesOptions from "./containers/options";
 
 // Contenidos
 import FileReader from '../../components/fileReader';
@@ -24,7 +24,7 @@ import TableData from "./tables";
 
 // import CuentaTable from './tables/cuenta';
 
-class Analitica extends Component {
+class Informes extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,8 +48,8 @@ class Analitica extends Component {
         <div className="chat-sidebar float-left d-none d-sm-none d-md-block d-lg-block">
           <PerfectScrollbar>
             <div className="chat-sidebar-content">
-              <AnaliticaSearch />
-              <AnaliticaList selected={selected} />
+              <InformesSearch />
+              <InformesList selected={selected} />
             </div>
           </PerfectScrollbar>
         </div>
@@ -97,7 +97,7 @@ class Analitica extends Component {
           </section>
         </PerfectScrollbar>
 
-        <AnaliticaOptions />
+        <InformesOptions />
       </div>
     );
   }
@@ -105,8 +105,8 @@ class Analitica extends Component {
 }
 
 const mapStateToProps = state => ({
-  selected: get(state, 'analitica.instance', {}),
-  data: get(state, 'analitica.data', {}),
+  selected: get(state, 'informes.instance', {}),
+  data: get(state, 'informes.data', {}),
 })
 
-export default connect(mapStateToProps, null)(Analitica);
+export default connect(mapStateToProps, null)(Informes);

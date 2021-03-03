@@ -54,7 +54,7 @@ class Login extends Component {
             const user = await logger(username, password);
             if (user) {
                 if (user.user.group === "administrativo"){
-                    history.push('/analitica');
+                    history.push('/informes');
                 }
                 else {
                     history.push('/deudas');

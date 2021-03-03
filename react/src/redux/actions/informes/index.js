@@ -1,7 +1,7 @@
 import { Service } from '../../services/general';
 import qs from 'querystring';
 
-let apiEndpoint = 'operative/analitica/';
+let apiEndpoint = 'operative/informes/';
 
 const search = (term) => ({
     type: 'SEARCH_ANALITICA',
@@ -50,7 +50,7 @@ const get_data = (params) => async (dispatch) => {
 
 
 
-export const analiticaActions = {
+export const informesActions = {
     get_data,
     search,
     select,
