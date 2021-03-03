@@ -71,7 +71,11 @@ class Operacion(BaseModel):
 			Retorna QUERYSET de pagos realizados de capital
 		"""
 		cuentas_intereses = Cuenta.all_objects.filter(comunidad=self.comunidad, taxon__nombre="interes_predeterminado")
-		return Operacion.objects.filter(vinculo=self, cuenta=self.cuenta, fecha__lte=fecha, documento__fecha_anulacion__isnull=True).exclude(vinculos__cuenta__in=cuentas_intereses).order_by('fecha')
+		return Operacion.objects.filter(
+				vinculo=self, 
+				cuenta=self.cuenta, 
+				fecha__lte=fecha, 
+			).exclude(vinculos__cuenta__in=cuentas_intereses).order_by('fecha')
 
 	def pago_capital(self, fecha=date.today()):
 		"""
@@ -86,7 +90,12 @@ class Operacion(BaseModel):
 			Retorna QUERYSET de pagos realizados de interes
 		"""
 		cuentas_intereses = Cuenta.all_objects.filter(comunidad=self.comunidad, taxon__nombre="interes_predeterminado")
-		return Operacion.objects.filter(vinculo=self, cuenta=self.cuenta, vinculos__cuenta__in=cuentas_intereses, fecha__lte=fecha, documento__fecha_anulacion__isnull=True).order_by('fecha')		
+		return Operacion.objects.filter(
+			vinculo=self, 
+			cuenta=self.cuenta, 
+			vinculos__cuenta__in=cuentas_intereses, 
+			fecha__lte=fecha, 
+			).order_by('fecha')		
 
 	def pago_interes(self, fecha=date.today()):
 		"""
