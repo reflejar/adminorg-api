@@ -96,6 +96,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 			pagos = credito.pagos_capital()
 			if pagos:
 				if pagos.filter(fecha__gt=fecha_operacion, documento__fecha_anulacion__isnull=True):
+					print(pagos.filter(fecha__gt=fecha_operacion, documento__fecha_anulacion__isnull=True))
 					raise serializers.ValidationError({'cobros': {credito.id: "El credito posee un pago de capital posterior"}})
 
 			if credito.saldo(fecha=fecha_operacion, condonacion=condonacion) < d['monto']:
