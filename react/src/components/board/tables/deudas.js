@@ -54,6 +54,9 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
           </CSVLink>
         </ButtonGroup>
         <ButtonGroup>
+          <div className="text-danger mr-2">
+            <b>Total a pagar (+) a favor (-):</b>
+          </div>
           <Button className="btn-sm btn-warning" disabled outline title="Saldo adeudado">
             {Numero(data.reduce((a,v) =>  a = a + v.saldo , 0 ))}
           </Button>            
