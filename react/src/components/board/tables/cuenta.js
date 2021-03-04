@@ -20,6 +20,21 @@ const TableCuenta = ({data, columns, ref, checkboxProps}) => {
   }, [data]);
 
   const refButton = useRef(null);
+  const columns_final = columns.map(c => {
+    if (c.Header === "Documento") {
+      return ({...c, Cell: rowData => (
+        <div
+          className={rowData.row._original.documento.fecha_anulacion && "text-danger" }
+          style={{
+            cursor:"pointer"
+          }}
+        >
+          {rowData.value}
+        </div>
+      )   })
+    }
+    return ({...c})
+  })
   return (
     <React.Fragment>
       <section className="bg-lighten-5 text-left">
@@ -42,7 +57,7 @@ const TableCuenta = ({data, columns, ref, checkboxProps}) => {
         defaultPageSize={50}        
         ref={ref}
         data={data}
-        columns={columns}
+        columns={columns_final}
         sortable={false}
         className="-striped -highlight"
         {...checkboxProps}

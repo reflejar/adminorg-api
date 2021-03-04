@@ -27,16 +27,7 @@ const getColumns = () => [{
 }, {
   Header: 'Documento',
   id: 'Documento',
-  accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`,
-  // Cell: row => (
-  //   <div
-  //     style={{
-  //       cursor: "pointer",
-  //     }}
-  //   >
-  //     {row.value}
-  //   </div>
-  // )     
+  accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`
 }, {
   Header: 'Cuenta',
   accessor: 'cuenta'  

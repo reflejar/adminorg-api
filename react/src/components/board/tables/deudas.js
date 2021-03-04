@@ -21,6 +21,20 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
   }, [data]);
 
   const refButton = useRef(null);
+  const columns_final = columns.map(c => {
+    if (c.Header === "Documento") {
+      return ({...c, Cell: rowData => (
+        <div
+          style={{
+            cursor:"pointer"
+          }}
+        >
+          {rowData.value}
+        </div>
+      )   })
+    }
+    return ({...c})  
+  })
   return (
     <React.Fragment>
       <section className="bg-lighten-5 d-flex justify-content-between">
@@ -51,13 +65,7 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
         defaultPageSize={50}
         ref={ref}
         data={data}
-        defaultSorted={[
-          {
-            id: "Fecha",
-            desc: true
-          }
-        ]}
-        columns={columns}
+        columns={columns_final}
         className="-striped -highlight"
         {...checkboxProps}
       />

@@ -231,11 +231,12 @@
               {{ documento.receipt.receipt_type.description }} {% if documento.fecha_anulacion %} <strong style="color: #FF0000;" >| ANULADO |</strong>{% endif %}
             </div>
             <strong>Nº</strong> {{ documento.receipt.formatted_number }}<br>
-            {{ documento.receipt.issued_date|date:"d/m/Y" }}<br>
+            Fecha Documento: {{ documento.receipt.issued_date|date:"d/m/Y" }}<br>
             <small>
               C.U.I.T.:{{ documento.comunidad.contribuyente.cuit }}<br>
               Ingresos Brutos: Exento<br>
-              Inicio de actividad: {{documento.comunidad.contribuyente.active_since|date:"d/m/Y"}}
+              Inicio de actividad: {{documento.comunidad.contribuyente.active_since|date:"d/m/Y"}}<br>
+              Fecha Operacion: {{ documento.fecha_operacion|date:"d/m/Y" }}
             </small>
           </div>
         </div>
