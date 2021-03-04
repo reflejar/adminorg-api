@@ -1,15 +1,15 @@
 from rest_framework import serializers
 
 from admincu.operative.models import Operacion
-from admincu.operative.serializers.analitica import (
+from admincu.operative.serializers.informes import (
 	CuentaModelSerializer,
 	DocumentoModelSerializer,
 	TituloModelSerializer
 )
 
-class AnaliticaModelSerializer(serializers.ModelSerializer):
+class InformesModelSerializer(serializers.ModelSerializer):
 	
-	'''Operacion para la parte analitica'''
+	'''Operacion para la parte informes'''
 
 	cuenta = CuentaModelSerializer()
 	documento = DocumentoModelSerializer()

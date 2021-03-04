@@ -4,7 +4,7 @@ from admincu.operative.models import Titulo
 
 class TituloModelSerializer(serializers.ModelSerializer):
 	
-	'''Titulo para la parte analitica'''
+	'''Titulo para la parte informes'''
 	
 	class Meta:
 		model = Titulo

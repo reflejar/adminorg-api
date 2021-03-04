@@ -4,7 +4,7 @@ from admincu.operative.models import Cuenta
 
 class CuentaModelSerializer(serializers.ModelSerializer):
 	
-	'''Cuenta para la parte analitica'''
+	'''Cuenta para la parte informes'''
 
 	nombre = serializers.SerializerMethodField()
 	

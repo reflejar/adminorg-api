@@ -15,18 +15,18 @@ from admincu.utils.generics import custom_viewsets
 from admincu.operative.models import (
 	Operacion
 )
-from admincu.operative.serializers.analitica import AnaliticaModelSerializer
-from admincu.operative.filters import AnaliticaFilter
+from admincu.operative.serializers.informes import InformesModelSerializer
+from admincu.operative.filters import InformesFilter
 
-class AnaliticaViewSet(custom_viewsets.CustomModelViewSet):
+class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 		Unicamente se hacen peticiones GET
 		Es la vista para recopilar la data para hacer reportes y analisis
 	"""
 
 	http_method_names = ['get']
-	serializer_class = AnaliticaModelSerializer
-	filterset_class = AnaliticaFilter
+	serializer_class = InformesModelSerializer
+	filterset_class = InformesFilter
 
 	def get_queryset(self):
 		try:

@@ -4,7 +4,7 @@ from admincu.operative.models import Documento
 
 class DocumentoModelSerializer(serializers.ModelSerializer):
 	
-	'''Documento para la parte analitica'''
+	'''Documento para la parte informes'''
 	
 	class Meta:
 		model = Documento

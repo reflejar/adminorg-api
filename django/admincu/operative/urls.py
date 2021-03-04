@@ -7,7 +7,7 @@ from admincu.operative.views import (
      preconceptos,
      plataformas,
      estados,
-     analitica
+     informes
 )
 
 router = DefaultRouter()
@@ -26,7 +26,7 @@ router.register(r'plataformas', plataformas.PlataformasViewSet, base_name='opera
 
 router.register(r'estados/(?P<tipo>[-a-zA-Z0-0_]+)', estados.EstadosViewSet, base_name='operative')
 
-router.register(r'analitica', analitica.AnaliticaViewSet, base_name='operative')
+router.register(r'informes', informes.InformesViewSet, base_name='operative')
 
 urlpatterns = [
      path('', include(router.urls))
