@@ -362,6 +362,8 @@ class Documento(BaseModel):
 	def anulacion_documentos(self, documentos_relacionados):
 		"""
 			Genera los documentos necesarios de anulacion de los automaticos
+			ANOTACION TEMPORAL: Como solo se está usando Facturas tipo X
+			No está generando las nc por nd ni viceversa... solo le pone fecha de anulacion
 		"""
 		documentos = {
 			'original': self,
@@ -373,42 +375,47 @@ class Documento(BaseModel):
 		if len(documentos_relacionados) > 1:
 			for d in documentos_relacionados:
 				if d != self:
-					if d.receipt.receipt_type.code == "13":
-						documentos['nc-automatica'] = d
-						nota_debito = d
-						nota_debito.pk = None
-						receipt = nota_debito.receipt
-						receipt.pk = None
-						receipt.receipt_number = None
-						receipt.receipt_type = ReceiptType.objects.get(code="12")
-						receipt.issued_date = date.today()
-						receipt.save()
-						try:
-							error = receipt.validate()
-						except:
-							error = True
-						if error:
-							raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
-						nota_debito.receipt = receipt
-						nota_debito.save()
-						documentos['nd-automatica-anulacion'] = nota_debito
-					elif d.receipt.receipt_type.code == "12":
-						documentos['nd-automatica'] = d
-						nota_credito = d
-						nota_credito.pk = None
-						receipt = nota_credito.receipt
-						receipt.pk = None
-						receipt.receipt_number = None						
-						receipt.receipt_type = ReceiptType.objects.get(code="13")
-						receipt.issued_date = date.today()
-						receipt.save()
-						try:
-							error = receipt.validate()
-						except:
-							raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
-						nota_credito.receipt = receipt
-						nota_credito.save()
-						documentos['nd-automatica-anulacion'] = nota_credito
+					d.fecha_anulacion = self.fecha_anulacion
+					d.save()
+
+					# if d.receipt.receipt_type.code in ["13", "53"]:
+					# 	documentos['nc-automatica'] = d
+					# 	nota_debito = d
+					# 	nota_debito.pk = None
+					# 	receipt = nota_debito.receipt
+					# 	receipt.pk = None
+					# 	receipt.receipt_number = None
+					# 	receipt_type_code = "12" if d.receipt.receipt_type.code == "13" else "52"
+					# 	receipt.receipt_type = ReceiptType.objects.get(code=receipt_type_code)
+					# 	receipt.issued_date = date.today()
+					# 	receipt.save()
+					# 	try:
+					# 		error = receipt.validate()
+					# 	except:
+					# 		error = True
+					# 	if error:
+					# 		raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
+					# 	nota_debito.receipt = receipt
+					# 	nota_debito.save()
+					# 	documentos['nd-automatica-anulacion'] = nota_debito
+					# elif d.receipt.receipt_type.code in ["12", "52"]:
+					# 	documentos['nd-automatica'] = d
+					# 	nota_credito = d
+					# 	nota_credito.pk = None
+					# 	receipt = nota_credito.receipt
+					# 	receipt.pk = None
+					# 	receipt.receipt_number = None	
+					# 	receipt_type_code = "13" if d.receipt.receipt_type.code == "12" else "53"					
+					# 	receipt.receipt_type = ReceiptType.objects.get(code=receipt_type_code)
+					# 	receipt.issued_date = date.today()
+					# 	receipt.save()
+					# 	try:
+					# 		error = receipt.validate()
+					# 	except:
+					# 		raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
+					# 	nota_credito.receipt = receipt
+					# 	nota_credito.save()
+					# 	documentos['nd-automatica-anulacion'] = nota_credito
 
 		return documentos
 
@@ -430,11 +437,11 @@ class Documento(BaseModel):
 			i.valor = -i.valor
 			i.fecha = fecha
 			i.descripcion = "ANULACION"
-			if i.documento != self:
-				if i.documento.receipt.receipt_type.code == "12":
-					i.documento = documentos['nc-automatica-anulacion']
-				elif i.documento.receipt.receipt_type.code == "13":
-					i.documento = documentos['nd-automatica-anulacion']
+			# if i.documento != self:
+			# 	if i.documento.receipt.receipt_type.code in ["12", "52"]:
+			# 		i.documento = documentos['nc-automatica-anulacion']
+			# 	elif i.documento.receipt.receipt_type.code in ["13", "53"]:
+			# 		i.documento = documentos['nd-automatica-anulacion']
 			i.save()
 
 	def eliminar_operaciones(self):
@@ -462,10 +469,7 @@ class Documento(BaseModel):
 					receipt__point_of_sales=self.receipt.point_of_sales,
 					destinatario__naturaleza=self.destinatario.naturaleza if self.destinatario else None
 				).aggregate(Max('receipt__receipt_number'))['receipt__receipt_number__max'] or 0
-				# last = OwnReceipt.objects.filter(
-				# 	receipt_type=self.receipt.receipt_type,
-				# 	point_of_sales=self.receipt.point_of_sales,
-				# ).aggregate(Max('receipt_number'))['receipt_number__max'] or 0
+
 				self.receipt.receipt_number = last + 1
 			self.receipt.save()		
 
