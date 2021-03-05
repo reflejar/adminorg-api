@@ -21,7 +21,7 @@ import { asientosTypes } from '../../contabilidad/CRUDL/_options/receipt_types';
 import 'react-table/react-table.css';
 
 const getColumns = () => [{
-  Header: 'Fecha',
+  Header: 'Fecha de Operacion',
   id: 'Fecha',
   accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
 }, {

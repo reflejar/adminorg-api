@@ -11,7 +11,7 @@ import 'react-table/react-table.css';
 const CheckboxTable = checkboxHOC(ReactTable);
 
 const getColumns = () => [{
-  Header: 'Fecha',
+  Header: 'Fecha de Operacion',
   id: 'Fecha',
   accessor: 'fecha',
   desc: true,
