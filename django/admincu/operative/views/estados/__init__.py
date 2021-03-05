@@ -160,4 +160,4 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 			'condonacion': filtro['condonacion'] if 'condonacion' in filtro.keys() else None
 		}
 		operaciones = self.get_serializer_class()(queryset, context=context, many=True)
-		return Response(operaciones.data)
+		return Response(reversed(operaciones.data))
