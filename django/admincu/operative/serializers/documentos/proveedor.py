@@ -246,5 +246,5 @@ class OrigenProveedorModelSerializer(DocumentoModelSerializer):
 		instance.eliminar_operaciones()
 		operaciones = creador_operaciones[instance.receipt.receipt_type.code](instance, validated_data).create()
 		if self.context['receipt_type'].code == "301":
-			instance.hacer_pdf()		
+			instance.hacer_pdf()
 		return instance

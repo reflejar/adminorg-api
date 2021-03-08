@@ -81,22 +81,20 @@ class TesoroModelSerializer(DocumentoModelSerializer):
 		documento.hacer_pdf()
 		return documento
 
-	# @transaction.atomic
-	# def update(self, instance, validated_data):
-	# 	"""
-	# 		Se actualizan los datos de cabecera del documento
-	# 		Se eliminan las operaciones anteriores y se crean nuevas
-	# 	"""
+	@transaction.atomic
+	def update(self, instance, validated_data):
+		"""
+			Se actualizan los datos de cabecera del documento
+			Se eliminan las operaciones anteriores y se crean nuevas
+		"""
 
-	# 	if self.context['receipt_type'].code == "303":
-	# 		raise serializers.ValidationError('No se puede editar una Transferencia entre disponibilidades.')
+		instance.fecha_operacion = validated_data['fecha_operacion']
+		instance.descripcion = validated_data['descripcion']
+		instance.receipt.issued_date = validated_data['receipt']['issued_date']
+		instance.receipt.total_amount = self.suma_debe
+		instance.receipt.point_of_sales = validated_data['receipt']['point_of_sales']
 
-	# 	instance.fecha_operacion = validated_data['fecha_operacion']
-	# 	instance.descripcion = validated_data['descripcion']
-	# 	instance.receipt.issued_date = validated_data['receipt']['issued_date']
-	# 	instance.receipt.total_amount = self.suma_debe
-	# 	instance.receipt.point_of_sales = validated_data['receipt']['point_of_sales']
-
-	# 	instance.eliminar_operaciones()
-	# 	operaciones = CU(instance, validated_data).create()
-	# 	return instance
+		instance.eliminar_operaciones()
+		operaciones = CU(instance, validated_data).create()
+		instance.hacer_pdf()
+		return instance

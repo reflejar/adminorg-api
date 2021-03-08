@@ -95,10 +95,9 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto']:
 				if Cuenta.objects.filter(
 					comunidad=self.context['comunidad'], 
-					naturaleza__nombre=self.context['naturaleza'], 
 					nombre=nombre
 				):			
-					raise serializers.ValidationError('Ya existe un {} con el nombre solicitado'.format(self.context['naturaleza']))
+					raise serializers.ValidationError('Ya existe una cuenta con el nombre solicitado')
 		
 		return nombre
 
