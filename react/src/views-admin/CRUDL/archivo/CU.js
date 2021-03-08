@@ -93,7 +93,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="carpeta">Colocar en carpeta</Label>
                 <Field component="select" name="carpeta" id="carpeta" className={`form-control ${errors.carpeta && touched.carpeta && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value={""}> --- </option>
                   {carpetas.map((carpeta, i) => {
                     return <option key={i} value={carpeta.id}>{carpeta.nombre}</option>
                   })}

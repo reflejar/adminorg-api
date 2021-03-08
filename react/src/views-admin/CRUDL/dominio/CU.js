@@ -103,7 +103,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="propietario">Propietario</Label>
                 <Field component="select" name="propietario" id="propietario" className={`form-control ${errors.propietario && touched.propietario && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value={""}> --- </option>
                   {clientes.map((cliente, i) => {
                     return <option key={i} value={cliente.id}>{cliente.full_name}</option>
                   })}
@@ -114,7 +114,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="inquilino">Inquilino</Label>
                 <Field component="select" name="inquilino" id="inquilino" className={`form-control ${errors.inquilino && touched.inquilino && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value={""}> --- </option>
                   {clientes.map((cliente, i) => {
                     return <option key={i} value={cliente.id}>{cliente.full_name}</option>
                   })}
@@ -137,7 +137,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="titulo">Titulo contable</Label>
                 <Field component="select" name="titulo" id="titulo" className={`form-control ${errors.titulo && touched.titulo && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value={""}> --- </option>
                   {titulos.map((titulo, i) => {
                     return <option key={i} value={titulo.id}>{titulo.nombre}</option>
                   })}

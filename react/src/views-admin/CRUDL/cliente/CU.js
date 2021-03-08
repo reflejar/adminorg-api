@@ -169,7 +169,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="titulo">Titulo contable</Label>
                 <Field component="select" name="titulo" id="titulo" className={`form-control ${errors.titulo && touched.titulo && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value={""}> --- </option>
                   {titulos.map((titulo, i) => {
                     return <option key={i} value={titulo.id}>{titulo.nombre}</option>
                   })}

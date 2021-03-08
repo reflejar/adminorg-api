@@ -93,7 +93,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="interes">Metodologia de intereses</Label>
                 <Field component="select" name="interes" id="interes" className={`form-control ${errors.interes && touched.interes && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value={""}>---</option>
                   {intereses.map((interes, i) => {
                     return <option key={i} value={interes.id}>{interes.full_name}</option>
                   })}
@@ -103,7 +103,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="descuento">Metodologia de descuentos</Label>
                 <Field component="select" name="descuento" id="descuento" className={`form-control ${errors.descuento && touched.descuento && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                <option value={""}>---</option>
                   {descuentos.map((descuento, i) => {
                     return <option key={i} value={descuento.id}>{descuento.full_name}</option>
                   })}
@@ -113,7 +113,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="titulo">Titulo contable</Label>
                 <Field component="select" name="titulo" id="titulo" className={`form-control ${errors.titulo && touched.titulo && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                <option value={""}>---</option>
                   {titulos.map((titulo, i) => {
                     return <option key={i} value={titulo.id}>{titulo.nombre}</option>
                   })}

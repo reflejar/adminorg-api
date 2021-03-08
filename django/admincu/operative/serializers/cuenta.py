@@ -286,9 +286,11 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 					instance.metodos.add(r)
 			elif self.context['naturaleza'] == 'ingreso':
 				descuento_data = validate_data['descuento']
-				instance.metodos.add(descuento_data)
+				if descuento_data:
+					instance.metodos.add(descuento_data)
 				interes_data = validate_data['interes']
-				instance.metodos.add(interes_data)
+				if interes_data:
+					instance.metodos.add(interes_data)
 
 		# Actualizacion del titulo
 		instance.titulo = validate_data['titulo']

@@ -109,7 +109,7 @@ const CU = ({ selected, onClose }) => {
               <FormGroup>
                 <Label for="supercarpeta">Colocar dentro de otra carpeta</Label>
                 <Field component="select" name="supercarpeta" id="supercarpeta" className={`form-control ${errors.supercarpeta && touched.supercarpeta && 'is-invalid'}`}>
-                  <option defaultValue=""> --- </option>
+                  <option value={""}> --- </option>
                   {excludeInstance(selected, carpetas).map((carpeta, i) => {
                     return <option key={i} value={carpeta.id}>{carpeta.nombre}</option>
                   })}
