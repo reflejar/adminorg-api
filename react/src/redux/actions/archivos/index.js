@@ -8,7 +8,7 @@ const search = (term) => ({
 });
 
 const select = item => ({
-  type: 'SELECT_ANALITICA',
+  type: 'SELECT_INFORMES',
   payload: item
 });
 

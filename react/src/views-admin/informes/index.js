@@ -10,6 +10,7 @@ import {
 import classnames from "classnames";
 import { connect } from 'react-redux'
 import get from 'lodash/get';
+import Spinner from '../../components/spinner/spinner';
 
 // Estructura
 import InformesList from "./containers/list";
@@ -41,7 +42,7 @@ class Informes extends Component {
   }
 
   render() {
-    const { selected, data } = this.props;
+    const { selected, data, loading } = this.props;
     return (
       <div className="chat-application">
         <div className="content-overlay" />
@@ -84,16 +85,18 @@ class Informes extends Component {
 
         <PerfectScrollbar>
           <section className="chat-app-window">
-            <TabContent activeTab={this.state.activeTab}>
-              {console.log(selected)}
-              <TabPane tabId="1">
-                { data.length > 0 ? <TableData /> : (selected && selected.ubicacion && <FileReader file={selected.ubicacion} />)}
-                {/* { selected ? (selected.ubicacion ? <FileReader file={selected.ubicacion} /> : "Por favor seleccione") : "Que desea realizar?" } */}
-              </TabPane>
-              <TabPane tabId="2">
-                { selected ? (selected.carpeta ? <InfoArchivo selected={selected} /> : <InfoCarpeta selected={selected} />) : "Por favor seleccione" }
-              </TabPane>
-            </TabContent>
+            {loading ? 
+              <div className='loading-modal'><Spinner /></div> :
+              <TabContent activeTab={this.state.activeTab}>
+                <TabPane tabId="1">
+                  { data.length > 0 ? <TableData /> : (selected && selected.ubicacion && <FileReader file={selected.ubicacion} />)}
+                  {/* { selected ? (selected.ubicacion ? <FileReader file={selected.ubicacion} /> : "Por favor seleccione") : "Que desea realizar?" } */}
+                </TabPane>
+                <TabPane tabId="2">
+                  { selected ? (selected.carpeta ? <InfoArchivo selected={selected} /> : <InfoCarpeta selected={selected} />) : "Por favor seleccione" }
+                </TabPane>
+            </TabContent>              
+            }
           </section>
         </PerfectScrollbar>
 
@@ -107,6 +110,7 @@ class Informes extends Component {
 const mapStateToProps = state => ({
   selected: get(state, 'informes.instance', {}),
   data: get(state, 'informes.data', {}),
+  loading: get(state, 'informes.loading')
 })
 
 export default connect(mapStateToProps, null)(Informes);

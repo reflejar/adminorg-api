@@ -7,9 +7,9 @@ const initial = {
 }
 const filter = (state = initial, action) => {
     switch (action.type) {
-      case 'SET_AN_ALL_FILTERS':
+      case 'SET_INFORMES_ALL_FILTERS':
         return action.payload
-      case 'SET_AN_DATES':
+      case 'SET_INFORMES_DATES':
         return {
           ...state,
           fechas: [...state.fechas, action.payload]

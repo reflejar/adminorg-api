@@ -73,6 +73,7 @@ class Cuenta(BaseModel):
 		excluir = []
 		for d in deudas:
 			# if d.saldo(fecha=fecha) <= 0: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA
+			print(d.saldo())
 			if d.saldo() <= 0.00: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA pero excluyendo las pagadas posteriormente
 				excluir.append(d.id)
 		
