@@ -136,7 +136,7 @@ class Operacion(BaseModel):
 				if pagos: # No se deberan restar los intereses pagados (salvo los posteriores que no hayan alcanzado el capital).
 					fecha_calculo = pagos[-1].fecha if pagos[-1].fecha >= self.fecha_vencimiento else self.fecha_vencimiento
 					bruto = self.subtotal(fecha=fecha_calculo) 
-					periodos = (fecha - fecha_calculo.days) // reconocimiento # Se utiliza como fecha para el calculo de los periodos la del ultimo pago.
+					periodos = (fecha - fecha_calculo).days // reconocimiento # Se utiliza como fecha para el calculo de los periodos la del ultimo pago.
 				else: # Si no se realizo pago de capital, el interes es el total desde la fecha inicial. Se debera posteriormente restar los intereses pagados.
 					bruto = self.subtotal(fecha=self.fecha_vencimiento)
 					periodos = (fecha - self.fecha_vencimiento).days // reconocimiento
