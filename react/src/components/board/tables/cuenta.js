@@ -10,7 +10,7 @@ const CheckboxTable = checkboxHOC(ReactTable);
 
 const TableCuenta = ({data, columns, ref, checkboxProps}) => {
 
-  const tableHeaders = columns.map(c => ({ label: c.Header, key: c.Header.toLowerCase() }));
+  const tableHeaders = columns.map(c => ({ label: c.Header, key: typeof c.accessor === "string" ? c.accessor : c.Header.toLowerCase() }));
 
   const dataForTable = useMemo(() => {
     if (data && !data.length) {
@@ -46,7 +46,7 @@ const TableCuenta = ({data, columns, ref, checkboxProps}) => {
           headers={tableHeaders}
           data={dataForTable}
           target="_blank"
-          filename="admincu-documentos.csv">
+          filename="admincu-cuenta.csv">
           <Button className="btn-sm" outline>
             <FileText size={18} />
           </Button>

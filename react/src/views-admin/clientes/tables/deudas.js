@@ -45,16 +45,15 @@ export default class Table extends React.Component {
       id: 'Fecha',
       accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
     }, {
-      id: 'Documento',
       Header: 'Documento',
-      accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`
+      id: 'Documento',
+      accessor: 'documento.nombre'
     }, {
       Header: 'Concepto',
       accessor: 'concepto'
     }, {
       Header: 'Periodo',
-      id: 'Periodo',
-      accessor: (d) => d.periodo ? moment(d.periodo).format('YYYY-MM') : null
+      accessor: 'periodo'
     }, {
       Header: 'Monto',
       accessor: 'monto',

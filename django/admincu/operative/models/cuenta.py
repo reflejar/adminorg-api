@@ -39,9 +39,9 @@ class Cuenta(BaseModel):
 	def __str__(self):
 		nombre = ""
 		if self.perfil:
-			nombre += " {}".format(str(self.perfil)) 
+			nombre += "{}".format(str(self.perfil)) 
 		else:
-			nombre += " {}".format(self.nombre if self.nombre else self.numero) 
+			nombre += "{}".format(self.nombre if self.nombre else self.numero) 
 		return nombre
 
 	@property

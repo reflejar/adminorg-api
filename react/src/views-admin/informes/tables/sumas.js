@@ -9,7 +9,12 @@ const Sumas = () => {
     <Fragment>
       <Row>
         <Col sm="12">
-          Las sumitas
+          Las sumitas. 
+          Tiene que tener input para los conceptos a sumar (Cuentas (seleccionando naturaleza) o titulos)
+          Tiene que tener input para las columnas sumantes (valor; o debe y haber; o debe, haber y valor;)
+            Y tiene que haber tantas columnas sumantes como las seleccionadas * la cantidad de periodos consultados
+              Por ejemplo: Seleccionando columnas debe + haber + valor (3 columnas) y seleccionamos 2 periodos diferentes => 6 columnas
+          Tiene que tener input para filtrado/agrupado (por ej: conceptos a sumar: Cuentas - agrupado: conceptos y periodos)
         </Col>
       </Row>
       <Row>

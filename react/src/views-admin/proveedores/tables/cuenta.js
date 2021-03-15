@@ -21,13 +21,13 @@ import Asiento from '../../contabilidad/CRUDL/asiento/CU';
 import { asientosTypes } from '../../contabilidad/CRUDL/_options/receipt_types';
 
 const getColumns = () => [{
-  Header: 'Fecha de Operacion',
+  Header: 'Fecha',
   id: 'Fecha',
   accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
 }, {
   Header: 'Documento',
   id: 'Documento',
-  accessor: (d) => `${d.documento.receipt.receipt_type} ${d.documento.receipt.formatted_number}`
+  accessor: 'documento.nombre'
 }, {
   Header: 'Debe',
   accessor: 'debe',

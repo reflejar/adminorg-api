@@ -64,7 +64,19 @@ class TableData extends Component {
                   >
                     Grafico
                   </NavLink>
-               </NavItem>               
+               </NavItem>          
+               <NavItem>
+                  <NavLink
+                     className={classnames({
+                        active: this.state.activeTab === "4"
+                     })}
+                     onClick={() => {
+                        this.toggle("4");
+                     }}
+                  >
+                    Guardado
+                  </NavLink>
+               </NavItem>                     
             </Nav>
             <TabContent activeTab={this.state.activeTab}>
                <TabPane tabId="1">
@@ -74,8 +86,11 @@ class TableData extends Component {
                   <Sumas />
                </TabPane>
                <TabPane tabId="3">
-                  Aqui
+                  Aqui se va a poder crear el grafico
                </TabPane>
+               <TabPane tabId="4">
+                  Aqui se va a poder guardar
+               </TabPane>               
             </TabContent>
          </div>
       );

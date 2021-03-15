@@ -15,6 +15,7 @@ class InformesModelSerializer(serializers.ModelSerializer):
 	documento = DocumentoModelSerializer()
 	titulo = TituloModelSerializer()
 	saldo = serializers.SerializerMethodField()
+	concepto = serializers.SerializerMethodField()
 	
 	class Meta:
 		model = Operacion
@@ -31,7 +32,8 @@ class InformesModelSerializer(serializers.ModelSerializer):
 			'debe',
 			'haber',
 			'fecha',
-			'fecha_indicativa',
+			'concepto',
+			'periodo',
 			'cantidad',
 			'fecha_vencimiento',
 			'fecha_gracia',
@@ -42,4 +44,13 @@ class InformesModelSerializer(serializers.ModelSerializer):
 
 	def get_saldo(self, obj):
 
-		return obj.saldo(fecha=self.context['end_date'])
+		return {
+			'capital': obj.saldo(condonacion=True),
+			'interes': obj.interes(fecha=self.context['end_date']),
+			'total': obj.saldo(fecha=self.context['end_date'])
+		}
+
+	def get_concepto(self, obj):
+		if obj.concepto():
+			return str(obj.concepto())
+		return None		

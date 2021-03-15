@@ -13,6 +13,11 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
 
   const tableHeaders = columns.map(c => ({ label: c.Header, key: typeof c.accessor === "string" ? c.accessor : c.Header.toLowerCase() }));
 
+  columns.forEach(x => {
+    console.log(x.accessor)
+  });
+
+
   const dataForTable = useMemo(() => {
     if (data && !data.length) {
       return [];
@@ -47,7 +52,7 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
             headers={tableHeaders}
             data={dataForTable}
             target="_blank"
-            filename="admincu-documentos.csv">
+            filename="admincu-deudas.csv">
             <Button className="btn-sm" outline>
               <FileText size={18} />
             </Button>

@@ -27,7 +27,8 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 			'id',
 			'fecha_operacion',
 			'descripcion',
-			'fecha_anulacion'
+			'fecha_anulacion',
+			'nombre'
 		)
 		
 	def __init__(self, *args, **kwargs):

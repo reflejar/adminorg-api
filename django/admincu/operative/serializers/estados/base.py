@@ -12,7 +12,7 @@ class EstadoBaseModelSerializer(OperacionModelSerializer):
 		super().__init__(*args, **kwargs)
 		fields = Operacion()._meta
 		self.fields['fecha'] = serializers.ModelField(model_field=fields.get_field("fecha"))
-		self.fields['periodo'] = serializers.ModelField(model_field=fields.get_field("fecha_indicativa"))
+		self.fields['periodo'] = serializers.CharField(max_length=10)
 		self.fields['cuenta'] = serializers.CharField(max_length=200)
 		self.fields['causante'] = serializers.CharField(max_length=200)
 		self.fields['fecha_gracia'] = serializers.ModelField(model_field=fields.get_field("fecha_gracia"))

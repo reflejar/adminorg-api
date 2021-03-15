@@ -45,6 +45,9 @@ class Documento(BaseModel):
 		nombre += " a {}".format(str(self.destinatario))
 		return nombre
 
+	def nombre(self):
+		return str(self.receipt)
+
 	def get_model(self, nombre):
 			return apps.get_model('operative', nombre)
 
