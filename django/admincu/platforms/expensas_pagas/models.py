@@ -7,7 +7,7 @@ from admincu.operative.models import Documento
 	EN CASO DE QUERER LIBERAR ESTA LIBRERIA DEBERIA SACARSE BaseModel
 """
 
-class AccountEP(BaseModel):
+class AccountEP(models.Model):
 
 	nombre = models.CharField(max_length=50)
 	app_code = models.PositiveIntegerField(blank=True, null=True)
@@ -17,7 +17,7 @@ class AccountEP(BaseModel):
 		return self.nombre
 
 
-class Preference(BaseModel):
+class Preference(models.Model):
 
 	""" Agrega datos de exp necesarios al dcocumento."""
 
@@ -27,7 +27,7 @@ class Preference(BaseModel):
 	inf_deuda = models.BooleanField(default=False)
 	pdf = models.FileField(upload_to="pdfs/expensas_pagas/", blank=True, null=True)
 
-class Payment(BaseModel):
+class Payment(models.Model):
 
 	""" Cobros Expensas Pagas Model."""
 

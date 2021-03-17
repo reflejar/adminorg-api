@@ -99,6 +99,7 @@ class CU:
 					documento=self.documento, # Luego se le cambia el documento cuando se hace la nota de credito
 					asiento=self.identifier,
 					cuenta=i['vinculo'].cuenta,
+					fecha_indicativa=i['vinculo'].fecha_indicativa,
 					valor=-descuento,
 					detalle=i['detalle'],
 					vinculo=i['vinculo'],
@@ -111,6 +112,7 @@ class CU:
 					documento=self.documento, # Luego se le cambia el documento cuando se hace la nota de credito
 					asiento=self.identifier,
 					cuenta=self.cuenta_descuento,
+					fecha_indicativa=i['vinculo'].fecha_indicativa,
 					valor=descuento,
 					detalle=i['detalle'],
 					vinculo=operacion_haber_descuento,
@@ -130,7 +132,7 @@ class CU:
 					documento=self.documento, # Luego se le cambia el documento cuando se hace la nota de debito
 					asiento=self.identifier,
 					cuenta=i['vinculo'].cuenta,
-					fecha_indicativa=self.fecha_operacion,
+					fecha_indicativa=i['vinculo'].fecha_indicativa,
 					valor=interes,
 					detalle=i['detalle'],
 					vinculo=i['vinculo'],
@@ -143,6 +145,7 @@ class CU:
 					documento=self.documento, # Luego se le cambia el documento cuando se hace la nota de debito
 					asiento=self.identifier,
 					cuenta=self.cuenta_interes,
+					fecha_indicativa=i['vinculo'].fecha_indicativa,
 					valor=-interes,
 					detalle=i['detalle'],
 					vinculo=operacion_debe_interes,
@@ -212,6 +215,7 @@ class CU:
 				fecha=self.fecha_operacion,
 				documento=self.documento,
 				asiento=self.identifier,
+				fecha_indicativa=i['vinculo'].fecha_indicativa,
 				cuenta=i['cuenta'],
 				valor=i['monto'],
 				detalle=i['detalle'],
