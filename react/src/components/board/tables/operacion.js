@@ -1,11 +1,12 @@
 import React, {useRef, useMemo} from 'react';
 import ReactTable from 'react-table';
+import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import ReactToPrint from 'react-to-print';
 import { CSVLink } from 'react-csv';
 import { Button } from 'reactstrap';
 import { Printer, FileText} from "react-feather";
 
-const TableCuenta = ({data, columns, addProps}) => {
+const TableOperacion = ({data, columns}) => {
 
   const tableHeaders = columns.map(c => ({ label: c.Header, key: typeof c.accessor === "string" ? c.accessor : c.Header.toLowerCase() }));
 
@@ -51,15 +52,13 @@ const TableCuenta = ({data, columns, addProps}) => {
       </section>
       <ReactTable
         showPagination
-        defaultPageSize={50}        
+        defaultPageSize={100}        
         data={data}
         columns={columns_final}
-        sortable={false}
         className="-striped -highlight"
-        {...addProps}
       />
     </React.Fragment>
   );
 };
 
-export default TableCuenta;
+export default TableOperacion;

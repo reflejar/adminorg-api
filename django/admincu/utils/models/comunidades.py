@@ -18,8 +18,6 @@ class TipoComunidad(models.Model):
 class Comunidad(models.Model):
 
 	contribuyente = models.ForeignKey(TaxPayer, on_delete=models.PROTECT, blank=True, null=True)
-	# mercado_pago = models.ForeignKey(Account, blank=True, null=True, on_delete=models.PROTECT)
-
 	nombre = models.CharField(max_length=200)
 	domicilio = models.ForeignKey("utils.Domicilio", on_delete=models.PROTECT)
 	tipo = models.ForeignKey(TipoComunidad, on_delete=models.PROTECT)

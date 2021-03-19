@@ -16,6 +16,7 @@ class InformesModelSerializer(serializers.ModelSerializer):
 	titulo = TituloModelSerializer()
 	saldo = serializers.SerializerMethodField()
 	concepto = serializers.SerializerMethodField()
+	numero_asiento = serializers.SerializerMethodField()
 	
 	class Meta:
 		model = Operacion
@@ -39,8 +40,13 @@ class InformesModelSerializer(serializers.ModelSerializer):
 			'fecha_gracia',
 			'detalle',
 			'descripcion',
-			'saldo'
+			'saldo',
+			'numero_asiento'
 		)
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.numero_asiento = 1
 
 	def get_saldo(self, obj):
 
@@ -54,3 +60,6 @@ class InformesModelSerializer(serializers.ModelSerializer):
 		if obj.concepto():
 			return str(obj.concepto())
 		return None		
+
+	def get_numero_asiento(self, obj):
+		return self.numero_asiento

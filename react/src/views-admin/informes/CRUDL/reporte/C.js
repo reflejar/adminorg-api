@@ -59,12 +59,10 @@ const Reporte = ({ getDataReporte, onClose }) => {
       {/* {console.log(filtro)} */}
       
       <Tipo 
-        update={false}
         filtro={filtro} 
         setFiltro={setFiltro} />
 
       <Fechas 
-        update={false}
         filtro={filtro} 
         setFiltro={setFiltro} />
 

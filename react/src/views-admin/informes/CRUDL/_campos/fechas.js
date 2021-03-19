@@ -13,7 +13,7 @@ const filterCompletedObject = (arr) =>
   arr.filter((x) => (x.end_date));
 
 
-const Fechas = ({ update, filtro, setFiltro }) => {
+const Fechas = ({ filtro, setFiltro }) => {
   
   const cleanItem = {
     start_date: "",
@@ -26,7 +26,7 @@ const Fechas = ({ update, filtro, setFiltro }) => {
     handleFechasAppend,
     handleFechasPop,
     setFecha
-  ] = useAppendableField(update ? filtro.fechas : [cleanItem], {
+  ] = useAppendableField([cleanItem], {
     custom: {
       handleChange: (index) => (event) => {
         const name = event.target.name;
@@ -54,11 +54,13 @@ const Fechas = ({ update, filtro, setFiltro }) => {
       <Col sm="12">
         <hr />
         <h3 className="mt-2">
-          Periodos
+          Periodo 
+          {/* Por ahora 
+          Lo establecemos como uno solo */}
         </h3>        
         <AppendableRowField
-          appendButtonDisabled={update}
-          popButtonDisabled={update}
+          appendButtonDisabled={true} // Por ahora se permite un solo periodo
+          popButtonDisabled={true} // Por ahora se permite un solo periodo
           onAppendClick={handleFechasAppend}
           onPopClick={handleFechasPop}
           data={fechas}

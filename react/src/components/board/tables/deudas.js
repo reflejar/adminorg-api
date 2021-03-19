@@ -1,21 +1,14 @@
 import React, {useRef, useMemo} from 'react';
 import ReactTable from 'react-table';
-import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import ReactToPrint from 'react-to-print';
 import { CSVLink } from 'react-csv';
 import { Button, ButtonGroup } from 'reactstrap';
 import { Printer, FileText} from "react-feather";
 import {Numero} from "../../../utility/formats";
 
-const CheckboxTable = checkboxHOC(ReactTable);
-
-const TableDeudas = ({data, columns, ref, checkboxProps}) => {
+const TableDeudas = ({data, columns, addProps}) => {
 
   const tableHeaders = columns.map(c => ({ label: c.Header, key: typeof c.accessor === "string" ? c.accessor : c.Header.toLowerCase() }));
-
-  columns.forEach(x => {
-    console.log(x.accessor)
-  });
 
 
   const dataForTable = useMemo(() => {
@@ -68,14 +61,13 @@ const TableDeudas = ({data, columns, ref, checkboxProps}) => {
         </ButtonGroup>
       </section>
 
-      <CheckboxTable
+      <ReactTable
         showPagination
         defaultPageSize={50}
-        ref={ref}
         data={data}
         columns={columns_final}
         className="-striped -highlight"
-        {...checkboxProps}
+        {...addProps}
       />
     </React.Fragment>
   );

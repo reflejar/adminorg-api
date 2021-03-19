@@ -83,7 +83,7 @@ class TableData extends Component {
                   <Operaciones data={data}/>
                </TabPane>
                <TabPane tabId="2">
-                  <Sumas />
+                  <Sumas data={data} />
                </TabPane>
                <TabPane tabId="3">
                   Aqui se va a poder crear el grafico

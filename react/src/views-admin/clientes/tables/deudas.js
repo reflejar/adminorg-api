@@ -9,9 +9,6 @@ import NotaCredito from '../CRUDL/nota-credito/CR';
 import ReciboX from '../CRUDL/recibo-x/CR';
 import { facturasTypes, notasCreditoTypes, notasDebitoTypes, recibosTypes } from '../CRUDL/_options/receipt_types';
 
-import 'react-table/react-table.css';
-
-
 // Cosas de Tesoreria
 import Transferencia from '../../tesoreria/CRUDL/transferencia/CU';
 import { transferenciasTypes } from '../../tesoreria/CRUDL/_options/receipt_types';
@@ -20,15 +17,84 @@ import { transferenciasTypes } from '../../tesoreria/CRUDL/_options/receipt_type
 import Asiento from '../../contabilidad/CRUDL/asiento/CU';
 import { asientosTypes } from '../../contabilidad/CRUDL/_options/receipt_types';
 
+import 'react-table/react-table.css';
 
+const getColumns = () => [{
+  Header: 'Fecha',
+  id: 'Fecha',
+  accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
+}, {
+  Header: 'Documento',
+  id: 'Documento',
+  accessor: 'documento.nombre'
+}, {
+  Header: 'Cuenta',
+  accessor: "cuenta"
+}, {  
+  Header: 'Concepto',
+  accessor: 'concepto'
+}, {
+  Header: 'Periodo',
+  accessor: 'periodo'
+}, {
+  Header: 'Monto',
+  accessor: 'monto',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )   
+}, {
+  Header: 'Intereses/Descuentos',
+  accessor: 'interes_generado',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )   
+}, {
+  Header: 'Pagado/Utilizado',
+  accessor: 'pago_total',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )         
+}, {
+  Header: 'Saldo',
+  accessor: 'saldo',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )    
+}];    
 
 export default class Table extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            selection: [],
-            selectAll: false,
             modal: {
                 open: false,
                 item: null
@@ -37,119 +103,7 @@ export default class Table extends React.Component {
 
     }
 
-    getColumns = (selected) => [{
-      Header: 'Portador',
-      accessor: "cuenta"
-    }, {
-      Header: 'Fecha',
-      id: 'Fecha',
-      accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
-    }, {
-      Header: 'Documento',
-      id: 'Documento',
-      accessor: 'documento.nombre'
-    }, {
-      Header: 'Concepto',
-      accessor: 'concepto'
-    }, {
-      Header: 'Periodo',
-      accessor: 'periodo'
-    }, {
-      Header: 'Monto',
-      accessor: 'monto',
-      Cell: row => (
-        <div
-          style={{
-            width: '100%',
-            textAlign: "right"
-          }}
-        >
-          {Numero(row.value)}
-        </div>
-      )   
-    }, {
-      Header: 'Intereses/Descuentos',
-      accessor: 'interes_generado',
-      Cell: row => (
-        <div
-          style={{
-            width: '100%',
-            textAlign: "right"
-          }}
-        >
-          {Numero(row.value)}
-        </div>
-      )   
-    }, {
-      Header: 'Pagado/Utilizado',
-      accessor: 'pago_total',
-      Cell: row => (
-        <div
-          style={{
-            width: '100%',
-            textAlign: "right"
-          }}
-        >
-          {Numero(row.value)}
-        </div>
-      )         
-    }, {
-      Header: 'Saldo',
-      accessor: 'saldo',
-      Cell: row => (
-        <div
-          style={{
-            width: '100%',
-            textAlign: "right"
-          }}
-        >
-          {Numero(row.value)}
-        </div>
-      )    
-    }];    
 
-  toggleAll = () => {
-    /*
-      'toggleAll' is a tricky concept with any filterable table
-      do you just select ALL the records that are in your data?
-      OR
-      do you only select ALL the records that are in the current filtered data?
-
-      The latter makes more sense because 'selection' is a visual thing for the user.
-      This is especially true if you are going to implement a set of external functions
-      that act on the selected information (you would not want to DELETE the wrong thing!).
-
-      So, to that end, access to the internals of ReactTable are required to get what is
-      currently visible in the table (either on the current page or any other page).
-
-      The HOC provides a method call 'getWrappedInstance' to get a ref to the wrapped
-      ReactTable and then get the internal state and the 'sortedData'.
-      That can then be iterrated to get all the currently visible records and set
-      the selection state.
-    */
-    const selectAll = this.state.selectAll ? false : true;
-    const selection = [];
-    if (selectAll) {
-      // we need to get at the internals of ReactTable
-      const wrappedInstance = this.checkboxTable.getWrappedInstance();
-      // the 'sortedData' property contains the currently accessible records based on the filter and sort
-      const currentRecords = wrappedInstance.getResolvedState().sortedData;
-      // we just push all the IDs onto the selection array
-      currentRecords.forEach(item => {
-        selection.push(item._original._id);
-      });
-    }
-    this.setState({ selectAll, selection });
-  };
-
-  isSelected = key => {
-    /*
-      Instead of passing our external selection state we provide an 'isSelected'
-      callback and detect the selection state ourselves. This allows any implementation
-      for selection (either an array, object keys, or even a Javascript Set object).
-    */
-    return this.state.selection.includes(key);
-  };
 
   handleToggle = (rowInfo) => {
     this.setState({
@@ -234,16 +188,9 @@ export default class Table extends React.Component {
   }
 
   render() {
-    const { toggleSelection, toggleAll, isSelected } = this;
-    const { selectAll } = this.state;
     const { data } = this.props;
 
-    const checkboxProps = {
-      selectAll,
-      isSelected,
-      toggleSelection,
-      toggleAll,
-      selectType: "checkbox",
+    const addProps = {
       getTdProps: (state, rowInfo, column, instance) => {
         return {
           onClick: () => {
@@ -253,19 +200,6 @@ export default class Table extends React.Component {
             
           }
         }
-      },
-      getTrProps: (s, r) => {
-        // someone asked for an example of a background color change
-        // here it is...
-        let selected;
-        if (r) {
-          selected = this.isSelected(r.original._id);
-        }
-        return {
-          style: {
-            backgroundColor: selected ? "lightgreen" : "inherit",
-          }
-        };
       }
     };
 
@@ -275,9 +209,8 @@ export default class Table extends React.Component {
 
         <DeudasTable
           data={data}
-          columns={this.getColumns()}
-          ref={r => (this.checkboxTable = r)}
-          checkboxProps={checkboxProps}
+          columns={getColumns()}
+          addProps={addProps}
         />     
       </React.Fragment>
     );
