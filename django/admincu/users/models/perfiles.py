@@ -35,6 +35,6 @@ class Perfil(BaseModel):
 		nombre = ""
 		nombre += "{} ".format(self.razon_social) if self.razon_social else ""
 		nombre += "{} ".format(self.apellido) if self.apellido else ""
-		nombre += "{} ".format(self.nombre) if self.nombre else ""
+		nombre += "{}".format(self.nombre) if self.nombre else ""
 		return nombre
 

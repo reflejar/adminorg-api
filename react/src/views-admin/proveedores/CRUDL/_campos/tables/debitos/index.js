@@ -33,7 +33,6 @@ export const DebitosTable = ({ documento, dataTable, errors, update }) => {
 
             <FormGroup>
               <Input
-                disabled
                 name="documento"
                 value={item.documento}
                 disabled={documento.fecha_anulacion ? true : false}

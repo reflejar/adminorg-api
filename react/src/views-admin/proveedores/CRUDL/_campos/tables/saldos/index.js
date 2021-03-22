@@ -32,7 +32,6 @@ export const SaldosTable = ({ documento, dataTable, errors, update }) => {
 
           <FormGroup>
               <Input
-                disabled
                 name="documento"
                 disabled={documento.fecha_operacion ? true: false}
                 value={item.documento}
@@ -45,7 +44,6 @@ export const SaldosTable = ({ documento, dataTable, errors, update }) => {
               type="text"
               placeholder="Detalle"
               name="detalle"
-              disabled={update}
               value={item.detalle}
               disabled={documento.fecha_operacion ? true: false}
               onChange={(event) => item.onInputChange(event, index)}
@@ -60,7 +58,6 @@ export const SaldosTable = ({ documento, dataTable, errors, update }) => {
               type="number"
               max={item.max}
               name="monto"
-              disabled={update}
               value={item.monto}
               disabled={documento.fecha_operacion ? true: false}
               onChange={(event) => item.onInputChange(event, index)}

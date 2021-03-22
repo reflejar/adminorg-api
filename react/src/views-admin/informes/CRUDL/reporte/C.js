@@ -42,6 +42,7 @@ const Reporte = ({ getDataReporte, onClose }) => {
       })
       .catch((error) => {
         const { data } = error;
+        console.log(data)
       })
       .finally(() => setLoading(false))
   }, [setLoading, getDataReporte, filtro, onClose]);

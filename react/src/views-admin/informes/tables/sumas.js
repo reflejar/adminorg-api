@@ -31,9 +31,6 @@ const columns = [{
 }, {    
   Header: 'Tipo Doc',
   accessor: 'documento.tipo'
-}, {            
-  Header: 'Doc N°',
-  accessor: 'documento.numero'
 }, {   
   Header: 'Cantidad',
   accessor: 'cantidad'
@@ -117,12 +114,30 @@ const columns = [{
   )     
 }];
 
+const removeDuplicated = (arr, field=undefined) => {
+  
+  const result = arr.reduce((unique, o) => {
+    if (field) {
+      if(!unique.some(obj => obj[field] === o[field])) {
+        unique.push(o);
+      }
+      return unique;
+    } else {
+      if(!unique.some(obj => obj === o)) {
+        unique.push(o);
+      }
+      return unique;
+    }
+  },[]);
+  return result
+}
+
 
 const Tabla = ({ data }) => {
 
-  const [criterio, setCriterio] = useState([]);
-  const [agrupado, setAgrupado] = useState([]);
-  const [totales, setTotales] = useState([]);
+  const [criterio, setCriterio] = useState({});
+  const [agrupado, setAgrupado] = useState({});
+  const [totales, setTotales] = useState({});
   const [columnas, setColumnas] = useState([columns[0]])
 
   const handleCriterio = (event) => {
@@ -138,12 +153,14 @@ const Tabla = ({ data }) => {
     // Decidi que si filtra clientes, entonces que el criterio sea de clientes y luego haya un agrupado por lotes
     let selection = [];
     if (value === "titulo") {
-      selection = new Set(data.map(op => (op.titulo.nombre)))
+      selection = new Set(data.map(op => (op.titulo)))
     } else {
       const filteredOperation = data.filter(op => op.naturaleza === value);
-      selection = new Set(filteredOperation.map(op => (op.cuenta.nombre)))
+      selection = new Set(filteredOperation.map(op => (op.cuenta)))
     }
-    setCriterio(selection);
+    setCriterio({
+      criterio: removeDuplicated([...selection], "id").map(s => (s))
+    });
     
   }; 
 
@@ -155,26 +172,72 @@ const Tabla = ({ data }) => {
       let selection = [];
       if (val.includes(".")) {
         const acceso = val.split(".");
-        selection = new Set(data.map(op => (op[acceso[0]][acceso[1]])))  
+        const atr = acceso[0];
+        selection = new Set(data.map(op => (op[acceso[1]])))
+        let result = {};
+        result[atr] = [...selection];
+        agrupados.push(result);
       } else {
+        const atr = val;
         selection = new Set(data.map(op => (op[val])))
+        let result = {};
+        result[atr] = [...selection];
+        agrupados.push(result);
       }
-      agrupados.push(selection);
     });
     setAgrupado(agrupados);
+  };   
+
+  const handleTotalizadores = (event) => {
+
+    const options = Array.from(event.target.selectedOptions, option => option.value);
+    let totalizadores = {};
+    options.forEach((val) => {
+      if (val.includes(".")) {
+        const acceso = val.split(".");
+        const atr = acceso[1];
+        totalizadores[atr] = 0.00;
+      } else {
+        const atr = val;
+        totalizadores[atr] = 0.00;
+        if (val === "debe") {
+          totalizadores.haber = 0.00;
+        }
+      }
+    });
+    setTotales(totalizadores);
     
 
-  };   
+  };     
 
 
   useEffect(() => {
-    // Esto tengo que hacer
-    // Que calcule si ya tiene criterio y totales
-    // Que si tiene agrupado
+
+    if (Object.keys(criterio).length !== 0 && Object.keys(totales).length !== 0){ // Solo si tiene criterios y totales
     // Que Haga el listado inicial de objetos
-    // Iterar sobre la data
-    // Que filtre los que corresponda
-    // Que sume los totales
+      let colData = {...criterio}; // Establece la primer key (el criterio de calculo), con su value como lista de sus posibles valores
+      // Y que si tiene agrupado
+      if (agrupado.length > 0) {
+        agrupado.forEach(grupo => {
+          colData = Object.assign(colData, grupo) // Le agrega las otras keys (Los grupos), con sus values particulares que son tambien listas de posibles valores
+        });
+      }
+      let qObjects = 1;
+      Object.keys(colData).forEach(col => {qObjects = qObjects * colData[col].length}) // Calcula la cantidad de objetos que debe haber
+
+      let objetos = [] ;
+      for (var i = 1; i <= qObjects; i++) { // Itera la cantidad de objetos que debe hacer
+        let objeto = {...totales} // Inicia el objeto con los totales
+        Object.keys(colData).forEach(col => {
+          // Esta logica hay que testear y modificar. Si esta bien, KELOCO (ANALIZAR!!!) Si no, modificarla
+          objeto[col] = colData[col][i%colData[col].length]  // Le agrega cada una de las propiedades
+          })
+          objetos.push(objeto) 
+        }
+        // Termina el listado inicial de objetos
+    }
+
+    // Iterar sobre la data y Que sume los totales
 
 
     // Hacer que trabaje con redux y que tenga su propio loading
@@ -202,14 +265,14 @@ const Tabla = ({ data }) => {
           <FormGroup>
             <Label for="agrupado">Agrupado</Label>
             <Input type="select" id="agrupado" name="selectAgrupado" multiple onChange={(event) => handleAgrupado(event)}>
-                <option value="documento.tipo">Documentos</option>
+                {/* <option value="documento.tipo">Documentos</option> */}
                 <option value="concepto">Conceptos</option>
                 <option value="periodo">Periodos</option>
             </Input>
           </FormGroup>
           <FormGroup>
             <Label for="totalizadores">Totalizar</Label>
-            <Input type="select" id="totalizadores" name="selectTotalizadores"  multiple>
+            <Input type="select" id="totalizadores" name="selectTotalizadores" multiple onChange={(event) => handleTotalizadores(event)}>
                 <option value="monto">Montos</option>
                 <option value="cantidad">Cantidades</option>
                 <option value="debe">Debe y Haber</option>

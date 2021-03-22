@@ -1,6 +1,5 @@
 import React, {useRef, useMemo} from 'react';
 import ReactTable from 'react-table';
-import checkboxHOC from 'react-table/lib/hoc/selectTable';
 import ReactToPrint from 'react-to-print';
 import { CSVLink } from 'react-csv';
 import { Button } from 'reactstrap';
