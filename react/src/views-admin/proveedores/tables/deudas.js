@@ -42,7 +42,7 @@ const getColumns = () => [{
   )       
 }, {
   Header: 'Pagado/Utilizado',
-  accessor: 'pago_total',
+  accessor: 'pago_capital',
   Cell: row => (
     <div
       style={{

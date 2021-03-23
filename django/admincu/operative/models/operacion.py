@@ -83,7 +83,6 @@ class Operacion(BaseModel):
 			Retorna VALOR de Pago total del capital
 		"""
 		calculo = self.pagos_capital(fecha=fecha).aggregate(calculo=models.Sum('valor'))['calculo'] or 0
-		
 		return abs(calculo)
 
 	def pagos_interes(self, fecha=date.today()):
@@ -109,11 +108,57 @@ class Operacion(BaseModel):
 	def pago_total(self, fecha=date.today()):
 		"""
 			Retorna VALOR del Pago total de capital e interes
-		"""						
+		"""
 		return self.pago_capital(fecha=fecha) + self.pago_interes(fecha=fecha)
 
 
 		
+	# def interes(self, fecha=date.today(), condonacion=False):
+	# 	"""
+	# 		Retorna el calculo de interes a la fecha
+	# 	"""
+	# 	calculo = 0
+	# 	if condonacion:
+	# 		return calculo
+	# 	try:
+	# 		interes = self.metodos.get(naturaleza='interes')
+	# 	except:
+	# 		return calculo
+
+	# 	if self.fecha_vencimiento:
+	# 		if fecha > self.fecha_vencimiento:
+	# 			pagos = list(self.pagos_capital(fecha=fecha))
+	# 			tasa = interes.monto
+	# 			reconocimiento = interes.reconocimiento
+	# 			base_calculo = interes.base_calculo
+				
+	# 			if pagos: # No se deberan restar los intereses pagados (salvo los posteriores que no hayan alcanzado el capital).
+	# 				fecha_calculo = pagos[-1].fecha if pagos[-1].fecha >= self.fecha_vencimiento else self.fecha_vencimiento
+	# 				bruto = self.subtotal(fecha=fecha_calculo) 
+	# 				periodos = (fecha - fecha_calculo).days // reconocimiento # Se utiliza como fecha para el calculo de los periodos la del ultimo pago.
+	# 			else: # Si no se realizo pago de capital, el interes es el total desde la fecha inicial. Se debera posteriormente restar los intereses pagados.
+	# 				bruto = self.subtotal(fecha=self.fecha_vencimiento)
+	# 				periodos = (fecha - self.fecha_vencimiento).days // reconocimiento
+
+	# 			if not reconocimiento == 1: # por si se elije un reconocimiento distinto de 1, para agararse el interes aun no generado
+	# 				periodos += 1
+	# 			calculo = round((bruto*tasa*periodos)/(100*base_calculo//reconocimiento), 2)
+
+	# 			pagos_interes = list(self.pagos_interes(fecha=fecha))
+	# 			for pago in pagos_interes: # Se restan los intereses pagados. 
+	# 				try: # No se restan si se ha producido un pago de capital en el asiento porque el interes es automaticamente calculado desde una fecha posterior.
+	# 					credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
+	# 				except: 
+	# 					calculo = calculo + pago.valor
+
+
+	# 			if calculo < 0:
+	# 				calculo = 0
+
+		
+	# 	return Decimal("%.2f" % calculo)
+		
+
 	def interes(self, fecha=date.today(), condonacion=False):
 		"""
 			Retorna el calculo de interes a la fecha
@@ -128,38 +173,31 @@ class Operacion(BaseModel):
 
 		if self.fecha_vencimiento:
 			if fecha > self.fecha_vencimiento:
-				pagos = list(self.pagos_capital(fecha=fecha))
 				tasa = interes.monto
 				reconocimiento = interes.reconocimiento
 				base_calculo = interes.base_calculo
 				
+				pagos = list(self.pagos_capital(fecha=fecha))
 				if pagos: # No se deberan restar los intereses pagados (salvo los posteriores que no hayan alcanzado el capital).
 					fecha_calculo = pagos[-1].fecha if pagos[-1].fecha >= self.fecha_vencimiento else self.fecha_vencimiento
-					bruto = self.subtotal(fecha=fecha_calculo) 
+					bruto = self.subtotal(fecha=fecha_calculo)
 					periodos = (fecha - fecha_calculo).days // reconocimiento # Se utiliza como fecha para el calculo de los periodos la del ultimo pago.
+					if periodos == 0 and fecha_calculo == date.today():
+						periodos = -1 # Esto se hace por si se paga parcial intereses + capital => abajo se le suma y queda periodos = 0
 				else: # Si no se realizo pago de capital, el interes es el total desde la fecha inicial. Se debera posteriormente restar los intereses pagados.
 					bruto = self.subtotal(fecha=self.fecha_vencimiento)
 					periodos = (fecha - self.fecha_vencimiento).days // reconocimiento
 
-				if not reconocimiento == 1: # por si se elije un reconocimiento distinto de 1, para agararse el interes aun no generado
+				if reconocimiento != 1: # por si se elije un reconocimiento distinto de 1, para agararse el interes aun no generado
 					periodos += 1
+				
 				calculo = round((bruto*tasa*periodos)/(100*base_calculo//reconocimiento), 2)
-
-				pagos_interes = list(self.pagos_interes(fecha=fecha))
-				for pago in pagos_interes: # Se restan los intereses pagados. 
-					# credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
-					credito = Operacion.objects.filter(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
-					try: # No se restan si se ha producido un pago de capital en el asiento porque el interes es automaticamente calculado desde una fecha posterior.
-						credito = Operacion.objects.get(vinculo=self, cuenta=self.cuenta, vinculos__cuenta=self.concepto(), asiento=pago.asiento)
-					except: 
-						calculo = calculo + pago.valor
-
 
 				if calculo < 0:
 					calculo = 0
-
-		return Decimal("%.2f" % calculo)
+					
 		
+		return Decimal("%.2f" % calculo)		
 
 	def descuento(self, fecha=date.today(), condonacion=False):
 		"""

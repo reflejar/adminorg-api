@@ -152,11 +152,25 @@ class CU:
 				)
 				self.operaciones.append(operacion_haber_interes)	
 
+				operacion_haber_pago_interes = Operacion( # Se paga el interes generado
+					comunidad=self.comunidad,
+					fecha=self.fecha_operacion,
+					documento=self.documento,
+					asiento=self.identifier,
+					cuenta=i['vinculo'].cuenta,
+					fecha_indicativa=i['vinculo'].fecha_indicativa,
+					valor=-interes,
+					detalle=i['detalle'],
+					vinculo=operacion_debe_interes,
+				)
+				operacion_haber_pago_interes.save() # Se guarda directamente este movimiento				
+
 
 
 			# Solo si el pago supera el interes adeudado, se abona capital.
 			# Si existe interes > 0 el pago de capital se ve disminuido por el mismo.
 			if i['monto'] > interes:
+				monto_capital = i['monto'] - interes
 				operacion_haber_credito = Operacion(
 					comunidad=self.comunidad,
 					fecha=self.fecha_operacion,
@@ -164,7 +178,7 @@ class CU:
 					asiento=self.identifier,
 					cuenta=i['vinculo'].cuenta,
 					fecha_indicativa=i['vinculo'].fecha_indicativa,
-					valor=-i['monto'],
+					valor=-monto_capital,
 					detalle=i['detalle'],
 					vinculo=i['vinculo'],
 				)

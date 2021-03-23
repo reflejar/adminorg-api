@@ -45,10 +45,10 @@ export default class Table extends React.Component {
       accessor: 'monto'
     }, {
       Header: 'Intereses/Descuentos',
-      accessor: 'interes_generado'
+      accessor: 'interes'
     }, {
       Header: 'Pagado',
-      accessor: 'pago_total'
+      accessor: 'pago_capital'
     }, {
       Header: 'Saldo',
       accessor: 'saldo'

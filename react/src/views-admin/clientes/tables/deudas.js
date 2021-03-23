@@ -50,21 +50,8 @@ const getColumns = () => [{
     </div>
   )   
 }, {
-  Header: 'Intereses/Descuentos',
-  accessor: 'interes_generado',
-  Cell: row => (
-    <div
-      style={{
-        width: '100%',
-        textAlign: "right"
-      }}
-    >
-      {Numero(row.value)}
-    </div>
-  )   
-}, {
   Header: 'Pagado/Utilizado',
-  accessor: 'pago_total',
+  accessor: 'pago_capital',
   Cell: row => (
     <div
       style={{
@@ -75,6 +62,19 @@ const getColumns = () => [{
       {Numero(row.value)}
     </div>
   )         
+}, {
+  Header: 'Intereses/Descuentos',
+  accessor: 'interes',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {Numero(row.value)}
+    </div>
+  )   
 }, {
   Header: 'Saldo',
   accessor: 'saldo',

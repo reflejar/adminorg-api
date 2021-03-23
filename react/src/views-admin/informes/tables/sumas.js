@@ -14,14 +14,14 @@ import 'react-table/react-table.css';
 
 
 const columns = [{          
-  Header: 'Cuenta',
-  accessor: 'cuenta.nombre'
-}, {
-  Header: 'N° Titulo',
-  accessor: 'titulo.numero'
+  Header: 'N°',
+  accessor: 'numero'
 }, {        
   Header: 'Titulo',
-  accessor: 'titulo.nombre'
+  accessor: 'titulo'
+}, {        
+  Header: 'Cuenta',
+  accessor: 'cuenta'
 }, {
   Header: 'Concepto',
   accessor: 'concepto'
@@ -30,10 +30,7 @@ const columns = [{
   accessor: 'periodo'
 }, {    
   Header: 'Tipo Doc',
-  accessor: 'documento.tipo'
-}, {   
-  Header: 'Cantidad',
-  accessor: 'cantidad'
+  accessor: 'documento'
 }, {              
   Header: 'Monto',
   accessor: 'monto',
@@ -75,7 +72,7 @@ const columns = [{
   )     
 }, {
   Header: 'S. Capital',
-  accessor: 'saldo.capital',
+  accessor: 'capital',
   Cell: row => (
     <div
       style={{
@@ -88,7 +85,7 @@ const columns = [{
   )     
 }, {    
   Header: 'S. Interes',
-  accessor: 'saldo.interes',
+  accessor: 'interes',
   Cell: row => (
     <div
       style={{
@@ -101,7 +98,7 @@ const columns = [{
   )     
 }, {  
   Header: 'S. Total',
-  accessor: 'saldo.total',
+  accessor: 'total',
   Cell: row => (
     <div
       style={{
@@ -112,6 +109,9 @@ const columns = [{
       {Numero(row.value)}
     </div>
   )     
+}, {   
+  Header: 'Cantidad',
+  accessor: 'cantidad'
 }];
 
 const removeDuplicated = (arr, field=undefined) => {
@@ -153,14 +153,14 @@ const Tabla = ({ data }) => {
     // Decidi que si filtra clientes, entonces que el criterio sea de clientes y luego haya un agrupado por lotes
     let selection = [];
     if (value === "titulo") {
-      selection = new Set(data.map(op => (op.titulo)))
+      selection = new Set(data.map(op => (op.titulo))) 
+      setCriterio({titulo: removeDuplicated([...selection], "id").map(s => (s))});
     } else {
       const filteredOperation = data.filter(op => op.naturaleza === value);
       selection = new Set(filteredOperation.map(op => (op.cuenta)))
+      setCriterio({cuenta: removeDuplicated([...selection], "id").map(s => (s))});
     }
-    setCriterio({
-      criterio: removeDuplicated([...selection], "id").map(s => (s))
-    });
+    // setCriterio({criterio: removeDuplicated([...selection], "id").map(s => (s))});
     
   }; 
 
@@ -212,7 +212,7 @@ const Tabla = ({ data }) => {
 
 
   useEffect(() => {
-
+    let objetos = [];
     if (Object.keys(criterio).length !== 0 && Object.keys(totales).length !== 0){ // Solo si tiene criterios y totales
     // Que Haga el listado inicial de objetos
       let colData = {...criterio}; // Establece la primer key (el criterio de calculo), con su value como lista de sus posibles valores
@@ -225,9 +225,10 @@ const Tabla = ({ data }) => {
       let qObjects = 1;
       Object.keys(colData).forEach(col => {qObjects = qObjects * colData[col].length}) // Calcula la cantidad de objetos que debe haber
 
-      let objetos = [] ;
+      
       for (var i = 1; i <= qObjects; i++) { // Itera la cantidad de objetos que debe hacer
-        let objeto = {...totales} // Inicia el objeto con los totales
+        // let objeto = {...totales} // Inicia el objeto con los totales
+        let objeto = {};
         Object.keys(colData).forEach(col => {
           // Esta logica hay que testear y modificar. Si esta bien, KELOCO (ANALIZAR!!!) Si no, modificarla
           objeto[col] = colData[col][i%colData[col].length]  // Le agrega cada una de las propiedades
@@ -235,13 +236,30 @@ const Tabla = ({ data }) => {
           objetos.push(objeto) 
         }
         // Termina el listado inicial de objetos
+        // Seteado de columnas
+        
     }
 
-    // Iterar sobre la data y Que sume los totales
 
+    // Iterar sobre la data y Que sume los totales
+    const finalObjects = objetos.map(objeto => {
+      let result = {...objeto}
+      data.forEach(operacion => {
+        console.log(operacion)
+      });
+      // data.filter()
+      return result
+
+    });
 
     // Hacer que trabaje con redux y que tenga su propio loading
+
     // Expresar en la tabla
+    if (finalObjects.length > 0) {
+      setColumnas(columns.filter(col => Object.keys(finalObjects[0]).some(key => (key === col.accessor))))
+    }
+
+
   }, [criterio, agrupado, totales]);
 
 
@@ -274,11 +292,11 @@ const Tabla = ({ data }) => {
             <Label for="totalizadores">Totalizar</Label>
             <Input type="select" id="totalizadores" name="selectTotalizadores" multiple onChange={(event) => handleTotalizadores(event)}>
                 <option value="monto">Montos</option>
-                <option value="cantidad">Cantidades</option>
                 <option value="debe">Debe y Haber</option>
                 <option value="saldo.capital">Saldos de capital</option>
                 <option value="saldo.interes">Saldos de interes</option>
                 <option value="saldo.total">Saldos totales</option>
+                <option value="cantidad">Cantidades</option>
             </Input>
           </FormGroup>          
         </Form>
