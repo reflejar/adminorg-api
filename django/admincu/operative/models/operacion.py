@@ -182,8 +182,8 @@ class Operacion(BaseModel):
 					fecha_calculo = pagos[-1].fecha if pagos[-1].fecha >= self.fecha_vencimiento else self.fecha_vencimiento
 					bruto = self.subtotal(fecha=fecha_calculo)
 					periodos = (fecha - fecha_calculo).days // reconocimiento # Se utiliza como fecha para el calculo de los periodos la del ultimo pago.
-					if periodos == 0 and fecha_calculo == date.today():
-						periodos = -1 # Esto se hace por si se paga parcial intereses + capital => abajo se le suma y queda periodos = 0
+					# if periodos == 0 and fecha_calculo == date.today():
+					# 	periodos = -1 # Esto se hace por si se paga parcial intereses + capital => abajo se le suma y queda periodos = 0
 				else: # Si no se realizo pago de capital, el interes es el total desde la fecha inicial. Se debera posteriormente restar los intereses pagados.
 					bruto = self.subtotal(fecha=self.fecha_vencimiento)
 					periodos = (fecha - self.fecha_vencimiento).days // reconocimiento
