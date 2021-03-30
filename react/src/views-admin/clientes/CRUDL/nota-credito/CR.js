@@ -34,7 +34,8 @@ const NotaCredito = ({ destinatario, onlyRead, selected, sendNotaCredito, onClos
       setDocumento((state) => ({
         ...state,
         cobros: [],
-        resultados: []
+        resultados: [],
+        condonacion: true
       }))
     }
 

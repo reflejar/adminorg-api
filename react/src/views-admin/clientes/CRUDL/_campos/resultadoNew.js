@@ -7,7 +7,7 @@ import Spinner from '../../../../components/spinner/spinner';
 import { AppendableRowField } from '../../../../components/form/AppendableRowField';
 import { mapToOptions } from '../../../../utility/mappers';
 
-import { useIngresos } from '../../../../utility/hooks/dispatchers';
+import { useIngresos, useGastos } from '../../../../utility/hooks/dispatchers';
 import { useAppendableField } from '../../../../components/form/hooks';
 
 const filterCompletedObject = (arr) =>
@@ -16,6 +16,7 @@ const filterCompletedObject = (arr) =>
 
 const ResultadoNew = ({ documento, setDocumento, errors, onlyRead }) => {
   const [ingresos, loadingIngresos] = useIngresos();
+  const [gastos, loadingGastos] = useGastos();
 
   const cleanItem = {
     monto: '',
@@ -56,7 +57,7 @@ const ResultadoNew = ({ documento, setDocumento, errors, onlyRead }) => {
 
 
 
-  if (loadingIngresos) {
+  if (loadingIngresos || loadingGastos) {
     return (
       <div className='loading-modal'>
         <Spinner />
@@ -84,7 +85,7 @@ const ResultadoNew = ({ documento, setDocumento, errors, onlyRead }) => {
             options: (
               <>
                 <option defaultValue="">---</option>
-                {mapToOptions(ingresos).map((ingreso) => (
+                {mapToOptions([...ingresos, ...gastos]).map((ingreso) => (
                   <option key={ingreso.value} value={ingreso.value}>
                     {ingreso.label}
                   </option>

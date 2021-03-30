@@ -88,7 +88,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 		grupo = destinatario_documento.grupo
 		fecha_operacion = data['fecha_operacion']
 		cobros = data['cobros']
-		condonacion = data['condonacion'] if self.context['receipt_type'].code == '54' else False
+		condonacion = data['condonacion'] if self.context['receipt_type'].code == '54' else True
 		for d in cobros:
 			credito = d['vinculo']
 			if not credito.cuenta in grupo:
