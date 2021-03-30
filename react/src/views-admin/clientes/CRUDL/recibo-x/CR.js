@@ -74,7 +74,7 @@ const ReciboX = ({ destinatario, onlyRead, selected, sendReciboX, deleteReciboX,
 
     const totalFormasPago = totalUtilizacionesSaldos + totalCajas + totalUtilizacionesDisponibilidades;
     if (totalFormasPago > 0) {
-      return totalFormasPago >= totalCobros;
+      return totalFormasPago.toFixed(2) >= totalCobros.toFixed(2);
     }
     return false
   } 

@@ -9,24 +9,14 @@ class Deudas extends Component {
       return (
          <Fragment>
             <Row className="row-eq-height">
-            <Col md="9">
+            <Col md="12">
                <Card>
                   <CardBody>
-                     <CardTitle>Estado de deudas</CardTitle>
+                     <CardTitle>Mis deudas</CardTitle>
                      {/* <Deuda /> */}
                   </CardBody>
                </Card>               
-            </Col>
-            <Col md="3">
-               <Card>
-                  <CardBody>
-                     <CardTitle>MercadoPago</CardTitle>
-                     <p>
-                        Aqui podes aumentar tu saldo realizando un pago a MercadoPago.
-                     </p>
-                  </CardBody>                  
-               </Card>
-            </Col>            
+            </Col>       
             </Row>
          </Fragment>
       );

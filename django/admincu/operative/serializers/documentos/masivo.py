@@ -7,7 +7,7 @@ from admincu.operative.models import (
 )
 
 from admincu.operative.CU.operaciones.clientes import masivo as operacionesMasivo
-from admincu.taskapp.tasks import hacer_pdfs
+from admincu.taskapp.tasks import hacer_pdfs, enviar_mails
 
 class DistribucionSerializer(serializers.Serializer):
 
@@ -61,4 +61,5 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 		)
 		list_of_docs = operacionesMasivo.CU(documento, validated_data).create()
 		hacer_pdfs.delay(list_of_docs)
+		enviar_mails.delay(list_of_docs)
 		return list_of_docs

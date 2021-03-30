@@ -25,37 +25,37 @@ class SideMenuContent extends Component {
   administrativo = [ 
     {
       link: "/informes",
-      name: "Informes",
+      name: "INFORMES",
       icon: <BarChart2 size={18} />
     },    
     {
       link: "/clientes",
-      name: "Cuentas a cobrar",
+      name: "CUENTAS A COBRAR",
       icon: <Download size={18} />
     },
     {
       link: "/proveedores",
-      name: "Cuentas a pagar",
+      name: "CUENTAS A PAGAR",
       icon: <Upload size={18} />
     },
     {
       link: "/tesoreria",
-      name: "Tesoreria",
+      name: "TESORERIA",
       icon: <DollarSign size={18} />
     },
     {
       link: "/contabilidad",
-      name: "Contabilidad",
+      name: "CONTABILIDAD",
       icon: <Briefcase size={18} />
     },
     {
       link: "/comunicacion",
-      name: "Comunicacion",
+      name: "COMUNICACION",
       icon: <Mail size={18} />
     },
     {
       link: "/configuracion",
-      name: "Configuracion",
+      name: "CONFIGURACION",
       icon: <Settings size={18} />
     },
     
@@ -65,27 +65,22 @@ class SideMenuContent extends Component {
   socio = [
     {
       link: "/deudas",
-      name: "Estado de Deudas",
+      name: "MIS DEUDAS",
       icon: <DollarSign size={18} />
     },
     {
       link: "/cuenta",
-      name: "Estado de Cuenta",
+      name: "MIS MOVIMIENTOS",
       icon: <Layers size={18} />
     },    
     {
       link: "/reportes",
-      name: "Reportes",
-      icon: <Briefcase size={18} />
-    },    
-    {
-      link: "/comunicacion",
-      name: "Comunicacion",
-      icon: <Mail size={18} />
+      name: "INFORMES",
+      icon: <BarChart2 size={18} />
     },    
     {
       link: "/info",
-      name: "Info de Cuenta",
+      name: "MI CUENTA",
       icon: <User size={18} />
     },        
   ]

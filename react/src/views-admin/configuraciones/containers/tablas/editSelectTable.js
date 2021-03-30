@@ -1,9 +1,12 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
 
-import ReactTable from "react-table";
 import "react-table/react-table.css";
 import { Edit } from 'react-feather';
-
+import ReactTable from 'react-table';
+import ReactToPrint from 'react-to-print';
+import { CSVLink } from 'react-csv';
+import { Button } from 'reactstrap';
+import { Printer, FileText} from "react-feather";
 
 
 import Chance from "chance";
@@ -44,6 +47,14 @@ const Table = ({ titles, items, loadingItems, selectItem, toggle, causante }) =>
   const [columns] = useState(getColumns())
   const [data, setData] = useState([])
 
+  const refButton = useRef(null);
+
+  const dataForTable = useMemo(() => {
+    if (data && !data.length) {
+      return [];
+    }
+    return data;
+  }, [data]);
 
   useEffect(() => {
 
@@ -57,19 +68,45 @@ const Table = ({ titles, items, loadingItems, selectItem, toggle, causante }) =>
 
   }, [items])
 
-
+  const tableHeaders = columns.map(c => ({ label: c.Header, key: typeof c.accessor === "string" ? c.accessor : c.Header.toLowerCase() }));
 
   if (loadingItems) {
     return <Spinner />
   }
 
   return (
+    <React.Fragment>
+      <section className="bg-lighten-5 text-left">
+        <ReactToPrint
+          trigger={() => <Button className="btn-sm" outline><Printer size={18} /></Button>}
+          content={() => refButton.current}
+        />
+        <CSVLink
+          headers={tableHeaders}
+          data={dataForTable}
+          target="_blank"
+          filename="admincu-cuenta.csv">
+          <Button className="btn-sm" outline>
+            <FileText size={18} />
+          </Button>
+        </CSVLink>
+      </section>
+      {/* <ReactTable
+        showPagination
+        defaultPageSize={50}        
+        data={data}
+        columns={columns_final}
+        sortable={false}
+        className="-striped -highlight"
+        {...addProps}
+      /> */}
       <ReactTable
         data={data}
         columns={columns}
         defaultPageSize={50}
         className="-striped -highlight"
       />
+    </React.Fragment>    
   );
 
 }

@@ -5,7 +5,7 @@ from import_export.admin import ImportExportMixin
 
 class CuentaAdmin(ImportExportMixin, admin.ModelAdmin):
 	list_display = ['__str__']
-	list_filter = ['naturaleza', 'comunidad']
+	list_filter = ['comunidad', 'naturaleza']
 
 admin.site.register(Cuenta, CuentaAdmin)
 

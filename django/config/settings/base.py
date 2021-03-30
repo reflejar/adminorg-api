@@ -152,6 +152,18 @@ X_FRAME_OPTIONS = 'DENY'
 
 # Email
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+## Agregue esto por las dudas
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'localhost'
+#EMAIL_PORT = 25
+#EMAIL_HOST_USER = ''
+#EMAIL_HOST_PASSWORD = ''
+#EMAIL_USE_TLS = False
+
+# Email con plantillas
+# Creo que esto esta al pedo
+TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
+
 
 # Admin
 ADMIN_URL = 'admin/'

@@ -8,7 +8,7 @@ from django.utils import timezone
 from django_afip.models import ReceiptType
 
 # Models
-from admincu.users.models import User
+from admincu.users.models import User, Perfil
 from admincu.utils.models import Comunidad
 from admincu.operative.models import Documento
 # from admincu.operative.serializers import MasivoClienteModelSerializer
@@ -63,7 +63,12 @@ def facturacion_masiva(data, context):
 
 @task(name="hacer_pdfs")
 def hacer_pdfs(docs_id):
-
 	documentos = Documento.objects.filter(id__in=docs_id)
 	for d in documentos:
 		d.hacer_pdf()
+
+@task(name="enviar_mails")
+def enviar_mails(docs_id):
+	documentos = Documento.objects.filter(id__in=docs_id)
+	for d in documentos:
+		d.enviar_mail()

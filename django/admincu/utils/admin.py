@@ -34,91 +34,18 @@ def crear_plan_basico(modeladmin, request, queryset):
 			numero=100000,
 			supertitulo=None
 		)
-		activo_corriente = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="ACTIVO CORRIENTE",
-			numero=110000,
-			supertitulo=activo
-		)
-		caja_y_bancos = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="CAJA Y BANCOS",
-			numero=111000,
-			supertitulo=activo_corriente
-		)		
-		caja = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="CAJA",
-			numero=111101,
-			supertitulo=caja_y_bancos
-		)			
-		banco = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="BANCO CUENTA CORRIENTE",
-			numero=111102,
-			supertitulo=caja_y_bancos
-		)			
-		creditos = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="CREDITOS",
-			numero=112000,
-			supertitulo=activo_corriente
-		)		
-		creditos_con_socios = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="CREDITOS CON SOCIOS",
-			numero=112101,
-			supertitulo=creditos
-		)	
-		bienes_de_cambio = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="BIENES DE CAMBIO",
-			numero=113000,
-			supertitulo=activo_corriente
-		)				
-		bienes_de_uso = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="BIENES DE USO",
-			numero=114000,
-			supertitulo=activo_corriente
-		)				
-		activo_no_corriente = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="ACTIVO NO CORRIENTE",
-			numero=120000,
-			supertitulo=activo
-		)
-
 		pasivo = Titulo.objects.create(
 			comunidad=comunidad,
 			nombre="PASIVO",
 			numero=200000,
 			supertitulo=None
-		)
-		pasivo_corriente = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="PASIVO CORRIENTE",
-			numero=210000,
-			supertitulo=pasivo
-		)
-		proveedores = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="PROVEEDORES",
-			numero=211000,
-			supertitulo=pasivo_corriente
-		)		
-		pasivo_no_corriente = Titulo.objects.create(
-			comunidad=comunidad,
-			nombre="PASIVO NO CORRIENTE",
-			numero=210000,
-			supertitulo=pasivo
 		)		
 		patrimonio_neto = Titulo.objects.create(
 			comunidad=comunidad,
 			nombre="PATRIMONIO NETO",
 			numero=300000,
 			supertitulo=None
-		)
+		)		
 		recursos = Titulo.objects.create(
 			comunidad=comunidad,
 			nombre="RECURSOS",
@@ -130,9 +57,34 @@ def crear_plan_basico(modeladmin, request, queryset):
 			nombre="GASTOS",
 			numero=500000,
 			supertitulo=None
-		)
+		)		
+		caja = Titulo.objects.create(
+			comunidad=comunidad,
+			nombre="TESORERIA",
+			numero=111101,
+			supertitulo=activo
+		)					
+		cuentas_a_cobrar = Titulo.objects.create(
+			comunidad=comunidad,
+			nombre="CUENTAS A COBRAR",
+			numero=112101,
+			supertitulo=activo
+		)	
+		bienes_de_cambio = Titulo.objects.create(
+			comunidad=comunidad,
+			nombre="BIENES DE CAMBIO",
+			numero=113101,
+			supertitulo=activo
+		)				
+		cuentas_a_pagar = Titulo.objects.create(
+			comunidad=comunidad,
+			nombre="PROVEEDORES",
+			numero=211101,
+			supertitulo=pasivo
+		)		
 
 crear_plan_basico.short_description = "Crear plan de cuentas basico"
+
 
 class ComunidadAdmin(admin.ModelAdmin):
 	list_display = ['nombre']
