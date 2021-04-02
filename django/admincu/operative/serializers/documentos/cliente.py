@@ -17,7 +17,7 @@ from admincu.operative.CU.operaciones.clientes import (
 	creditos as operacionesCreditos,
 	disminuciones as operacionesDisminuciones
 )
-from admincu.taskapp.tasks import hacer_pdfs, enviar_mails
+from admincu.taskapp.tasks import enviar_mails
 
 creditos = ['11', '12', '51', '52']
 disminuciones = ['13', '53', '54']
@@ -220,7 +220,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 		operaciones = creador_operaciones[self.context['receipt_type'].code](documento, validated_data).create()
 		documentos = set([o.documento for o in operaciones])
 		for d in documentos:
-			hacer_pdfs.delay([d.id])
+			documento.hacer_pdf()
 
 		enviar_mails.delay([documento.id]) 
 		return documento
