@@ -114,7 +114,11 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 
 	def get_permissions(self):
 		'''Manejo de permisos'''
-		permissions = [IsAuthenticated, IsAdministrativoUser, IsComunidadMember]
+		permissions = [IsAuthenticated, IsComunidadMember]
+		if self.request.user.groups.all()[0].name == "socio":
+			permissions.append(IsAccountOwner)
+		else:
+			permissions.append(IsAdministrativoUser)
 		return [p() for p in permissions]
 
 

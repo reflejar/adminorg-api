@@ -40,7 +40,28 @@ const logout = () => async (dispatch) => {
     })
 }
 
+const register = (payload) => async (dispatch) => {
+
+    let apiEndpoint = 'users/signup/';
+
+    const response = await authService.post(apiEndpoint, payload)
+    if (response && response.data) {
+        
+        const dataUser = {...response.data};
+        delete dataUser.access_token
+        const currentUser = setUserDetails(dataUser);
+        
+        localStorage.setItem('user', JSON.stringify(currentUser));
+        localStorage.setItem('token', response.data.access_token);
+        dispatch(currentUser);
+        
+        return currentUser;
+    }
+};
+
+
 export const userActions = {
     login,
-    logout
+    logout,
+    register
 }

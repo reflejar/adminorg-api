@@ -1,11 +1,15 @@
 import React, { Component, Fragment } from "react";
-// import Deuda from "../../views-admin/clientes/containers/content/deudas";
+import Deudas from "../../components/board/content/deudas";
+import DeudasTable from "./table";
+import { connect } from 'react-redux';
 import { Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 
 // Styling
 
-class Deudas extends Component {
+class DeudasSocio extends Component {
    render() {
+      const {cuenta_id} = this.props 
+      const cuenta = {id:cuenta_id}
       return (
          <Fragment>
             <Row className="row-eq-height">
@@ -13,7 +17,7 @@ class Deudas extends Component {
                <Card>
                   <CardBody>
                      <CardTitle>Mis deudas</CardTitle>
-                     {/* <Deuda /> */}
+                     <Deudas selected={cuenta} Table={DeudasTable}/>
                   </CardBody>
                </Card>               
             </Col>       
@@ -23,4 +27,8 @@ class Deudas extends Component {
    }
 }
 
-export default Deudas;
+const mapStateToProps = (state) => ({
+   cuenta_id: state.user.auth.profile.cuenta,
+});
+
+export default connect(mapStateToProps, null)(DeudasSocio);

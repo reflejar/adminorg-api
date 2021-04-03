@@ -140,3 +140,17 @@ for cuenta in Cuenta.objects.filter(comunidad_id=3):
 
     cuenta.save()
 -----
+
+
+
+gradient-light-blue-indigo
+
+gradient-teal-cyan
+
+gradient-indigo-dark-blue
+
+gradient-blue-grey-blue
+
+gradient-deep-purple-blue
+
+gradient-light-blue-cyan

@@ -25,7 +25,7 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
-            errors: {},
+            error: '',
             isChecked: true,
             loading: false,
         };
@@ -59,8 +59,11 @@ class Login extends Component {
                 else {
                     history.push('/deudas');
                 }
+            } else {
+                this.setState({error: "Usuario o contraseña incorrecta"})
             }
         }
+        this.setState({loading: false});
     }
 
     render() {
@@ -71,9 +74,10 @@ class Login extends Component {
             <div className="container">
                 <Row className="full-height-vh">
                     <Col xs="12" className="d-flex align-items-center justify-content-center">
-                        <Card className="gradient-indigo-purple text-center width-400">
+                        <Card className="gradient-blue-grey-blue text-center width-400">
                             <CardBody>
                                 <h2 className="white py-4">Login</h2>
+                                
                                 <Form className="pt-2">
                                     <FormGroup>
                                         <Col md="12">
@@ -115,6 +119,7 @@ class Login extends Component {
                                             </Button>
                                         </Col>
                                     </FormGroup>
+                                    {this.state.error && <h5 className="red">{this.state.error}</h5>}
                                     <FormGroup>
                                         <Row>
                                             <Col md="12">
@@ -127,7 +132,7 @@ class Login extends Component {
                                                         id="rememberme"
                                                     />
                                                     <Label className="custom-control-label float-left white" for="rememberme">
-                                                        Remember Me
+                                                        Recordarme
                                        </Label>
                                                 </div>
                                             </Col>
@@ -137,13 +142,13 @@ class Login extends Component {
                             </CardBody>
                             <CardFooter>
                                 <div className="float-left">
-                                    <NavLink to="/pages/forgot-password" className="text-white">
-                                        Forgot Password?
+                                    <NavLink to="/forgot-password" className="text-white">
+                                        Olvidaste la contraseña?
                            </NavLink>
                                 </div>
                                 <div className="float-right">
-                                    <NavLink to="/pages/register" className="text-white">
-                                        Register Now
+                                    <NavLink to="/register" className="text-white">
+                                        Registrate ahora
                            </NavLink>
                                 </div>
                             </CardFooter>

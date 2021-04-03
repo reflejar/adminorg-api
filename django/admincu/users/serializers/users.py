@@ -42,7 +42,6 @@ class UserModelSerializer(serializers.ModelSerializer):
 		return obj.groups.first().name
 
 
-
 class UserSignupSerializer(serializers.Serializer):
 	'''User signup serializer.'''
 
@@ -51,6 +50,8 @@ class UserSignupSerializer(serializers.Serializer):
 		max_length=30,
 		validators=[UniqueValidator(queryset=User.objects.all())]
 	)
+	first_name = serializers.CharField(min_length=2, max_length=64)
+	last_name = serializers.CharField(min_length=2, max_length=64)
 	email = serializers.EmailField()
 	numero_documento = serializers.CharField(min_length=6, max_length=64)
 	password = serializers.CharField(min_length=8, max_length=64)
@@ -62,17 +63,23 @@ class UserSignupSerializer(serializers.Serializer):
 		self.fields['comunidad'] = serializers.ChoiceField(Comunidad.objects.all())
 
 	def validate(self, data):
+		'''Verifica que la comunidad no tenga simple solutions '''
+		comunidad = data['comunidad']
+		if comunidad.accountss_set.all():
+			raise serializers.ValidationError({"comunidad": "La administracion de tu comunidad utiliza una plataforma externa de comunicacion."})
+		
+		'''Verifica el documento en documentos de la comunidad'''
+		perfil = Perfil.objects.filter(comunidad=data['comunidad'], numero_documento=data['numero_documento'])
+		if not perfil:
+			raise serializers.ValidationError({"comunidad": "Datos invalidos ponete en contacto con tu administracion."})
+
 		'''Verifica coincidencia de password'''
 		passwd = data['password']
 		passwd_conf = data['password_confirmation']
 		if passwd != passwd_conf:
-			raise serializers.ValidationError("Las contraseñas no coinciden.")
+			raise serializers.ValidationError({"password" : "Las contraseñas no coinciden."})
 		password_validation.validate_password(passwd)
 
-		'''Verifica el documento en documentos de la comunnidad'''
-		perfil = Perfil.objects.filter(comunidad=data['comunidad'], numero_documento=data['numero_documento'])
-		if not perfil:
-			raise serializers.ValidationError("Datos invalidos ponete en contacto con tu administracion.")
 		return data
 
 	def create(self, data):

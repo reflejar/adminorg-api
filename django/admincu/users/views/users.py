@@ -53,7 +53,8 @@ class UserViewSet(mixins.RetrieveModelMixin,
 		serializer = UserSignupSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
-		data = {'message': 'Verifica tu cuenta!! Ha sido enviado un email de verificacion a tu correo electronico.'}
+		#data = {'message': 'Verifica tu cuenta!! Ha sido enviado un email de verificacion a tu correo electronico.'}
+		data = {'message': 'Felicidades!! Está todo listo para empezar a usar AdminCU.'}
 		return Response(data, status=status.HTTP_201_CREATED)
 
 
