@@ -45,10 +45,10 @@ const CU = ({ selected, onClose }) => {
         taxon: Yup.string(),
         titulo: Yup.number().required(empty),
         interes: Yup.number()
-        .transform((value, originalValue) => originalValue.trim() === "" ? null: value)
+        .transform((value, originalValue) => (originalValue && originalValue.trim() === "" ? null: value))
         .nullable(),
         descuento: Yup.number()
-          .transform((value, originalValue) => originalValue.trim() === "" ? null: value)
+          .transform((value, originalValue) => (originalValue && originalValue.trim() === "" ? null: value))
           .nullable(),
       })}
       onSubmit={async (values, { setSubmitting }) => {
