@@ -229,7 +229,7 @@ class CU:
 				fecha=self.fecha_operacion,
 				documento=self.documento,
 				asiento=self.identifier,
-				fecha_indicativa=i['vinculo'].fecha_indicativa,
+				fecha_indicativa=i['periodo'],
 				cuenta=i['cuenta'],
 				valor=i['monto'],
 				detalle=i['detalle'],

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import moment from 'moment';
 import { Row, Col } from "reactstrap";
 
 // Components
@@ -22,6 +23,7 @@ const ResultadoNew = ({ documento, setDocumento, errors, onlyRead }) => {
     monto: '',
     detalle: '',
     cuenta: '',
+    periodo: moment().format('YYYY-MM-DD'),
   }
 
   const [
@@ -92,7 +94,14 @@ const ResultadoNew = ({ documento, setDocumento, errors, onlyRead }) => {
                 ))}
               </>
             ),
-          },{
+          }, {
+            type: 'date',
+            name: 'periodo',
+            placeholder: 'Periodo',
+            header: 'Periodo',
+            disabled: onlyRead,
+            handleChange: handleResultadosChange
+          }, {
             type: 'text',
             name: 'detalle',
             placeholder: 'Detalle',

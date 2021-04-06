@@ -6,6 +6,7 @@ class ResultadoModelSerializer(OperacionModelSerializer):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
+		fields = Operacion()._meta
 		self.fields['cuenta'] = serializers.PrimaryKeyRelatedField(
 				queryset=Cuenta.objects.filter(
 						comunidad=self.context['comunidad'], 
@@ -13,3 +14,4 @@ class ResultadoModelSerializer(OperacionModelSerializer):
 					), 
 				allow_null=False
 			)
+		self.fields['periodo'] = serializers.ModelField(model_field=fields.get_field("fecha_indicativa"))
