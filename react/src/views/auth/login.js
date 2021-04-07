@@ -110,6 +110,7 @@ class Login extends Component {
                                     <FormGroup>
                                         <Col md="12">
                                             <Button
+                                                type="submit"
                                                 color="blue"
                                                 className="btn-raised"
                                                 onClick={(event) => { this.logginUser() }}

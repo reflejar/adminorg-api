@@ -226,15 +226,15 @@ const Tabla = ({ data }) => {
       Object.keys(colData).forEach(col => {qObjects = qObjects * colData[col].length}) // Calcula la cantidad de objetos que debe haber
 
       
-      for (var i = 1; i <= qObjects; i++) { // Itera la cantidad de objetos que debe hacer
-        // let objeto = {...totales} // Inicia el objeto con los totales
-        let objeto = {};
-        Object.keys(colData).forEach(col => {
-          // Esta logica hay que testear y modificar. Si esta bien, KELOCO (ANALIZAR!!!) Si no, modificarla
-          objeto[col] = colData[col][i%colData[col].length]  // Le agrega cada una de las propiedades
-          })
-          objetos.push(objeto) 
-        }
+      // for (var i = 1; i <= qObjects; i++) { // Itera la cantidad de objetos que debe hacer
+      //   // let objeto = {...totales} // Inicia el objeto con los totales
+      //   let objeto = {};
+      //   Object.keys(colData).forEach(col => {
+      //     // Esta logica hay que testear y modificar. Si esta bien, KELOCO (ANALIZAR!!!) Si no, modificarla
+      //     objeto[col] = colData[col][i%colData[col].length]  // Le agrega cada una de las propiedades
+      //     })
+      //     objetos.push(objeto) 
+      //   }
         // Termina el listado inicial de objetos
         // Seteado de columnas
         
@@ -260,7 +260,7 @@ const Tabla = ({ data }) => {
     }
 
 
-  }, [criterio, agrupado, totales]);
+  }, [criterio, totales, agrupado, data]);
 
 
   return (
