@@ -483,7 +483,7 @@ class Documento(BaseModel):
 			html_string = render_to_string('emails/documentos/index.html', {"documento": self})
 			emisor = "{} <no-reply@".format(
 				self.comunidad.nombre,
-				self.comunidad.dominioweb if self.comunidad.dominioweb else "admincu.com>"
+				self.comunidad.dominioweb if self.comunidad.dominioweb else "admin-cu.com>"
 			)
 			destinatarios = []
 			[destinatarios.append(email) for email in [self.destinatario.perfil.mail] + list(self.destinatario.perfil.users.all().values_list('email', flat=True)) if (email and not email in destinatarios)]
