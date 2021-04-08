@@ -481,7 +481,7 @@ class Documento(BaseModel):
 	def enviar_mail(self):
 		if self.comunidad.mails:
 			html_string = render_to_string('emails/documentos/index.html', {"documento": self})
-			emisor = "{} <no-reply@{}>".format(
+			emisor = "{} <info@{}>".format(
 				self.comunidad.nombre,
 				self.comunidad.dominioweb if self.comunidad.dominioweb else "admin-cu.com>"
 			)

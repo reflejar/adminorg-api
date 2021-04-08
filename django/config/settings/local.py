@@ -34,7 +34,7 @@ EMAIL_HOST = '172.18.0.1'
 EMAIL_PORT = 25
 EMAIL_USE_TLS=False
 EMAIL_USE_SSL=False
-DEFAULT_FROM_EMAIL = 'Equipo de AdminCU <no-reply@admin-cu.com>'
+DEFAULT_FROM_EMAIL = 'Equipo de AdminCU <info@admin-cu.com>'
 #EMAIL_HOST_USER=""
 #EMAIL_HOST_PASSWORD=""
 #EMAIL_TIMEOUT
