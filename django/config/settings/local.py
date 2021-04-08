@@ -30,8 +30,18 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # NOQA
 # Email
 #EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = '127.0.0.1'
 EMAIL_PORT = 25
+EMAIL_USE_TLS=False
+EMAIL_USE_SSL=False
+DEFAULT_FROM_EMAIL = 'Equipo de AdminCU <no-reply@admin-cu.com>'
+#EMAIL_HOST_USER=""
+#EMAIL_HOST_PASSWORD=""
+#EMAIL_TIMEOUT
+#EMAIL_SSL_KEYFILE
+#EMAIL_SSL_CERTFILE
+
+
 
 # django-extensions
 INSTALLED_APPS += ['django_extensions']  # noqa F405
