@@ -481,11 +481,7 @@ class Documento(BaseModel):
 	def enviar_mail(self):
 		if self.comunidad.mails:
 			html_string = render_to_string('emails/documentos/index.html', {"documento": self})
-			# emisor = "{} <info@{}>".format(
-			# 	self.comunidad.nombre,
-			# 	self.comunidad.dominioweb if self.comunidad.dominioweb else "admin-cu.com>"
-			# )
-			emisor = "<info@admin-cu.com>"
+			emisor = "{} <info@admin-cu.com>".format(self.comunidad.nombre)
 			destinatarios = []
 			[destinatarios.append(email) for email in [self.destinatario.perfil.mail] + list(self.destinatario.perfil.users.all().values_list('email', flat=True)) if (email and not email in destinatarios)]
 			for email in destinatarios:
