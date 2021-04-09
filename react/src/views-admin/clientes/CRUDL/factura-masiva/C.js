@@ -66,7 +66,6 @@ const ComprobanteMasivo = ({ selected, sendComprobanteMasivo, onClose }) => {
 
   return (
     <form className='credito-invoice container' onSubmit={handleSubmit}>
-      {console.log(documento)}
       <Encabezado 
         documento={documento} 
         setDocumento={setDocumento} 

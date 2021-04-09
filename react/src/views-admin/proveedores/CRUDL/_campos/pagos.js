@@ -34,7 +34,6 @@ const HandlePagos = ({ documento, setDocumento, deudas, errors, update }) => {
     }
     // } else {
       if (documento && documento.pagos) {
-        // console.log(documento.pagos)
         data_pagadas = documento.pagos.map((pago) => {
           if (pago.origen) {
             return {

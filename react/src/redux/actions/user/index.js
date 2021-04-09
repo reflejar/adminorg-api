@@ -45,17 +45,19 @@ const register = (payload) => async (dispatch) => {
     let apiEndpoint = 'users/signup/';
 
     const response = await authService.post(apiEndpoint, payload)
+    if (response.status >= 400) throw response;
+    return response.data
+    
+};
+
+const recovery = (payload) => async (dispatch) => {
+
+    let apiEndpoint = 'users/passwordRecovery/';
+    console.log(payload)
+
+    const response = await authService.post(apiEndpoint, payload)
     if (response && response.data) {
-        
-        const dataUser = {...response.data};
-        delete dataUser.access_token
-        const currentUser = setUserDetails(dataUser);
-        
-        localStorage.setItem('user', JSON.stringify(currentUser));
-        localStorage.setItem('token', response.data.access_token);
-        dispatch(currentUser);
-        
-        return currentUser;
+        console.log("Hola");
     }
 };
 
@@ -63,5 +65,6 @@ const register = (payload) => async (dispatch) => {
 export const userActions = {
     login,
     logout,
-    register
+    register,
+    recovery
 }

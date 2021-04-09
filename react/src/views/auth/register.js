@@ -1,7 +1,6 @@
 // import external modules
 import React, { useState, useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import { toastr } from "react-redux-toastr";
 import {
    Row,
    Col,
@@ -12,11 +11,11 @@ import {
    Label,
    Card,   
    CardBody,
-   CardFooter
+   CardFooter,
+   FormFeedback
 } from "reactstrap";
 
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 
 import { userActions } from '../../redux/actions/user';
 import Spinner from '../../components/spinner/spinner';
@@ -28,6 +27,7 @@ const Register = ({history, register, logout}) => {
    const [isChecked, setIsChecked] = useState(true);
    const [loading, setLoading] = useState(false);
    const [errors, setErrors] = useState({}); 
+   const [response, setResponse] = useState(); 
 
    const [data, setData] = useState({
       comunidad:"",
@@ -39,6 +39,11 @@ const Register = ({history, register, logout}) => {
       last_name:"",
       email:""
    })
+   
+   const handleChange = prop => event => {
+      setData({...data, [prop]: event.target.value });
+   }
+
 
    const registerUser = useCallback((event) => {
       event.preventDefault();
@@ -46,144 +51,207 @@ const Register = ({history, register, logout}) => {
       setLoading(true);
       
       register(data)
-        .then(() => {
-          toastr.success('¡Listo! Recibo X cargado con éxito');
-          history.push('/deudas');
+        .then((response) => {
+         setResponse(response.message)
         })
-        .catch((error) => {
-          const { data } = error;
+        .catch((errors) => {
+         const { data } = errors;
           setErrors(data);
         })
         .finally(() => setLoading(false));
-    }, [setLoading, register]);
+    }, [setLoading, register, data]);
 
    if (loading) {
       return <Spinner />
    }
+
+
+   if (response) {
+      return (
+         <div className="container">
+            <Row className="full-height-vh">
+               <Col xs="12" className="d-flex align-items-center justify-content-center">
+                  <Card className="gradient-blue-grey-blue text-center width-800">
+                     <CardBody>
+                        <h2 className="white">Registracion</h2>
+                        <hr />
+                        <Row>
+                           <Col md="12">
+                           <p class="white">
+                              <i class="fa fa-check"></i> {response}
+                           </p>
+                           </Col>                   
+                        </Row>
+                     </CardBody>
+                     <CardFooter>
+                        <div className="float-left">
+                           <NavLink to="/forgot-password" className="text-white">
+                              Olvidaste la contraseña?
+                           </NavLink>
+                        </div>
+                        <div className="float-right">
+                           <NavLink to="/login" className="text-white">
+                              Login
+                           </NavLink>
+                        </div>
+                     </CardFooter>
+                  </Card>
+               </Col>
+            </Row>
+         </div>
+      ); 
+   }
+
    
    return (
       <div className="container">
          <Row className="full-height-vh">
             <Col xs="12" className="d-flex align-items-center justify-content-center">
-               <Card className="gradient-blue-grey-blue text-center width-400">
+               <Card className="gradient-blue-grey-blue text-center width-800">
                   <CardBody>
                      <h2 className="white">Registrate</h2>
                      <hr />
-                     <Form>
-                        <p className="white">Datos de la comunidad</p>
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="text"
-                                 className="form-control"
-                                 name="comunidad"
-                                 id="comunidad"
-                                 placeholder="Comunidad"
-                                 required
-                              />
-                              {errors.comunidad && (
-                                 <div className="invalid-feedback">
-                                    {errors.comunidad}
-                                 </div>
-                              )}                                                    
-                           </Col>
-                        </FormGroup>     
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="number"
-                                 className="form-control"
-                                 name="numero_documento"
-                                 id="numero_documento"
-                                 placeholder="Numero de Documento"
-                                 required
-                              />
-                              {errors.numero_documento && (
-                                 <div className="invalid-feedback">
-                                    {errors.numero_documento}
-                                 </div>
-                              )}                              
-                           </Col>
-                        </FormGroup>                                            
-                        <hr/>
-                        <p className="white">Datos del usuario</p>
-                     
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="text"
-                                 className="form-control"
-                                 name="username"
-                                 id="username"
-                                 placeholder="Usuario"
-                                 required
-                              />
-                           </Col>
-                        </FormGroup>          
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="password"
-                                 className="form-control"
-                                 name="password"
-                                 id="password"
-                                 placeholder="Contraseña"
-                                 required
-                              />
-                           </Col>
-                        </FormGroup>
+                     <Form onSubmit={(event) => registerUser(event) }>
+                     <Row>
                         
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="password"
-                                 className="form-control"
-                                 name="password_confirmation"
-                                 id="password_confirmation"
-                                 placeholder="Confirme contraseña"
-                                 required
-                              />
-                           </Col>
-                        </FormGroup>                                             
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="text"
-                                 className="form-control"
-                                 name="first_name"
-                                 id="first_name"
-                                 placeholder="Nombre"
-                                 required
-                              />
-                           </Col>
-                        </FormGroup>
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="text"
-                                 className="form-control"
-                                 name="last_name"
-                                 id="last_name"
-                                 placeholder="Apellido"
-                                 required
-                              />
-                           </Col>
-                        </FormGroup>
-                        <FormGroup>
-                           <Col md="12">
-                              <Input
-                                 type="email"
-                                 className="form-control"
-                                 name="email"
-                                 id="email"
-                                 placeholder="Email"
-                                 required
-                              />
-                           </Col>
-                        </FormGroup>                     
-
-                    
-
+                        <Col xs="6">
+                           <p className="white">Datos del usuario</p>
+                        
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="text"
+                                    className="form-control"
+                                    name="username"
+                                    id="username"
+                                    placeholder="Usuario"
+                                    minLength="4"
+                                    onChange={handleChange('username')}
+                                    invalid={errors.username}
+                                    required
+                                 />
+                                 <FormFeedback invalid>{errors.username}</FormFeedback>                                 
+                              </Col>
+                           </FormGroup>          
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="password"
+                                    className="form-control"
+                                    name="password"
+                                    id="password"
+                                    minLength="8"
+                                    placeholder="Contraseña"
+                                    onChange={handleChange('password')}
+                                    invalid={errors.password}
+                                    required
+                                 />
+                                 <FormFeedback invalid>{errors.password}</FormFeedback>                                            
+                              </Col>
+                           </FormGroup>
+                           
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="password"
+                                    className="form-control"
+                                    name="password_confirmation"
+                                    id="password_confirmation"
+                                    minLength="8"
+                                    placeholder="Confirme contraseña"
+                                    onChange={handleChange('password_confirmation')}
+                                    required
+                                    invalid={errors.password_confirmation || (data.password_confirmation.length > 3 && data.password !== data.password_confirmation)}
+                                 />
+                                 <FormFeedback invalid>Las contraseñas no coinciden</FormFeedback>                                   
+                              </Col>
+                           </FormGroup>                                             
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="text"
+                                    className="form-control"
+                                    name="first_name"
+                                    id="first_name"
+                                    minLength="2"
+                                    onChange={handleChange('first_name')}
+                                    placeholder="Nombre"
+                                    required
+                                    invalid={errors.first_name}
+                                 />
+                                 <FormFeedback invalid>{errors.first_name}</FormFeedback>                                     
+                              </Col>
+                           </FormGroup>
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="text"
+                                    className="form-control"
+                                    name="last_name"
+                                    id="last_name"
+                                    minLength="2"
+                                    onChange={handleChange('last_name')}
+                                    placeholder="Apellido"
+                                    required
+                                    invalid={errors.last_name}
+                                 />
+                                 <FormFeedback invalid>{errors.last_name}</FormFeedback>          
+                              </Col>
+                           </FormGroup>
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="email"
+                                    className="form-control"
+                                    name="email"
+                                    id="email"
+                                    placeholder="Email"
+                                    onChange={handleChange('email')}
+                                    required
+                                    invalid={errors.email}
+                                 />
+                                 <FormFeedback invalid>{errors.email}</FormFeedback>                              
+                              </Col>
+                           </FormGroup>                                    
+                        </Col>
+                        <Col xs="6">
+                           <p className="white">Datos para el acceso a la comunidad</p>
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="text"
+                                    className="form-control"
+                                    name="comunidad"
+                                    id="comunidad"
+                                    placeholder="Comunidad"
+                                    onChange={handleChange('comunidad')}
+                                    required
+                                    invalid={errors.comunidad}
+                                 />
+                                 <FormFeedback invalid>{errors.comunidad}</FormFeedback>
+                              </Col>
+                           </FormGroup>     
+                           <FormGroup>
+                              <Col md="12">
+                                 <Input
+                                    type="number"
+                                    className="form-control"
+                                    name="numero_documento"
+                                    id="numero_documento"
+                                    minLength="4"
+                                    placeholder="Numero de Documento"
+                                    onChange={handleChange('numero_documento')}
+                                    invalid={errors.numero_documento}
+                                    required
+                                 />
+                                 <FormFeedback invalid>{errors.numero_documento}</FormFeedback>
+                              </Col>
+                           </FormGroup>                                            
+                        </Col>
+                        
+                                             
+                     </Row>
+                  
                         <FormGroup>
                            <Row>
                               <Col md="12">
@@ -204,7 +272,7 @@ const Register = ({history, register, logout}) => {
                         </FormGroup>
                         <FormGroup>
                            <Col md="12">
-                              <Button type="submit" color="success" block className="btn-raised" onClick={(event) => registerUser(event) }>
+                              <Button type="submit" color="success" block className="btn-raised">
                                  Registrarme
                               </Button>
                            </Col>
@@ -237,4 +305,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default withRouter(connect(null, mapDispatchToProps)(Register));
+export default connect(null, mapDispatchToProps)(Register);

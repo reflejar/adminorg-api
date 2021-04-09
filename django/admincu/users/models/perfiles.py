@@ -38,3 +38,7 @@ class Perfil(BaseModel):
 		nombre += "{}".format(self.nombre) if self.nombre else ""
 		return nombre
 
+	def get_emails_destinatarios(self):
+		destinatarios = []
+		[destinatarios.append(email) for email in [self.mail] + list(self.users.all().values_list('email', flat=True)) if (email and not email in destinatarios)]
+		return destinatarios

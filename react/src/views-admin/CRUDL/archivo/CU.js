@@ -66,7 +66,6 @@ const CU = ({ selected, onClose }) => {
       {({ errors, touched, setFieldValue, handleSubmit, isSubmitting, values }) => (
         <Form onSubmit={handleSubmit}>
           <Row>
-            {console.log(values)}
             <Col sm="12">
               <h4>Datos Principales</h4>
               <FormGroup>

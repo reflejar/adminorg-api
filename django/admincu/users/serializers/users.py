@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
+from admincu.taskapp.tasks import send_emails
 
 from datetime import timedelta
 import jwt
@@ -65,13 +66,13 @@ class UserSignupSerializer(serializers.Serializer):
 	def validate(self, data):
 		'''Verifica que la comunidad no tenga simple solutions '''
 		comunidad = data['comunidad']
-		if comunidad.accountss_set.all():
-			raise serializers.ValidationError({"comunidad": "La administracion de tu comunidad utiliza una plataforma externa de comunicacion."})
+		# if comunidad.accountss_set.all():
+		# 	raise serializers.ValidationError({"comunidad": "La administracion de tu comunidad utiliza una plataforma externa de comunicacion."})
 		
 		'''Verifica el documento en documentos de la comunidad'''
 		perfil = Perfil.objects.filter(comunidad=data['comunidad'], numero_documento=data['numero_documento'])
 		if not perfil:
-			raise serializers.ValidationError({"comunidad": "Datos invalidos ponete en contacto con tu administracion."})
+			raise serializers.ValidationError({"numero_documento": "Datos invalidos. Ponete en contacto con tu administracion."})
 
 		'''Verifica coincidencia de password'''
 		passwd = data['password']
@@ -84,37 +85,33 @@ class UserSignupSerializer(serializers.Serializer):
 
 	def create(self, data):
 		'''Creacion del user'''
-		# Poner esto que esta comentado una vez que en el frontend se quiera realizar
-		# data.pop('numero_documento')
-		# data.pop('comunidad')
-		# data.pop('password_confirmation')
-		# user = User.objects.create_user(**data, is_verified=False)
-		# self.send_confirmation_email(user)
-
-		num_doc = data.pop('numero_documento')
-		comunidad = data.pop('comunidad')
+		data.pop('numero_documento')
+		data.pop('comunidad')
 		data.pop('password_confirmation')
-		user = User.objects.create_user(**data, is_verified=True)
-		perfil = Perfil.objects.get(numero_documento=num_doc, comunidad=comunidad)
-		perfil.users.add(user)
-
-
-
+		user = User.objects.create_user(**data, is_verified=False)
+		self.send_email(user)
 		user.groups.add(Group.objects.get(name='socio'))
 		return user
 
-	def send_confirmation_email(self, user):
+	def send_email(self, user):
 		'''Envia el email para confirmar la cuenta'''
 		verification_token = self.gen_verification_token(user)
-		subject = "Bienvenido {} a AdminCU!!! Verifica tu cuenta...".format(user.username)
-		from_email = 'AdminCU <noreply@admin-cu.com>'
-		content = render_to_string(
+		subject = "Bienvenido {} a AdminCU! Verifica tu cuenta...".format(user.username)
+		from_email = 'AdminCU <info@admin-cu.com>'
+		destinations = [user.email]
+		html_string = render_to_string(
 			'emails/users/account_verification.html',
-			{'token': verification_token, 'user': user},
+			{
+				'token': verification_token, 
+				'user': user,
+			},
 		)
-		msg = EmailMultiAlternatives(subject, content, from_email, [user.email])
-		msg.attach_alternative(content, "text/html")
-		msg.send()
+		send_emails.delay(
+				from_email=from_email, 
+				destinations=destinations, 
+				subject=subject, 
+				html_string=html_string, 
+			)
 
 	def gen_verification_token(self, user):
 		'''General el token mediante jwt para enviar en el email de confirmacion'''
@@ -184,16 +181,11 @@ class PasswordRecoverySerializer(serializers.Serializer):
 	'''Password recovery serializer'''
 
 	email = serializers.EmailField()
-		
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.fields['comunidad'] = serializers.ChoiceField(Comunidad.objects.all())
-
 
 	def validate(self, data):
 		'''Verifica el email en emails de usuarios de la comunnidad'''
 		users = []
-		for p in Perfil.objects.filter(comunidad=data['comunidad']):
+		for p in Perfil.objects.all():
 			users.extend(p.users.filter(email=data['email'], is_verified=True, is_active=True))
 		if not users:
 			raise serializers.ValidationError("Email invalido.")
@@ -203,21 +195,25 @@ class PasswordRecoverySerializer(serializers.Serializer):
 	def create(self, data):
 		'''Creacion del Token y envio de email de recuperacion por User vinculado al email en la comunidad.'''
 		for user in self.context['users']:
-			self.send_confirmation_email(user)
+			self.send_email(user)
 		return self.context['users']
 
-	def send_confirmation_email(self, user):
+	def send_email(self, user):
 		'''Envia email con token de recuperacion'''
 		recovery_token = self.gen_recovery_token(user)
 		subject = "Solicitud de recuperacion de clave: Usuario {}".format(user.username)
-		from_email = 'AdminCU <noreply@admin-cu.com>'
-		content = render_to_string(
+		from_email = 'AdminCU <info@admin-cu.com>'
+		destinations = [user.email]
+		html_string = render_to_string(
 			'emails/users/password_recovery.html',
 			{'token': recovery_token, 'user': user},
 		)
-		msg = EmailMultiAlternatives(subject, content, from_email, [user.email])
-		msg.attach_alternative(content, "text/html")
-		msg.send()
+		send_emails.delay(
+				from_email=from_email, 
+				destinations=destinations, 
+				subject=subject, 
+				html_string=html_string, 
+			)
 
 	def gen_recovery_token(self, user):
 		'''Generacion de token de recuperacion de password mediante jwt'''

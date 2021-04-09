@@ -3,10 +3,10 @@ import base64
 from datetime import date
 from weasyprint import HTML
 from django.db.models import Max
+from django.template.loader import render_to_string
 
 from django.db import models
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.template.loader import render_to_string
 from django.apps import AppConfig
 from rest_framework import serializers
 from django.db.models import Q
@@ -22,7 +22,6 @@ from admincu.utils.models import BaseModel
 from admincu.operative.models.own_receipt import OwnReceipt 
 
 from itertools import chain
-from django.core.mail import EmailMultiAlternatives
 
 
 class Documento(BaseModel):
@@ -478,23 +477,7 @@ class Documento(BaseModel):
 				self.receipt.receipt_number = last + 1
 			self.receipt.save()		
 
-	def enviar_mail(self):
-		if self.comunidad.mails:
-			html_string = render_to_string('emails/documentos/index.html', {"documento": self})
-			emisor = "{} <info@admin-cu.com>".format(self.comunidad.nombre)
-			destinatarios = []
-			[destinatarios.append(email) for email in [self.destinatario.perfil.mail] + list(self.destinatario.perfil.users.all().values_list('email', flat=True)) if (email and not email in destinatarios)]
-			for email in destinatarios:
-				msg = EmailMultiAlternatives(
-					subject="Nuevo Comprobante",
-					body="",
-					from_email=emisor,
-					to=[email],
-				)
 
-				msg.attach_alternative(html_string, "text/html")
-				msg.attach_file(self.pdf.path)
-				msg.send()
 
 
 	# def vinculos(self):

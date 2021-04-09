@@ -2,6 +2,8 @@ from django.db import transaction
 
 from .base import *
 
+from django.template.loader import render_to_string
+
 from admincu.operative.models import Cobro
 
 from admincu.operative.serializers.operaciones.cliente import (
@@ -17,7 +19,7 @@ from admincu.operative.CU.operaciones.clientes import (
 	creditos as operacionesCreditos,
 	disminuciones as operacionesDisminuciones
 )
-from admincu.taskapp.tasks import enviar_mails
+from admincu.taskapp.tasks import send_emails
 
 creditos = ['11', '12', '51', '52']
 disminuciones = ['13', '53', '54']
@@ -222,8 +224,25 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 		for d in documentos:
 			documento.hacer_pdf()
 
-		enviar_mails.delay([documento.id]) 
+		self.send_email(documento)		
 		return documento
+
+	def send_email(self, documento):
+		if documento.comunidad.mails:
+			from_email = "{} <info@admin-cu.com>".format(documento.comunidad.nombre)
+			destinations = documento.destinatario.perfil.get_emails_destinatarios()
+			html_string = render_to_string('emails/documentos/index.html', {"documento": documento})
+			subject = "Nuevo Comprobante" 
+			file_paths = [documento.pdf.path]
+			send_emails.delay(
+				from_email=from_email, 
+				destinations=destinations, 
+				subject=subject, 
+				html_string=html_string, 
+				file_paths=file_paths
+			)
+
+
 
 	# def create(self, validated_data):
 	# 	print(validated_data)

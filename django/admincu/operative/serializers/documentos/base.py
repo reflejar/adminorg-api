@@ -35,20 +35,21 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 		super().__init__(*args, **kwargs)
 		# Fields comunes:
 		self.fields['pdf'] = serializers.FileField(read_only=True)
-		if not self.context['sin_destinatario']:
-			self.fields['destinatario'] = serializers.PrimaryKeyRelatedField(
-					queryset=Cuenta.objects.filter(
-							comunidad=self.context['comunidad'], 
-							naturaleza__nombre=self.context['causante']
-						), 
-					allow_null=False
-				)
-			self.fields['portador'] = serializers.CharField(max_length=200, read_only=True)		
-		self.fields['receipt'] = ReceiptModelSerializer(context=self.context, read_only=False, many=False)
-		
-		if 'receipt_type' in self.context.keys():
-			if self.context['receipt_type'].code in ["54", "301", "303"]:
-				self.fields['fecha_anulacion'] = serializers.DateField(read_only=True)
+		if self.context.keys():
+			if not self.context['sin_destinatario']:
+				self.fields['destinatario'] = serializers.PrimaryKeyRelatedField(
+						queryset=Cuenta.objects.filter(
+								comunidad=self.context['comunidad'], 
+								naturaleza__nombre=self.context['causante']
+							), 
+						allow_null=False
+					)
+				self.fields['portador'] = serializers.CharField(max_length=200, read_only=True)		
+			self.fields['receipt'] = ReceiptModelSerializer(context=self.context, read_only=False, many=False)
+			
+			if 'receipt_type' in self.context.keys():
+				if self.context['receipt_type'].code in ["54", "301", "303"]:
+					self.fields['fecha_anulacion'] = serializers.DateField(read_only=True)
 
 
 	def validate_fecha_operacion(self, fecha_operacion):

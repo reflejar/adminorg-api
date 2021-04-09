@@ -83,16 +83,16 @@ Quiero hacer una matriz y que me termine dando un array con objetos que tengan l
 
 
 listas = {
-    "filas": lista0,
+    "uno": lista0,
     "uno": lista1,
-    "dos": lista2
+    "tres": lista2
 }
 
 counter = cantidad_de_objetos_en_las_listas
 objetos = []
 for x in counter:
     objeto = {}
-    for y in ["uno","dos","tres"]:
+    for y in listas.keys():
         obj[y] = listas[y][counter % listas[y].length]
     
     objetos.agregar(objeto)
@@ -154,3 +154,17 @@ gradient-blue-grey-blue
 gradient-deep-purple-blue
 
 gradient-light-blue-cyan
+
+
+Single Point of Failure
+3rd party access
+Kubernetes devops y velocidad de desarrollo
+https://cloud.google.com/kubernetes-engine/kubernetes-comic/
+Boton de feedback
+onboarding
+websocket
+Smart Contracts - Blockchain - Hyperledger - 
+https://aws.amazon.com/blockchain/blockchain-for-supply-chain-track-and-trace/
+https://aws.amazon.com/blogs/database/deploy-smart-contracts-to-your-private-ethereum-blockchain-network-on-aws/
+https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-about
+

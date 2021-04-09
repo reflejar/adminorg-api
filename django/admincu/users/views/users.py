@@ -1,6 +1,8 @@
 from rest_framework import mixins, status, viewsets
+from django.http import HttpResponseRedirect
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.permissions import (
 	AllowAny,
 	IsAuthenticated
@@ -53,8 +55,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
 		serializer = UserSignupSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
-		#data = {'message': 'Verifica tu cuenta!! Ha sido enviado un email de verificacion a tu correo electronico.'}
-		data = {'message': 'Felicidades!! Está todo listo para empezar a usar AdminCU.'}
+		data = {'message': 'Verifica tu cuenta!! Ha sido enviado un email de verificacion a tu correo electronico.'}
 		return Response(data, status=status.HTTP_201_CREATED)
 
 
@@ -65,8 +66,8 @@ class UserViewSet(mixins.RetrieveModelMixin,
 		serializer = AccountVerificationSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
-		data = {'message': 'Felicidades!! Esta todo listo para empezar a usar AdminCU.'}
-		return Response(data, status=status.HTTP_200_OK)
+		return HttpResponseRedirect("https://admin-cu.com/login/")
+		#return Response(data, status=status.HTTP_200_OK)
 
 
 	@action(detail=False, methods=['post'])

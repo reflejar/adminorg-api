@@ -1,13 +1,15 @@
 from django.db import transaction
 
 from .base import *
+from .cliente import DestinoClienteModelSerializer
 
 from admincu.operative.models import (
 	Operacion,
 )
 
+
 from admincu.operative.CU.operaciones.clientes import masivo as operacionesMasivo
-from admincu.taskapp.tasks import hacer_pdfs, enviar_mails
+from admincu.taskapp.tasks import hacer_pdfs, send_emails
 
 class DistribucionSerializer(serializers.Serializer):
 
@@ -61,5 +63,15 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 		)
 		list_of_docs = operacionesMasivo.CU(documento, validated_data).create()
 		hacer_pdfs.delay(list_of_docs)
-		enviar_mails.delay(list_of_docs)
+		self.send_emails(list_of_docs)
 		return list_of_docs
+
+	def send_emails(self, list_of_docs): 
+		for d in Documento.objects.filter(id__in=list_of_docs):
+			documento = DestinoClienteModelSerializer(instance=d)
+			documento.send_email(d)			
+
+
+
+
+

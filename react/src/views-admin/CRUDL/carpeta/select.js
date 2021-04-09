@@ -30,7 +30,6 @@ class CRUDL extends Component {
           validationSchema={formSchema}
           onSubmit={values => {
             // same shape as initial values
-            console.log(values);
           }}
         >
           {({ errors, touched }) => (
