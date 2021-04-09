@@ -101,7 +101,8 @@ class UserSignupSerializer(serializers.Serializer):
 		destinations = [user.email]
 		html_string = render_to_string(
 			'emails/users/account_verification.html',
-			{
+			request=self.context['request'],
+			context={
 				'token': verification_token, 
 				'user': user,
 			},

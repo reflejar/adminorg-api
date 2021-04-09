@@ -51,8 +51,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
 	@action(detail=False, methods=['post'])
 	def signup(self, request, *args, **kwargs):
 		'''User signup'''
-
-		serializer = UserSignupSerializer(data=request.data)
+		serializer = UserSignupSerializer(data=request.data, context=self.get_serializer_context())
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
 		data = {'message': 'Verifica tu cuenta!! Ha sido enviado un email de verificacion a tu correo electronico.'}
