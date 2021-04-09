@@ -42,10 +42,7 @@ bgcolor="#f6f6f6">
                                      style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                      valign="top">
                                      <p style="text-align:center">
-                                        <form action="https://admin.admin-cu.com/users/verify/" method="POST">{% csrf_token %}
-                                            <input type="hidden" name="token" value={{token}}>
-                                            <button type="submit">Activar mi cuenta!</button>
-                                        </form>
+                                        <a href="https://admin.admin-cu.com/users/verify/?token={{token}}">Activar mi cuenta!</a>
                                     </p>
                                  </td>
                              </tr>
