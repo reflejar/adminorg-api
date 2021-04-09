@@ -61,7 +61,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
 	@action(detail=False, methods=['get'])
 	def verify(self, request, *args, **kwargs):
 		'''Verificaciond de la cuenta'''
-
+		# print(request.data)
 		serializer = AccountVerificationSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
