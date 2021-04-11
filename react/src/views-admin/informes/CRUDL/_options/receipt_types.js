@@ -16,6 +16,6 @@ export const receiptTypes = [
     { id: 'Recibo X', full_name: 'Recibo X' },
     { id: 'Orden de Pago X', full_name: 'Orden de Pago X' },
     { id: 'Retencion', full_name: 'Retencion' },
-    { id: 'Transferencia', full_name: 'Transferencia' },
+    { id: 'Transferencia X', full_name: 'Transferencia X' },
     { id: 'Asiento', full_name: 'Asiento' },
 ];
