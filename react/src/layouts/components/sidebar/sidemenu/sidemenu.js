@@ -24,36 +24,30 @@ class SideMenuContent extends Component {
 
   administrativo = [ 
     {
-      link: "/informes",
-      name: "INFORMES",
-      icon: <BarChart2 size={18} />
-    },    
-    {
       link: "/clientes",
       name: "CUENTAS A COBRAR",
       icon: <Download size={18} />
-    },
-    {
+    },{
       link: "/proveedores",
       name: "CUENTAS A PAGAR",
       icon: <Upload size={18} />
-    },
-    {
+    },{
       link: "/tesoreria",
       name: "TESORERIA",
       icon: <DollarSign size={18} />
-    },
-    {
+    }, {
       link: "/contabilidad",
       name: "CONTABILIDAD",
       icon: <Briefcase size={18} />
-    },
-    {
+    }, {
+      link: "/informes",
+      name: "INFORMES",
+      icon: <BarChart2 size={18} />
+    },{
       link: "/comunicacion",
       name: "COMUNICACION",
       icon: <Mail size={18} />
-    },
-    {
+    },{
       link: "/configuracion",
       name: "CONFIGURACION",
       icon: <Settings size={18} />

@@ -36,8 +36,7 @@ const csvValidations = Yup.object({
     .string('Fecha de nacimiento debe ser una fecha valida'),
   mail: Yup
     .string('Email debe ser una cuenta valida')
-    .email("Email invalido")
-    .required('Email es requerido'),    
+    .email("Email invalido"),
   telefono: Yup
     .number('Telefono debe ser un numero valido')
     .transform((value, originalValue) => originalValue.trim() === "" ? null: value)
