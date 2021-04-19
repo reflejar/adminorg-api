@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 
-class Proveedores extends Component {
+class Comunicacion extends Component {
 
   render() {
     return (
@@ -11,4 +11,4 @@ class Proveedores extends Component {
   }
 }
 
-export default Proveedores;
+export default Comunicacion;

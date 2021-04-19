@@ -44,10 +44,10 @@ class SideMenuContent extends Component {
       name: "INFORMES",
       icon: <BarChart2 size={18} />
     },{
-      link: "/comunicacion",
-      name: "COMUNICACION",
-      icon: <Mail size={18} />
-    },{
+    //   link: "/comunicacion",
+    //   name: "COMUNICACION",
+    //   icon: <Mail size={18} />
+    // },{
       link: "/configuracion",
       name: "CONFIGURACION",
       icon: <Settings size={18} />
@@ -73,7 +73,7 @@ class SideMenuContent extends Component {
       icon: <BarChart2 size={18} />
     },    
     {
-      link: "/info",
+      link: "/user-profile",
       name: "MI CUENTA",
       icon: <User size={18} />
     },        

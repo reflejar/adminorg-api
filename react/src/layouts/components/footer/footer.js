@@ -1,23 +1,46 @@
 import React from "react";
 
-const Footer = props => (
+var style = {
+   backgroundColor: "#F8F8F8",
+   textAlign: "center",
+   padding: "20px",
+   position: "fixed",
+   left: "0",
+   bottom: "0",
+   height: "60px",
+   width: "100%",
+}
+
+var phantom = {
+ display: 'block',
+ padding: '20px',
+ height: '60px',
+ width: '100%',
+}
+
+const Footer = ({}) => (
    <footer>
       <div className="container-fluid">
-         <p className="text-center">
-            © 2020{" "}
+         <div style={phantom}>
+            <div style={style}>
+            <p className="text-center">
+            © 2021{" "}
             <a
-               href="https://pixinvent.com/demo/apex-react-redux-bootstrap-admin-dashboard-template/landing-page/"
+               href="https://admin-cu.com"
                rel="noopener noreferrer"
                target="_blank"
             >
                AdminCU 2.0{" "}
             </a>
-            Crafted by <i className="ft-heart font-small-3" />
+            {/* Crafted by <i className="ft-heart font-small-3" />
             <a href="https://pixinvent.com/" rel="noopener noreferrer" target="_blank">
                {" "}
                AdminCU
-            </a>
+            </a> */}
          </p>
+            </div>
+         </div>
+
       </div>
    </footer>
 );

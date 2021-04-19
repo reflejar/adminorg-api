@@ -16,6 +16,7 @@ const LazyRegister = lazy(() => import("../views/auth/register"));
 
 // Rutas privadas (Tienen Dashboard)
 const LazyUserProfile = lazy(() => import("../views/user"));
+const LazyFAQ = lazy(() => import ("../views/faq"));
 const LazyClientes = lazy(() => import("../views-admin/clientes"));
 const LazyProveedores = lazy(() => import("../views-admin/proveedores"));
 const LazyTesoreria = lazy(() => import("../views-admin/tesoreria"));
@@ -26,10 +27,9 @@ const LazyConfiguracion = lazy(() => import("../views-admin/configuraciones"));
 const LazyDeudas = lazy(() => import ("../views-socio/deudas"));
 const LazyCuenta = lazy(() => import ("../views-socio/cuenta"));
 const LazyReportes = lazy(() => import ("../views-socio/reportes"));
-const LazyInfo = lazy(() => import ("../views-socio/info"));
 
 // Error Pages
-const LazyErrorPage = lazy(() => import("../views/miscelanea/error"));
+const LazyErrorPage = lazy(() => import("../views/errors"));
 
 class Router extends Component {
    render() {
@@ -102,16 +102,6 @@ class Router extends Component {
                />
                <MainLayoutRoutes
                   exact
-                  path="/comunicacion"
-                  groups={['administrativo', 'socio']}
-                  render={matchprops => (
-                     <Suspense fallback={<Spinner />}>
-                        <LazyComunicacion {...matchprops} />
-                     </Suspense>
-                  )}
-               />
-               <MainLayoutRoutes
-                  exact
                   path="/configuracion"
                   groups={['administrativo']}
                   render={matchprops => (
@@ -149,17 +139,41 @@ class Router extends Component {
                         <LazyReportes {...matchprops} />
                      </Suspense>
                   )}
-               />       
+               />
+
+
+               {/* Joint Pages Views */}
                <MainLayoutRoutes
                   exact
-                  path="/info"
-                  groups={['socio']}
+                  path="/comunicacion"
+                  groups={['administrativo', 'socio']}
                   render={matchprops => (
                      <Suspense fallback={<Spinner />}>
-                        <LazyInfo {...matchprops} />
+                        <LazyComunicacion {...matchprops} />
                      </Suspense>
                   )}
-               />                 
+               />                                     
+               <MainLayoutRoutes
+                  exact
+                  path="/faq"
+                  groups={['administrativo', 'socio']}
+                  render={matchprops => (
+                     <Suspense fallback={<Spinner />}>
+                        <LazyFAQ {...matchprops} />
+                     </Suspense>
+                  )}
+               />
+               <MainLayoutRoutes
+                  exact
+                  path="/user-profile"
+                  groups={['administrativo', 'socio']}
+                  render={matchprops => (
+                     <Suspense fallback={<Spinner />}>
+                        <LazyUserProfile {...matchprops} />
+                     </Suspense>
+                  )}
+               />
+
 
                {/* Saperate Pages Views */}
                <FullPageLayout
@@ -189,15 +203,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
-                  exact
-                  path="/user-profile"
-                  render={matchprops => (
-                     <Suspense fallback={<Spinner />}>
-                        <LazyUserProfile {...matchprops} />
-                     </Suspense>
-                  )}
-               />
+
 
 
                <ErrorLayoutRoute

@@ -80,23 +80,23 @@ class ThemeNavbar extends Component {
                               <img src={userImage} alt="logged-in-user" className="rounded-circle width-35" />
                            </DropdownToggle>
                            <DropdownMenu right>
-                              <DropdownItem>
+                              <DropdownItem disabled>
                                  <span className="font-small-3">
                                     {user.profile.nombre} <span className="text-muted">({user.user.group})</span>
                                  </span>
                               </DropdownItem>
                               <DropdownItem divider />
 
-                              <Link to="/pages/user-profile" className="p-0">
+                              <Link to="/user-profile" className="p-0">
                                  <DropdownItem>
                                     <User size={16} className="mr-1" /> Ver Perfil
                                  </DropdownItem>
                               </Link>
-                              <Link to="/email" className="p-0">
-                                 <DropdownItem>
+                              {/* <Link disabled to="/faq" className="p-0"> */}
+                                 <DropdownItem disabled>
                                     <Bookmark size={16} className="mr-1" /> Biblioteca y FAQ
                                  </DropdownItem>
-                              </Link>
+                              {/* </Link> */}
                               <DropdownItem divider />
                               <DropdownItem>
                                  <div onClick={(event) => { this.logout() }} >

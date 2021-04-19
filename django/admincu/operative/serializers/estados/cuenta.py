@@ -21,6 +21,7 @@ class EstadoCuentaModelSerializer(EstadoBaseModelSerializer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.fields.pop('monto')
+		self.fields['valor'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0.01)
 		self.fields['cuenta'] = serializers.CharField(max_length=200, required=True)
 		self.fields['debe'] = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=15)
 		self.fields['haber'] = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=15)

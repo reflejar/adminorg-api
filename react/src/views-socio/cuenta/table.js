@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import DeudasTable from "../../components/board/tables/deudas";
+import CuentaTable from "../../components/board/tables/cuenta";
 
 import config from "../../redux/config/config";
 
@@ -15,45 +15,20 @@ const getColumns = () => [{
 }, {
   Header: 'Documento',
   id: 'Documento',
-  accessor: 'documento.nombre',
+  accessor: 'documento.nombre'
 }, {
   Header: 'Cuenta',
-  accessor: "cuenta"
-}, {  
+  accessor: 'cuenta'  
+}, {
   Header: 'Concepto',
   accessor: 'concepto'
 }, {
   Header: 'Periodo',
+  id: 'Periodo',
   accessor: 'periodo'
 }, {
-  Header: 'Monto',
-  accessor: 'monto',
-  Cell: row => (
-    <div
-      style={{
-        width: '100%',
-        textAlign: "right"
-      }}
-    >
-      {Numero(row.value)}
-    </div>
-  )   
-}, {
-  Header: 'Pagado/Utilizado',
-  accessor: 'pago_capital',
-  Cell: row => (
-    <div
-      style={{
-        width: '100%',
-        textAlign: "right"
-      }}
-    >
-      {Numero(row.value)}
-    </div>
-  )         
-}, {
-  Header: 'Intereses/Descuentos',
-  accessor: 'interes',
+  Header: 'Valor',
+  accessor: 'valor',
   Cell: row => (
     <div
       style={{
@@ -76,8 +51,9 @@ const getColumns = () => [{
     >
       {Numero(row.value)}
     </div>
-  )    
-}];    
+  )   
+}];
+
 
 export default class Table extends React.Component {
   render() {
@@ -98,7 +74,7 @@ export default class Table extends React.Component {
     return (
       <React.Fragment>
 
-        <DeudasTable
+        <CuentaTable
           data={data}
           columns={getColumns()}
           addProps={addProps}

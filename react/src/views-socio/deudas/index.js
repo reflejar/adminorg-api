@@ -17,7 +17,9 @@ class DeudasSocio extends Component {
                <Card>
                   <CardBody>
                      <CardTitle>Mis deudas</CardTitle>
-                     <Deudas selected={cuenta} Table={DeudasTable}/>
+                     <div className="text-center">
+                        <Deudas selected={cuenta} Table={DeudasTable}/>
+                     </div>
                   </CardBody>
                </Card>               
             </Col>       
