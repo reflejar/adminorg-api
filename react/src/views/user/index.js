@@ -9,6 +9,7 @@ import {
    CardTitle,
    CardHeader,
    CardBody,
+   Button
 } from "reactstrap";
 import BasicModal from '../../components/modal/basic';
 
@@ -31,7 +32,7 @@ const UserProfile = ({user}) => {
                header={"Cambiar contraseña"}
                footer={false}
                component={""}
-            />                      
+            />
             <Row>
                <Col lg="6" id="profile">
                   <Card>
@@ -64,7 +65,7 @@ const UserProfile = ({user}) => {
                             <h4 className="mb-3"><b>Usuario: </b>{user.user.username}</h4>
                             <h4 className="mb-3"><b>Tipo: </b>{user.user.group}</h4>
                             <h4 className="mb-3"><b>Email: </b>{user.user.email}</h4>
-                            <p>Deseas cambiar la contraseña? <a href="#" onClick={handleToggle}>click aqui</a></p>
+                            <p>Deseas cambiar la contraseña? <Button className="mb-1" color="link" onClick={handleToggle} size="sm">click aqui</Button></p>
                            </Col>
                         </Row>   
                      </CardBody>

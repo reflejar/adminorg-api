@@ -4,7 +4,6 @@ import React, { Component } from "react";
 import {
   Download,
   Upload,
-  Mail,
   Briefcase,
   Settings,
   BarChart2,

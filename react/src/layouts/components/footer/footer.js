@@ -10,35 +10,25 @@ var style = {
    height: "60px",
    width: "100%",
 }
-
-var phantom = {
- display: 'block',
- padding: '20px',
- height: '60px',
- width: '100%',
-}
-
-const Footer = ({}) => (
+const Footer = props => (
    <footer>
       <div className="container-fluid">
-         <div style={phantom}>
-            <div style={style}>
+         <div style={style}>
             <p className="text-center">
-            © 2021{" "}
-            <a
-               href="https://admin-cu.com"
-               rel="noopener noreferrer"
-               target="_blank"
-            >
-               AdminCU 2.0{" "}
-            </a>
-            {/* Crafted by <i className="ft-heart font-small-3" />
-            <a href="https://pixinvent.com/" rel="noopener noreferrer" target="_blank">
-               {" "}
-               AdminCU
-            </a> */}
-         </p>
-            </div>
+               © 2021{" "}
+               <a
+                  href="https://admin-cu.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
+               >
+                  AdminCU 2.0{" "}
+               </a>
+               {/* Crafted by <i className="ft-heart font-small-3" />
+               <a href="https://pixinvent.com/" rel="noopener noreferrer" target="_blank">
+                  {" "}
+                  AdminCU
+               </a> */}
+            </p>
          </div>
 
       </div>
