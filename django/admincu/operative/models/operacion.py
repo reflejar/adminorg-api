@@ -196,7 +196,7 @@ class Operacion(BaseModel):
 				if calculo < 0:
 					calculo = 0
 					
-		
+		print("La fecha en intereses es {}".format(fecha))
 		return Decimal("%.2f" % calculo)		
 
 	def descuento(self, fecha=date.today(), condonacion=False):
@@ -232,7 +232,7 @@ class Operacion(BaseModel):
 		"""
 			Retorna siempre positivo el saldo adeudado a la fecha
 		"""
-		
+		print("La fecha en saldo es {}".format(fecha))
 		return self.subtotal(fecha=fecha) + self.interes(fecha=fecha, condonacion=condonacion) - self.descuento(fecha=fecha, condonacion=condonacion)
 
 
