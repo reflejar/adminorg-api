@@ -12,13 +12,14 @@ import {
 
 import 'react-table/react-table.css';
 
+import { DataFrame } from "danfojs/src/index";
 
 const columns = [{          
   Header: 'N°',
-  accessor: 'numero'
+  accessor: 'titulo_numero'
 }, {        
   Header: 'Titulo',
-  accessor: 'titulo'
+  accessor: 'titulo_nombre'
 }, {        
   Header: 'Cuenta',
   accessor: 'cuenta'
@@ -30,10 +31,10 @@ const columns = [{
   accessor: 'periodo'
 }, {    
   Header: 'Tipo Doc',
-  accessor: 'documento'
+  accessor: 'documento_tipo'
 }, {              
   Header: 'Monto',
-  accessor: 'monto',
+  accessor: 'monto_sum',
   Cell: row => (
     <div
       style={{
@@ -46,7 +47,7 @@ const columns = [{
   )     
 }, {
   Header: 'Debe',
-  accessor: 'debe',
+  accessor: 'debe_sum',
   Cell: row => (
     <div
       style={{
@@ -59,7 +60,7 @@ const columns = [{
   )     
 }, {  
   Header: 'Haber',
-  accessor: 'haber',
+  accessor: 'haber_sum',
   Cell: row => (
     <div
       style={{
@@ -72,7 +73,7 @@ const columns = [{
   )     
 }, {
   Header: 'S. Capital',
-  accessor: 'capital',
+  accessor: 'capital_sum',
   Cell: row => (
     <div
       style={{
@@ -85,7 +86,7 @@ const columns = [{
   )     
 }, {    
   Header: 'S. Interes',
-  accessor: 'interes',
+  accessor: 'interes_sum',
   Cell: row => (
     <div
       style={{
@@ -98,7 +99,7 @@ const columns = [{
   )     
 }, {  
   Header: 'S. Total',
-  accessor: 'total',
+  accessor: 'total_sum',
   Cell: row => (
     <div
       style={{
@@ -106,161 +107,94 @@ const columns = [{
         textAlign: "right"
       }}
     >
-      {Numero(row.value)}
+      
+      {console.log(row.value)}
     </div>
   )     
 }, {   
   Header: 'Cantidad',
-  accessor: 'cantidad'
+  accessor: 'cantidad_sum'
 }];
 
-const removeDuplicated = (arr, field=undefined) => {
-  
-  const result = arr.reduce((unique, o) => {
-    if (field) {
-      if(!unique.some(obj => obj[field] === o[field])) {
-        unique.push(o);
-      }
-      return unique;
-    } else {
-      if(!unique.some(obj => obj === o)) {
-        unique.push(o);
-      }
-      return unique;
-    }
-  },[]);
-  return result
-}
 
 
 const Tabla = ({ data }) => {
 
-  const [criterio, setCriterio] = useState({});
-  const [agrupado, setAgrupado] = useState({});
-  const [totales, setTotales] = useState({});
+  const [criterio, setCriterio] = useState([]);
+  const [agrupado, setAgrupado] = useState([]);
+  const [totales, setTotales] = useState([]);
   const [columnas, setColumnas] = useState([columns[0]])
+  const [rows, setRows] = useState([])
 
   const handleCriterio = (event) => {
-
-    const value = event.target.value;
-
-    // let options = [value];
-    // value === "cliente" && options.push("dominio")
-    // console.log(options);
-    // console.log(data);
-    // const filteredOperation = data.filter(op => options.includes(op.naturaleza));
-    // const selection = new Set(filteredOperation.map(op => (op.cuenta.nombre)));
-    // Decidi que si filtra clientes, entonces que el criterio sea de clientes y luego haya un agrupado por lotes
-    let selection = [];
-    if (value === "titulo") {
-      selection = new Set(data.map(op => (op.titulo))) 
-      setCriterio({titulo: removeDuplicated([...selection], "id").map(s => (s))});
-    } else {
-      const filteredOperation = data.filter(op => op.naturaleza === value);
-      selection = new Set(filteredOperation.map(op => (op.cuenta)))
-      setCriterio({cuenta: removeDuplicated([...selection], "id").map(s => (s))});
-    }
-    // setCriterio({criterio: removeDuplicated([...selection], "id").map(s => (s))});
+    const value = event.target.value
+    let option = [value];
+    value === "titulo_nombre" && option.push("titulo_numero");
+    setCriterio(option);
     
-  }; 
+  }
 
   const handleAgrupado = (event) => {
 
-    const options = Array.from(event.target.selectedOptions, option => option.value);;
-    let agrupados = [];
-    options.forEach((val) => {
-      let selection = [];
-      if (val.includes(".")) {
-        const acceso = val.split(".");
-        const atr = acceso[0];
-        selection = new Set(data.map(op => (op[acceso[1]])))
-        let result = {};
-        result[atr] = [...selection];
-        agrupados.push(result);
-      } else {
-        const atr = val;
-        selection = new Set(data.map(op => (op[val])))
-        let result = {};
-        result[atr] = [...selection];
-        agrupados.push(result);
-      }
-    });
-    setAgrupado(agrupados);
+    const options = Array.from(event.target.selectedOptions, option => option.value);
+    setAgrupado(options);
+
   };   
 
   const handleTotalizadores = (event) => {
 
-    const options = Array.from(event.target.selectedOptions, option => option.value);
-    let totalizadores = {};
-    options.forEach((val) => {
-      if (val.includes(".")) {
-        const acceso = val.split(".");
-        const atr = acceso[1];
-        totalizadores[atr] = 0.00;
-      } else {
-        const atr = val;
-        totalizadores[atr] = 0.00;
-        if (val === "debe") {
-          totalizadores.haber = 0.00;
-        }
-      }
-    });
-    setTotales(totalizadores);
-    
+    let options = Array.from(event.target.selectedOptions, option => option.value);
+    options.indexOf("debe") > -1 && options.push("haber");
+    setTotales(options);
 
   };     
 
 
   useEffect(() => {
-    let objetos = [];
-    if (Object.keys(criterio).length !== 0 && Object.keys(totales).length !== 0){ // Solo si tiene criterios y totales
-    // Que Haga el listado inicial de objetos
-      let colData = {...criterio}; // Establece la primer key (el criterio de calculo), con su value como lista de sus posibles valores
-      // Y que si tiene agrupado
-      if (agrupado.length > 0) {
-        agrupado.forEach(grupo => {
-          colData = Object.assign(colData, grupo) // Le agrega las otras keys (Los grupos), con sus values particulares que son tambien listas de posibles valores
-        });
+
+    if (criterio.length > 0 && totales.length > 0) {
+      // Formacion de las filas
+      let df = new DataFrame(data)
+      if (criterio.indexOf("titulo_nombre")) {
+        try {
+          df = df.query({"column": "naturaleza", "is": "==", "to": criterio})  
+        } catch (error) {
+          console.log(error)
+        }
+      } 
+
+      let grouped = [];
+      if (criterio.indexOf("titulo_nombre") > -1) {
+        grouped.push(...criterio)
+      } else {
+        grouped.push("cuenta")
       }
-      let qObjects = 1;
-      Object.keys(colData).forEach(col => {qObjects = qObjects * colData[col].length}) // Calcula la cantidad de objetos que debe haber
+      if (agrupado.length > 0 ) {
+        grouped.push(...agrupado)
+      }
+
+      let seeRows = df.groupby([...grouped]);
+      const result = seeRows.col(totales).sum()
+      // Seteado de columnas
+      let seeColumns = [...grouped, ...totales.map(t => t + "_sum")];
+      setColumnas(() => columns.filter(x => seeColumns.indexOf(x.accessor) > -1));
+      
+      // Seteado de las filas
+      result.to_json().then((json) => setRows(JSON.parse(json)));
+      
 
       
-      // for (var i = 1; i <= qObjects; i++) { // Itera la cantidad de objetos que debe hacer
-      //   // let objeto = {...totales} // Inicia el objeto con los totales
-      //   let objeto = {};
-      //   Object.keys(colData).forEach(col => {
-      //     // Esta logica hay que testear y modificar. Si esta bien, KELOCO (ANALIZAR!!!) Si no, modificarla
-      //     objeto[col] = colData[col][i%colData[col].length]  // Le agrega cada una de las propiedades
-      //     })
-      //     objetos.push(objeto) 
-      //   }
-        // Termina el listado inicial de objetos
-        // Seteado de columnas
-        
     }
-
-
-    // Iterar sobre la data y Que sume los totales
-    const finalObjects = objetos.map(objeto => {
-      let result = {...objeto}
-      data.forEach(operacion => {
-        console.log(operacion)
-      });
-      // data.filter()
-      return result
-
-    });
-
+    
     // Hacer que trabaje con redux y que tenga su propio loading
 
     // Expresar en la tabla
-    if (finalObjects.length > 0) {
-      setColumnas(columns.filter(col => Object.keys(finalObjects[0]).some(key => (key === col.accessor))))
-    }
 
 
-  }, [criterio, totales, agrupado, data]);
+  }, [criterio, totales, data, agrupado, totales]);
+  
+  
+
 
 
   return (
@@ -277,7 +211,7 @@ const Tabla = ({ data }) => {
                 <option value="caja">Tesoreria</option>
                 <option value="ingreso">Ingresos</option>
                 <option value="gasto">Gastos</option>
-                <option value="titulo">Titulos contables</option>
+                <option value="titulo_nombre">Titulos contables</option>
             </Input>
           </FormGroup>          
           <FormGroup>
@@ -286,6 +220,7 @@ const Tabla = ({ data }) => {
                 {/* <option value="documento.tipo">Documentos</option> */}
                 <option value="concepto">Conceptos</option>
                 <option value="periodo">Periodos</option>
+                <option value="documento_tipo">Tipo Documento</option>
             </Input>
           </FormGroup>
           <FormGroup>
@@ -293,9 +228,9 @@ const Tabla = ({ data }) => {
             <Input type="select" id="totalizadores" name="selectTotalizadores" multiple onChange={(event) => handleTotalizadores(event)}>
                 <option value="monto">Montos</option>
                 <option value="debe">Debe y Haber</option>
-                <option value="saldo.capital">Saldos de capital</option>
-                <option value="saldo.interes">Saldos de interes</option>
-                <option value="saldo.total">Saldos totales</option>
+                <option value="capital">Saldos de capital</option>
+                <option value="interes">Saldos de interes</option>
+                <option value="total">Saldos totales</option>
                 <option value="cantidad">Cantidades</option>
             </Input>
           </FormGroup>          
@@ -304,7 +239,7 @@ const Tabla = ({ data }) => {
       </Col>          
       <Col md={8}>
         <SumasTable
-          data={[]}
+          data={rows}
           columns={columnas}
         />   
       </Col>

@@ -12,13 +12,13 @@ const getColumns = () => [{
   accessor: (d) => moment(d.fecha).format('DD/MM/YYYY')
 }, {
   Header: 'N° Titulo',
-  accessor: 'titulo.numero'
+  accessor: 'titulo_numero'
 }, {        
   Header: 'Titulo',
-  accessor: 'titulo.nombre'
+  accessor: 'titulo_nombre'
 }, {          
   Header: 'Cuenta',
-  accessor: 'cuenta.nombre'
+  accessor: 'cuenta'
 }, {
   Header: 'Concepto',
   accessor: 'concepto'
@@ -27,10 +27,10 @@ const getColumns = () => [{
   accessor: 'periodo'
 }, {    
   Header: 'Tipo Doc',
-  accessor: 'documento.tipo'
+  accessor: 'documento_tipo'
 }, {            
   Header: 'Doc N°',
-  accessor: 'documento.numero'
+  accessor: 'documento_numero'
 }, {   
   Header: 'Cantidad',
   accessor: 'cantidad'
@@ -75,7 +75,7 @@ const getColumns = () => [{
   )     
 }, {
   Header: 'S. Capital',
-  accessor: 'saldo.capital',
+  accessor: 'capital',
   Cell: row => (
     <div
       style={{
@@ -88,7 +88,7 @@ const getColumns = () => [{
   )     
 }, {    
   Header: 'S. Interes',
-  accessor: 'saldo.interes',
+  accessor: 'interes',
   Cell: row => (
     <div
       style={{
@@ -101,7 +101,7 @@ const getColumns = () => [{
   )     
 }, {  
   Header: 'S. Total',
-  accessor: 'saldo.total',
+  accessor: 'total',
   Cell: row => (
     <div
       style={{

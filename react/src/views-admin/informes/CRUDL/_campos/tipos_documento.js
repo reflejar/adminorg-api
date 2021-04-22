@@ -49,19 +49,19 @@ const TiposDocumentos = ({ filtro, setFiltro, disableInOptions }) => {
                     <td className="text-right">
                       <Input 
                         type="checkbox" 
-                        onClick={() => SelectAll()} 
-                        checked={all} />
+                        onChange={() => SelectAll()} 
+                        defaultChecked={all} />
                     </td>
                 </tr>
               </thead>
               <tbody>
-                {receiptTypes.map(type => (
-                  <tr>
+                {receiptTypes.map((type, key) => (
+                  <tr key={key}>
                     <td>{type.full_name}</td>
                     <td className="text-right">
                       <Input 
                         type="checkbox" 
-                        onClick={SelectItem}
+                        onChange={SelectItem}
                         value={type.id}
                         checked={selection.some(selected => type.id === selected)} />                  
                     </td>

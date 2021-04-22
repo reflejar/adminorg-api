@@ -21,26 +21,28 @@ const Item = ({ indentation, item, children, titulos, filterChildren, selected, 
             style={{cursor: 'pointer'}}
             onClick={() => selectItem()}
             > 
-                <td style={{"padding-left": indentationItem}}>
+                <td style={{"paddingLeft": indentationItem}}>
                     {children && (openItem ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
                     {children ? <Folder size={18} /> : <FileText size={18} /> } {children ? item.full_name : item.nombre}
                 </td>
                 <td className="text-right">{item.numero}</td>
             </tr>
-            {openItem && children && children.map(itemChild => (
+            {openItem && children && children.map((itemChild, keyChild) => (
                     <Item 
                         indentation={indentation+10}
                         item={itemChild} 
+                        key={keyChild}
                         children={filterChildren(titulos, itemChild)} 
                         titulos={titulos}
                         filterChildren={filterChildren}
                         selected={selected}
                         setSelected={setSelected}
                     />))}
-            {openItem && item.cuentas && item.cuentas.sort((a, b) => a.nombre.localeCompare(b.nombre)).map(itemChild => (
+            {openItem && item.cuentas && item.cuentas.sort((a, b) => a.nombre.localeCompare(b.nombre)).map((itemChild, keyChild) => (
                     <Item 
                         indentation={indentation+10}
                         item={itemChild} 
+                        key={keyChild}
                         children={null}
                         titulos={titulos}
                         filterChildren={filterChildren}

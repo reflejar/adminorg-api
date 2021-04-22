@@ -38,7 +38,7 @@ const Item = ({ indentation, item, children, titulos, filterChildren, selection,
             style={{cursor: 'pointer'}}
 
             > 
-                <td onClick={() => OpenItem()} style={{"padding-left": indentationItem}}>
+                <td onClick={() => OpenItem()} style={{"paddingLeft": indentationItem}}>
                     {children && (openItem ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
                     {children ? <Folder size={18} /> : <FileText size={18} /> } {children ? item.full_name : item.nombre}
                 </td>
@@ -46,25 +46,27 @@ const Item = ({ indentation, item, children, titulos, filterChildren, selection,
                 <td className="text-right">
                   <Input 
                     type="checkbox" 
-                    onClick={() => SelectItem()} 
+                    onChange={() => SelectItem()} 
                     checked={selection.some(selected => item === selected)} 
                     disabled={disabled} />
                 </td>
             </tr>
-            {openItem && children && children.map(itemChild => (
+            {openItem && children && children.map((itemChild, keyChild) => (
                     <Item 
                         indentation={indentation+10}
                         item={itemChild} 
+                        key={keyChild}
                         children={filterChildren(titulos, itemChild)} 
                         titulos={titulos}
                         filterChildren={filterChildren}
                         selection={selection}
                         setSelection={setSelection}
                     />))}
-            {openItem && item.cuentas && item.cuentas.sort((a, b) => a.nombre.localeCompare(b.nombre)).map(itemChild => (
+            {openItem && item.cuentas && item.cuentas.sort((a, b) => a.nombre.localeCompare(b.nombre)).map((itemChild, keyChild) => (
                     <Item 
                         indentation={indentation+10}
                         item={itemChild} 
+                        key={keyChild}
                         children={null}
                         titulos={titulos}
                         filterChildren={filterChildren}
@@ -144,17 +146,18 @@ const Cuentas = ({ filtro, setFiltro, disableInOptions }) => {
                 <td className="text-right">
                   <Input 
                     type="checkbox" 
-                    onClick={() => SelectAll()} 
-                    checked={all} 
+                    onChange={() => SelectAll()} 
+                    defaultChecked={all} 
                     disabled={disableInOptions.some(x => x === filtro.tipo)}/>
                 </td>
             </tr>
           </thead>
           <tbody>
-          {titulos && filterParents(titulos).map(item => (
+          {titulos && filterParents(titulos).map((item, key) => (
           <Item 
             indentation={0}
             item={item} 
+            key={key}
             children={filterChildren(titulos, item)}
             titulos={titulos}
             filterChildren={filterChildren}

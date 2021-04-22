@@ -28,10 +28,11 @@ const List = ({selected}) => {
                   </tr>
                </thead>
                <tbody>
-                {carpetas && fitlerParents(carpetas).map(item => (
+                {carpetas && fitlerParents(carpetas).map((item, key) => (
                 <Item 
                     indentation={0}
                     item={item} 
+                    key={key}
                     children={filterChildren(carpetas, item)}
                     carpetas={carpetas}
                     filterChildren={filterChildren}

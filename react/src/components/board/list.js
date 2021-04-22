@@ -33,10 +33,10 @@ class List extends Component {
         <div className="users-list-padding">
           <Table size="sm">
             <tbody>
-              {items && items.map(item => (
+              {items && items.map((item,key) => (
                 <Item
                   {...item}
-                  key={item.id}
+                  key={key}
                   onClick={() => setSelectedObject(item)}
                   itemName={item.full_name}
                   active={instance && instance.id === item.id}

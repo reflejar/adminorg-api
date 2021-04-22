@@ -16,7 +16,7 @@ const LazyRegister = lazy(() => import("../views/auth/register"));
 
 // Rutas privadas (Tienen Dashboard)
 const LazyUserProfile = lazy(() => import("../views/user"));
-const LazyFAQ = lazy(() => import ("../views/faq"));
+const LazyFAQ = lazy(() => import("../views/faq"));
 const LazyClientes = lazy(() => import("../views-admin/clientes"));
 const LazyProveedores = lazy(() => import("../views-admin/proveedores"));
 const LazyTesoreria = lazy(() => import("../views-admin/tesoreria"));
@@ -24,9 +24,9 @@ const LazyContabilidad = lazy(() => import("../views-admin/contabilidad"));
 const LazyInformes = lazy(() => import("../views-admin/informes"));
 const LazyComunicacion = lazy(() => import("../views/comunicacion"));
 const LazyConfiguracion = lazy(() => import("../views-admin/configuraciones"));
-const LazyDeudas = lazy(() => import ("../views-socio/deudas"));
-const LazyCuenta = lazy(() => import ("../views-socio/cuenta"));
-const LazyReportes = lazy(() => import ("../views-socio/reportes"));
+const LazyDeudas = lazy(() => import("../views-socio/deudas"));
+const LazyCuenta = lazy(() => import("../views-socio/cuenta"));
+const LazyReportes = lazy(() => import("../views-socio/reportes"));
 
 // Error Pages
 const LazyErrorPage = lazy(() => import("../views/errors"));

@@ -57,7 +57,6 @@ const Reporte = ({ getDataReporte, onClose }) => {
 
   return (
     <form className='credito-invoice container' onSubmit={handleSubmit}>
-      {/* {console.log(filtro)} */}
       
       <Tipo 
         filtro={filtro} 

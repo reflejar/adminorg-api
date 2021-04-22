@@ -1,37 +1,31 @@
 from rest_framework import serializers
 
 from admincu.operative.models import Operacion
-from admincu.operative.serializers.informes import (
-	CuentaModelSerializer,
-	DocumentoModelSerializer,
-	TituloModelSerializer
-)
 
 class InformesModelSerializer(serializers.ModelSerializer):
 	
 	'''Operacion para la parte informes'''
 
-	cuenta = CuentaModelSerializer()
-	documento = DocumentoModelSerializer()
-	titulo = TituloModelSerializer()
-	saldo = serializers.SerializerMethodField()
+	capital = serializers.SerializerMethodField()
+	interes = serializers.SerializerMethodField()
+	total = serializers.SerializerMethodField()
 	concepto = serializers.SerializerMethodField()
 	numero_asiento = serializers.SerializerMethodField()
+	documento_tipo = serializers.SerializerMethodField()
+	documento_numero = serializers.SerializerMethodField()
+	titulo_numero = serializers.SerializerMethodField()
+	titulo_nombre = serializers.SerializerMethodField()
 	
 	class Meta:
 		model = Operacion
 
 		fields = (
 			'id',
-			'detalle',
-			'monto',
-			'naturaleza',
 			'cuenta',
-			'titulo',
-			'documento',
-			'valor',
-			'debe',
-			'haber',
+			'documento_tipo',
+			'documento_numero',
+			'detalle',
+			'naturaleza',
 			'fecha',
 			'concepto',
 			'periodo',
@@ -40,21 +34,31 @@ class InformesModelSerializer(serializers.ModelSerializer):
 			'fecha_gracia',
 			'detalle',
 			'descripcion',
-			'saldo',
-			'numero_asiento'
+			'monto',
+			'capital',
+			'interes',
+			'total',
+			'valor',
+			'debe',
+			'haber',			
+			'numero_asiento',
+			'titulo_numero',
+			'titulo_nombre'
 		)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.numero_asiento = 1
+		self.fields['cuenta'] = serializers.CharField(max_length=200)
 
-	def get_saldo(self, obj):
+	def get_capital(self, obj):
+		return obj.saldo(condonacion=True)
 
-		return {
-			'capital': obj.saldo(condonacion=True),
-			'interes': obj.interes(fecha=self.context['end_date']),
-			'total': obj.saldo(fecha=self.context['end_date'])
-		}
+	def get_interes(self, obj):
+		return obj.interes(fecha=self.context['end_date'])
+
+	def get_total(self, obj):
+		return obj.saldo(fecha=self.context['end_date'])
 
 	def get_concepto(self, obj):
 		if obj.concepto():
@@ -63,3 +67,15 @@ class InformesModelSerializer(serializers.ModelSerializer):
 
 	def get_numero_asiento(self, obj):
 		return self.numero_asiento
+
+	def get_documento_tipo(self, obj):
+		return obj.documento.receipt.receipt_type.description
+
+	def get_documento_numero(self, obj):
+		return obj.documento.receipt.formatted_number
+
+	def get_titulo_numero(self, obj):
+		return obj.cuenta.titulo.numero
+
+	def get_titulo_nombre(self, obj):
+		return obj.cuenta.titulo.nombre
