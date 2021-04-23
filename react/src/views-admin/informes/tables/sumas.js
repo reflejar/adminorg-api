@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import SumasTable from "../../../components/board/tables/sumas";
 import {Numero} from "../../../utility/formats";
 import {
@@ -11,8 +11,10 @@ import {
 } from "reactstrap";
 
 import 'react-table/react-table.css';
+import Spinner from '../../../components/spinner/spinner';
 
 import { DataFrame } from "danfojs/src/index";
+
 
 const columns = [{          
   Header: 'N°',
@@ -25,7 +27,16 @@ const columns = [{
   accessor: 'cuenta'
 }, {
   Header: 'Concepto',
-  accessor: 'concepto'
+  accessor: 'concepto',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+      }}
+    >
+      {row.value !== "NaN" && row.value}
+    </div>
+  )     
 }, {      
   Header: 'Periodo',
   accessor: 'periodo'
@@ -42,7 +53,7 @@ const columns = [{
         textAlign: "right"
       }}
     >
-      {Numero(row.value)}
+      {row.value && Numero(row.value)}
     </div>
   )     
 }, {
@@ -55,7 +66,7 @@ const columns = [{
         textAlign: "right"
       }}
     >
-      {Numero(row.value)}
+      {row.value && Numero(row.value)}
     </div>
   )     
 }, {  
@@ -68,7 +79,7 @@ const columns = [{
         textAlign: "right"
       }}
     >
-      {Numero(row.value)}
+      {row.value && Numero(row.value)}
     </div>
   )     
 }, {
@@ -81,7 +92,7 @@ const columns = [{
         textAlign: "right"
       }}
     >
-      {Numero(row.value)}
+      {row.value && Numero(row.value)}
     </div>
   )     
 }, {    
@@ -94,7 +105,7 @@ const columns = [{
         textAlign: "right"
       }}
     >
-      {Numero(row.value)}
+      
     </div>
   )     
 }, {  
@@ -108,7 +119,7 @@ const columns = [{
       }}
     >
       
-      {console.log(row.value)}
+      {row.value && Numero(row.value)}
     </div>
   )     
 }, {   
@@ -117,14 +128,54 @@ const columns = [{
 }];
 
 
-
 const Tabla = ({ data }) => {
 
   const [criterio, setCriterio] = useState([]);
   const [agrupado, setAgrupado] = useState([]);
   const [totales, setTotales] = useState([]);
-  const [columnas, setColumnas] = useState([columns[0]])
-  const [rows, setRows] = useState([])
+  const [showColumns, setShowColumns] = useState([]);
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+
+
+    // Formacion de las filas
+    let df = new DataFrame(data)
+    if (criterio.length > 0 && criterio.indexOf("titulo_nombre")) {
+      try {
+        df = df.query({"column": "naturaleza", "is": "==", "to": criterio[0]})  
+      } catch (error) {
+        console.log(error)
+      }
+    } 
+    // Agrupado
+    let grouped = [];
+    if (criterio.indexOf("titulo_nombre") > -1) {
+      grouped.push(...criterio)
+    } else {
+      grouped.push("cuenta")
+    }
+    if (agrupado.length > 0 ) {
+      grouped.push(...agrupado)
+    }
+    let seeRows = df.groupby([...grouped]);
+
+    // Sumas
+    const result = seeRows.col(totales).sum()
+
+    // Seteado de showColumns
+    if (totales.length > 0) {
+      setShowColumns([...grouped, ...totales.map(t => t + "_sum")]);
+      
+    }
+    
+    // Seteado de las filas
+    result.to_json().then((json) => setRows(JSON.parse(json)));
+    // Hacer que trabaje con redux y que tenga su propio loading
+
+    // Expresar en la tabla
+
+  }, [criterio, totales, agrupado, data]);
 
   const handleCriterio = (event) => {
     const value = event.target.value
@@ -142,59 +193,14 @@ const Tabla = ({ data }) => {
   };   
 
   const handleTotalizadores = (event) => {
-
     let options = Array.from(event.target.selectedOptions, option => option.value);
     options.indexOf("debe") > -1 && options.push("haber");
     setTotales(options);
-
   };     
 
-
-  useEffect(() => {
-
-    if (criterio.length > 0 && totales.length > 0) {
-      // Formacion de las filas
-      let df = new DataFrame(data)
-      if (criterio.indexOf("titulo_nombre")) {
-        try {
-          df = df.query({"column": "naturaleza", "is": "==", "to": criterio})  
-        } catch (error) {
-          console.log(error)
-        }
-      } 
-
-      let grouped = [];
-      if (criterio.indexOf("titulo_nombre") > -1) {
-        grouped.push(...criterio)
-      } else {
-        grouped.push("cuenta")
-      }
-      if (agrupado.length > 0 ) {
-        grouped.push(...agrupado)
-      }
-
-      let seeRows = df.groupby([...grouped]);
-      const result = seeRows.col(totales).sum()
-      // Seteado de columnas
-      let seeColumns = [...grouped, ...totales.map(t => t + "_sum")];
-      setColumnas(() => columns.filter(x => seeColumns.indexOf(x.accessor) > -1));
-      
-      // Seteado de las filas
-      result.to_json().then((json) => setRows(JSON.parse(json)));
-      
-
-      
-    }
-    
-    // Hacer que trabaje con redux y que tenga su propio loading
-
-    // Expresar en la tabla
-
-
-  }, [criterio, totales, data, agrupado, totales]);
   
   
-
+  
 
 
   return (
@@ -217,7 +223,6 @@ const Tabla = ({ data }) => {
           <FormGroup>
             <Label for="agrupado">Agrupado</Label>
             <Input type="select" id="agrupado" name="selectAgrupado" multiple onChange={(event) => handleAgrupado(event)}>
-                {/* <option value="documento.tipo">Documentos</option> */}
                 <option value="concepto">Conceptos</option>
                 <option value="periodo">Periodos</option>
                 <option value="documento_tipo">Tipo Documento</option>
@@ -237,22 +242,17 @@ const Tabla = ({ data }) => {
         </Form>
 
       </Col>          
-      <Col md={8}>
-        <SumasTable
-          data={rows}
-          columns={columnas}
-        />   
-      </Col>
+        <Col md={8}>
+
+          <SumasTable
+            data={rows}
+            columns={totales.length > 0 ? columns.filter(x => showColumns.indexOf(x.accessor) > -1) : []}
+          />     
+
+        </Col>
       </Row>
     </React.Fragment>
   );
 };
 
 export default Tabla;
-
-
-// const mapDispatchToProps = dispatch => ({
-//   getDataReporte: (payload) => dispatch(informesActions.get_data(payload))
-// });
-
-// export default connect(null, mapDispatchToProps)(Tabla);
