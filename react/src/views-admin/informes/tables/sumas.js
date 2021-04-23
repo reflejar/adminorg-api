@@ -11,7 +11,6 @@ import {
 } from "reactstrap";
 
 import 'react-table/react-table.css';
-import Spinner from '../../../components/spinner/spinner';
 
 import { DataFrame } from "danfojs/src/index";
 
