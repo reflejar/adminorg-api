@@ -60,13 +60,13 @@ const OP = ({ destinatario, update, selected, sendOP, deleteOP, onClose }) => {
 
     if (documento.retenciones && documento.retenciones.length > 0) {
       totalRetenciones = documento.retenciones.reduce((total, resultado) => Number(total) + Number(resultado.monto), 0);
-      if (totalRetenciones > totalPagos) {
+      if (Math.round(totalRetenciones*100) > Math.round(totalPagos*100)) {
         return false;
       }      
     }    
     if (documento.utilizaciones_saldos && documento.utilizaciones_saldos.length > 0) {
       totalUtilizacionesSaldos = documento.utilizaciones_saldos.reduce((total, resultado) => Number(total) + Number(resultado.monto), 0);
-      if (totalUtilizacionesSaldos + totalRetenciones > totalPagos) {
+      if (Math.round(totalUtilizacionesSaldos*100) + Math.round(totalRetenciones*100) > Math.round(totalPagos*100)) {
         return false;
       }
     }    
@@ -75,8 +75,8 @@ const OP = ({ destinatario, update, selected, sendOP, deleteOP, onClose }) => {
     }
 
     const totalFormasPago = totalCajas + totalUtilizacionesSaldos + totalRetenciones;
-    if (totalFormasPago > 0) {
-      return totalFormasPago >= totalPagos;
+    if (Math.round(totalFormasPago*100) > 0) {
+      return Math.round(totalFormasPago*100) >= Math.round(totalPagos*100);
     }
     return false
   } 

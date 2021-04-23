@@ -60,7 +60,7 @@ const ReciboX = ({ destinatario, onlyRead, selected, sendReciboX, deleteReciboX,
     }
     if (documento.utilizaciones_saldos && documento.utilizaciones_saldos.length > 0) {
       totalUtilizacionesSaldos = documento.utilizaciones_saldos.reduce((total, resultado) => Number(total) + Number(resultado.monto), 0);
-      if (totalUtilizacionesSaldos > totalCobros) {
+      if (Math.round(totalUtilizacionesSaldos * 100) > Math.round(totalCobros * 100)) {
         return false;
       }
     }        
@@ -69,12 +69,12 @@ const ReciboX = ({ destinatario, onlyRead, selected, sendReciboX, deleteReciboX,
     }
 
     if (documento.utilizaciones_disponibilidades && documento.utilizaciones_disponibilidades.length > 0) {
-      totalUtilizacionesSaldos = documento.utilizaciones_disponibilidades.reduce((total, resultado) => Number(total) + Number(resultado.monto), 0);
+      totalUtilizacionesDisponibilidades = documento.utilizaciones_disponibilidades.reduce((total, resultado) => Number(total) + Number(resultado.monto), 0);
     }        
 
     const totalFormasPago = totalUtilizacionesSaldos + totalCajas + totalUtilizacionesDisponibilidades;
-    if (totalFormasPago > 0) {
-      return totalFormasPago >= totalCobros;
+    if (Math.round(totalFormasPago * 100) > 0) {
+      return Math.round(totalFormasPago * 100) >= Math.round(totalCobros * 100);
     }
     return false
   } 

@@ -67,8 +67,8 @@ const Transferencia = ({ destinatario, update, selected, sendTransferencia, dele
     }        
 
     const totalFormasPago = totalCajas + totalUtilizacionesDisponibilidades;
-    if (totalCargas > 0) {
-      return totalCargas === totalFormasPago;
+    if (Math.round(totalCargas*100) > 0) {
+      return Math.round(totalCargas*100) === Math.round(totalFormasPago*100);
     }
     return false
   } 

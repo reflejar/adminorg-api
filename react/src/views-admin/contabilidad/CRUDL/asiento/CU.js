@@ -40,8 +40,8 @@ const Asiento = ({ instancia, update, selected, sendAsiento, deleteAsiento, onCl
       totalHaber = documento.haber.reduce((total, h) => Number(total) + Number(h.monto), 0);
     }    
 
-    if (totalDebe > 0) {
-      return totalDebe === totalHaber;
+    if (Math.round(totalDebe*100) > 0) {
+      return Math.round(totalDebe*100) === Math.round(totalHaber*100);
     }
     return false
   } 

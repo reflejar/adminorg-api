@@ -50,7 +50,7 @@ const NotaCredito = ({ destinatario, update, selected, sendNotaCredito, deleteDo
     if (documento.resultados && documento.resultados.length > 0) {
       totalResultados = documento.resultados.reduce((total, resultado) => Number(total) + Number(resultado.monto), 0);
     }
-    if (totalPagos > 0) return totalPagos === totalResultados;
+    if (Math.round(totalPagos*100) > 0) return Math.round(totalPagos*100) === Math.round(totalResultados*100);
     return false
   } 
 

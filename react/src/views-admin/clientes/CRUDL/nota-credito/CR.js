@@ -51,7 +51,7 @@ const NotaCredito = ({ destinatario, onlyRead, selected, sendNotaCredito, onClos
     if (documento.resultados && documento.resultados.length > 0) {
       totalResultados = documento.resultados.reduce((total, resultado) => Number(total) + Number(resultado.monto), 0);
     }
-    if (totalCobros > 0) return totalCobros === totalResultados;
+    if (Math.round(totalCobros*100) > 0) return Math.round(totalCobros*100) === Math.round(totalResultados*100);
     return false    
 
   } 
