@@ -1,6 +1,16 @@
 from rest_framework import serializers
 
 from admincu.operative.models import Operacion
+from admincu.operative.serializers.operaciones.base import *
+
+"""
+
+Hacer que herede de OperacionModelSerializer
+que OperacionModelSerializer tenga todos los calculos.
+Inspeccionar que pasa con sobreescribir las cosas
+
+
+"""
 
 class InformesModelSerializer(serializers.ModelSerializer):
 	

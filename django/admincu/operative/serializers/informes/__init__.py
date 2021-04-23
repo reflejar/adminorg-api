@@ -1,1 +1,1 @@
-from .operacion import *
+from .data import *
