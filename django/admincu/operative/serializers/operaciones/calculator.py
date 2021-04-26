@@ -13,6 +13,7 @@ class CalculatorModelSerializer(OperacionModelSerializer):
 	capital = serializers.SerializerMethodField()
 	interes = serializers.SerializerMethodField()
 	total = serializers.SerializerMethodField()	
+	saldo = serializers.SerializerMethodField()	
 	pago_capital = serializers.SerializerMethodField()	
 
 	class Meta:
