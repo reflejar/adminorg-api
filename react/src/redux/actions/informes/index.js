@@ -31,7 +31,7 @@ const get_data = (params) => async (dispatch) => {
     if (response.data) {
       dispatch({
         type: 'GET_INFORMES_DATA',
-        payload: response.data.results
+        payload: response.data
       });
       dispatch({type: 'SET_INFORMES_LOADING',payload: false});
     }

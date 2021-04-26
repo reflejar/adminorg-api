@@ -25,7 +25,7 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 
 	http_method_names = ['get']
-	serializer_class = InformesModelSerializer
+	# serializer_class = InformesModelSerializer
 	filterset_class = InformesFilter
 
 	def get_queryset(self):
@@ -42,6 +42,15 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		end_date = datetime.strptime(self.request.GET['end_date'], "%Y-%m-%d").date()
 		serializer_context['end_date'] = end_date
 		return serializer_context
+
+	def list(self, request):
+		queryset = self.get_queryset()
+		# print(queryset)
+		data = [InformesModelSerializer(o) for o in queryset]
+		# operaciones = InformesModelSerializer(queryset)
+		return Response(data)
+
+
 
 	# def get_object(self):
 	# 	obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])

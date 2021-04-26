@@ -155,7 +155,6 @@ class Operacion(BaseModel):
 				if calculo < 0:
 					calculo = 0
 					
-		print("La fecha en intereses es {}".format(fecha))
 		return Decimal("%.2f" % calculo)		
 
 	def descuento(self, fecha=None, condonacion=False):

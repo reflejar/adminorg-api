@@ -45,6 +45,8 @@ class CalculatorModelSerializer(OperacionModelSerializer):
 			'titulo_nombre',
 			'titulo_numero'
 		)
+		read_only_fields = fields
+
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
