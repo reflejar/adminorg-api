@@ -38,7 +38,8 @@ class Titulo(BaseModel):
 		)
 		return titulos
 
-	def estado_cuenta(self, fecha=date.today()):
+	def estado_cuenta(self, fecha=None):
+		fecha = fecha if fecha else date.today()
 		return self.get_model('Operacion').objects.filter(
 				cuenta__titulo__in=self.familia(), 
 				# fecha__lte=fecha,

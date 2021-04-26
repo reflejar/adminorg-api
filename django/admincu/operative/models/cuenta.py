@@ -56,7 +56,8 @@ class Cuenta(BaseModel):
 	def get_model(self, nombre):
 			return apps.get_model('operative', nombre)
 
-	def estado_deuda(self, fecha=date.today()):
+	def estado_deuda(self, fecha=None):
+		fecha = fecha if fecha else date.today()
 		kwargs = {
 			'cuenta__in': self.grupo,
 			'vinculo__isnull': True,
@@ -79,7 +80,8 @@ class Cuenta(BaseModel):
 		return deudas.exclude(id__in=excluir).order_by('-fecha', '-id')
 
 
-	def estado_cuenta(self, fecha=date.today()):	
+	def estado_cuenta(self, fecha=None):	
+		fecha = fecha if fecha else date.today()
 		return self.get_model('Operacion').objects.filter(
 				cuenta__in=self.grupo, 
 				# fecha__lte=fecha,
@@ -87,7 +89,8 @@ class Cuenta(BaseModel):
 			).order_by('fecha', 'id')
 
 		
-	def estado_saldos(self, fecha=date.today()):
+	def estado_saldos(self, fecha=None):
+		fecha = fecha if fecha else date.today()
 		kwargs = {
 			'cuenta': self,
 			'vinculo__isnull': True,

@@ -66,10 +66,11 @@ class Operacion(BaseModel):
 		return self.cuenta.metodos.filter(naturaleza="retencion", nombre=self.detalle).first()
 
 	# Funciones muestrales
-	def pagos_capital(self, fecha=date.today()):
+	def pagos_capital(self, fecha=None):
 		"""
 			Retorna QUERYSET de pagos realizados de capital
 		"""
+		fecha = fecha if fecha else date.today()
 		cuentas_intereses = Cuenta.all_objects.filter(comunidad=self.comunidad, taxon__nombre="interes_predeterminado")
 		return Operacion.objects.filter(
 				vinculo=self, 
@@ -78,17 +79,19 @@ class Operacion(BaseModel):
 				documento__fecha_anulacion__isnull=True
 			).exclude(vinculos__cuenta__in=cuentas_intereses).order_by('fecha')
 
-	def pago_capital(self, fecha=date.today()):
+	def pago_capital(self, fecha=None):
 		"""
 			Retorna VALOR de Pago total del capital
 		"""
+		fecha = fecha if fecha else date.today()
 		calculo = self.pagos_capital(fecha=fecha).aggregate(calculo=models.Sum('valor'))['calculo'] or 0
 		return abs(calculo)
 
-	def pagos_interes(self, fecha=date.today()):
+	def pagos_interes(self, fecha=None):
 		"""
 			Retorna QUERYSET de pagos realizados de interes
 		"""
+		fecha = fecha if fecha else date.today()
 		cuentas_intereses = Cuenta.all_objects.filter(comunidad=self.comunidad, taxon__nombre="interes_predeterminado")
 		return Operacion.objects.filter(
 			vinculo=self, 
@@ -98,24 +101,27 @@ class Operacion(BaseModel):
 			documento__fecha_anulacion__isnull=True
 			).order_by('fecha')		
 
-	def pago_interes(self, fecha=date.today()):
+	def pago_interes(self, fecha=None):
 		"""
 			Retorna VALOR de Pago total de intereses
 		"""		
+		fecha = fecha if fecha else date.today()
 		calculo = self.pagos_interes(fecha=fecha).aggregate(calculo=models.Sum('valor'))['calculo'] or 0
 		return abs(calculo)
 
-	def pago_total(self, fecha=date.today()):
+	def pago_total(self, fecha=None):
 		"""
 			Retorna VALOR del Pago total de capital e interes
 		"""
+		fecha = fecha if fecha else date.today()
 		return self.pago_capital(fecha=fecha) + self.pago_interes(fecha=fecha)
 
 
-	def interes(self, fecha=date.today(), condonacion=False):
+	def interes(self, fecha=None, condonacion=False):
 		"""
 			Retorna el calculo de interes a la fecha
 		"""
+		fecha = fecha if fecha else date.today()
 		calculo = 0
 		if condonacion:
 			return calculo
@@ -152,10 +158,11 @@ class Operacion(BaseModel):
 		print("La fecha en intereses es {}".format(fecha))
 		return Decimal("%.2f" % calculo)		
 
-	def descuento(self, fecha=date.today(), condonacion=False):
+	def descuento(self, fecha=None, condonacion=False):
 		"""
 			Retorna el calculo de descuento a la fecha
 		"""		
+		fecha = fecha if fecha else date.today()
 		calculo = 0
 		if condonacion:
 			return calculo
@@ -174,26 +181,27 @@ class Operacion(BaseModel):
 		return Decimal("%.2f" % calculo)
 
 
-	def subtotal(self, fecha=date.today()):
+	def subtotal(self, fecha=None):
 		"""
 			Retorna siempre positivo
 		"""
-
+		fecha = fecha if fecha else date.today()
 		return abs(self.valor) - abs(self.pago_capital(fecha=fecha))
 	
-	def saldo(self, fecha=date.today(), condonacion=False):
+	def saldo(self, fecha=None, condonacion=False):
 		"""
 			Retorna siempre positivo el saldo adeudado a la fecha
 		"""
-		print("La fecha en saldo es {}".format(fecha))
+		fecha = fecha if fecha else date.today()
 		return self.subtotal(fecha=fecha) + self.interes(fecha=fecha, condonacion=condonacion) - self.descuento(fecha=fecha, condonacion=condonacion)
 
 
-	def interes_generado(self, fecha=date.today()):
+	def interes_generado(self, fecha=None):
 		"""
 			Retorna VALOR del interes generado total a la fecha.
 			Tanto lo que se pago como lo que aun no
 		"""				
+		fecha = fecha if fecha else date.today()
 		return self.interes(fecha=fecha) - self.pago_interes(fecha=fecha)
 	
 	def periodo(self):

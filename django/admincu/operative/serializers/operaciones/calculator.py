@@ -91,4 +91,4 @@ class CalculatorModelSerializer(OperacionModelSerializer):
 		return self.saldo
 
 	def get_pago_capital(self, obj):
-		return self.pago_capital		
+		return self.pago_capital
