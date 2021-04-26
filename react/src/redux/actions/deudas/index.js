@@ -3,7 +3,7 @@ import { Service } from '../../services/general';
 const apiEndpoint = 'operative/estados/deudas';
 
 const get = (params) => async (dispatch) => {
-  let path = `${apiEndpoint}/${params.destinatario}/?fecha=${params.fecha}`;
+  let path = `${apiEndpoint}/${params.destinatario}/?end_date=${params.fecha}`;
   if (params.condonacion) {
     path = path + "&condonacion=1";
   }

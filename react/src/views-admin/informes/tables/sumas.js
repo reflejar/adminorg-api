@@ -232,9 +232,9 @@ const Tabla = ({ data }) => {
             <Input type="select" id="totalizadores" name="selectTotalizadores" multiple onChange={(event) => handleTotalizadores(event)}>
                 <option value="monto">Montos</option>
                 <option value="debe">Debe y Haber</option>
-                <option value="capital">Saldos de capital</option>
+                {/* <option value="capital">Saldos de capital</option>
                 <option value="interes">Saldos de interes</option>
-                <option value="total">Saldos totales</option>
+                <option value="total">Saldos totales</option> */}
                 <option value="cantidad">Cantidades</option>
             </Input>
           </FormGroup>          

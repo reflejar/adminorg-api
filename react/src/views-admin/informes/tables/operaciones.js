@@ -73,46 +73,48 @@ const getColumns = () => [{
       {Numero(row.value)}
     </div>
   )     
-}, {
-  Header: 'S. Capital',
-  accessor: 'capital',
-  Cell: row => (
-    <div
-      style={{
-        width: '100%',
-        textAlign: "right"
-      }}
-    >
-      {Numero(row.value)}
-    </div>
-  )     
-}, {    
-  Header: 'S. Interes',
-  accessor: 'interes',
-  Cell: row => (
-    <div
-      style={{
-        width: '100%',
-        textAlign: "right"
-      }}
-    >
-      {Numero(row.value)}
-    </div>
-  )     
-}, {  
-  Header: 'S. Total',
-  accessor: 'total',
-  Cell: row => (
-    <div
-      style={{
-        width: '100%',
-        textAlign: "right"
-      }}
-    >
-      {Numero(row.value)}
-    </div>
-  )     
 }];
+// }, {
+//   Header: 'S. Capital',
+//   accessor: 'capital',
+//   Cell: row => (
+//     <div
+//       style={{
+//         width: '100%',
+//         textAlign: "right"
+//       }}
+//     >
+//       {Numero(row.value)}
+//     </div>
+//   )     
+// }, {    
+//   Header: 'S. Interes',
+//   accessor: 'interes',
+//   Cell: row => (
+//     <div
+//       style={{
+//         width: '100%',
+//         textAlign: "right"
+//       }}
+//     >
+//       {Numero(row.value)}
+//     </div>
+//   )     
+// }, {  
+//   Header: 'S. Total',
+//   accessor: 'total',
+//   Cell: row => (
+//     <div
+//       style={{
+//         width: '100%',
+//         textAlign: "right"
+//       }}
+//     >
+//       {Numero(row.value)}
+//     </div>
+//   )     
+// }
+
 
 export default class Table extends React.Component {
   constructor(props) {

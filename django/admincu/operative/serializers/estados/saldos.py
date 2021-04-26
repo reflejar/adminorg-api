@@ -6,20 +6,13 @@ class EstadoSaldosModelSerializer(EstadoBaseModelSerializer):
 		Estado de Saldos a Favor
 	"""
 
-	saldo = serializers.SerializerMethodField()
-
-	class Meta:
-		model = Operacion
-
-		fields = (
-			'id',
-			'saldo'
-		)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
+		self.fields.pop('capital')
+		self.fields.pop('valor')		
+		self.fields.pop('debe')
+		self.fields.pop('haber')
+		self.fields.pop('total')
+		self.fields.pop('pago_capital')
 
-		
-	def get_saldo(self, obj):
-
-		return obj.saldo(fecha=self.context['fecha'], condonacion=self.context['condonacion'])	

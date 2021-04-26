@@ -32,7 +32,7 @@ class Totalidad():
 			self.naturalezas.append("dominio")
 
 
-	def estado_deuda(self, fecha=date.today()):	
+	def estado_deuda(self, end_date=date.today()):	
 		kwargs = {
 			'cuenta__naturaleza__nombre__in': self.naturalezas,
 			'vinculo__isnull': True,
@@ -53,14 +53,14 @@ class Totalidad():
 		return deudas.exclude(id__in=excluir).order_by('-fecha', '-id')
 
 
-	def estado_cuenta(self, fecha=date.today()):
+	def estado_cuenta(self, end_date=date.today()):
 		return Operacion.objects.filter(
 				fecha__lte=fecha,
 				documento__isnull=False,
 			).order_by('fecha', 'id')
 
 		
-	def estado_saldos(self, fecha=date.today()):
+	def estado_saldos(self, end_date=date.today()):
 		kwargs = {
 			'cuenta__naturaleza__nombre__in': self.naturalezas,
 			'vinculo__isnull': True,
@@ -153,13 +153,13 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 		queryset = self.get_queryset()
 		obj = self.get_object()
 		filtro = self.filter.data 
-		fecha = filtro['fecha'] if 'fecha' in filtro.keys() else date.today()
-		fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
+		end_date = filtro['end_date'] if 'end_date' in filtro.keys() else date.today()
+		end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 		context = {
 			'comunidad': self.comunidad,
 			'cuenta': obj,
 			'causante': "estado",
-			'fecha': fecha,
+			'end_date': end_date,
 			'sin_destinatario': False,
 			'condonacion': filtro['condonacion'] if 'condonacion' in filtro.keys() else None
 		}
