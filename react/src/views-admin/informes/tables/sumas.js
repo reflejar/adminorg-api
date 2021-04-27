@@ -12,7 +12,8 @@ import {
 
 import 'react-table/react-table.css';
 
-import { DataFrame } from "danfojs/src/index";
+//import { DataFrame } from "danfojs/src/index";
+import { DataFrame } from "dataframe-js";
 
 
 const columns = [{          
@@ -43,8 +44,8 @@ const columns = [{
   Header: 'Tipo Doc',
   accessor: 'documento_tipo'
 }, {              
-  Header: 'Monto',
-  accessor: 'monto_sum',
+  Header: 'Valor',
+  accessor: 'valor',
   Cell: row => (
     <div
       style={{
@@ -57,7 +58,7 @@ const columns = [{
   )     
 }, {
   Header: 'Debe',
-  accessor: 'debe_sum',
+  accessor: 'debe',
   Cell: row => (
     <div
       style={{
@@ -70,7 +71,7 @@ const columns = [{
   )     
 }, {  
   Header: 'Haber',
-  accessor: 'haber_sum',
+  accessor: 'haber',
   Cell: row => (
     <div
       style={{
@@ -83,7 +84,7 @@ const columns = [{
   )     
 }, {
   Header: 'S. Capital',
-  accessor: 'capital_sum',
+  accessor: 'capital',
   Cell: row => (
     <div
       style={{
@@ -96,7 +97,7 @@ const columns = [{
   )     
 }, {    
   Header: 'S. Interes',
-  accessor: 'interes_sum',
+  accessor: 'interes',
   Cell: row => (
     <div
       style={{
@@ -109,7 +110,7 @@ const columns = [{
   )     
 }, {  
   Header: 'S. Total',
-  accessor: 'total_sum',
+  accessor: 'total',
   Cell: row => (
     <div
       style={{
@@ -123,7 +124,7 @@ const columns = [{
   )     
 }, {   
   Header: 'Cantidad',
-  accessor: 'cantidad_sum'
+  accessor: 'cantidad'
 }];
 
 
@@ -139,13 +140,9 @@ const Tabla = ({ data }) => {
 
 
     // Formacion de las filas
-    let df = new DataFrame(data)
+    let df = new DataFrame(data);
     if (criterio.length > 0 && criterio.indexOf("titulo_nombre")) {
-      try {
-        df = df.query({"column": "naturaleza", "is": "==", "to": criterio[0]})  
-      } catch (error) {
-        console.log(error)
-      }
+      df = df.filter({"naturaleza": criterio[0]})  
     } 
     // Agrupado
     let grouped = [];
@@ -157,22 +154,23 @@ const Tabla = ({ data }) => {
     if (agrupado.length > 0 ) {
       grouped.push(...agrupado)
     }
-    let seeRows = df.groupby([...grouped]);
-
+    let groupedDF = df.groupBy(...grouped);
     // Sumas
-    const result = seeRows.col(totales).sum()
-
     // Seteado de showColumns
     if (totales.length > 0) {
-      setShowColumns([...grouped, ...totales.map(t => t + "_sum")]);
-      
-    }
-    
-    // Seteado de las filas
-    result.to_json().then((json) => setRows(JSON.parse(json)));
-    // Hacer que trabaje con redux y que tenga su propio loading
+      let result = [];
+      groupedDF.aggregate((group) => {
+        let row = {...group.select(...grouped).toCollection()[0]};
+        totales.forEach(total => {
+          row[total] = group.stat.sum(total)
+        });
+        result.push(row)
+      });
+      setRows(result)
 
-    // Expresar en la tabla
+
+      setShowColumns([...grouped, ...totales]); 
+    } 
 
   }, [criterio, totales, agrupado, data]);
 
@@ -196,10 +194,6 @@ const Tabla = ({ data }) => {
     options.indexOf("debe") > -1 && options.push("haber");
     setTotales(options);
   };     
-
-  
-  
-  
 
 
   return (
@@ -230,7 +224,7 @@ const Tabla = ({ data }) => {
           <FormGroup>
             <Label for="totalizadores">Totalizar</Label>
             <Input type="select" id="totalizadores" name="selectTotalizadores" multiple onChange={(event) => handleTotalizadores(event)}>
-                <option value="monto">Montos</option>
+                <option value="valor">Valores</option>
                 <option value="debe">Debe y Haber</option>
                 {/* <option value="capital">Saldos de capital</option>
                 <option value="interes">Saldos de interes</option>

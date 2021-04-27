@@ -86,10 +86,10 @@ class TableData extends Component {
                   <Sumas data={data} />
                </TabPane>
                <TabPane tabId="3">
-                  Aqui se va a poder crear el grafico
+                  
                </TabPane>
                <TabPane tabId="4">
-                  Aqui se va a poder guardar
+                  
                </TabPane>               
             </TabContent>
          </div>

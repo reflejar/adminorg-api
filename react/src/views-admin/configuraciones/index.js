@@ -133,7 +133,7 @@ const Configuraciones = ({selected}) => {
   
       <ModalHeader toggle={() => toggle(method)}>{item ? "Editar" : "Nuevo"}</ModalHeader>
       <ModalBody>
-        { item ? modals(true)[item.causante]['individual'] : selected && modals(false)[selected.id][method] }
+        { item ? modals(true)[item.causante]['individual'] : (selected && selected.id && modals(false)[selected.id][method]) }
       </ModalBody>
       
     </Modal>    

@@ -54,6 +54,12 @@ const TableSumas = ({data, columns}) => {
         defaultPageSize={100}
         data={data}
         columns={columns_final}
+        defaultSorted={[
+          {
+            id: "titulo_numero",
+            desc: false
+          }
+        ]}
         className="-striped -highlight"
       />
     </React.Fragment>

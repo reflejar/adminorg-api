@@ -35,8 +35,8 @@ const getColumns = () => [{
   Header: 'Cantidad',
   accessor: 'cantidad'
 }, {              
-  Header: 'Monto',
-  accessor: 'monto',
+  Header: 'Valor',
+  accessor: 'valor',
   Cell: row => (
     <div
       style={{

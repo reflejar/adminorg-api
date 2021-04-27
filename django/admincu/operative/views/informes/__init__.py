@@ -45,9 +45,7 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 
 	def list(self, request):
 		queryset = self.get_queryset()
-		# print(queryset)
 		data = [InformesModelSerializer(o) for o in queryset]
-		# operaciones = InformesModelSerializer(queryset)
 		return Response(data)
 
 
