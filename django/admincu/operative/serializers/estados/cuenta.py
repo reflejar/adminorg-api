@@ -45,6 +45,6 @@ class EstadoCuentaModelSerializer(EstadoBaseModelSerializer):
 
 
 	def get_concepto(self, obj):
-		if obj.concepto:
-			return str(obj.concepto)
+		if obj.concepto():
+			return str(obj.concepto())
 		return None

@@ -10,7 +10,7 @@ Este serializer es de tipo funcion por razones de optimizacion
 """
 
 def InformesModelSerializer(o: Operacion) -> Dict[str, Any]:
-	c = o.concepto
+	c = o.concepto()
 	r = o.documento.receipt
 	t = o.cuenta.titulo
 	print(o)
@@ -18,7 +18,7 @@ def InformesModelSerializer(o: Operacion) -> Dict[str, Any]:
 		'fecha': o.fecha,
 		'titulo_numero': t.numero,
 		'titulo_nombre': t.nombre,
-		'cuenta': o.destinatario,
+		'cuenta': o.destinatario(),
 		'concepto': str(c) if c else None,
 		'periodo': o.fecha_indicativa,
 		'documento_tipo': r.receipt_type.description,

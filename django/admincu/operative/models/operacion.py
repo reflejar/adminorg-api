@@ -27,9 +27,6 @@ class Operacion(BaseModel):
 	fecha_gracia = models.DateField(blank=True, null=True)
 	detalle = models.CharField(max_length=150, blank=True, null=True)
 	descripcion = models.CharField(max_length=150, blank=True, null=True)
-	# Agregar cantidades, y magnitudes fisicas
-
-
 
 	# Funciones Serializadoras
 	@property
@@ -51,12 +48,10 @@ class Operacion(BaseModel):
 		""" Devuelve el haber """
 		return -self.valor if self.valor < 0 else 0		
 
-	@property
 	def destinatario(self):
 		""" Devuelve la Cuenta(cliente, dominio) por la que se creó el credito """
-		return str(self.cuenta)
+		return self.cuenta
 
-	@property
 	def concepto(self):
 		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
 		conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
