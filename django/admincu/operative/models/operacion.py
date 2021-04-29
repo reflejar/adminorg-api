@@ -32,34 +32,45 @@ class Operacion(BaseModel):
 
 
 	# Funciones Serializadoras
+	@property
+	def naturaleza(self):
+		return self.cuenta.naturaleza.nombre
+
+	@property
 	def monto(self):
 		""" Devuelve el valor en positivo siempre """
-		# if self.cuenta.naturaleza.nombre in ['cliente', 'dominio'] and self.vinculo:
-		# 	return abs(Operacion.objects.filter(asiento=self.asiento, vinculo=self.vinculo).aggregate(calculo=models.Sum('valor'))['calculo'])
 		return abs(self.valor)
 
+	@property
 	def debe(self):
 		""" Devuelve el debe """
 		return self.valor if self.valor > 0 else 0
-
+	
+	@property
 	def haber(self):
 		""" Devuelve el haber """
 		return -self.valor if self.valor < 0 else 0		
 
+	@property
 	def destinatario(self):
 		""" Devuelve la Cuenta(cliente, dominio) por la que se creó el credito """
-		return self.cuenta
+		return str(self.cuenta)
 
+	@property
 	def concepto(self):
 		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
-		conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
+		# conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
+		# if not conceptos:
+		# 	if self.vinculo:
+		# 		conceptos = self.vinculo.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"])
+		# 		if conceptos:
+		# 			return conceptos.first().cuenta
+		# 	return None
+		# return conceptos.first().cuenta
+		conceptos = self.vinculos.first()
 		if not conceptos:
-			if self.vinculo:
-				conceptos = self.vinculo.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"])
-				if conceptos:
-					return conceptos.first().cuenta
-			return None
-		return conceptos.first().cuenta
+			return 
+		return self.vinculos.first().cuenta
 
 	def retencion(self):
 		""" Devuelve la Metodo(retencion) por la que se creó el debito """
@@ -223,5 +234,3 @@ class Operacion(BaseModel):
 	def titulo(self):
 		return self.cuenta.titulo
 
-	def naturaleza(self):
-		return self.cuenta.naturaleza.nombre

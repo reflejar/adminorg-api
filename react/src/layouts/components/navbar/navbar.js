@@ -11,6 +11,9 @@ import {
    DropdownMenu,
    DropdownItem,
 } from "reactstrap";
+
+import {Select} from "../../../components/Select"
+
 import {
    // Moon,
    Menu,
@@ -47,6 +50,7 @@ class ThemeNavbar extends Component {
       this.props.logoutUser();
       history.push('/login');
    }
+
 
    render() {
       const { user } = this.props;
@@ -92,6 +96,15 @@ class ThemeNavbar extends Component {
                                     <User size={16} className="mr-1" /> Ver Perfil
                                  </DropdownItem>
                               </Link>
+                              {user.admin_of.length > 0 && <Select
+                                 name="comunidad"
+                                 id="comunidad"
+                                 classNamePrefix="select"
+                                 options={user.admin_of.map(c => ({label: c, value: c}))}    
+                                 onChange={(option) => this.props.changeCommunity(option.value)}
+                                 value={user.community}
+                                 />}
+                              
                               {/* <Link disabled to="/faq" className="p-0"> */}
                                  <DropdownItem disabled>
                                     <Bookmark size={16} className="mr-1" /> Biblioteca y FAQ
@@ -121,6 +134,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = dispatch => ({
    logoutUser: () => dispatch(userActions.logout()),
+   changeCommunity: (community) => dispatch(userActions.changeCommunity(community))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ThemeNavbar));

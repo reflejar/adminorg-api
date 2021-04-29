@@ -30,6 +30,7 @@ class Perfil(BaseModel):
 		message="Phone number must be entered in the format: +999999999. Up to 15 digits allowed."
 	)
 	telefono = models.CharField(validators=[telefono_regex], max_length=17, blank=True)
+	comunidades = models.ManyToManyField("utils.Comunidad", blank=True, related_name="admins")
 
 	def __str__(self):
 		nombre = ""

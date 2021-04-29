@@ -1,5 +1,6 @@
 import { LOGIN, LOGOUT } from '../../types';
 import { authService } from '../../services/auth';
+import { Service } from '../../services/general';
 
 
 const setUserDetails = (data) => {
@@ -8,6 +9,7 @@ const setUserDetails = (data) => {
         user: data.user,
         profile: data.perfil,
         community: data.comunidad.nombre,
+        admin_of: data.admin_of,
         afip: data.comunidad.afip
     }
 };
@@ -61,10 +63,26 @@ const recovery = (payload) => async (dispatch) => {
     }
 };
 
+const changeCommunity = (payload) => async (dispatch) => {
+
+    let apiEndpoint = 'users/changeCommunity/';
+
+    const response = await Service.post(apiEndpoint, {payload})
+    if (response.status >= 400) throw response;
+    dispatch({
+        type: "CHANGE_COMMUNITY",
+        payload: payload
+    });
+    return response.data
+    
+};
+
+
 
 export const userActions = {
     login,
     logout,
     register,
-    recovery
+    recovery,
+    changeCommunity,
 }

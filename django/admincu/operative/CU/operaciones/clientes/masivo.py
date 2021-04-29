@@ -135,41 +135,41 @@ class CU:
 	def hacer_documentos(self):
 		self.operaciones = Operacion.objects.filter(asiento=self.identifier)
 		for s in self.socios:
-			if s.vinculaciones():
-				operaciones_socio = self.operaciones.filter(cuenta__in=s.grupo)
-				total = operaciones_socio.filter(valor__gt=0).aggregate(calculo=models.Sum('valor'))['calculo']
-				if total:
-					receipt_data = self.receipt_base.copy()
-					receipt_data.update({
-						'receipt_type': ReceiptType.objects.get(description=receipt_data['receipt_type']),
-						'document_type': s.perfil.tipo_documento,
-						'document_number': s.perfil.numero_documento,
-						'total_amount': total,
-						'net_taxed': total,
-					})
-					receipt = OwnReceipt.objects.create(**receipt_data)
+			# if s.vinculaciones():
+			operaciones_socio = self.operaciones.filter(cuenta__in=s.grupo)
+			total = operaciones_socio.filter(valor__gt=0).aggregate(calculo=models.Sum('valor'))['calculo']
+			if total:
+				receipt_data = self.receipt_base.copy()
+				receipt_data.update({
+					'receipt_type': ReceiptType.objects.get(description=receipt_data['receipt_type']),
+					'document_type': s.perfil.tipo_documento,
+					'document_number': s.perfil.numero_documento,
+					'total_amount': total,
+					'net_taxed': total,
+				})
+				receipt = OwnReceipt.objects.create(**receipt_data)
 
-					receipt_afip = None
-					# if receipt_data['receipt_type'].code == "11":
-					# 	receipt_afip = Receipt.objects.create(**receipt_data)
-					# 	try:
-					# 		error = receipt_afip.validate()
-					# 		receipt.receipt_number = receipt_afip.receipt_number
-					# 	except:
-					# 		error = True	
-					
-					documento = self.documento_base
-					documento.pk = None
-					documento.receipt = receipt
-					documento.receipt_afip = receipt_afip
-					documento.destinatario = s
-					documento.save()
-					documento.chequear_numeros()
+				receipt_afip = None
+				# if receipt_data['receipt_type'].code == "11":
+				# 	receipt_afip = Receipt.objects.create(**receipt_data)
+				# 	try:
+				# 		error = receipt_afip.validate()
+				# 		receipt.receipt_number = receipt_afip.receipt_number
+				# 	except:
+				# 		error = True	
+				
+				documento = self.documento_base
+				documento.pk = None
+				documento.receipt = receipt
+				documento.receipt_afip = receipt_afip
+				documento.destinatario = s
+				documento.save()
+				documento.chequear_numeros()
 
-					operaciones_socio.update(documento=documento)
-					for o in operaciones_socio:
-						o.vinculos.update(documento=documento)
-					self.documentos_creados.append(documento.id)
+				operaciones_socio.update(documento=documento)
+				for o in operaciones_socio:
+					o.vinculos.update(documento=documento)
+				self.documentos_creados.append(documento.id)
 
 
 	@transaction.atomic

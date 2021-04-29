@@ -27,7 +27,7 @@ class EstadoCuentaModelSerializer(EstadoBaseModelSerializer):
 				id__lte=obj.id
 			).aggregate(calculo=Sum('valor'))['calculo'] or 0
 		else:
-			self.saldo = self.saldo + obj.debe() - obj.haber()
+			self.saldo = self.saldo + obj.debe - obj.haber
 
 		self.orden += 1
 

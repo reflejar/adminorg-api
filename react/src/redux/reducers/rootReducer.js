@@ -58,6 +58,9 @@ const rootReducer = (state, action) => {
       localStorage.clear();
       state = undefined;
    }
+   if (action.type === "CHANGE_COMMUNITY") {
+      state = undefined;
+   }
 
    return appReducer(state, action);
 }

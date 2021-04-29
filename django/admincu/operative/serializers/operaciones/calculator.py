@@ -76,8 +76,9 @@ class CalculatorModelSerializer(OperacionModelSerializer):
 		return obj.cuenta.titulo.nombre		
 
 	def get_concepto(self, obj):
-		if obj.concepto():
-			return str(obj.concepto())
+		c = obj.concepto
+		if c:
+			return str(c)
 		return None		
 
 	# calc functions

@@ -80,6 +80,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
 		data = {
 			'comunidad' : ComunidadModelSerializer(comunidad).data if perfil else None,
 			'perfil' : PerfilModelSerializer(perfil).data, 
+			'admin_of': [c.nombre for c in perfil.comunidades.all()],
 			'user': UserModelSerializer(user).data,
 			'access_token': token,
 		}
@@ -106,3 +107,12 @@ class UserViewSet(mixins.RetrieveModelMixin,
 		user = serializer.save()
 		data = UserModelSerializer(user).data
 		return Response(data, status=status.HTTP_201_CREATED)
+
+
+	@action(detail=False, methods=['post'])
+	def changeCommunity(self, request, *args, **kwargs):
+		'''User change Community'''
+
+		print(request)
+		data = "Demo"
+		return Response(data, status=status.HTTP_201_CREATED)		
