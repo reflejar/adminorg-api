@@ -7,14 +7,24 @@ class EstadoCuentaModelSerializer(EstadoBaseModelSerializer):
 		Estado de Cuenta
 	"""
 
+	saldo = serializers.SerializerMethodField()
+	concepto = serializers.SerializerMethodField()
+
+	class Meta:
+		model = Operacion
+
+		fields = (
+			'saldo',
+			'concepto'
+		)
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.fields.pop('capital')
-		self.fields.pop('valor')		
-		self.fields.pop('monto')		
-		self.fields.pop('interes')		
-		self.fields.pop('total')		
-		self.fields.pop('pago_capital')		
+		self.fields.pop('monto')
+		self.fields['valor'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0.01)
+		self.fields['cuenta'] = serializers.CharField(max_length=200, required=True)
+		self.fields['debe'] = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=15)
+		self.fields['haber'] = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=15)
 		self.orden = 0
 		self.saldo = 0.00
 
@@ -34,3 +44,7 @@ class EstadoCuentaModelSerializer(EstadoBaseModelSerializer):
 		return self.saldo
 
 
+	def get_concepto(self, obj):
+		if obj.concepto:
+			return str(obj.concepto)
+		return None

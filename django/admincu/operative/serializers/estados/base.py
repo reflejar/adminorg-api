@@ -1,9 +1,9 @@
-from admincu.operative.serializers.operaciones.calculator import *
+from admincu.operative.serializers.operaciones.base import *
 from admincu.operative.serializers.documentos.base import DocumentoModelSerializer
 # from .documento import DocumentoParaEstadoModelSerializer
 
 
-class EstadoBaseModelSerializer(CalculatorModelSerializer):
+class EstadoBaseModelSerializer(OperacionModelSerializer):
 	"""
 		Base de Operaciones para Estados
 	"""

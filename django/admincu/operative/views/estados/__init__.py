@@ -32,7 +32,7 @@ class Totalidad():
 			self.naturalezas.append("dominio")
 
 
-	def estado_deuda(self, end_date=date.today()):	
+	def estado_deuda(self, fecha=date.today()):	
 		kwargs = {
 			'cuenta__naturaleza__nombre__in': self.naturalezas,
 			'vinculo__isnull': True,
@@ -53,14 +53,14 @@ class Totalidad():
 		return deudas.exclude(id__in=excluir).order_by('-fecha', '-id')
 
 
-	def estado_cuenta(self, end_date=date.today()):
+	def estado_cuenta(self, fecha=date.today()):
 		return Operacion.objects.filter(
 				fecha__lte=fecha,
 				documento__isnull=False,
 			).order_by('fecha', 'id')
 
 		
-	def estado_saldos(self, end_date=date.today()):
+	def estado_saldos(self, fecha=date.today()):
 		kwargs = {
 			'cuenta__naturaleza__nombre__in': self.naturalezas,
 			'vinculo__isnull': True,

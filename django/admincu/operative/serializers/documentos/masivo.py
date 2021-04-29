@@ -54,9 +54,6 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 
 	@transaction.atomic
 	def create(self, validated_data):
-		# print(validated_data)
-		# return Documento.objects.none()
-
 		documento = Documento(
 			comunidad=self.context['comunidad'],
 			fecha_operacion=validated_data['fecha_operacion'],

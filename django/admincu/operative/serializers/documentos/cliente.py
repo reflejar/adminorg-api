@@ -241,10 +241,3 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 				html_string=html_string, 
 				file_paths=file_paths
 			)
-
-
-
-	# def create(self, validated_data):
-	# 	print(validated_data)
-	# 	return Documento.objects.first()
-		

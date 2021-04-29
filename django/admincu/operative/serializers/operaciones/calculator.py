@@ -20,6 +20,7 @@ class CalculatorModelSerializer(OperacionModelSerializer):
 		model = Operacion
 
 		fields = (
+			'id',
 			'monto',
 			'capital',
 			'interes',
