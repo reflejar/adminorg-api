@@ -87,7 +87,7 @@ class BaseViewSet(custom_viewsets.CustomModelViewSet):
 		return serializer_context
 
 	def get_fecha(self):
-		fecha = datetime.strptime(self.request.GET['fecha'], "%Y-%m-%d").date() if 'fecha' in self.request.GET.keys() else date.today()
+		fecha = datetime.strptime(self.request.GET['end_date'], "%Y-%m-%d").date() if 'end_date' in self.request.GET.keys() else date.today()
 		return fecha
 
 	def destroy_valid_disponibilidades(self, obj):
