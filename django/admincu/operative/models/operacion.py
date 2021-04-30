@@ -60,9 +60,10 @@ class Operacion(BaseModel):
 			return ""
 		if not conceptos:
 			if self.vinculo:
-				conceptos = self.vinculo.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"])
-				if conceptos:
-					return conceptos.first().cuenta
+				conceptos = self.vinculo.vinculos.all()
+				if not any([True if o.cuenta.naturaleza.nombre in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
+					return ""
+				return conceptos[0].cuenta
 			return None
 		return conceptos[0].cuenta
 

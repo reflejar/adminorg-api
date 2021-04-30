@@ -39,10 +39,14 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 				"cuenta__naturaleza",
 				"documento__receipt", 
 				"documento__receipt__receipt_type", 
+				"vinculo",
 			).prefetch_related(
 				"vinculos",
 				"vinculos__cuenta",
-				"vinculos__cuenta__naturaleza"
+				"vinculos__cuenta__naturaleza",
+				"vinculo__vinculos",
+				"vinculo__vinculos__cuenta",
+				"vinculo__vinculos__cuenta__naturaleza",
 			)
 		except:
 			raise Http404
