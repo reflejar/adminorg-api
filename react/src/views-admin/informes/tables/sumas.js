@@ -43,19 +43,6 @@ const columns = [{
 }, {    
   Header: 'Tipo Doc',
   accessor: 'documento_tipo'
-}, {              
-  Header: 'Valor',
-  accessor: 'valor',
-  Cell: row => (
-    <div
-      style={{
-        width: '100%',
-        textAlign: "right"
-      }}
-    >
-      {row.value && Numero(row.value)}
-    </div>
-  )     
 }, {
   Header: 'Debe',
   accessor: 'debe',
@@ -72,6 +59,19 @@ const columns = [{
 }, {  
   Header: 'Haber',
   accessor: 'haber',
+  Cell: row => (
+    <div
+      style={{
+        width: '100%',
+        textAlign: "right"
+      }}
+    >
+      {row.value && Numero(row.value)}
+    </div>
+  )     
+}, {              
+  Header: 'Valor',
+  accessor: 'valor',
   Cell: row => (
     <div
       style={{
