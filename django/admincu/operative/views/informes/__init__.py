@@ -25,13 +25,24 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 
 	http_method_names = ['get']
-	# serializer_class = InformesModelSerializer
+	serializer_class = InformesModelSerializer
 	filterset_class = InformesFilter
 
 	def get_queryset(self):
 		try:
 			return Operacion.objects.filter(
 				comunidad=self.comunidad,
+			).select_related(
+				"cuenta", 
+				"cuenta__perfil", # Para el nombre de la cuenta
+				"cuenta__titulo", 
+				"cuenta__naturaleza",
+				"documento__receipt", 
+				"documento__receipt__receipt_type", 
+			).prefetch_related(
+				"vinculos",
+				"vinculos__cuenta",
+				"vinculos__cuenta__naturaleza"
 			)
 		except:
 			raise Http404
@@ -45,8 +56,11 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 
 	def list(self, request):
 		queryset = self.get_queryset()
+
+		# operaciones = self.serializer_class(queryset, many=True)
 		data = [InformesModelSerializer(o) for o in queryset]
 		return Response(data)
+		# return Response(operaciones.data)
 
 
 

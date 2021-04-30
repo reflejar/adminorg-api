@@ -54,14 +54,17 @@ class Operacion(BaseModel):
 
 	def concepto(self):
 		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
-		conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
+		# conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
+		conceptos = self.vinculos.all()
+		if not any([True if o.cuenta.naturaleza.nombre in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
+			return ""
 		if not conceptos:
 			if self.vinculo:
 				conceptos = self.vinculo.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"])
 				if conceptos:
 					return conceptos.first().cuenta
 			return None
-		return conceptos.first().cuenta
+		return conceptos[0].cuenta
 
 	def retencion(self):
 		""" Devuelve la Metodo(retencion) por la que se creó el debito """
