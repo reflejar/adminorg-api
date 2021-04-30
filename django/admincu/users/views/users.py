@@ -18,6 +18,7 @@ from admincu.users.serializers import (
 	AccountVerificationSerializer,
 	PasswordRecoverySerializer,
 	ChangePasswordSerializer,
+	ChangeCommunitySerializer
 )
 from admincu.users.models import (
 	User,
@@ -113,6 +114,16 @@ class UserViewSet(mixins.RetrieveModelMixin,
 	def changeCommunity(self, request, *args, **kwargs):
 		'''User change Community'''
 
-		print(request)
-		data = "Demo"
-		return Response(data, status=status.HTTP_201_CREATED)		
+		serializer = ChangeCommunitySerializer(data=request.data, context={'user': request.user})
+		serializer.is_valid(raise_exception=True)
+		user = serializer.save()
+		perfil = user.perfil_set.first()
+		if perfil:
+			comunidad = perfil.comunidad
+		data = {
+			'comunidad' : ComunidadModelSerializer(comunidad).data if perfil else None,
+			'perfil' : PerfilModelSerializer(perfil).data, 
+			'admin_of': [c.nombre for c in perfil.comunidades.all()],
+			'user': UserModelSerializer(user).data,
+		}
+		return Response(data, status=status.HTTP_200_OK)

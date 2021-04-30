@@ -52,6 +52,19 @@ class ThemeNavbar extends Component {
    }
 
 
+   changeCommunity(value) {
+      const { changeCommunityUser } = this.props;
+      changeCommunityUser(value)
+        .then((response) => {
+         window.location.reload(false)
+        })
+        .catch((errors) => {
+         const { data } = errors;
+          console.log(data)
+        })
+    }
+
+
    render() {
       const { user } = this.props;
       return (
@@ -101,7 +114,7 @@ class ThemeNavbar extends Component {
                                  id="comunidad"
                                  classNamePrefix="select"
                                  options={user.admin_of.map(c => ({label: c, value: c}))}    
-                                 onChange={(option) => this.props.changeCommunity(option.value)}
+                                 onChange={(option) => this.changeCommunity(option.value)}
                                  value={user.community}
                                  />}
                               
@@ -134,7 +147,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = dispatch => ({
    logoutUser: () => dispatch(userActions.logout()),
-   changeCommunity: (community) => dispatch(userActions.changeCommunity(community))
+   changeCommunityUser: (community) => dispatch(userActions.changeCommunity(community))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ThemeNavbar));

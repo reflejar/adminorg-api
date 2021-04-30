@@ -263,3 +263,28 @@ class ChangePasswordSerializer(serializers.Serializer):
 		user.set_password (self.data['password'])
 		user.save()
 		return user
+
+
+class ChangeCommunitySerializer(serializers.Serializer):
+	'''Change password Serializer'''
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['comunidad'] = serializers.ChoiceField(Comunidad.objects.all())
+
+	def validate(self, data):
+		'''Verifica coincidencia de password'''
+
+		user = self.context['user']
+		if not data['comunidad'] in user.perfil_set.first().comunidades.all():
+			raise serializers.ValidationError({'comunidad': "No puede acceder a la comunidad solicitada"})
+		return data
+
+	def save(self):
+		'''Modifica contraseña'''
+
+		user = self.context['user']
+		perfil = user.perfil_set.first()
+		perfil.comunidad = self.data['comunidad']
+		perfil.save()
+		return user

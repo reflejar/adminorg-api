@@ -67,14 +67,18 @@ const changeCommunity = (payload) => async (dispatch) => {
 
     let apiEndpoint = 'users/changeCommunity/';
 
-    const response = await Service.post(apiEndpoint, {payload})
+    const response = await Service.post(apiEndpoint, {comunidad: payload})
     if (response.status >= 400) throw response;
-    dispatch({
-        type: "CHANGE_COMMUNITY",
-        payload: payload
-    });
-    return response.data
-    
+
+    if (response && response.data) {
+        
+        const dataUser = {...response.data};
+        const currentUser = setUserDetails(dataUser);
+        localStorage.setItem('user', JSON.stringify(currentUser));
+        dispatch(currentUser);
+        
+        return currentUser;        
+    }
 };
 
 
