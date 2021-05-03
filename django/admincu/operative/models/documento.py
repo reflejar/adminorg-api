@@ -223,7 +223,7 @@ class Documento(BaseModel):
 		if a_cuenta:
 			documentos = []
 
-			if a_cuenta.saldo() != a_cuenta.monto():
+			if a_cuenta.saldo() != a_cuenta.monto:
 				for p in a_cuenta.pagos_capital():
 					documentos.append(p.documento)
 				return set(documentos)
@@ -250,7 +250,7 @@ class Documento(BaseModel):
 		if disponibilidades:
 			documentos = []
 			for d in disponibilidades:
-				if d.saldo() != d.monto():
+				if d.saldo() != d.monto:
 					for p in d.pagos_capital():
 						documentos.append(p.documento)
 					return set(documentos)
@@ -299,7 +299,7 @@ class Documento(BaseModel):
 			documentos = []
 
 			for d in deudas_generadas:
-				if d.saldo() != d.monto():
+				if d.saldo() != d.monto:
 					for p in d.pagos_capital():
 						documentos.append(p.documento)
 			return set(documentos)
