@@ -32,6 +32,7 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		try:
 			return Operacion.objects.filter(
 				comunidad=self.comunidad,
+				documento__isnull=False
 			).select_related(
 				"cuenta", 
 				"cuenta__perfil", # Para el nombre de la cuenta
