@@ -37,6 +37,7 @@ class CU:
 			operacion_debe_carga = Operacion(
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
+				fecha_indicativa=self.fecha_operacion,
 				documento=self.documento,
 				asiento=self.identifier,
 				cuenta=i['cuenta'],
@@ -55,6 +56,7 @@ class CU:
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
 				documento=self.documento,
+				fecha_indicativa=self.fecha_operacion,
 				asiento=self.identifier,
 				fecha_vencimiento=i['fecha_vencimiento'],
 				cuenta=i['cuenta'],
@@ -71,6 +73,7 @@ class CU:
 			operacion_haber_disponibilidad = Operacion(
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
+				fecha_indicativa=self.fecha_operacion,
 				documento=self.documento,
 				asiento=self.identifier,
 				cuenta=i['vinculo'].cuenta,

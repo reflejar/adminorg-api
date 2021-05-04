@@ -42,6 +42,7 @@ class CU:
 				valor=i['monto'],
 				detalle=i['detalle'],
 				fecha=self.documento.fecha_operacion,
+				fecha_indicativa=self.fecha_operacion,
 				fecha_vencimiento=i['fecha_vencimiento'],
 			)
 			self.operaciones.append(operacion_debe_debito)
@@ -54,6 +55,7 @@ class CU:
 					documento=self.documento,
 					asiento=self.identifier,
 					cuenta=self.documento.destinatario,
+					fecha_indicativa=self.fecha_operacion,
 					valor=-self.suma_debe,
 					detalle=self.documento.descripcion,
 				)		

@@ -30,7 +30,7 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 
 	def get_queryset(self):
 		try:
-			return Operacion.objects.filter(
+			datos = Operacion.objects.filter(
 				comunidad=self.comunidad,
 				documento__isnull=False
 			).select_related(
@@ -49,6 +49,8 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 				"vinculo__vinculos__cuenta",
 				"vinculo__vinculos__cuenta__naturaleza",
 			)
+			self.filter = self.filterset_class(self.request.GET, queryset=datos)
+			return self.filter.qs
 		except:
 			raise Http404
 

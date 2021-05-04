@@ -32,7 +32,7 @@ class CU:
 				valor=credito['monto'],
 				detalle=credito['detalle'],
 				fecha=self.documento.fecha_operacion,
-				fecha_indicativa=credito['periodo'],
+				fecha_indicativa=credito['periodo'] or self.documento.fecha_operacion,
 				fecha_gracia=credito['fecha_gracia'],
 				fecha_vencimiento=credito['fecha_vencimiento'],
 			)
@@ -51,7 +51,7 @@ class CU:
 				detalle=credito['detalle'],
 				vinculo=operacion_debe,
 				fecha=self.documento.fecha_operacion,
-				fecha_indicativa=credito['periodo'],
+				fecha_indicativa=credito['periodo'] or self.documento.fecha_operacion,
 				)
 			operaciones.append(operacion_haber)
 

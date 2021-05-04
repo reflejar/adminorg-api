@@ -23,6 +23,7 @@ class CU:
 				cuenta=i['cuenta'],
 				valor=i['monto'],
 				detalle=i['detalle'],
+				fecha_indicativa=self.fecha,
 				fecha=self.fecha,
 			)
 			self.operaciones.append(operacion_debe)
@@ -37,6 +38,7 @@ class CU:
 				cuenta=i['cuenta'],
 				valor=-i['monto'],
 				detalle=i['detalle'],
+				fecha_indicativa=self.fecha,
 				fecha=self.fecha,
 			)
 			self.operaciones.append(operacion_haber)
