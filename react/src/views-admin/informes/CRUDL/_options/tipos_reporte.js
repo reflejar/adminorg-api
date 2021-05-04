@@ -1,8 +1,8 @@
 export const tiposReporte = [
     { id: 'pers', full_name: 'Reporte personalizado' },
-    { id: 'ecc', full_name: 'Estado de cuentas por cobrar' },
-    { id: 'ecp', full_name: 'Estado de cuentas por pagar' },
+    { id: 'ecc', full_name: 'Cuentas a cobrar' },
+    { id: 'ecp', full_name: 'Cuentas a pagar' },
+    { id: 'sys', full_name: 'Balance de saldos' },
+    { id: 'rdos', full_name: 'Ingresos y gastos' },
     { id: 'may', full_name: 'Mayores' },
-    { id: 'sys', full_name: 'Estado de Sumas y Saldos' },
-    { id: 'rdos', full_name: 'Estado de Resultados' },
 ];
