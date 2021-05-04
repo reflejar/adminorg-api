@@ -117,7 +117,7 @@ const DistribucionNew = ({ setDocumento, ingresos, errors }) => {
         }]}
         header={{
           title: 'Operaciones de distribucion',
-          appendButton: 'Agregar deuda'
+          appendButton: '+ deuda'
         }}
       />
       </Col>

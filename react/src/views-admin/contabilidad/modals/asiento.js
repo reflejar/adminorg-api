@@ -30,7 +30,7 @@ class ModalAsiento extends Component {
               disabled={isDisabled}
               onClose={() => this.handleToggle(false)}
             >
-              Agregar asiento
+              + asiento
             </Button>
           )}
           header="Nuevo asiento"

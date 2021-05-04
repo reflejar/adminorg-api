@@ -16,7 +16,7 @@ const Search = ({onChange}) => (
                     disabled
 
                     onChange={e => onChange(e.target.value)}
-                    value= "Agregar nuevo titulo"
+                    value= "+ nuevo titulo"
                 />
                 <div className="form-control-position">
                     <ModalNew />

@@ -74,7 +74,7 @@ class ComprobanteMasivoModal extends Component {
           button={(
             <Button
               outline
-              color="primary"
+              color="purple"
               onClick={this.handleToggle}>
               Comprobante Masivo
             </Button>

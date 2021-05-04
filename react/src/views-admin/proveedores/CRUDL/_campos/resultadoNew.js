@@ -104,7 +104,7 @@ const ResultadoNew = ({ documento, setDocumento, errors, update }) => {
           }]}
           header={{
             title: documento.id ? 'Resultados generados' : "Resultados a generar",
-            appendButton: 'Agregar deuda'
+            appendButton: '+ deuda'
           }}
         />
       </Col>

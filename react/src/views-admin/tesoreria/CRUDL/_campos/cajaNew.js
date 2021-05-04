@@ -101,7 +101,7 @@ const CajaNew = ({ documento, setDocumento, tesoros, errors, update }) => {
             handleChange: handleCajasChange
           }]}
           header={{
-            appendButton: 'Agregar tesoro'
+            appendButton: '+ tesoro'
           }}
         />
       </Col>

@@ -101,7 +101,7 @@ const CargaNew = ({ documento, setDocumento, errors, update }) => {
           }]}
           header={{
             title: documento.id ? 'Destino de las transferencias' : "Transferir hacia",
-            appendButton: 'Agregar carga'
+            appendButton: '+ carga'
           }}
         />
         }

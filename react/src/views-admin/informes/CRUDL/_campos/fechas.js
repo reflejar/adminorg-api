@@ -78,7 +78,7 @@ const Fechas = ({ filtro, setFiltro }) => {
             handleChange: handleFechasChange
           }]}
           header={{
-            appendButton: 'Agregar periodo'
+            appendButton: '+ periodo'
           }}
         />
       </Col>

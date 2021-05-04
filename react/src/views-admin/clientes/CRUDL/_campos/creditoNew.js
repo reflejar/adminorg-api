@@ -185,7 +185,7 @@ const CreditoNew = ({ documento, setDocumento, errors, destinatario, onlyRead })
           }]}
           header={{
             title: "Items del comprobante",
-            appendButton: 'Agregar deuda'
+            appendButton: '+ deuda'
           }}
         />
       </Col>

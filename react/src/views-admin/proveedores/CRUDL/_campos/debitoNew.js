@@ -129,7 +129,7 @@ const DebitoNew = ({ documento, setDocumento, errors, update }) => {
           }]}
           header={{
             title: "Items del comprobante",
-            appendButton: 'Agregar deuda'
+            appendButton: '+ deuda'
           }}
         />
       </Col>

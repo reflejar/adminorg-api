@@ -256,7 +256,7 @@ const Create = (props) => {
         }]}
         header={{
           title: 'Operaciones de distribucion',
-          appendButton: 'Agregar deuda'
+          appendButton: '+ deuda'
         }}
       />
 

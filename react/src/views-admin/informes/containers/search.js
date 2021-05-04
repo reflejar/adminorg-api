@@ -16,7 +16,7 @@ const Search = ({onChange}) => (
                     disabled
 
                     onChange={e => onChange(e.target.value)}
-                    value= "Agregar nueva carpeta"
+                    value= "+ nueva carpeta"
                 />
                 <div className="form-control-position">
                     <ModalNew />

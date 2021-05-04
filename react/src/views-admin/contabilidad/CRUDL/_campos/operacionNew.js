@@ -133,7 +133,7 @@ const OperacionNew = ({ documento, setDocumento, errors, update }) => {
           }]}
           header={{
             title: "Operaciones",
-            appendButton: 'Agregar operacion'
+            appendButton: '+ operacion'
           }}
         />
         }
