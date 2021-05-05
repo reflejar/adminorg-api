@@ -243,8 +243,8 @@ const Create = (props) => {
         }, {
           type: 'date',
           name: 'fecha_gracia',
-          placeholder: 'Fecha de Gracia',
-          header: 'Fecha de Gracia',
+          placeholder: 'Descuento Hasta',
+          header: 'Descuento Hasta',
           disabled: disabledFields.fecha_gracia,
           handleChange: handleArrayFieldChange('distribuciones')
         }, {

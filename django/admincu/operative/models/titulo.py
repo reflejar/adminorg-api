@@ -44,4 +44,18 @@ class Titulo(BaseModel):
 				cuenta__titulo__in=self.familia(), 
 				# fecha__lte=fecha,
 				documento__isnull=False,
+			).select_related(
+				"cuenta", 
+				"cuenta__perfil", # Para el nombre de la cuenta
+				"cuenta__naturaleza",
+				"documento__receipt", 
+				"documento__receipt__receipt_type", 
+				"vinculo",
+			).prefetch_related(
+				"vinculos",
+				"vinculos__cuenta",
+				"vinculos__cuenta__naturaleza",
+				"vinculo__vinculos",
+				"vinculo__vinculos__cuenta",
+				"vinculo__vinculos__cuenta__naturaleza",
 			).order_by('fecha', 'id')

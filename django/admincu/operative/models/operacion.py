@@ -54,7 +54,12 @@ class Operacion(BaseModel):
 
 	def concepto(self):
 		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
+		if not self.naturaleza in ['cliente', "dominio"]:
+			return ""
 		# conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
+		
+		# Esto se hace asi porque el prefetch_related ya trajo todos
+		# Si se hace filtrando se duplican las consultas a DB
 		conceptos = self.vinculos.all()
 		if not any([True if o.cuenta.naturaleza.nombre in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
 			return ""
@@ -64,8 +69,30 @@ class Operacion(BaseModel):
 				if not any([True if o.cuenta.naturaleza.nombre in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
 					return ""
 				return conceptos[0].cuenta
-			return None
+			return ""
 		return conceptos[0].cuenta
+
+
+	def periodo(self):
+		# return "{}-{}".format(str(self.fecha_indicativa.year), self.fecha_indicativa.month)
+		if not self.fecha_indicativa:
+			return ""
+		return self.fecha_indicativa.strftime("%Y-%m")
+
+	def origen(self):
+		return self.vinculo
+
+	def causante(self):
+		if self.documento.destinatario:
+			return self.documento.destinatario.naturaleza
+		if self.documento.receipt.receipt_type.code == "303":
+			return "caja"
+		if self.documento.receipt.receipt_type.code == "400":
+			return "asiento"
+
+	def titulo(self):
+		return self.cuenta.titulo
+
 
 	def retencion(self):
 		""" Devuelve la Metodo(retencion) por la que se creó el debito """
@@ -209,23 +236,3 @@ class Operacion(BaseModel):
 		fecha = fecha if fecha else date.today()
 		return self.interes(fecha=fecha) - self.pago_interes(fecha=fecha)
 	
-	def periodo(self):
-		# return "{}-{}".format(str(self.fecha_indicativa.year), self.fecha_indicativa.month)
-		if not self.fecha_indicativa:
-			return ""
-		return self.fecha_indicativa.strftime("%Y-%m")
-
-	def origen(self):
-		return self.vinculo
-
-	def causante(self):
-		if self.documento.destinatario:
-			return self.documento.destinatario.naturaleza
-		if self.documento.receipt.receipt_type.code == "303":
-			return "caja"
-		if self.documento.receipt.receipt_type.code == "400":
-			return "asiento"
-
-	def titulo(self):
-		return self.cuenta.titulo
-

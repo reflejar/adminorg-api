@@ -54,7 +54,7 @@ class Cuenta(BaseModel):
 		return grupo
 
 	def get_model(self, nombre):
-			return apps.get_model('operative', nombre)
+		return apps.get_model('operative', nombre)
 
 	def estado_deuda(self, fecha=None):
 		fecha = fecha if fecha else date.today()
@@ -77,7 +77,7 @@ class Cuenta(BaseModel):
 			if d.saldo() <= 0.00: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA pero excluyendo las pagadas posteriormente
 				excluir.append(d.id)
 		
-		return deudas.exclude(id__in=excluir).order_by('-fecha', '-id')
+		return deudas.exclude(id__in=excluir).order_by('fecha', 'id')
 
 
 	def estado_cuenta(self, fecha=None):	
@@ -86,6 +86,20 @@ class Cuenta(BaseModel):
 				cuenta__in=self.grupo, 
 				# fecha__lte=fecha,
 				documento__isnull=False,
+			).select_related(
+				"cuenta", 
+				"cuenta__perfil", # Para el nombre de la cuenta
+				"cuenta__naturaleza",
+				"documento__receipt", 
+				"documento__receipt__receipt_type", 
+				"vinculo",
+			).prefetch_related(
+				"vinculos",
+				"vinculos__cuenta",
+				"vinculos__cuenta__naturaleza",
+				"vinculo__vinculos",
+				"vinculo__vinculos__cuenta",
+				"vinculo__vinculos__cuenta__naturaleza",
 			).order_by('fecha', 'id')
 
 		

@@ -105,8 +105,8 @@ const DistribucionNew = ({ setDocumento, ingresos, errors }) => {
         }, {
           type: 'date',
           name: 'fecha_gracia',
-          placeholder: 'Fecha de Gracia',
-          header: 'Fecha de Gracia',
+          placeholder: 'Descuento Hasta',
+          header: 'Descuento Hasta',
           handleChange: handleDistribucionesChange
         }, {
           type: 'number',

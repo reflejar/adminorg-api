@@ -17,11 +17,7 @@ from admincu.operative.serializers import (
 	DocumentoModelSerializer,
 	PuntoModelSerializer
 )
-from admincu.operative.serializers.estados import (
-	EstadoDeudasModelSerializer,
-	EstadoCuentaModelSerializer
 
-)
 from admincu.operative.models import (
 	Cuenta,
 	Operacion,

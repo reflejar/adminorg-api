@@ -117,4 +117,4 @@ class OwnReceipt(models.Model):
 		if self.receipt_number:
 			return "{} {}".format(self.receipt_type, self.formatted_number)
 		else:
-			return "Unnumbered %s" % self.receipt_type
+			return "%s S/N" % self.receipt_type

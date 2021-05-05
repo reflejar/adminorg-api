@@ -46,11 +46,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			else:
 				self.fields['point_of_sales'] = serializers.CharField(read_only=True)
 				self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
-
-
-		elif self.context['causante'] == "estado":
-			self.fields['formatted_number'] = serializers.CharField(max_length=150, read_only=True)
-
+				
 		elif self.context['causante'] == "asiento":
 			self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
 

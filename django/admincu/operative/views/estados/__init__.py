@@ -3,6 +3,7 @@ from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404 
+from decimal import Decimal
 
 from admincu.users.permissions import IsAccountOwner, IsComunidadMember, IsAdministrativoUser
 from admincu.utils.generics import custom_viewsets
@@ -17,9 +18,9 @@ from admincu.operative.models import (
 )
 
 from admincu.operative.serializers.estados import (
-	EstadoCuentaModelSerializer,
-	EstadoDeudasModelSerializer,
-	# EstadoSaldosModelSerializer # En desuso
+	EstadoCuentaSerializer,
+	EstadoDeudasSerializer,
+	EstadoSaldosSerializer
 )
 
 class Totalidad():
@@ -57,6 +58,20 @@ class Totalidad():
 		return Operacion.objects.filter(
 				fecha__lte=fecha,
 				documento__isnull=False,
+			).select_related(
+				"cuenta", 
+				"cuenta__perfil", # Para el nombre de la cuenta
+				"cuenta__naturaleza",
+				"documento__receipt", 
+				"documento__receipt__receipt_type", 
+				"vinculo",
+			).prefetch_related(
+				"vinculos",
+				"vinculos__cuenta",
+				"vinculos__cuenta__naturaleza",
+				"vinculo__vinculos",
+				"vinculo__vinculos__cuenta",
+				"vinculo__vinculos__cuenta__naturaleza",
 			).order_by('fecha', 'id')
 
 		
@@ -92,9 +107,9 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 
 	# naturalezas = ['cliente', 'proveedor', 'caja', 'ingreso']
 	estados = {
-		'cuenta': EstadoCuentaModelSerializer,
-		'deudas': EstadoDeudasModelSerializer,
-		'saldos': EstadoDeudasModelSerializer # Si existe la necesidad de tener separados los saldos de las deudas aunque utilicen el mismo serializer
+		'cuenta': EstadoCuentaSerializer,
+		'deudas': EstadoDeudasSerializer,
+		'saldos': EstadoDeudasSerializer # Si existe la necesidad de tener separados los saldos de las deudas aunque utilicen el mismo serializer
 	}
 
 	filterset_class = OperacionFilter
@@ -151,17 +166,12 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 
 	def retrieve(self, request, pk=None, **kwargs):
 		queryset = self.get_queryset()
-		obj = self.get_object()
-		filtro = self.filter.data 
+		filtro = self.filter.data
 		end_date = filtro['end_date'] if 'end_date' in filtro.keys() else date.today()
 		end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 		context = {
-			'comunidad': self.comunidad,
-			'cuenta': obj,
-			'causante': "estado",
 			'end_date': end_date,
-			'sin_destinatario': False,
-			'condonacion': filtro['condonacion'] if 'condonacion' in filtro.keys() else None
+			'condonacion': True if 'condonacion' in filtro.keys() else False
 		}
-		operaciones = self.get_serializer_class()(queryset, context=context, many=True)
-		return Response(reversed(operaciones.data))
+		serializer = self.get_serializer_class()(queryset, context)
+		return Response(reversed(serializer.data))

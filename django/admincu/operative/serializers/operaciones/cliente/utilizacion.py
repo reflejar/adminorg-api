@@ -1,11 +1,23 @@
 from datetime import date
 
 from admincu.operative.serializers.operaciones.base import *
-from admincu.operative.serializers.estados.deudas import EstadoDeudasModelSerializer
+from admincu.operative.serializers.estados.saldos import *
 
 
 class UtilizacionModelSerializer(OperacionModelSerializer):
 	'''Operacion de utilizacion de saldo a favor o cheques'''
+
+	origen = serializers.SerializerMethodField()
+
+	class Meta:
+		model = Operacion
+
+		fields = (
+			'id',
+			'detalle',
+			'origen'
+		)
+
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -16,8 +28,12 @@ class UtilizacionModelSerializer(OperacionModelSerializer):
 					), 
 				allow_null=False
 			)
+
+	def get_origen(self, obj):
 		if 'retrieve' in self.context.keys():
-			self.fields['origen'] = EstadoDeudasModelSerializer(context=self.context, read_only=True, many=False)
-			self.context['fecha'] = date.today()
-			self.context['condonacion'] = False
-			self.context['causante'] = "estado"
+			context = {
+				'end_date': date.today(),
+				'condonacion': False
+			}
+			return EstadoSaldosSerializer(queryset=[obj.origen()], context=context).data[0]
+		return ""
