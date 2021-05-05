@@ -60,7 +60,8 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 				"perfil", 
 				'perfil__domicilio',
 				"titulo",
-				"naturaleza"
+				"taxon",
+				"domicilio"
 				)
 			elif self.kwargs['naturaleza'] in self.titulos:
 				queryset = Titulo.objects.filter(
