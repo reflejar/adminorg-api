@@ -53,13 +53,28 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 		'''Define el queryset segun parametro de url.'''
 		try:
 			if self.kwargs['naturaleza'] in self.cuentas:
-				queryset = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.kwargs['naturaleza'])
+				queryset = Cuenta.objects.filter(
+					comunidad=self.comunidad, 
+					naturaleza__nombre=self.kwargs['naturaleza']
+				).select_related(
+				"perfil", 
+				'perfil__domicilio',
+				"titulo",
+				"naturaleza"
+				)
 			elif self.kwargs['naturaleza'] in self.titulos:
-				queryset = Titulo.objects.filter(comunidad=self.comunidad)
+				queryset = Titulo.objects.filter(
+					comunidad=self.comunidad
+				).select_related(
+					"supertitulo",
+					"predeterminado"
+				).prefetch_related(
+					"cuenta_set"
+				)
 			elif self.kwargs['naturaleza'] in self.metodos:
 				queryset = Metodo.objects.filter(comunidad=self.comunidad, naturaleza=self.kwargs['naturaleza'])
 			elif self.kwargs['naturaleza'] in self.puntos:
-				queryset = PointOfSales.objects.filter(owner=self.comunidad.contribuyente)				
+				queryset = PointOfSales.objects.filter(owner=self.comunidad.contribuyente)		
 			return queryset
 		except:
 			raise Http404
