@@ -16,7 +16,7 @@ def InformesModelSerializer(o: Operacion) -> Dict[str, Any]:
 		'titulo_numero': o.cuenta.titulo.numero,
 		'titulo_nombre': o.cuenta.titulo.nombre,
 		'cuenta': str(o.cuenta),
-		'concepto': o.concepto(),
+		'concepto': str(o.concepto()),
 		'periodo': o.periodo(),
 		'documento_tipo': o.documento.receipt.receipt_type.description,
 		'documento_numero': o.documento.receipt.formatted_number,
