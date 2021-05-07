@@ -21,8 +21,6 @@ send_email.short_description = "Enviar por mail"
 
 def hard_delete(modeladmin, request, queryset):
 	for documento in queryset:
-		for op in documento.operaciones.all():
-			op.metodos.all().hard_delete()
 		documento.operaciones.all().hard_delete()
 		receipt = documento.receipt
 		documento.hard_delete()
