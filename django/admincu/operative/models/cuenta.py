@@ -90,6 +90,8 @@ class Cuenta(BaseModel):
 				"cuenta", 
 				"cuenta__perfil", # Para el nombre de la cuenta
 				"cuenta__naturaleza",
+				"documento__destinatario",
+				"documento__destinatario__naturaleza",
 				"documento__receipt", 
 				"documento__receipt__receipt_type", 
 				"vinculo",

@@ -13,14 +13,13 @@ class EstadoDeudasSerializer(EstadoBaseSerializer):
 		pago_capital = o.pago_capital(fecha=self.context['end_date'])
 		interes = o.interes(fecha=self.context['end_date'], condonacion=self.context['condonacion'])
 		descuento = o.descuento(fecha=self.context['end_date'], condonacion=self.context['condonacion'])
-		print(self.context['condonacion'])
 		receipt_type = str(o.documento.receipt.receipt_type)
 		formatted_number = str(o.documento.receipt.formatted_number)
 
 		return {
 			'id': o.id,
 			'fecha': o.fecha,
-			'causante': o.naturaleza,
+			'causante': o.causante(),
 			'documento': {
 				'id': o.documento.id,
 				'fecha_anulacion': o.documento.fecha_anulacion,

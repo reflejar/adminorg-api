@@ -84,7 +84,7 @@ class Operacion(BaseModel):
 
 	def causante(self):
 		if self.documento.destinatario:
-			return self.documento.destinatario.naturaleza
+			return self.documento.destinatario.naturaleza.nombre
 		if self.documento.receipt.receipt_type.code == "303":
 			return "caja"
 		if self.documento.receipt.receipt_type.code == "400":

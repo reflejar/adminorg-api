@@ -17,7 +17,7 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 		return {
 			'id': o.id,
 			'fecha': o.fecha,
-			'causante': o.naturaleza,
+			'causante': o.causante(),
 			'documento': {
 				'id': o.documento.id,
 				'fecha_anulacion': o.documento.fecha_anulacion,
