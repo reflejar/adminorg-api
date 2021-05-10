@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { ToggleLeft, ToggleRight, X } from "react-feather";
 // import internal(own) modules
 import { FoldedContentConsumer } from "../../../../utility/context/toggleContentContext";
-import Logo from "../../../../assets/img/logo.png";
+import Logo from "../../../../assets/img/logo-mini.png";
 import LogoDark from "../../../../assets/img/logo-dark.png";
 import templateConfig from "../../../../templateConfig";
 

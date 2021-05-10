@@ -4,15 +4,16 @@ import { BrowserRouter, Switch } from "react-router-dom";
 import Spinner from "../components/spinner/spinner";
 
 // import internal(own) modules
-import MainLayoutRoutes from "../layouts/routes/mainRoutes";
-import FullPageLayout from "../layouts/routes/fullpageRoutes";
+import LandingLayoutRoute from "../layouts/routes/landingRoutes";
+import MainLayoutRoute from "../layouts/routes/mainRoutes";
+import FullPageLayoutRoute from "../layouts/routes/fullpageRoutes";
 import ErrorLayoutRoute from "../layouts/routes/errorRoutes";
 
 // Rutas publicas (Tienen Layout completo)
+const LazyLanding = lazy(() => import("../views/landing"));
 const LazyLogin = lazy(() => import("../views/auth/login"));
 const LazyForgotPassword = lazy(() => import("../views/auth/forgotPassword"));
 const LazyRegister = lazy(() => import("../views/auth/register"));
-
 
 // Rutas privadas (Tienen Dashboard)
 const LazyUserProfile = lazy(() => import("../views/user"));
@@ -38,7 +39,16 @@ class Router extends Component {
          <BrowserRouter basename="/">
             <Switch>
                {/* Rutas publicas */}
-               <FullPageLayout
+               <LandingLayoutRoute
+                  exact
+                  path="/"
+                  render={matchprops => (
+                     <Suspense fallback={<Spinner />}>
+                        <LazyLanding {...matchprops} />
+                     </Suspense>
+                  )}
+               />               
+               <FullPageLayoutRoute
                   exact
                   path="/login"
                   render={matchprops => (
@@ -50,7 +60,7 @@ class Router extends Component {
 
                {/* Rutas privadas */}
 
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/clientes"
                   groups={['administrativo']}
@@ -60,7 +70,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/proveedores"
                   groups={['administrativo']}
@@ -70,7 +80,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/tesoreria"
                   groups={['administrativo']}
@@ -80,7 +90,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/contabilidad"
                   groups={['administrativo']}
@@ -90,7 +100,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/informes"
                   groups={['administrativo']}
@@ -100,7 +110,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/configuracion"
                   groups={['administrativo']}
@@ -110,7 +120,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/deudas"
                   groups={['socio']}
@@ -120,7 +130,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/cuenta"
                   groups={['socio']}
@@ -130,7 +140,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />                   
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/reportes"
                   groups={['socio']}
@@ -143,7 +153,7 @@ class Router extends Component {
 
 
                {/* Joint Pages Views */}
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/comunicacion"
                   groups={['administrativo', 'socio']}
@@ -153,7 +163,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />                                     
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/faq"
                   groups={['administrativo', 'socio']}
@@ -163,7 +173,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <MainLayoutRoutes
+               <MainLayoutRoute
                   exact
                   path="/user-profile"
                   groups={['administrativo', 'socio']}
@@ -176,7 +186,7 @@ class Router extends Component {
 
 
                {/* Saperate Pages Views */}
-               <FullPageLayout
+               <FullPageLayoutRoute
                   exact
                   path="/forgot-password"
                   render={matchprops => (
@@ -185,7 +195,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <FullPageLayout
+               <FullPageLayoutRoute
                   exact
                   path="/login"
                   render={matchprops => (
@@ -194,7 +204,7 @@ class Router extends Component {
                      </Suspense>
                   )}
                />
-               <FullPageLayout
+               <FullPageLayoutRoute
                   exact
                   path="/register"
                   render={matchprops => (

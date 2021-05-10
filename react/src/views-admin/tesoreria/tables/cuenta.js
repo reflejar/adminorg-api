@@ -183,6 +183,7 @@ export default class Table extends React.Component {
 
   renderModal = () => {
     const { item } = this.state.modal;
+
     if (item && item.documento) {
       const { receipt } = item.documento
       return (

@@ -4,7 +4,34 @@ import DeudasTable from "../../../components/board/tables/deudas";
 import {Numero} from "../../../utility/formats";
 
 import BasicModal from '../../../components/modal/basic';
-import Comprobante from '../CRUDL/transferencia/CU';
+
+// Cosas de Clientes
+import ClienteComprobante from '../../clientes/CRUDL/factura/CR';
+import ClienteNotaCredito from '../../clientes/CRUDL/nota-credito/CR';
+import ClienteReciboX from '../../clientes/CRUDL/recibo-x/CR';
+import { 
+  facturasTypes as clientesComprobantesTypes, 
+  notasCreditoTypes as clientesNotasCreditoTypes, 
+  notasDebitoTypes as clientesNotasDebitoTypes, 
+  recibosTypes as clientesRecibosTypes 
+} from '../../clientes/CRUDL/_options/receipt_types';
+
+// Cosas de Proveedores
+import ProveedorDocumento from '../../proveedores/CRUDL/documento/CU';
+import ProveedorNotaCredito from '../../proveedores/CRUDL/nota-credito/CU';
+import ProveedorOP from '../../proveedores/CRUDL/op/CU';
+import { 
+  documentosTypes as proveedoresDocumentosTypes, 
+  notasCreditoTypes as proveedoresNotasCreditoTypes, 
+  opTypes as proveedoresOpTypes
+ } from '../../proveedores/CRUDL/_options/receipt_types';
+
+// Cosas de Tesoreria
+import TesoreriaTransferencia from '../CRUDL/transferencia/CU';
+import { 
+  transferenciasTypes as tesoreriaTransferenciasTypes, 
+ } from '../CRUDL/_options/receipt_types';
+
 
 import 'react-table/react-table.css';
 
@@ -82,21 +109,84 @@ export default class Table extends React.Component {
     });
   };
 
-  selectDocument = (type) => {
+  selectDocument = (causante, type) => {
     const { documento } = this.state.modal.item;
-    const documentos = {
-      "Comprobante C": <Comprobante
+    let documentos = {};
+    if (causante === "cliente") {
+      clientesComprobantesTypes.forEach((type) => {
+        documentos[type.nombre] = <ClienteComprobante
         onlyRead={true}
         onClose={this.handleToggle}
         selected={documento}
       />
-
+      })
+      clientesNotasDebitoTypes.forEach((type) => {
+        documentos[type.nombre] = <ClienteComprobante
+        onlyRead={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      clientesNotasCreditoTypes.forEach((type) => {
+        documentos[type.nombre] = <ClienteNotaCredito
+        destinatario={documento.destinatario}
+        onlyRead={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      clientesRecibosTypes.forEach((type) => {
+        documentos[type.nombre] = <ClienteReciboX
+        destinatario={documento.destinatario}
+        onlyRead={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
     }
-    return documentos[type]
+    if (causante === "proveedor") {
+      proveedoresDocumentosTypes.forEach((type) => {
+        documentos[type.nombre] = <ProveedorDocumento
+        destinatario={documento.destinatario}
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      proveedoresNotasCreditoTypes.forEach((type) => {
+        documentos[type.nombre] = <ProveedorNotaCredito
+        destinatario={documento.destinatario}
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      proveedoresOpTypes.forEach((type) => {
+        documentos[type.nombre] = <ProveedorOP
+        destinatario={documento.destinatario}
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }
+    if (causante === "caja") {
+      tesoreriaTransferenciasTypes.forEach((type) => {
+        documentos[type.nombre] = <TesoreriaTransferencia
+        update={true}
+        onClose={this.handleToggle}
+        selected={documento}
+      />
+      })
+      return documentos[type]
+    }    
   }
 
   renderModal = () => {
     const { item } = this.state.modal;
+
     if (item && item.documento) {
       const { receipt } = item.documento
       return (
@@ -105,7 +195,7 @@ export default class Table extends React.Component {
             onToggle={this.handleToggle}
             header={`${receipt.receipt_type} - ${receipt.formatted_number}`}
             footer={false}
-            component={this.selectDocument(item.documento.receipt.receipt_type)}
+            component={this.selectDocument(item.causante, item.documento.receipt.receipt_type)}
           />          
         )
     } 
@@ -113,7 +203,7 @@ export default class Table extends React.Component {
 
   render() {
     const { data } = this.props;
-
+    
     const addProps = {
       getTdProps: (state, rowInfo, column, instance) => {
         return {
