@@ -54,23 +54,33 @@ class Operacion(BaseModel):
 
 	def concepto(self):
 		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
+
+		# Por ahora no genera concepto si la operacion no es de un cliente o un dominio
 		if not self.naturaleza in ['cliente', "dominio"]:
 			return ""
-		# conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
 		
+		# conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
 		# Esto se hace asi porque el prefetch_related ya trajo todos
 		# Si se hace filtrando se duplican las consultas a DB
-		conceptos = self.vinculos.all()
-		if not any([True if o.cuenta.naturaleza.nombre in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
-			return ""
-		if not conceptos:
-			if self.vinculo:
-				conceptos = self.vinculo.vinculos.all()
-				if not any([True if o.cuenta.naturaleza.nombre in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
-					return ""
-				return conceptos[0].cuenta
-			return ""
-		return conceptos[0].cuenta
+		conceptos = list(filter(lambda x: x.naturaleza in ["ingreso", "gasto", "caja"], self.vinculos.all()))
+		if not (conceptos) and self.vinculo:
+			# Unico momento donde efectivamente tiene que hacer una consulta SQL
+			conceptos = list(filter(lambda x: x.naturaleza in ["ingreso", "gasto", "caja"], self.vinculo.vinculos.all()))
+		if conceptos:
+			return conceptos[0].cuenta
+		return ""
+
+		# conceptos = self.vinculos.all()
+		# if not any([True if o.naturaleza() in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
+		# 	return ""
+		# if not conceptos:
+		# 	if self.vinculo:
+		# 		conceptos = self.vinculo.vinculos.all()
+		# 		if not any([True if o.naturaleza() in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
+		# 			return ""
+		# 		return conceptos[0].cuenta
+		# 	return ""
+		# return conceptos[0].cuenta
 
 
 	def periodo(self):

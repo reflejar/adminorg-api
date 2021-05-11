@@ -25,7 +25,17 @@ const getColumns = () => [{
 }, {      
   Header: 'Periodo',
   accessor: 'periodo'
+}, {  
+  Header: 'Detalle',
+  accessor: 'detalle'
+}, {      
+  Header: 'Descripcion',
+  accessor: 'descripcion'
 }, {    
+  Header: 'Fecha Vto',
+  id: 'Fecha Vto',
+  accessor: (d) => d.fecha_vencimiento && moment(d.fecha_vencimiento).format('DD/MM/YYYY')
+}, {  
   Header: 'Tipo Doc',
   accessor: 'documento_tipo'
 }, {            
