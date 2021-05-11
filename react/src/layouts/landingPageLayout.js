@@ -7,7 +7,7 @@ const LayoutPageDefault = ({ children }) => (
   <>
      <div
         className={classnames("login-layout wrapper ", {
-           "layout-dark": true
+           "layout-dark": false
         })}
      >  
       <Header navPosition="right" className="reveal-from-bottom" />

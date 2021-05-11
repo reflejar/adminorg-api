@@ -5,7 +5,7 @@ import ButtonGroup from '../../../components/landing/ButtonGroup';
 import Button from '../../../components/landing/Button';
 import Image from '../../../components/landing/Image';
 
-import ImagenSmartCities from "../../../assets/img/smartcities/1540.jpg";
+import ImagenSmartCities from "../../../assets/img/smartcities/1539.jpg";
 
 const propTypes = {
   ...SectionProps.types
@@ -55,8 +55,8 @@ const Hero = ({
             <div className="container-xs">
               <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
                 Nuestra plataforma brinda una gestion inteligente de tu comunidad. <br />
-                Haciendo uso eficiente de los recursos y promoviendo ... <br />
-                (aqui poner ejemplos: automatizacion de procesos, practicidad operativa, uso eficiente del tiempo, cuidado del ambiente) 
+                {/* Haciendo uso eficiente de los recursos y promoviendo ... <br />
+                (aqui poner ejemplos: automatizacion de procesos, practicidad operativa, uso eficiente del tiempo, cuidado del ambiente)  */}
                 </p>
               <div className="reveal-from-bottom mt-4" data-reveal-delay="600">
                 <ButtonGroup>
