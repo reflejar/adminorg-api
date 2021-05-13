@@ -17,7 +17,7 @@ const Footer = props => (
             <p className="text-center">
                © 2021{" "}
                <a
-                  href="https://admin-cu.com"
+                  href="https://admin-smart.com"
                   rel="noopener noreferrer"
                   target="_blank"
                >

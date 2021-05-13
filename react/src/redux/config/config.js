@@ -1,4 +1,4 @@
 module.exports = {
     //baseUrl: 'http://localhost:8000/'
-    baseUrl: 'https://admin.admin-cu.com/'
+    baseUrl: 'https://api.admin-smart.com/'
 }

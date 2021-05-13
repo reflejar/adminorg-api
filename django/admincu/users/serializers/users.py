@@ -97,7 +97,7 @@ class UserSignupSerializer(serializers.Serializer):
 		'''Envia el email para confirmar la cuenta'''
 		verification_token = self.gen_verification_token(user)
 		subject = "Bienvenido/a {} a AdminCU! Verifica tu cuenta...".format(user.username)
-		from_email = 'AdminCU <info@admin-cu.com>'
+		from_email = 'AdminCU <info@admin-smart.com>'
 		destinations = [user.email]
 		html_string = render_to_string(
 			'emails/users/account_verification.html',
@@ -202,7 +202,7 @@ class PasswordRecoverySerializer(serializers.Serializer):
 		'''Envia email con token de recuperacion'''
 		recovery_token = self.gen_recovery_token(user)
 		subject = "Solicitud de recuperacion de clave: Usuario {}".format(user.username)
-		from_email = 'AdminCU <info@admin-cu.com>'
+		from_email = 'AdminCU <info@admin-smart.com>'
 		destinations = [user.email]
 		html_string = render_to_string(
 			'emails/users/password_recovery.html',

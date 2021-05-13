@@ -12,8 +12,8 @@ ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
     "127.0.0.1",
-    "admin-cu.com",
-    "admin.admin-cu.com"
+    "admin-smart.com",
+    "api.admin-smart.com"
 ]
 
 # Cache
@@ -34,7 +34,7 @@ EMAIL_HOST = '172.18.0.1'
 EMAIL_PORT = 25
 EMAIL_USE_TLS=False
 EMAIL_USE_SSL=False
-DEFAULT_FROM_EMAIL = 'Equipo de AdminCU <info@admin-cu.com>'
+DEFAULT_FROM_EMAIL = 'Equipo de AdminCU <info@admin-smart.com>'
 #EMAIL_HOST_USER=""
 #EMAIL_HOST_PASSWORD=""
 #EMAIL_TIMEOUT

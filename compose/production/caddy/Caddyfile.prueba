@@ -1,4 +1,4 @@
-admin-cu.com www.admin-cu.com {
+admin-smart.com www.admin-smart.com {
     proxy / django:5000 {
         transparent
     }

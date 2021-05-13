@@ -166,7 +166,7 @@ TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBacke
 
 
 # Admin
-ADMIN_URL = 'admin/'
+ADMIN_URL = 'anopa/'
 ADMINS = [
     ("Mariano Valdez", 'marianovaldez92@gmail.com'),
     ("Agustin Ramos", 'ramosagustin2103@gmail.com'),

@@ -229,7 +229,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 
 	def send_email(self, documento):
 		if documento.comunidad.mails:
-			from_email = "{} <info@admin-cu.com>".format(documento.comunidad.nombre)
+			from_email = "{} <info@admin-smart.com>".format(documento.comunidad.nombre)
 			destinations = documento.destinatario.perfil.get_emails_destinatarios()
 			html_string = render_to_string('emails/documentos/index.html', {"documento": documento})
 			subject = "Nuevo Comprobante" 
