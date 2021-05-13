@@ -4,7 +4,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Admincu
+# Adminsmart
 from admincu.utils.models import BaseModel
 
 

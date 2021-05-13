@@ -106,3 +106,8 @@ Sacar posibilidad de cambiar el paginador. Siempre 100
 Palabras en español
 
 Poner arriba y abajo el paginador
+
+
+
+Crear repositorio para Tayhiana
+Crear usuario

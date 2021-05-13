@@ -14,7 +14,7 @@ RUN apk update \
   && apk add gettext \
   # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
   && apk add postgresql-client \
-  # AdminCU. Agregados
+  # AdminSmart. Agregados
   && apk add libxml2-dev libxslt-dev py3-lxml cairo-dev pango-dev gdk-pixbuf-dev g++
 
   

@@ -21,12 +21,12 @@ const Footer = props => (
                   rel="noopener noreferrer"
                   target="_blank"
                >
-                  AdminCU 2.0{" "}
+                  AdminSmart 2.0{" "}
                </a>
                {/* Crafted by <i className="ft-heart font-small-3" />
                <a href="https://pixinvent.com/" rel="noopener noreferrer" target="_blank">
                   {" "}
-                  AdminCU
+                  AdminSmart
                </a> */}
             </p>
          </div>

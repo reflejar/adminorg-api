@@ -33,7 +33,7 @@ const Error = props => {
                      <div className="error-footer bg-transparent">
                         <Row>
                            <p className="text-muted text-center col-12 py-1">
-                              © 2020 <Link to="/pages/error">AdminCU </Link>
+                              © 2020 <Link to="/pages/error">AdminSmart </Link>
                               Crafted by <i className="ft-heart font-small-3" />
                               
                               <a

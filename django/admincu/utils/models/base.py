@@ -32,7 +32,7 @@ class SoftDeletionManager(models.Manager):
 
 class BaseModel(models.Model):
 	"""
-		AdminCU base model.
+		AdminSmart base model.
 		Modelo abstracto para agregar en todos los modelos que necesiten de:
 			comunidad
 			creacion

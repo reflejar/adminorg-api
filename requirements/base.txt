@@ -30,7 +30,7 @@ django-redis==4.10.0
 celery==4.4.7
 flower==0.9.7
 
-# AdminCU
+# AdminSmart
 django-import-export==1.0.0
 cairocffi==0.8.0
 CairoSVG==2.1.3
