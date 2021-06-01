@@ -11,7 +11,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: admincu_production_postgres
+    image: adminsmart_production_postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_data_backups:/backups
@@ -27,7 +27,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: admincu_local_django
+    image: adminsmart_local_django
     depends_on:
       - postgres
     volumes:
@@ -46,7 +46,7 @@ services:
       context: .
       dockerfile: ./compose/local/react/Dockerfile
     stdin_open: true 
-    image: admincu_local_react
+    image: adminsmart_local_react
     volumes:
       - ./react:/app/frontend
     ports:
@@ -55,7 +55,7 @@ services:
 
   celeryworker:
     <<: *django
-    image: admincu_local_celeryworker
+    image: adminsmart_local_celeryworker
     depends_on:
       - redis
       - postgres
@@ -65,7 +65,7 @@ services:
 
   celerybeat:
     <<: *django
-    image: admincu_local_celerybeat
+    image: adminsmart_local_celerybeat
     depends_on:
       - redis
       - postgres
@@ -75,11 +75,19 @@ services:
 
   flower:
     <<: *django
-    image: admincu_local_flower
+    image: adminsmart_local_flower
     ports:
       - "5555:5555"
     command: /start-flower
 
+  mattermost:
+    build:
+      context: .
+      args:
+        - edition=team
+    env_file:
+      - ./.envs/.local/.postgres
+      - ./.envs/.local/.mattermost
   # Nginx lo puso oscar
   # nginx:
   #   image: nginx:latest
