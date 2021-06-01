@@ -8,7 +8,10 @@ from admincu.operative.models import (
 class VinculoModelSerializer(serializers.ModelSerializer):
 	'''Cuenta model serializer'''
 
-	definicion = serializers.ChoiceField(required=True, choices=list(Taxon.objects.filter(naturaleza__nombre='dominio').values_list('nombre', flat=True)))
+
+	def __init__(self, *args, **kwrgs):
+		super().__init__(*args, **kwargs)
+		definicion = serializers.ChoiceField(required=True, choices=list(Taxon.objects.filter(naturaleza__nombre='dominio').values_list('nombre', flat=True)))
 
 	class Meta:
 		model = DefinicionVinculo
