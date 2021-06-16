@@ -18,7 +18,7 @@ class ProveedorViewSet(BaseViewSet):
 		# if obj.receipt.receipt_type.code == "301":
 		# 	raise serializers.ValidationError("No se puede modificar un documento de tipo {}".format(obj.receipt.receipt_type))
 
-		self.destroy_valid_pagos(obj)
+		# self.destroy_valid_pagos(obj)
 
 		return super().update(request, *args, **kwargs)
 

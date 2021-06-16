@@ -98,6 +98,12 @@ Smart Contracts - Blockchain - Hyperledger -
 https://aws.amazon.com/blockchain/blockchain-for-supply-chain-track-and-trace/
 https://aws.amazon.com/blogs/database/deploy-smart-contracts-to-your-private-ethereum-blockchain-network-on-aws/
 https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-about
+Celery, RabbitMQ, Airflow, ELK, Flask.
+
+
+
+
+
 
 
 
