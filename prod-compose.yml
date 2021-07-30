@@ -17,7 +17,7 @@ services:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_data_backups:/backups
     env_file:
-      - ./.envs/.local/.postgres
+      - ./.envs/.dev/.postgres
     ports:
       - "5432:5432"
 
@@ -36,8 +36,8 @@ services:
       - ./static:/app/backend/staticfiles
       - ./media:/app/backend/media      
     env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+      - ./.envs/.dev/.django
+      - ./.envs/.dev/.postgres
     ports:
       - "8000:8000"
     command: /start

@@ -276,6 +276,6 @@ django/admincu/media/
 .ipython/
 .env
 .envs/*
-!.envs/.local/
+!.envs/.dev/
 
 circles.csv

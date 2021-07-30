@@ -87,6 +87,14 @@ gradient-deep-purple-blue
 gradient-light-blue-cyan
 
 
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
 Single Point of Failure
 3rd party access
 Kubernetes devops y velocidad de desarrollo
@@ -117,3 +125,14 @@ Poner arriba y abajo el paginador
 
 Crear repositorio para Tayhiana
 Crear usuario
+
+
+*****************************************************************************************
+
+
+
+Hay que 
+
+cambiar la consulta de Cuenta.estado_cuenta() para que lo haga desde Documento, en vez de de Operacion
+Cambiar la consulta de optimizacion al queryset
+ahora son los documentos que consultan sus operaciones

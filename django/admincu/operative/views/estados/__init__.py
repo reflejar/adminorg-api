@@ -19,6 +19,7 @@ from admincu.operative.models import (
 
 from admincu.operative.serializers.estados import (
 	EstadoCuentaSerializer,
+	EstadoCuenta2Serializer,
 	EstadoDeudasSerializer,
 	EstadoSaldosSerializer
 )
@@ -110,6 +111,7 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 	# naturalezas = ['cliente', 'proveedor', 'caja', 'ingreso']
 	estados = {
 		'cuenta': EstadoCuentaSerializer,
+		'cuenta2': EstadoCuenta2Serializer,
 		'deudas': EstadoDeudasSerializer,
 		'saldos': EstadoDeudasSerializer # Si existe la necesidad de tener separados los saldos de las deudas aunque utilicen el mismo serializer
 	}

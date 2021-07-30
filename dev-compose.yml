@@ -1,8 +1,8 @@
 version: '3'
 
 volumes:
-  local_postgres_data: {}
-  local_postgres_data_backups: {}
+  dev_postgres_data: {}
+  dev_postgres_data_backups: {}
   media: {}
   static: {}
 
@@ -10,13 +10,13 @@ services:
   postgres:
     build:
       context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: adminsmart_production_postgres
+      dockerfile: ./compose/prod/postgres/Dockerfile
+    image: adminsmart_prod_postgres
     volumes:
-      - local_postgres_data:/var/lib/postgresql/data
-      - local_postgres_data_backups:/backups
+      - dev_postgres_data:/var/lib/postgresql/data
+      - dev_postgres_data_backups:/backups
     env_file:
-      - ./.envs/.local/.postgres
+      - ./.envs/.dev/.postgres
     ports:
       - "5432:5432"
 
@@ -26,8 +26,8 @@ services:
   django: &django
     build:
       context: .
-      dockerfile: ./compose/local/django/Dockerfile
-    image: adminsmart_local_django
+      dockerfile: ./compose/dev/django/Dockerfile
+    image: adminsmart_dev_django
     depends_on:
       - postgres
     volumes:
@@ -35,27 +35,17 @@ services:
       - static:/app/backend/static
       - media:/app/backend/media      
     env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+      - ./.envs/.dev/.django
+      - ./.envs/.dev/.postgres
     ports:
       - "8000:8000"
     command: /start
-
-  react:
-    build:
-      context: .
-      dockerfile: ./compose/local/react/Dockerfile
-    stdin_open: true 
-    image: adminsmart_local_react
-    volumes:
-      - ./react:/app/frontend
-    ports:
-      - 3000:3000
-    command: npm start
+    links:
+      - postgres:postgres
 
   celeryworker:
     <<: *django
-    image: adminsmart_local_celeryworker
+    image: adminsmart_dev_celeryworker
     depends_on:
       - redis
       - postgres
@@ -65,7 +55,7 @@ services:
 
   celerybeat:
     <<: *django
-    image: adminsmart_local_celerybeat
+    image: adminsmart_dev_celerybeat
     depends_on:
       - redis
       - postgres
@@ -75,19 +65,19 @@ services:
 
   flower:
     <<: *django
-    image: adminsmart_local_flower
+    image: adminsmart_dev_flower
     ports:
       - "5555:5555"
     command: /start-flower
 
-  mattermost:
-    build:
-      context: .
-      args:
-        - edition=team
-    env_file:
-      - ./.envs/.local/.postgres
-      - ./.envs/.local/.mattermost
+  # mattermost:
+  #   build:
+  #     context: .
+  #     args:
+  #       - edition=team
+  #   env_file:
+  #     - ./.envs/.dev/.postgres
+  #     - ./.envs/.dev/.mattermost
   # Nginx lo puso oscar
   # nginx:
   #   image: nginx:latest

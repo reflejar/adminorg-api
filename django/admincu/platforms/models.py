@@ -7,6 +7,11 @@ from admincu.platforms.simple_solutions.models import AccountSS
 from admincu.utils.models import BaseModel
 
 
+
+
+## DEPRACTAR
+
+
 """
 	Medianamente en desuso puesto que los modelos de cada plataforma
 	ya heredan de BaseModel asi que tienen comunidad y el registro de fechas

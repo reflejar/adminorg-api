@@ -2,7 +2,7 @@ from django.db import models
 from admincu.utils.models import BaseModel
 
 
-class AccountSS(BaseModel):
+class CuentaSS(BaseModel):
 
 	nombre = models.CharField(max_length=100)
 	carpeta = models.CharField(max_length=100)
@@ -11,7 +11,7 @@ class AccountSS(BaseModel):
 		return self.nombre
 
 
-class Sent(BaseModel):
+class EnvioSS(BaseModel):
 
 	"""
 		BaseModel ya tiene un fecha_creacion asi que no hace falta agregarle la fecha de envio
