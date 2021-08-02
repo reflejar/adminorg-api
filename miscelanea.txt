@@ -1,5 +1,5 @@
 Descargar el proyecto desde git 
-    git clone https://anopa@bitbucket.org/anopa/admincufull.git
+    git clone https://anopa@bitbucket.org/anopa/adminsmartfull.git
 
 Instalar docker 
     https://docs.docker.com/engine/install/ubuntu/
@@ -35,16 +35,16 @@ sudo docker-compose -f prodServer.yml up
 Asi hice para pasar de un club a otro la data... para martin
 
 -----
-from admincu.utils.models import Comunidad
-from admincu.operative.models import *
+from adminsmart.utils.models import Comunidad
+from adminsmart.operative.models import *
 comunidad = Comunidad.objects.get(id=4)
 for titulo in Titulo.objects.filter(comunidad_id=3):
     titulo.pk = None
     titulo.comunidad = comunidad
     titulo.save()
 -----
-from admincu.utils.models import Comunidad
-from admincu.operative.models import *
+from adminsmart.utils.models import Comunidad
+from adminsmart.operative.models import *
 comunidad = Comunidad.objects.get(id=4)
 titulos = {
 3: Titulo.objects.get(id=24),

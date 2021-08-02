@@ -1,9 +1,8 @@
 version: '3'
 
-# Esta exactamente igual que devServer.yml. Excepto react
 volumes:
-  local_postgres_data: {}
-  local_postgres_data_backups: {}
+  dev_postgres_data: {}
+  dev_postgres_data_backups: {}
   media: {}
   static: {}
 
@@ -11,11 +10,11 @@ services:
   postgres:
     build:
       context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: admincu_production_postgres
+      dockerfile: ./compose/prod/postgres/Dockerfile
+    image: adminsmart_prod_postgres
     volumes:
-      - local_postgres_data:/var/lib/postgresql/data
-      - local_postgres_data_backups:/backups
+      - dev_postgres_data:/var/lib/postgresql/data
+      - dev_postgres_data_backups:/backups
     env_file:
       - ./.envs/.dev/.postgres
     ports:
@@ -27,36 +26,26 @@ services:
   django: &django
     build:
       context: .
-      dockerfile: ./compose/local/django/Dockerfile
-    image: admincu_production_django
+      dockerfile: ./compose/dev/django/Dockerfile
+    image: adminsmart_dev_django
     depends_on:
       - postgres
     volumes:
       - ./django:/app/backend
-      - ./static:/app/backend/staticfiles
-      - ./media:/app/backend/media      
+      - static:/app/backend/static
+      - media:/app/backend/media      
     env_file:
       - ./.envs/.dev/.django
       - ./.envs/.dev/.postgres
     ports:
       - "8000:8000"
     command: /start
-
-  react:
-    build:
-      context: .
-      dockerfile: ./compose/production/react/Dockerfile
-    stdin_open: true 
-    image: admincu_production_react
-    volumes:
-      - ./react:/app/frontend
-    ports:
-      - 3000:3000
-    command: npm start
+    links:
+      - postgres:postgres
 
   celeryworker:
     <<: *django
-    image: admincu_production_celeryworker
+    image: adminsmart_dev_celeryworker
     depends_on:
       - redis
       - postgres
@@ -66,7 +55,7 @@ services:
 
   celerybeat:
     <<: *django
-    image: admincu_production_celerybeat
+    image: adminsmart_dev_celerybeat
     depends_on:
       - redis
       - postgres
@@ -76,19 +65,9 @@ services:
 
   flower:
     <<: *django
-    image: admincu_production_flower
+    image: adminsmart_dev_flower
     ports:
       - "5555:5555"
     command: /start-flower
 
-  # Nginx lo puso oscar
-  # nginx:
-  #   image: nginx:latest
-  #   ports:
-  #     - 80:8080
-  #   volumes:
-  #     - ./nginx/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
-  #     - ./frontend/build:/var/www/frontend
-  #   depends_on:
-  #     - react
-  
+  # Identico a dev-compose.yml. Pensado por si se modifica la estructura en producción

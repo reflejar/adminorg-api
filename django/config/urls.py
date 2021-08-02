@@ -9,10 +9,10 @@ urlpatterns = [
     # Django Admin
     path(settings.ADMIN_URL, admin.site.urls),
 
-    path('users/', include(('admincu.users.urls', 'users'), namespace='users')),
-    path('utils/', include(('admincu.utils.urls', 'utils'), namespace='utils')),
-    path('files/', include(('admincu.files.urls', 'files'), namespace='files')),
-    path('operative/', include(('admincu.operative.urls', 'operative'), namespace='operative')),
-    path('api/', include(('admincu._public.urls', 'api'), namespace='api')),
+    path('users/', include(('adminsmart.users.urls', 'users'), namespace='users')),
+    path('utils/', include(('adminsmart.utils.urls', 'utils'), namespace='utils')),
+    path('files/', include(('adminsmart.files.urls', 'files'), namespace='files')),
+    path('operative/', include(('adminsmart.operative.urls', 'operative'), namespace='operative')),
+    path('api/', include(('adminsmart._public.urls', 'api'), namespace='api')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

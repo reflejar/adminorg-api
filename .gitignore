@@ -268,7 +268,7 @@ tags
 
 ### Project template
 
-django/admincu/media/
+django/adminsmart/media/
 
 .pytest_cache/
 

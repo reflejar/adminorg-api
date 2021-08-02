@@ -3,7 +3,7 @@
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR.path('admincu')
+APPS_DIR = ROOT_DIR.path('adminsmart')
 
 env = environ.Env()
 
@@ -54,14 +54,14 @@ THIRD_PARTY_APPS = [
     'django_filters',
 ]
 LOCAL_APPS = [
-    'admincu.utils.apps.UtilsAppConfig',
-    'admincu.users.apps.UsersAppConfig',
-    'admincu.operative.apps.OperativeAppConfig',
-    'admincu.platforms.apps.PlatformsAppConfig',
-    'admincu.files.apps.FilesAppConfig',
-    'admincu.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
-    'admincu.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
-    'admincu._public.apps.PublicAPIAppConfig',
+    'adminsmart.utils.apps.UtilsAppConfig',
+    'adminsmart.users.apps.UsersAppConfig',
+    'adminsmart.operative.apps.OperativeAppConfig',
+    'adminsmart.platforms.apps.PlatformsAppConfig',
+    'adminsmart.files.apps.FilesAppConfig',
+    'adminsmart.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
+    'adminsmart.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
+    'adminsmart._public.apps.PublicAPIAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -174,7 +174,7 @@ ADMINS = [
 MANAGERS = ADMINS
 
 # Celery
-INSTALLED_APPS += ['admincu.taskapp.celery.CeleryAppConfig']
+INSTALLED_APPS += ['adminsmart.taskapp.celery.CeleryAppConfig']
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
