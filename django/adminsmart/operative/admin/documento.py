@@ -4,7 +4,8 @@ from adminsmart.operative.models import Documento, Operacion
 from import_export.admin import ImportExportMixin
 from adminsmart.operative.serializers.documentos.cliente import DestinoClienteModelSerializer
 
-from adminsmart.taskapp.tasks import hacer_pdfs, send_emails
+from adminsmart.operative.tasks import hacer_pdfs
+# from adminsmart.communications.tasks import send_emails
 
 def hacer_pdf(modeladmin, request, queryset):
 	hacer_pdfs.delay([d.id for d in queryset])

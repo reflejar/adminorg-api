@@ -9,7 +9,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
-from adminsmart.taskapp.tasks import send_emails
+from adminsmart.communications.tasks import send_emails
 
 from datetime import timedelta
 import jwt

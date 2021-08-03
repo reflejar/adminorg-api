@@ -1,7 +1,7 @@
 from .base import *
 from rest_framework.decorators import action
 
-from adminsmart.taskapp.tasks import facturacion_masiva
+from adminsmart.operative.tasks import facturacion_masiva
 
 class ClienteViewSet(BaseViewSet):
 	"""

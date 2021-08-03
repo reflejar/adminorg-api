@@ -17,7 +17,7 @@ from adminsmart.operative.CU.operaciones.clientes import (
 	creditos as operacionesCreditos,
 	disminuciones as operacionesDisminuciones
 )
-from adminsmart.taskapp.tasks import send_emails
+from adminsmart.communications.tasks import send_emails
 
 creditos = ['11', '12', '51', '52']
 disminuciones = ['13', '53', '54']

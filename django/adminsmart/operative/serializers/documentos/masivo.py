@@ -9,7 +9,8 @@ from adminsmart.operative.models import (
 
 
 from adminsmart.operative.CU.operaciones.clientes import masivo as operacionesMasivo
-from adminsmart.taskapp.tasks import hacer_pdfs, send_emails
+from adminsmart.operative.tasks import hacer_pdfs
+from adminsmart.communications.tasks import send_emails
 
 class DistribucionSerializer(serializers.Serializer):
 
