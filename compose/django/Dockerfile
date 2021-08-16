@@ -25,17 +25,17 @@ RUN set -ex \
   && /env/bin/pip install Cython cffi paramiko \
   && /env/bin/pip install -r /app/requirements.txt \
 
-COPY ./compose/django/entrypoint.sh /entrypoint.sh
-RUN sed -i 's/\r//' /entrypoint.sh
+# COPY ./compose/django/entrypoint.sh /entrypoint.sh
+# RUN sed -i 's/\r//' /entrypoint.sh
 
-COPY ./compose/django/celery/worker/start /start-celeryworker.sh
-RUN sed -i 's/\r//' /start-celeryworker.sh
+# COPY ./compose/django/celery/worker/start /start-celeryworker.sh
+# RUN sed -i 's/\r//' /start-celeryworker.sh
 
-COPY ./compose/django/celery/beat/start.sh /start-celerybeat.sh
-RUN sed -i 's/\r//' /start-celerybeat.sh
+# COPY ./compose/django/celery/beat/start.sh /start-celerybeat.sh
+# RUN sed -i 's/\r//' /start-celerybeat.sh
 
-COPY ./compose/django/celery/flower/start.sh /start-flower.sh
-RUN sed -i 's/\r//' /start-flower.sh
+# COPY ./compose/django/celery/flower/start.sh /start-flower.sh
+# RUN sed -i 's/\r//' /start-flower.sh
 
 ADD django /app
 WORKDIR /app
@@ -45,7 +45,7 @@ ENV PATH /env/bin:$PATH
 
 EXPOSE 8000
 
-ENTRYPOINT ["/entrypoint.sh"]
+# ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "config.wsgi" ]
 
