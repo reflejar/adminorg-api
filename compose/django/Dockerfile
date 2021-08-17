@@ -2,9 +2,9 @@ FROM python:3.7-alpine3.13
 
 ENV PYTHONUNBUFFERED 1
 
-ADD django/requirements/prod.txt /app/requirements.txt
+ADD django/requirements /app/requirements
 
-RUN set -ex \
+RUN apk update \
   # psycopg2 dependencies
   && apk add --virtual build-deps gcc python3-dev musl-dev \
   && apk add postgresql-dev postgresql-client \
@@ -19,11 +19,12 @@ RUN set -ex \
   # Fonts
   && apk add ttf-opensans \
   # OpenSSL
-  && apk add build-base libressl-dev libffi-dev cargo openssl-dev \
+  && apk add build-base libressl-dev libffi-dev cargo openssl-dev 
 
-  && /env/bin/pip install --upgrade pip \
-  && /env/bin/pip install Cython cffi paramiko \
-  && /env/bin/pip install -r /app/requirements.txt \
+RUN pip install --upgrade pip
+RUN pip install Cython cffi paramiko
+RUN pip install -r /app/requirements/prod.txt
+
 
 
 ADD django /app
