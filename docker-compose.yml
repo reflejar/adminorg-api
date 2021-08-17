@@ -16,16 +16,14 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - postgres_data_backups:/backups
     environment:
-      - POSTGRES_HOST: postgres
-      - POSTGRES_PORT: 5432
-      - POSTGRES_DB: adminsmart
-      - POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
-      - POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: adminsmart
+      POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
+      POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
     ports:
       - "5432:5432"
 
-  # redis:
-  #   image: redis:6.0.9
 
   django: &django
     build:
@@ -39,43 +37,12 @@ services:
       - static:/app/static
       - media:/app/media      
     environment:
-      # - REDIS_URL: redis://redis:6379/0
-      # - CELERY_FLOWER_USER: AkSCzUUkrubMopHkMlHHIiFnUzKhIidG
-      # - CELERY_FLOWER_PASSWORD: jspxQGdwrs9VbGLmn5FmXRAGqNt5D6osRgqggNJl1JgcdcCYZdCf7Ch0jcgG0nH7
-      - POSTGRES_HOST: postgres
-      - POSTGRES_PORT: 5432
-      - POSTGRES_DB: adminsmart
-      - POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
-      - POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: adminsmart
+      POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
+      POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
     ports:
       - "8000:8000"
     links:
       - postgres:postgres
-
-  # celeryworker:
-  #   <<: *django
-  #   image: adminsmart_celeryworker
-  #   depends_on:
-  #     - redis
-  #     - postgres
-  #   ports: []
-  #   command: /start-celeryworker.sh
-
-  # celerybeat:
-  #   <<: *django
-  #   image: adminsmart_dev_celerybeat
-  #   depends_on:
-  #     - redis
-  #     - postgres
-
-  #   ports: []
-  #   command: /start-celerybeat
-
-  # flower:
-  #   <<: *django
-  #   image: adminsmart_dev_flower
-  #   ports:
-  #     - "5555:5555"
-  #   command: /start-flower
-
-  
