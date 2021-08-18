@@ -29,15 +29,10 @@ RUN pip install Cython cffi paramiko
 RUN pip install -r /app/requirements/prod.txt
 
 
-COPY ./compose/django/entrypoint.sh /entrypoint.sh
-RUN sed -i 's/\r//' /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-RUN chown django /entrypoint.sh
-
-COPY ./compose/django/start.sh /start.sh
-RUN sed -i 's/\r//' /start.sh
-RUN chmod +x /start.sh
-RUN chown django /start.sh
+COPY ./compose/django/bash/* /
+RUN sed -i 's/\r//' /*.sh
+RUN chmod +x /*.sh
+RUN chown django /*.sh
 
 ADD django /app
 RUN chown -R django /app
@@ -47,7 +42,4 @@ WORKDIR /app
 EXPOSE 8000
 
 ENTRYPOINT ["/entrypoint.sh"]
-
-#CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "config.wsgi" ] # Para produccion. Esto ejecuta 3 workes de gunicorn para django y django ejecuta settings.produccion
-CMD ["/start.sh"]
 

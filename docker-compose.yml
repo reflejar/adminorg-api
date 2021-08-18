@@ -24,6 +24,8 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:6.0.9
 
   django: &django
     build:
@@ -42,8 +44,34 @@ services:
       POSTGRES_DB: adminsmart
       POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
       POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
-      REDIS_URL: "redis:@redis6379/0"
+      REDIS_URL: "redis:@redis:6379/0"
+      CELERY_FLOWER_USER: AkSCzUUkrubMopHkMlHHIiFnUzKhIidG
+      CELERY_FLOWER_PASSWORD: jspxQGdwrs9VbGLmn5FmXRAGqNt5D6osRgqggNJl1JgcdcCYZdCf7Ch0jcgG0nH7
     ports:
       - "8000:8000"
     links:
       - postgres:postgres
+    command: /start-django-dev.sh
+    #command: /start-django-prod.sh
+
+  celeryworker:
+    <<: *django
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celery-worker.sh
+
+  celerybeat:
+    <<: *django
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celery-beat.sh
+
+  flower:
+    <<: *django
+    ports:
+      - "5555:5555"
+    command: /start-celery-flower.sh
