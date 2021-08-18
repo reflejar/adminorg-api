@@ -48,5 +48,6 @@ EXPOSE 8000
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "config.wsgi" ]
+#CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "config.wsgi" ] # Para produccion. Esto ejecuta 3 workes de gunicorn para django y django ejecuta settings.produccion
+CMD ["/start.sh"]
 
