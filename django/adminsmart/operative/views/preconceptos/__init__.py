@@ -14,17 +14,17 @@ from adminsmart.utils.generics import custom_viewsets
 from adminsmart.operative.models import (
 	Operacion
 )
-from adminsmart.operative.serializers.operaciones.preconceptos import PreConceptoModelSerializer
+from adminsmart.operative.serializers.operaciones.preoperaciones import PreOperacionModelSerializer
 
-class PreConceptoViewSet(custom_viewsets.CustomModelViewSet):
+class PreOperacionViewSet(custom_viewsets.CustomModelViewSet):
 	"""
-		Para la carga de preconceptos
+		Para la carga de preoperaciones
 		Utiliza el serializer con 
 			many=True si es POST
 			many=False si es UPDATE
 	"""
 
-	serializer_class = PreConceptoModelSerializer
+	serializer_class = PreOperacionModelSerializer
 
 	def get_queryset(self):
 		try:
@@ -73,6 +73,6 @@ class PreConceptoViewSet(custom_viewsets.CustomModelViewSet):
 		context = {
 			'comunidad': self.comunidad,
 		}
-		operaciones = PreConceptoModelSerializer(queryset, context=context, many=True)
+		operaciones = PreOperacionModelSerializer(queryset, context=context, many=True)
 		return Response(operaciones.data)
 
