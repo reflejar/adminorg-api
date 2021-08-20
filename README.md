@@ -31,12 +31,23 @@ docker-compose up
 ### Ingresando al contenedor
 
 
-_Y si ya est ejecutandosé docker pero quiero, ademas, entrar al shell_plus para interactuar?_
+_Y si se está ejecutando docker pero quiero, ademas, entrar al shell_plus para interactuar?_
 
 ```
 docker-compose exec django /entrypoint.sh sh
 ```
 
+_y luego..._
+
+```
+python manage.py shell_plus
+```
+
+_o la versión rápida_
+
+```
+docker-compose exec django /entrypoint.sh python manage.py shell_plus
+```
 
 ### Consideraciones de db
 
