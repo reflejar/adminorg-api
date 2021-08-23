@@ -1,0 +1,77 @@
+version: '3'
+
+volumes:
+  postgres_data: {}
+  postgres_data_backups: {}
+  media: {}
+  static: {}
+
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/postgres/Dockerfile
+    image: adminsmart_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_backups:/backups
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: adminsmart
+      POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
+      POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:6.0.9
+
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    image: adminsmart_django
+    depends_on:
+      - postgres
+    volumes:
+      - ./django:/app
+      - static:/app/static
+      - media:/app/media      
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: adminsmart
+      POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
+      POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
+      REDIS_URL: "redis:@redis:6379/0"
+      CELERY_FLOWER_USER: AkSCzUUkrubMopHkMlHHIiFnUzKhIidG
+      CELERY_FLOWER_PASSWORD: jspxQGdwrs9VbGLmn5FmXRAGqNt5D6osRgqggNJl1JgcdcCYZdCf7Ch0jcgG0nH7
+    ports:
+      - "8000:8000"
+    links:
+      - postgres:postgres
+    command: /start-django-dev.sh
+    #command: /start-django-prod.sh
+
+  celeryworker:
+    <<: *django
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celery-worker.sh
+
+  celerybeat:
+    <<: *django
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celery-beat.sh
+
+  flower:
+    <<: *django
+    ports:
+      - "5555:5555"
+    command: /start-celery-flower.sh
