@@ -27,13 +27,12 @@ class PreOperacionViewSet(custom_viewsets.CustomModelViewSet):
 	serializer_class = PreOperacionesModelSerializer
 
 	def get_queryset(self):
-		return PreOperacion.objects.filter(
-			comunidad=self.comunidad,
-			fecha__isnull=True,
-			cuenta__naturaleza__nombre__in=["cliente", "dominio"]
-		)
 		try:
-			pass
+			return PreOperacion.objects.filter(
+				comunidad=self.comunidad,
+				fecha__isnull=True,
+				cuenta__naturaleza__nombre__in=["cliente", "dominio"]
+			)
 		except:
 			raise Http404
 
@@ -42,14 +41,12 @@ class PreOperacionViewSet(custom_viewsets.CustomModelViewSet):
 		self.check_object_permissions(self.request, obj)
 		return obj
 
-
 	def get_permissions(self):
 		'''Manejo de permisos'''
 		permissions = [IsAuthenticated, IsAdministrativoUser]
 		if self.action in ['update', 'retrieve', 'delete']:
 			permissions.append(IsComunidadMember)
 		return [p() for p in permissions]
-
 	
 	def create(self, request, *args, **kwargs):
 		for r in request.data:
@@ -57,16 +54,6 @@ class PreOperacionViewSet(custom_viewsets.CustomModelViewSet):
 			serializer.is_valid(raise_exception=True)
 			self.perform_create(serializer)
 		return Response(status=status.HTTP_201_CREATED)
-
-	# def create(self, request, *args, **kwargs):
-	# 	is_many = isinstance(request.data, list)
-
-	# 	serializer = self.get_serializer(data=request.data, many=True)
-	# 	serializer.is_valid(raise_exception=True)
-	# 	self.perform_create(serializer)
-	# 	headers = self.get_success_headers(serializer.data)
-	# 	return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 	def list(self, request):
 		queryset = self.get_queryset()
