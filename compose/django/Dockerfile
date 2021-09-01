@@ -19,7 +19,7 @@ RUN apk update \
   # Fonts
   && apk add ttf-opensans \
   # OpenSSL
-  && apk add build-base libressl-dev libffi-dev cargo openssl-dev 
+  && apk add build-base libressl-dev libffi-dev cargo openssl-dev
 
 
 RUN addgroup -S django \
@@ -35,7 +35,10 @@ RUN chmod +x /*.sh
 RUN chown django /*.sh
 
 ADD django /app
+RUN chmod +x /app
 RUN chown -R django /app
+
+
 USER django
 WORKDIR /app
 

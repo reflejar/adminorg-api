@@ -37,14 +37,14 @@ services:
     volumes:
       - ./django:/app
       - static:/app/static
-      - media:/app/media      
+      - media:/app/media
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: adminsmart
       POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
       POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
-      REDIS_URL: "redis:@redis:6379/0"
+      REDIS_URL: redis://redis:6379/0
       CELERY_FLOWER_USER: AkSCzUUkrubMopHkMlHHIiFnUzKhIidG
       CELERY_FLOWER_PASSWORD: jspxQGdwrs9VbGLmn5FmXRAGqNt5D6osRgqggNJl1JgcdcCYZdCf7Ch0jcgG0nH7
     ports:
@@ -64,6 +64,7 @@ services:
 
   celerybeat:
     <<: *django
+    user: root
     depends_on:
       - redis
       - postgres

@@ -1,8 +1,7 @@
 #!/bin/sh
 
 set -o errexit
-set -o pipefail
 set -o nounset
 
-
+rm -f './celerybeat.pid'
 celery -A adminsmart.taskapp beat -l INFO
