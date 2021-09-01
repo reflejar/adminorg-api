@@ -9,14 +9,14 @@ from adminsmart.operative.models import Cuenta, Metodo, Documento
 class PreOperacion(BaseModel):
 
 	"""
-		Modelo de de operaciones
+		Modelo de de Preoperaciones
 		Representa la operacion contable en su minima expresion
-		Es la tabla madre donde se vuelcan todas las operaciones de las comunidades
+		Es la tabla fantasma, donde se vuelcan todas las operaciones sin confirmar
 	"""
 
 	fecha = models.DateField(blank=True, null=True) # Fecha principal y contable. Con ella se ordenan las operaciones/evaluar eliminar
 	fecha_indicativa = models.DateField(blank=True, null=True) # Fecha indicativa de periodo para diversas cuestiones/evaluar eliminar
-	cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name="operaciones")
+	cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name="preoperaciones")
 	cantidad = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
 	valor = models.DecimalField(max_digits=9, decimal_places=2)
 	vinculo = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="vinculos")
@@ -50,7 +50,7 @@ class PreOperacion(BaseModel):
 		""" Devuelve la Cuenta(cliente, dominio) por la que se creó el credito """
 		return self.cuenta
 
-	def concepto(self):
+	def concepto(self):#trabajar en esta funcion
 		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
 
 		# Por ahora no genera concepto si la operacion no es de un cliente o un dominio

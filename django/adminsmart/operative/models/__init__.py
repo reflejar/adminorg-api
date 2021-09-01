@@ -8,3 +8,4 @@ from .cuenta import DefinicionVinculo
 from .documento import Documento
 from .own_receipt import OwnReceipt
 from .operacion import Operacion
+from .pre_operacion import PreOperacion
