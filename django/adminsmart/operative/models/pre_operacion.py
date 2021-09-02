@@ -14,7 +14,6 @@ class PreOperacion(BaseModel):
 		Es la tabla fantasma, donde se vuelcan todas las operaciones sin confirmar
 	"""
 
-	fecha = models.DateField(blank=True, null=True) # Fecha principal y contable. Con ella se ordenan las operaciones/evaluar eliminar
 	fecha_indicativa = models.DateField(blank=True, null=True) # Fecha indicativa de periodo para diversas cuestiones/evaluar eliminar
 	cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name="preoperaciones")
 	cantidad = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)

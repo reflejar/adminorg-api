@@ -5,18 +5,13 @@ from django.db import transaction
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from django_afip.models import (
-	DocumentType,
-	ReceiptType,
-)
+
 from adminsmart.users.permissions import IsComunidadMember, IsAdministrativoUser
 from adminsmart.utils.generics import custom_viewsets
-from adminsmart.operative.models import (
-	PreOperacion
-)
-from adminsmart.operative.serializers.preoperaciones import PreOperacionesModelSerializer
+from adminsmart.operative.models import PreOperacion
+from adminsmart.operative.serializers.importacion import ImportacionModelSerializer
 
-class PreOperacionViewSet(custom_viewsets.CustomModelViewSet):
+class ImportacionViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 		Para la carga de preconceptos
 		Utiliza el serializer con 
@@ -24,15 +19,11 @@ class PreOperacionViewSet(custom_viewsets.CustomModelViewSet):
 			many=False si es UPDATE
 	"""
 
-	serializer_class = PreOperacionesModelSerializer
+	serializer_class = ImportacionModelSerializer
 
 	def get_queryset(self):
 		try:
-			return PreOperacion.objects.filter(
-				comunidad=self.comunidad,
-				fecha__isnull=True,
-				cuenta__naturaleza__nombre__in=["cliente", "dominio"]
-			)
+			return PreOperacion.objects.filter(comunidad=self.comunidad)
 		except:
 			raise Http404
 
@@ -56,10 +47,6 @@ class PreOperacionViewSet(custom_viewsets.CustomModelViewSet):
 		return Response(status=status.HTTP_201_CREATED)
 
 	def list(self, request):
-		queryset = self.get_queryset()
-		context = {
-			'comunidad': self.comunidad,
-		}
-		preoperaciones = PreOperacionesModelSerializer(queryset, context=context, many=True)
+		preoperaciones = ImportacionModelSerializer(self.get_queryset(), context={'comunidad': self.comunidad}, many=True)
 		return Response(preoperaciones.data)
 
