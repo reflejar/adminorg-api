@@ -4,20 +4,45 @@ from rest_framework import serializers
 
 from adminsmart.operative.models import PreOperacion
 
+
+json_mandado = {
+	"etiqueta": "chiquita",
+	"color": "amarillo"
+}
+
+
+
+
 class ImportacionModelSerializer(serializers.ModelSerializer):
 	'''Serializer de PreOperaciones'''
 
 	class Meta:
 		model = PreOperacion
+		fileds = (
+			'fecha_indicativa',
+			'cuenta',
+			'cantidad',
+			'valor',
+			'fecha_vencimiento',
+			'fecha_gracia',
+			'detalle',
+			'descripcion',
+
+		)
+
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		# fields = PreOperacion()._meta
-		self.fields['cantidad'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0, allow_null=True)
-
-
-	def get_metodo(self, cuenta, naturaleza):
+		fields = PreOperacion()._meta
+		self.fields['periodo'] = serializers.ModelField(model_field=fields.get_field("fecha_indicativa"))
+		self.fields['concepto'] = serializers.DateField()
 		
+
+		
+
+
+	@classmethod
+	def get_metodo(cls, cuenta, naturaleza):
 		try:
 			return cuenta.metodos.get(naturaleza=naturaleza)
 		except:
@@ -111,3 +136,56 @@ class ImportacionModelSerializer(serializers.ModelSerializer):
 	# 	instance_concepto.save()
 
 	# 	return instance		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
