@@ -6,3 +6,4 @@ from .cuenta import *
 from .documento import *
 from .operacion import *
 from .own_receipt import *
+from .preoperacion import *
