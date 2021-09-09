@@ -29,7 +29,7 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 				'concepto': str(o.concepto()),
 				'periodo': o.periodo(),
 				'valor': o.valor,
-			} for o in d.operaciones.all()],
+			} for o in d.operaciones.all() if o.cuenta in d.destinatario.grupo],
 			'total': d.total,
 			'saldo': self.saldo
 		}
