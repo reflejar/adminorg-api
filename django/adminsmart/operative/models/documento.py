@@ -286,7 +286,6 @@ class Documento(BaseModel):
 		# Hay que hacer que retorne True si hay alguna operacion que diga "compensacion de intereses" o algo asi
 		return False
 
-
 	def pagos_recibidos(self):
 		""" Esto retorna el ultimo pago si es que el saldo es distinto al valor original """
 		identifier = self.operaciones.first().asiento	
@@ -305,7 +304,6 @@ class Documento(BaseModel):
 			return set(documentos)
 		return 
 		
-
 	def debe(self):
 		""" Esto retorna el todas las operaciones que van en el debe """
 		identifier = self.operaciones.first().asiento
@@ -314,7 +312,6 @@ class Documento(BaseModel):
 			valor__gt=0,
 		).exclude(descripcion="ANULACION")
 	
-
 	def haber(self):
 		""" Esto retorna el todas las operaciones que van en el haber """
 		identifier = self.operaciones.first().asiento
@@ -326,7 +323,6 @@ class Documento(BaseModel):
 	def plataforma(self):
 		return self.cobros_plataforma.first()
 
-	
 	# Funciones Operativas
 	def hacer_pdf(self):
 
@@ -478,8 +474,18 @@ class Documento(BaseModel):
 				self.receipt.receipt_number = last + 1
 			self.receipt.save()		
 
+	@property
+	def causante(self):
+		if self.destinatario:
+			return self.destinatario.naturaleza.nombre
+		if self.receipt.receipt_type.code == "303":
+			return "caja"
+		if self.receipt.receipt_type.code == "400":
+			return "asiento"
 
-
+	@property
+	def total(self):
+		return sum([o.valor for o in self.operaciones.all() if o.cuenta in self.destinatario.grupo])
 
 	# def vinculos(self):
 	# 	identifier = self.operaciones.first().asiento

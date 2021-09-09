@@ -1,1 +1,1 @@
-from adminsmart.utils.generics.basic_set_up import *
+from adminsmart.utils.generics.setups import *
