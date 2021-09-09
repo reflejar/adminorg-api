@@ -82,27 +82,23 @@ class Cuenta(BaseModel):
 
 	def estado_cuenta(self, fecha=None):	
 		fecha = fecha if fecha else date.today()
-		return self.get_model('Operacion').objects.filter(
-				cuenta__in=self.grupo, 
+		return self.get_model('Documento').objects.filter(
+				destinatario__in=self.grupo, 
 				# fecha__lte=fecha,
-				documento__isnull=False,
 			).select_related(
-				"cuenta", 
-				"cuenta__perfil", # Para el nombre de la cuenta
-				"cuenta__naturaleza",
-				"documento__destinatario",
-				"documento__destinatario__naturaleza",
-				"documento__receipt", 
-				"documento__receipt__receipt_type", 
-				"vinculo",
+				"destinatario", 
+				"destinatario__perfil", # Para el nombre de la cuenta
+				"destinatario__naturaleza",
+				"receipt", 
+				"receipt__receipt_type", 
 			).prefetch_related(
-				"vinculos",
-				"vinculos__cuenta",
-				"vinculos__cuenta__naturaleza",
-				"vinculo__vinculos",
-				"vinculo__vinculos__cuenta",
-				"vinculo__vinculos__cuenta__naturaleza",
-			).order_by('fecha', 'id')
+				"operaciones",
+				"operaciones__cuenta",
+				"operaciones__cuenta__naturaleza",
+				"operaciones__vinculos",
+				"operaciones__vinculos__cuenta",
+				"operaciones__vinculos__cuenta__naturaleza",
+			).order_by('fecha_operacion', 'id')
 
 		
 	def estado_saldos(self, fecha=None):
