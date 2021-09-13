@@ -43,7 +43,7 @@ class ClienteViewSet(BaseViewSet):
 
 	@action(detail=False, methods=['post'])
 	def masivo(self, request, *args, **kwargs):
-		""" Facturacion masiva """
+		""" Generacion masiva de comprobantes """
 
 		self.causante = "cliente-masivo"
 		self.sin_destinatario = True
