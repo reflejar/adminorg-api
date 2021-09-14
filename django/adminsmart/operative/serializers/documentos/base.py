@@ -19,6 +19,7 @@ from django_afip.models import (
 
 class DocumentoModelSerializer(serializers.ModelSerializer):
 	'''Documento model serializer'''
+	pdf = serializers.SerializerMethodField()
 	
 	class Meta:
 		model = Documento
@@ -28,13 +29,14 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 			'fecha_operacion',
 			'descripcion',
 			'fecha_anulacion',
-			'nombre'
+			'nombre',
+			'pdf'
 		)
 		
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		# Fields comunes:
-		self.fields['pdf'] = serializers.FileField(read_only=True)
+		# self.fields['pdf'] = serializers.FileField(read_only=True)
 		if self.context.keys():
 			if not self.context['sin_destinatario']:
 				self.fields['destinatario'] = serializers.PrimaryKeyRelatedField(
@@ -51,6 +53,10 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 				if self.context['receipt_type'].code in ["54", "301", "303"]:
 					self.fields['fecha_anulacion'] = serializers.DateField(read_only=True)
 
+	def get_pdf(self, instance):
+		request = self.context['request']
+		pdf_url = instance.pdf.serve().url
+		return request.build_absolute_uri(pdf_url)
 
 	def validate_fecha_operacion(self, fecha_operacion):
 

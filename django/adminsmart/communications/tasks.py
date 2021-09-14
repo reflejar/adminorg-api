@@ -6,12 +6,6 @@ from django.core.mail import EmailMultiAlternatives
 # Celery
 from celery.decorators import task
 
-# Utilities
-import jwt
-import time
-from datetime import timedelta
-
-
 @task(name="send_emails")
 def send_emails(from_email, destinations, subject, html_string, file_paths=[]):
 	for email in destinations:
