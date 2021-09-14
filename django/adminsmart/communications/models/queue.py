@@ -18,7 +18,7 @@ class Queue(BaseModel):
 	instance = models.IntegerField(blank=True, null=True)
 	attach = models.CharField(max_length=100, blank=True, null=True) # Un string con una lista de atributos con files
 	observations = models.TextField(blank=True, null=True)
-	send_at = models.DateTimeField(blank=True, null=True)
+	execute_at = models.DateTimeField(blank=True, null=True)
 
 	def send(self):
 		pass
@@ -29,6 +29,6 @@ class Sent(BaseModel):
 		Modelo para los envios realizados
 	"""
 
-	instance = models.ForeignKey('communications.Queue')
+	instance = models.ForeignKey('communications.Queue', related_name="shipments")
 	observations = models.TextField(blank=True, null=True)
-	sent_on = models.DateTimeField(blank=True, null=True)
+	executed_at = models.DateTimeField(auto_now=True)

@@ -16,7 +16,7 @@ from adminsmart.utils.models import BaseModel
 class PDF(BaseModel):
 	"""
 		Modelo para almacenar los textos de los pdfs
-		Cada vez que se solicita un pdf se genera de nuevo a traves del hash
+		Cada vez que se solicita un pdf se genera de nuevo a traves del ciphertext
 		deberian eliminarse todas las noches
 	"""
 
