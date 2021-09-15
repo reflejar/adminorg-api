@@ -213,3 +213,4 @@ MERCADOPAGO = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+DEFAULT_FROM_EMAIL = 'Equipo de AdminSmart <info@admin-smart.com>'

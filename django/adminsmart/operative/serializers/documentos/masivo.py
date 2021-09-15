@@ -10,7 +10,6 @@ from adminsmart.operative.models import (
 
 from adminsmart.operative.CU.operaciones.clientes import masivo as operacionesMasivo
 from adminsmart.operative.tasks import hacer_pdfs
-from adminsmart.communications.tasks import send_emails
 
 class DistribucionSerializer(serializers.Serializer):
 
@@ -19,14 +18,14 @@ class DistribucionSerializer(serializers.Serializer):
 
 		self.fields['ingreso'] = serializers.PrimaryKeyRelatedField(
 				queryset=Cuenta.objects.filter(
-						comunidad=self.context['comunidad'], 
+						comunidad=self.context['comunidad'],
 						naturaleza__nombre="ingreso"
-					), 
+					),
 				allow_null=False
 			)
 		unidades_choices = {
 			'socio': "Total por socio",
-			'dominio': "Total por dominio",	
+			'dominio': "Total por dominio",
 			'm2': "Total por m2",
 		}
 		self.fields['unidad'] = serializers.ChoiceField(choices=unidades_choices)
@@ -38,20 +37,20 @@ class DistribucionSerializer(serializers.Serializer):
 class MasivoClienteModelSerializer(DocumentoModelSerializer):
 	'''Documento con destino a cliente model serializer'''
 
-		
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.fields['distribuciones'] = DistribucionSerializer(read_only=False, many=True, context=self.context)
 
 		self.fields['preconceptos'] = serializers.PrimaryKeyRelatedField(
 				queryset=Operacion.objects.filter(
-					comunidad=self.context['comunidad'], 
+					comunidad=self.context['comunidad'],
 					documento__isnull=True,
 					fecha__isnull=True,
 					cuenta__naturaleza__nombre__in=["cliente", "dominio"],
 				), many=True
 			)
-		
+
 
 	@transaction.atomic
 	def create(self, validated_data):
@@ -64,10 +63,10 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 		self.send_emails(list_of_docs)
 		return list_of_docs
 
-	def send_emails(self, list_of_docs): 
+	def send_emails(self, list_of_docs):
 		for d in Documento.objects.filter(id__in=list_of_docs):
 			documento = DestinoClienteModelSerializer(instance=d)
-			documento.send_email(d)			
+			documento.send_email(d)
 
 
 
