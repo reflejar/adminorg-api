@@ -8,29 +8,28 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 		self.saldo = Decimal(0.00)
 		self.orden = 0
 
-	def makeJSON(self, o:Operacion) -> Dict[str, Any]:
-		self.saldo += o.valor
+	def makeJSON(self, d:Documento) -> Dict[str, Any]:
+		self.saldo += d.total
 
-		receipt_type = str(o.documento.receipt.receipt_type)
-		formatted_number = str(o.documento.receipt.formatted_number)
+		receipt_type = str(d.receipt.receipt_type)
+		formatted_number = str(d.receipt.formatted_number)
 
 		return {
-			'id': o.id,
-			'fecha': o.fecha,
-			'causante': o.causante(),
-			'documento': {
-				'id': o.documento.id,
-				'fecha_anulacion': o.documento.fecha_anulacion,
-				'receipt': {
-					'receipt_type': receipt_type,
-					'formatted_number': formatted_number,
-				},
-				'nombre': receipt_type + " " + formatted_number
-			}, 
-			'cuenta': str(o.cuenta),
-			'concepto': str(o.concepto()),
-			'periodo': o.periodo(),
-			'debe': o.debe,
-			'haber': o.haber,
+			'id': d.id,
+			'fecha': d.fecha_operacion,
+			'causante': d.causante,
+			'fecha_anulacion': d.fecha_anulacion,
+			'nombre': receipt_type + " " + formatted_number,
+			'receipt': {
+				'receipt_type': receipt_type,
+				'formatted_number': formatted_number,
+			},
+			'operaciones': [{
+				'cuenta': str(o.cuenta),
+				'concepto': str(o.concepto()),
+				'periodo': o.periodo(),
+				'valor': o.valor,
+			} for o in d.operaciones.all() if o.cuenta in d.destinatario.grupo],
+			'total': d.total,
 			'saldo': self.saldo
 		}

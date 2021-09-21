@@ -9,7 +9,7 @@ from adminsmart.operative.views import (
      # plataformas,
      estados,
      informes,
-     preoperacion,
+     importacion,
 )
 
 router = DefaultRouter()
@@ -22,7 +22,7 @@ router.register(r'documentos/tesoreria', documentos.TesoreriaViewSet, base_name=
 router.register(r'documentos/asiento', documentos.AsientoViewSet, base_name='operative')
 
 router.register(r'preconceptos', preconceptos.PreConceptoViewSet, base_name='operative')
-router.register(r'preoperaciones', preoperacion.PreOperacionViewSet, base_name='operative')
+router.register(r'importacion', importacion.ImportacionViewSet, base_name='operative')
 
 # router.register(r'plataformas', plataformas.PlataformasViewSet, base_name='operative')
 # router.register(r'plataformas/(?P<platform_code>[-a-zA-Z0-0_]+)', plataformas.PlataformasViewSet, base_name='operative')
