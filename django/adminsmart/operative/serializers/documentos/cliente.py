@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import transaction
 
 from .base import *
@@ -17,7 +19,7 @@ from adminsmart.operative.CU.operaciones.clientes import (
 	creditos as operacionesCreditos,
 	disminuciones as operacionesDisminuciones
 )
-from adminsmart.communications.tasks import send_emails
+from adminsmart.communications.models import Queue, Attachment
 
 creditos = ['11', '12', '51', '52']
 disminuciones = ['13', '53', '54']
@@ -35,10 +37,10 @@ creador_operaciones = {
 class DestinoClienteModelSerializer(DocumentoModelSerializer):
 	'''Documento con destino a cliente model serializer'''
 
-		
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		
+
 		# Incorporacion por TIPOS de documento
 		if 'receipt_type' in self.context.keys():
 			if self.context['receipt_type'].code in creditos:
@@ -47,14 +49,14 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 			elif self.context['receipt_type'].code in disminuciones:
 				self.fields['cobros'] = CobroModelSerializer(context=self.context, read_only=False, many=True)
 				self.fields['a_cuenta'] = ACuentaModelSerializer(context=self.context, read_only=True, many=True)
-				
+
 				# Incorporacion para Recibo X
 				if self.context['receipt_type'].code == '54':
 					self.fields['condonacion'] = serializers.BooleanField(required=True)
 					self.fields['cajas'] = CajaModelSerializer(context=self.context, read_only=False, many=True)
 					self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(context=self.context, read_only=False, many=True)
 					self.fields['utilizaciones_disponibilidades'] = UtilizacionModelSerializer(context=self.context, read_only=False, many=True)
-				
+
 				# Incorporacion para Nota de Credito
 				else:
 					self.fields['resultados'] = ResultadoModelSerializer(context=self.context, read_only=False, many=True)
@@ -62,7 +64,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 
 	def valid_creditos(self, data):
 		"""
-			Validacion de creditos. 
+			Validacion de creditos.
 			Solo se puede hacer en la validacion grupal para poder acceder a destinatario y destinatario de los creditos juntos
 			No se permite si:
 				La cuenta destinatario dentro del credito no está vinculada con el destinatario del JSON general
@@ -77,7 +79,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 
 	def valid_cobros(self, data):
 		"""
-			Validacion de cobros. 
+			Validacion de cobros.
 			Solo se puede hacer en la validacion grupal para poder acceder a destinatario y destinatario de los creditos juntos
 			No se permite si:
 				el credito no pertenece a un destinatario del grupo
@@ -106,16 +108,16 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 
 	def valid_totales(self, data):
 		"""
-			Validacion de total en recibos. 
+			Validacion de total en recibos.
 			No se permite si:
 				la suma de los cobros es mayor a la suma de las cajas y las utilizaciones_saldos
 		"""
-		suma = 0 
-		suma_cajas = sum([i['monto'] for i in data['cajas']]) 
-		suma_utilizaciones_saldos = sum([i['monto'] for i in data['utilizaciones_saldos']]) 
-		suma_utilizaciones_disponibilidades = sum([i['monto'] for i in data['utilizaciones_disponibilidades']]) 
-		suma_cobros = sum([i['monto'] for i in data['cobros']]) 
-		
+		suma = 0
+		suma_cajas = sum([i['monto'] for i in data['cajas']])
+		suma_utilizaciones_saldos = sum([i['monto'] for i in data['utilizaciones_saldos']])
+		suma_utilizaciones_disponibilidades = sum([i['monto'] for i in data['utilizaciones_disponibilidades']])
+		suma_cobros = sum([i['monto'] for i in data['cobros']])
+
 		if suma_cobros > (suma_cajas + suma_utilizaciones_saldos + suma_utilizaciones_disponibilidades):
 			raise serializers.ValidationError('El valor de los creditos cobrados es mayor al total por formas de cobro')
 
@@ -123,7 +125,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 
 	def valid_utilizaciones(self, data):
 		"""
-			Validacion de las utilizaciones_saldos y de utilizaciones_disponibilidades. 
+			Validacion de las utilizaciones_saldos y de utilizaciones_disponibilidades.
 			Solo se puede hacer en la validacion grupal para poder acceder a destinatario y destinatario de las utilizaciones_saldos juntos
 			No se permite si:
 				no existen cobros
@@ -142,31 +144,31 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 				operacion = u['vinculo']
 				if not operacion.cuenta in grupo:
 					raise serializers.ValidationError({'utilizaciones_saldos': 'vinculo id {}: no es una operacion utilizable. No pertenece al cliente / socio'.format(operacion.id)})
-				
+
 				if abs(operacion.saldo(fecha_operacion)) < u['monto']:
 					raise serializers.ValidationError({'utilizaciones_saldos': 'vinculo id {}: el valor colocado es mayor al saldo de la utilizacion'.format(operacion.id)})
-		
+
 		utilizaciones_disponibilidades = data['utilizaciones_disponibilidades']
 		if utilizaciones_disponibilidades:
 			for u in utilizaciones_disponibilidades:
 				operacion = u['vinculo']
 				if abs(operacion.saldo(fecha_operacion)) < u['monto']:
 					raise serializers.ValidationError({'utilizaciones_disponibilidades': 'vinculo id {}: el valor colocado es mayor al saldo de la utilizacion'.format(operacion.id)})
-		
+
 		return data
-		
+
 
 
 	def valid_resultados(self, data):
 		"""
-			Validacion de total en notas de credito manuales. 
+			Validacion de total en notas de credito manuales.
 			No se permite si:
 				la suma de los cobros es mayor a la suma de resultados
 		"""
-		suma = 0 
-		suma_resultados = sum([i['monto'] for i in data['resultados']]) 
-		suma_cobros = sum([i['monto'] for i in data['cobros']]) 
-		
+		suma = 0
+		suma_resultados = sum([i['monto'] for i in data['resultados']])
+		suma_cobros = sum([i['monto'] for i in data['cobros']])
+
 		if suma_cobros > suma_resultados:
 			raise serializers.ValidationError('El valor de los creditos cobrados es mayor al total por resultados')
 
@@ -189,9 +191,9 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 
 			else:
 				validacion_resultados = self.valid_resultados(data)
-		
+
 		return data
-		
+
 
 	def hacer_total(self, validated_data):
 		"""
@@ -205,11 +207,11 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 			return sum([i['monto'] for i in validated_data['creditos']])
 
 		elif self.context['receipt_type'].code == '54':
-			return sum([i['monto'] for i in validated_data['cajas']])			
+			return sum([i['monto'] for i in validated_data['cajas']])
 
 		elif self.context['receipt_type'].code in disminuciones:
-			return sum([i['monto'] for i in validated_data['resultados']])	
-		
+			return sum([i['monto'] for i in validated_data['resultados']])
+
 		else:
 			return 0.00
 
@@ -222,20 +224,17 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 		for d in documentos:
 			documento.hacer_pdf()
 
-		self.send_email(documento)		
+		self.send_email(documento)
 		return documento
 
 	def send_email(self, documento):
-		if documento.comunidad.mails:
-			from_email = "{} <info@admin-smart.com>".format(documento.comunidad.nombre)
-			destinations = documento.destinatario.perfil.get_emails_destinatarios()
-			html_string = render_to_string('emails/documentos/index.html', {"documento": documento})
-			subject = "Nuevo Comprobante" 
-			file_paths = [documento.pdf.path]
-			send_emails.delay(
-				from_email=from_email, 
-				destinations=destinations, 
-				subject=subject, 
-				html_string=html_string, 
-				file_paths=file_paths
-			)
+		attachments = Attachment.objects.create(pdf=documento.pdf)
+		q = Queue.objects.create(
+			comunidad=documento.comunidad,
+			addressee=documento.destinatario.perfil,
+			subject="Nuevo Comprobante",
+			body=render_to_string('emails/documentos/index.html', {"documento": documento}),
+			client="operative.serializers.documentos.cliente.DestinoClienteModelSerializer",
+			execute_at=datetime.now()
+		)
+		q.attachments.add(attachments)

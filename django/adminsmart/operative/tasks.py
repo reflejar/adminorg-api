@@ -4,12 +4,6 @@ from adminsmart.operative.models import Documento
 # Celery
 from celery.decorators import task
 
-# Utilities
-import jwt
-import time
-from datetime import timedelta
-
-
 @task(name="facturacion_masiva")
 def facturacion_masiva(data, context):
 

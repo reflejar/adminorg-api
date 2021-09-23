@@ -1,6 +1,4 @@
 from django.contrib.auth import authenticate, password_validation
-from django.core.validators import RegexValidator
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.conf import settings
@@ -9,11 +7,11 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
-from adminsmart.communications.tasks import send_emails
 
 from datetime import timedelta
 import jwt
 
+from adminsmart.communications.models import Queue
 from adminsmart.users.serializers import PerfilModelSerializer
 from adminsmart.users.models import (
 	Perfil,
@@ -68,7 +66,7 @@ class UserSignupSerializer(serializers.Serializer):
 		comunidad = data['comunidad']
 		# if comunidad.accountss_set.all():
 		# 	raise serializers.ValidationError({"comunidad": "La administracion de tu comunidad utiliza una plataforma externa de comunicacion."})
-		
+
 		'''Verifica el documento en documentos de la comunidad'''
 		perfil = Perfil.objects.filter(comunidad=data['comunidad'], numero_documento=data['numero_documento'])
 		if not perfil:
@@ -97,21 +95,22 @@ class UserSignupSerializer(serializers.Serializer):
 		'''Envia el email para confirmar la cuenta'''
 		verification_token = self.gen_verification_token(user)
 		subject = "Bienvenido/a {} a AdminSmart! Verifica tu cuenta...".format(user.username)
-		from_email = 'AdminSmart <info@admin-smart.com>'
-		destinations = [user.email]
 		html_string = render_to_string(
 			'emails/users/account_verification.html',
 			context={
-				'token': verification_token, 
+				'token': verification_token,
 				'user': user,
 			},
 		)
-		send_emails.delay(
-				from_email=from_email, 
-				destinations=destinations, 
-				subject=subject, 
-				html_string=html_string, 
-			)
+		comunidad = perfil.comunidad,
+		addressee = perfil,
+		Queue.objects.create(
+			comunidad=perfil.comunidad,
+			addressee=perfil,
+			subject=subject,
+			body=html_string,
+			client="users.serializers.UserSignupSerializer"
+		)
 
 	def gen_verification_token(self, user):
 		'''General el token mediante jwt para enviar en el email de confirmacion'''
@@ -121,15 +120,15 @@ class UserSignupSerializer(serializers.Serializer):
 			'doc': self.data['numero_documento'],
 			'com': self.data['comunidad'].id,
 			'exp': int(exp_date.timestamp()),
-			'type': 'email_confirmation' 
+			'type': 'email_confirmation'
 		}
 		token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 		return token.decode()
-		
+
 
 class AccountVerificationSerializer(serializers.Serializer):
 	'''Account Verification Serializer'''
-	
+
 	token = serializers.CharField()
 
 	def validate_token(self, data):
@@ -170,7 +169,7 @@ class UserLoginSerializer(serializers.Serializer):
 			raise serializers.ValidationError("La cuenta no se encuentra activa")
 		self.context['user'] = user
 		return data
-	
+
 	def create(self, data):
 		'''Generate or retrive a new token'''
 		token, created = Token.objects.get_or_create(user=self.context['user'])
@@ -202,18 +201,18 @@ class PasswordRecoverySerializer(serializers.Serializer):
 		'''Envia email con token de recuperacion'''
 		recovery_token = self.gen_recovery_token(user)
 		subject = "Solicitud de recuperacion de clave: Usuario {}".format(user.username)
-		from_email = 'AdminSmart <info@admin-smart.com>'
-		destinations = [user.email]
 		html_string = render_to_string(
 			'emails/users/password_recovery.html',
 			{'token': recovery_token, 'user': user},
 		)
-		send_emails.delay(
-				from_email=from_email, 
-				destinations=destinations, 
-				subject=subject, 
-				html_string=html_string, 
-			)
+		perfil = user.perfil_set.first()
+		Queue.objects.create(
+			comunidad=perfil.comunidad,
+			addressee=perfil,
+			subject=subject,
+			body=html_string,
+			client="users.serializers.PasswordRecoverySerializer"
+		)
 
 	def gen_recovery_token(self, user):
 		'''Generacion de token de recuperacion de password mediante jwt'''
@@ -221,7 +220,7 @@ class PasswordRecoverySerializer(serializers.Serializer):
 		payload = {
 			'user': user.username,
 			'exp': int(exp_date.timestamp()),
-			'type': 'password_recovery' 
+			'type': 'password_recovery'
 		}
 		token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 		return token.decode()
@@ -229,7 +228,7 @@ class PasswordRecoverySerializer(serializers.Serializer):
 
 class ChangePasswordSerializer(serializers.Serializer):
 	'''Change password Serializer'''
-	
+
 	token = serializers.CharField()
 	password = serializers.CharField(min_length=8, max_length=64)
 	password_confirmation = serializers.CharField(min_length=8, max_length=64)

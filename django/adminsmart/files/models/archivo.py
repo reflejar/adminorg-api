@@ -20,5 +20,10 @@ class Archivo(BaseModel):
 	def __str__(self):
 		return self.nombre
 
+	@property
+	def path(self):
+		return self.ubicacion.path
+
 	def get_model(self, nombre):
 		return apps.get_model('files', nombre)
+

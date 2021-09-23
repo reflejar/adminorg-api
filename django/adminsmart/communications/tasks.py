@@ -1,29 +1,15 @@
-"""Celery tasks."""
-
-# Django
-from django.core.mail import EmailMultiAlternatives
-
-# Celery
-from celery.decorators import task
-
-# Utilities
-import jwt
-import time
 from datetime import timedelta
 
+# Django
+from django.utils import timezone
 
-@task(name="send_emails")
-def send_emails(from_email, destinations, subject, html_string, file_paths=[]):
-	for email in destinations:
-		msg = EmailMultiAlternatives(
-			subject=subject,
-			body="",
-			from_email=from_email,
-			to=[email],
-		)
-		msg.attach_alternative(html_string, "text/html")
-		for f in file_paths:
-			msg.attach_file(f)
-		msg.send()
+# Celery
+from celery.decorators import periodic_task
+from .models import Queue
 
 
+@periodic_task(name="attend_queue", run_every=timedelta(seconds=30))
+def attend_queue():
+	now = timezone.now()
+	for instance in Queue.objects.filter(execute_at__lt=now):
+		instance.exec()
