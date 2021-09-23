@@ -68,6 +68,35 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 		
 		return fecha_operacion
 		
+
+	def validate(self, data):
+		"""
+			Validacion de issued_date. 
+			Solo se puede hacer en la validacion grupal para poder acceder a point_of_sales e issued_date juntos
+			No se permite si
+				Ya tiene un documento con fecha anterior a la solicitada
+				10 dias anterior o posterior a la fecha actual
+		"""
+
+		if self.context['causante'] in ["cliente", "cliente-masivo"]:
+			point_of_sales = data["receipt"]["point_of_sales"]
+			issued_date = data["receipt"]["issued_date"]
+			receipt_type = self.context['receipt_type']
+			query = Documento.objects.filter(
+				comunidad=self.context['comunidad'],
+				receipt__point_of_sales=point_of_sales,
+				receipt__receipt_type=receipt_type,
+				receipt__issued_date__gt=issued_date,
+			)
+			if query:
+				raise serializers.ValidationError({'issued_date': 'El punto de venta seleccionado ha generado {} con fecha posterior a la indicada'.format(receipt_type)})
+			if receipt_type.code in ["11","12","13"]:
+				if date.today() + timedelta(days=10) < issued_date or issued_date < date.today() - timedelta(days=10):
+					raise serializers.ValidationError({'issued_date': 'No puede diferir en mas de 10 dias de la fecha de hoy'})
+
+		return data
+
+
 		
 	def create(self, validated_data):
 		if self.context['sin_destinatario']:
