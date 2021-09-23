@@ -1,27 +1,19 @@
 from __future__ import unicode_literals
 import base64
 from datetime import date
-from weasyprint import HTML
+
 from django.db.models import Max
-from django.template.loader import render_to_string
-
 from django.db import models
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.apps import AppConfig
-from rest_framework import serializers
-from django.db.models import Q
-
+from django.apps import apps
 from django_afip.models import (
 	Receipt,
 	ReceiptType
 )
 from django_afip.pdf import ReceiptBarcodeGenerator
-from django.apps import apps
 
 from adminsmart.utils.models import BaseModel
-from adminsmart.operative.models.own_receipt import OwnReceipt 
-
-from itertools import chain
+from adminsmart.operative.models.own_receipt import OwnReceipt
+from adminsmart.files.models import PDF
 
 
 class Documento(BaseModel):
@@ -36,7 +28,7 @@ class Documento(BaseModel):
 	receipt_afip = models.ForeignKey(Receipt, blank=True, null=True, on_delete=models.PROTECT, related_name="documentos") # Solo para "clientes"
 	receipt = models.ForeignKey(OwnReceipt, blank=True, null=True, on_delete=models.PROTECT, related_name="documentos") # Todos
 	destinatario = models.ForeignKey("operative.Cuenta", blank=True, null=True, on_delete=models.SET_NULL, related_name="documentos")
-	pdf = models.FileField(upload_to="pdfs/documentos/", blank=True, null=True)
+	pdf = models.ForeignKey("files.PDF", blank=True, null=True, on_delete=models.SET_NULL, related_name="documentos")
 	descripcion = models.CharField(max_length=150, blank=True, null=True)
 	fecha_operacion = models.DateField()
 	fecha_anulacion = models.DateField(blank=True, null=True)
@@ -326,7 +318,6 @@ class Documento(BaseModel):
 	# Funciones Operativas
 	def hacer_pdf(self):
 
-
 		if self.receipt.receipt_type.code == "400":
 			return 
 
@@ -338,26 +329,16 @@ class Documento(BaseModel):
 				generator = ReceiptBarcodeGenerator(self.receipt_afip)
 				barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
 		
-		archivo = []
-		enteros = []
+		if self.pdf:
+			self.pdf.remove()
+			self.pdf.delete()
+
 		documento = self
-		html_string = render_to_string('pdfs/{}.html'.format(self.receipt.receipt_type.code), locals())
-		html = HTML(string=html_string, base_url='http://localhost:8000/')
-		pdf = html.render()
-		enteros.append(pdf)
-		for p in pdf.pages:
-			archivo.append(p)
-
-
-		pdf = enteros[0].copy(archivo).write_pdf()
-		ruta = "{}_{}_{}.pdf".format(
-				str(self.comunidad.abreviatura),
-				str(self.receipt.receipt_type.code),
-				str(self.receipt.formatted_number)
-		)
-
-		self.pdf = SimpleUploadedFile(ruta, pdf, content_type='application/pdf')
+		ciphertext = PDF.compress('pdfs/{}.html'.format(self.receipt.receipt_type.code), {'documento': documento})
+		self.pdf = PDF.objects.create(comunidad=self.comunidad, ciphertext=ciphertext)
 		self.save()
+
+		
 
 	def anulacion_documentos(self, documentos_relacionados):
 		"""

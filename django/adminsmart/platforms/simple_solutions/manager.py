@@ -8,7 +8,7 @@ from adminsmart.operative.models import Documento
 from adminsmart.platforms.expensas_pagas.models import Preference
 from adminsmart.files.models import Archivo
 
-class Conexion():
+class Dispatcher():
 	"""
 		Exportador/Importador ExP class, generador de barcode numerico.
 	"""
@@ -24,7 +24,7 @@ class Conexion():
 			'carpeta': 'facturas',
 			'titulo': 'FACTURA',
 			'kwargs': {
-				'receipt__receipt_type__code__in': ['11', '51'] 
+				'receipt__receipt_type__code__in': ['11', '51']
 			}
 		},
 		{
@@ -32,9 +32,9 @@ class Conexion():
 			'carpeta': 'recibos',
 			'titulo': 'RECIBO',
 			'kwargs': {
-				'receipt__receipt_type__code__in': ['54'] 
+				'receipt__receipt_type__code__in': ['54']
 			}
-		},		
+		},
 		{
 			'modelo': 'Preference',
 			'carpeta': 'cupones',
@@ -60,8 +60,8 @@ class Conexion():
 					if documentos:
 						a_enviar, envios = self.procesar(cliente.nombre, documentos, opcion, cliente.comunidad)
 						self.upload(cliente.nombre, a_enviar, opcion['carpeta'], envios, cliente.comunidad)
-						
-					
+
+
 
 	def procesar(self, nombre_cliente, documentos, opcion, comunidad):
 		documentos_procesados = []
@@ -73,7 +73,7 @@ class Conexion():
 				destinatario_id = d.documento.id
 			documento = {
 				'nombre': "{}_{}_{}_{}.pdf".format(nombre_cliente, destinatario_id, opcion['titulo'], d.id),
-				'path': d.pdf.path 
+				'path': d.pdf.path
 			}
 			documentos_procesados.append(documento)
 
@@ -87,7 +87,7 @@ class Conexion():
 
 		return documentos_procesados, envios
 
-	def upload(self, carpeta_cliente, documentos_procesados, carpeta_documento, envios, comunidad):	
+	def upload(self, carpeta_cliente, documentos_procesados, carpeta_documento, envios, comunidad):
 		''' Sube el archivo al servidor de SS. '''
 		try:
 			ssh_connect = paramiko.SSHClient()
@@ -98,11 +98,11 @@ class Conexion():
 			for d in documentos_procesados:
 				remotepath = "/{}/{}/{}".format(carpeta_cliente, carpeta_documento, d['nombre'])
 				respuesta = sftp.put(d['path'], remotepath=remotepath)
-			
+
 			ssh_connect.close()
 			self.save(envios)
 		except:
-			print('Error al subir archivo')					
+			print('Error al subir archivo')
 
 	def save(self, envios):
 		Sent.objects.bulk_create(envios)

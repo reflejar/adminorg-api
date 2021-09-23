@@ -8,7 +8,8 @@ from adminsmart.operative.tasks import hacer_pdfs
 # from adminsmart.communications.tasks import send_emails
 
 def hacer_pdf(modeladmin, request, queryset):
-	hacer_pdfs.delay([d.id for d in queryset])
+	for d in queryset:
+		d.hacer_pdf()
 	messages.add_message(request, messages.SUCCESS, "Hecho.")
 hacer_pdf.short_description = "Hacer PDF"
 
