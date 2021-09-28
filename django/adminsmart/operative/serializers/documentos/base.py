@@ -55,8 +55,10 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 
 	def get_pdf(self, instance):
 		request = self.context['request']
-		pdf_url = instance.pdf.serve().url
-		return request.build_absolute_uri(pdf_url)
+		if instance.pdf:
+			pdf_url = instance.pdf.serve().url
+			return request.build_absolute_uri(pdf_url)
+		return None
 
 	def validate_fecha_operacion(self, fecha_operacion):
 
