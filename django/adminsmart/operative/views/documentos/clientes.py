@@ -1,7 +1,6 @@
 from .base import *
 from rest_framework.decorators import action
 
-from adminsmart.operative.tasks import facturacion_masiva
 
 class ClienteViewSet(BaseViewSet):
 	"""
@@ -51,12 +50,5 @@ class ClienteViewSet(BaseViewSet):
 		serializer = MasivoClienteModelSerializer(data=request.data, context=self.get_serializer_context())
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
-		# context = {
-		# 	'causante': self.causante,
-		# 	'sin_destinatario': self.sin_destinatario,
-		# 	'receipt_type': request.data['receipt']['receipt_type'],
-		# 	'comunidad': self.comunidad.id,
-		# }
-		# facturacion_masiva.delay(data=request.data, context=context)
-		
+
 		return Response(status=status.HTTP_201_CREATED)

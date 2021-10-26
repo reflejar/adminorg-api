@@ -222,19 +222,20 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 		operaciones = creador_operaciones[self.context['receipt_type'].code](documento, validated_data).create()
 		documentos = set([o.documento for o in operaciones])
 		for d in documentos:
-			documento.hacer_pdf()
+			d.hacer_pdf()
 
 		self.send_email(documento)
 		return documento
 
 	def send_email(self, documento):
-		attachments = Attachment.objects.create(pdf=documento.pdf)
-		q = Queue.objects.create(
-			comunidad=documento.comunidad,
-			addressee=documento.destinatario.perfil,
-			subject="Nuevo Comprobante",
-			body=render_to_string('emails/documentos/index.html', {"documento": documento}),
-			client="operative.serializers.documentos.cliente.DestinoClienteModelSerializer",
-			execute_at=datetime.now()
-		)
-		q.attachments.add(attachments)
+		if documento.pdf:
+			attachments = Attachment.objects.create(pdf=documento.pdf)
+			q = Queue.objects.create(
+				comunidad=documento.comunidad,
+				addressee=documento.destinatario.perfil,
+				subject="Nuevo Comprobante",
+				body=render_to_string('emails/documentos/index.html', {"documento": documento}),
+				client="operative.serializers.documentos.cliente.DestinoClienteModelSerializer",
+				execute_at=datetime.now()
+			)
+			q.attachments.add(attachments)

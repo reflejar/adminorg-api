@@ -9,7 +9,6 @@ from adminsmart.operative.models import (
 
 
 from adminsmart.operative.CU.operaciones.clientes import masivo as operacionesMasivo
-from adminsmart.operative.tasks import hacer_pdfs
 
 class DistribucionSerializer(serializers.Serializer):
 
@@ -59,7 +58,7 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 			fecha_operacion=validated_data['fecha_operacion'],
 		)
 		list_of_docs = operacionesMasivo.CU(documento, validated_data).create()
-		hacer_pdfs.delay(list_of_docs)
+		self.hacer_pdfs(list_of_docs)
 		self.send_emails(list_of_docs)
 		return list_of_docs
 
@@ -68,7 +67,10 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 			documento = DestinoClienteModelSerializer(instance=d)
 			documento.send_email(d)
 
-
+	def hacer_pdfs(self, list_of_docs):
+		documentos = Documento.objects.filter(id__in=list_of_docs)
+		for d in documentos:
+			d.hacer_pdf()
 
 
 
