@@ -38,7 +38,7 @@ ADD django /app
 RUN chmod +x /app
 RUN chown -R django /app
 
-RUN mkdir /app/media
+RUN mkdir -p /app/media
 RUN chmod +x /app/media
 RUN chown -R django /app/media
 
