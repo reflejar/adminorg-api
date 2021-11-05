@@ -1,61 +1,51 @@
 version: '3'
 
 volumes:
-  postgres_data: {}
-  postgres_data_backups: {}
   media: {}
   static: {}
 
 services:
   postgres:
-    build:
-      context: .
-      dockerfile: ./compose/postgres/Dockerfile
-    image: adminsmart_postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - postgres_data_backups:/backups
+    image: postgres:10.5
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: adminsmart
-      POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
-      POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
+      POSTGRES_USER: f59a7aba6f436f1ed2e43769f7bdb861
+      POSTGRES_PASSWORD: 5f864a54f4e40fb8c363efb6aacbbee68615ea6a
     ports:
       - "5432:5432"
 
   redis:
     image: redis:6.0.9
 
-  django: &django
+  api: &api
     build:
       context: .
-      dockerfile: ./compose/django/Dockerfile
-    image: adminsmart_django
+    image: anopa/adminsmart_django:latest
     depends_on:
       - postgres
     volumes:
-      - ./django:/app
-      - static:/app/static
-      - media:/app/media
+      - ./api:/api
+      - static:/api/static
+      - media:/api/media
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: adminsmart
-      POSTGRES_USER: sBLRWyyPsInwHftmHAWmYJURGWBGFpLs
-      POSTGRES_PASSWORD: tuXL3XSF8O7tsGrcGHoMos4tVNtL3tnrRshSCZokGnIfk4ArDyzaa297k2WgQPSL
+      POSTGRES_USER: f59a7aba6f436f1ed2e43769f7bdb861
+      POSTGRES_PASSWORD: 5f864a54f4e40fb8c363efb6aacbbee68615ea6a
       REDIS_URL: redis://redis:6379/0
-      CELERY_FLOWER_USER: AkSCzUUkrubMopHkMlHHIiFnUzKhIidG
-      CELERY_FLOWER_PASSWORD: jspxQGdwrs9VbGLmn5FmXRAGqNt5D6osRgqggNJl1JgcdcCYZdCf7Ch0jcgG0nH7
+      CELERY_FLOWER_USER: f59a7aba6f436f1ed2e43769f7bdb861
+      CELERY_FLOWER_PASSWORD: 5f864a54f4e40fb8c363efb6aacbbee68615ea6a
     ports:
       - "8000:8000"
     links:
       - postgres:postgres
-    command: /start-django-dev.sh
-    #command: /start-django-prod.sh
+    command: /start-api-dev.sh
 
   celeryworker:
-    <<: *django
+    <<: *api
     depends_on:
       - redis
       - postgres
@@ -63,7 +53,7 @@ services:
     command: /start-celery-worker.sh
 
   celerybeat:
-    <<: *django
+    <<: *api
     user: root
     depends_on:
       - redis
@@ -72,7 +62,7 @@ services:
     command: /start-celery-beat.sh
 
   flower:
-    <<: *django
+    <<: *api
     ports:
       - "5555:5555"
     command: /start-celery-flower.sh

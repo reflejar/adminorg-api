@@ -31,11 +31,12 @@ celery==4.4.7
 flower==0.9.7
 
 # AdminSmart
+Cython==0.29.24
+cffi==1.15.0 
 django-import-export==1.0.0
 cairocffi==0.8.0
 CairoSVG==2.1.3
 certifi==2018.1.18
-cffi==1.11.5
 django-cors-headers==3.0.2
 cssselect2==0.2.1
 django-afip==7.1.2
@@ -57,4 +58,4 @@ WeasyPrint==0.42.2
 xlrd==1.1.0
 xlwt==1.3.0
 cryptography==3.2.0
-# paramiko==2.7.2 (Instalado en el DockerFile)
+paramiko==2.7.2

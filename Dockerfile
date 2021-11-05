@@ -2,7 +2,7 @@ FROM python:3.7-alpine3.13
 
 ENV PYTHONUNBUFFERED 1
 
-ADD django/requirements /app/requirements
+ADD requirements /api/requirements
 
 RUN apk update \
   # psycopg2 dependencies
@@ -25,27 +25,38 @@ RUN apk update \
 RUN addgroup -S django \
     && adduser -S -G django django
 
-RUN pip install Cython cffi paramiko
-RUN pip install -r /app/requirements/prod.txt
+# RUN if [[ "${BUILD_ENV}" == "dev" ]] ; then pip install -r /api/requirements/dev.txt ; else pip install -r /api/requirements/prod.txt ; fi
+RUN pip install -r /api/requirements/prod.txt
 
-
-COPY ./compose/django/bash/* /
+COPY ./bash/* /
 RUN sed -i 's/\r//' /*.sh
 RUN chmod +x /*.sh
 RUN chown django /*.sh
 
-ADD django /app
-RUN chmod +x /app
-RUN chown -R django /app
+ADD api /api
+RUN chmod +x /api
+RUN chown -R django /api
 
-RUN mkdir -p /app/media
-RUN chmod +x /app/media
-RUN chown -R django /app/media
+RUN mkdir -p /api/media
+RUN chmod +x /api/media
+RUN chown -R django /api/media
 
 USER django
-WORKDIR /app
+WORKDIR /api
 
 EXPOSE 8000
 
-ENTRYPOINT ["/entrypoint.sh"]
+ARG BUILD_DATE
+ARG REVISION
+ARG VERSION
+LABEL maintainer "marianovaldez92@protonmail.com"
+LABEL created $BUILD_DATE
+LABEL url "https://admin-smart.com"
+LABEL source "git@github.com:AdminSmartLab/as-django.git"
+LABEL version $VERSION
+LABEL revision $REVISION
+LABEL vendor "AdminSmartLab"
+LABEL title "AdminSmart Core API"
+LABEL description "API for core of AdminSmart"
 
+ENTRYPOINT ["/entrypoint.sh"]
