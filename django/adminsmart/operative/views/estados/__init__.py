@@ -173,7 +173,8 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 		end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 		context = {
 			'end_date': end_date,
-			'condonacion': True if 'condonacion' in filtro.keys() else False
+			'condonacion': True if 'condonacion' in filtro.keys() else False,
+			'cuenta': self.get_object()
 		}
 		serializer = self.get_serializer_class()(queryset, context)
 		return Response(reversed(serializer.data))

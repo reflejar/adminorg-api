@@ -2,6 +2,7 @@ from decimal import Decimal
 from datetime import datetime, date, timedelta
 
 from django.db import models
+from django.apps import apps
 
 from adminsmart.utils.models import BaseModel
 from adminsmart.operative.models import Cuenta, Metodo, Documento

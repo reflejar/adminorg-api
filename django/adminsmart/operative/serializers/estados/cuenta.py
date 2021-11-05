@@ -9,10 +9,16 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 		self.orden = 0
 
 	def makeJSON(self, d:Documento) -> Dict[str, Any]:
-		self.saldo += d.total
-
+		cuenta = self.context['cuenta']
 		receipt_type = str(d.receipt.receipt_type)
 		formatted_number = str(d.receipt.formatted_number)
+		operaciones=[]
+		total = 0
+		for o in d.operaciones.all():
+			if o.cuenta in cuenta.grupo:
+				operaciones.append(o)
+				total += o.valor
+		self.saldo += total
 
 		return {
 			'id': d.id,
@@ -29,7 +35,7 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 				'concepto': str(o.concepto()),
 				'periodo': o.periodo(),
 				'valor': o.valor,
-			} for o in d.operaciones.all() if o.cuenta in d.destinatario.grupo],
-			'total': d.total,
+			} for o in operaciones],
+			'total': total,
 			'saldo': self.saldo
 		}
