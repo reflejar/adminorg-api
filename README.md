@@ -34,7 +34,7 @@ docker-compose up
 _Y si se está ejecutando docker pero quiero, ademas, entrar al shell_plus para interactuar?_
 
 ```
-docker-compose exec django /entrypoint.sh sh
+docker-compose exec api /entrypoint.sh sh
 ```
 
 _y luego..._
@@ -46,7 +46,7 @@ python manage.py shell_plus
 _o la versión rápida_
 
 ```
-docker-compose exec django /entrypoint.sh python manage.py shell_plus
+docker-compose exec api /entrypoint.sh python manage.py shell_plus
 ```
 
 ### Consideraciones de db
@@ -54,7 +54,7 @@ docker-compose exec django /entrypoint.sh python manage.py shell_plus
 _Si se necesita generar una migración porque se creó o se modificó un modelo hay que hacer lo siguiente_
 
 ```
-docker-compose -f docker-compose.yml run --rm django python manage.py makemigrations
+docker-compose -f docker-compose.yml run --rm api python manage.py makemigrations
 ```
 
 _Y luego, al ejecutarse el "up", se migra sola_
