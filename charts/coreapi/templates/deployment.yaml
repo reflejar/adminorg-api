@@ -54,6 +54,8 @@ spec:
           envFrom:
           - configMapRef:
               name: django-config
+          - secretKeyRef:
+              name: postgres-secret
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

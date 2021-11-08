@@ -5,6 +5,9 @@ from .base import env
 
 # Base
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='PB3aGvTmCkzaLGRAxDc3aMayKTPTDd5usT8gw4pCmKOk5AlJjh12pTrnNgQyOHCH')
+# Gunicorn
+INSTALLED_APPS += ['gunicorn']  # noqa F405
+
 
 # ALLOWED_HOSTS = [
 #     env('HOST_IP', default="localhost"),
@@ -40,9 +43,9 @@ SECURE_HSTS_PRELOAD = env.bool('DJANGO_SECURE_HSTS_PRELOAD', default=True)
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool('DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', default=True)
 
 # Storages
-INSTALLED_APPS += ['storages']  # noqa F405
-AWS_S3_REGION_NAME = "NYC3"
-AWS_DEFAULT_ACL = None
+# INSTALLED_APPS += ['storages']  # noqa F405
+# AWS_S3_REGION_NAME = "NYC3"
+# AWS_DEFAULT_ACL = None
 # AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
 # AWS_QUERYSTRING_AUTH = False
 # _AWS_EXPIRY = 60 * 60 * 24 * 7
@@ -79,13 +82,12 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[AdminSmart]')
 
 # Email
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = '172.21.0.1'
-EMAIL_PORT = 25
-EMAIL_USE_TLS=False
-EMAIL_USE_SSL=False
-# Gunicorn
-INSTALLED_APPS += ['gunicorn']  # noqa F405
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'postmaster@mail.admin-smart.com'
+EMAIL_HOST_PASSWORD = '7696916e7d3a29748757b17f82f9924a-30b9cd6d-a50b7d8e'
+EMAIL_USE_TLS = True
+
 
 # WhiteNoise
 # MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')  # noqa F405

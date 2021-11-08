@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: django-config
 data:
-  {{- toYaml .Values.environmentVars | nindent 4 }}
+  {{- toYaml .Values.configMapVars | nindent 4 }}
