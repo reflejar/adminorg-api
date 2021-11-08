@@ -4,8 +4,13 @@ from .base import *  # NOQA
 from .base import env
 
 # Base
-SECRET_KEY = env('DJANGO_SECRET_KEY')
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['api.admin-smart.com', 'admin-smart.com', 'www.admin-smart.com'])
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='PB3aGvTmCkzaLGRAxDc3aMayKTPTDd5usT8gw4pCmKOk5AlJjh12pTrnNgQyOHCH')
+
+# ALLOWED_HOSTS = [
+#     env('HOST_IP', default="localhost"),
+#     "admin-smart.com",
+#     "api.admin-smart.com"
+# ]
 
 # Databases
 DATABASES['default'] = env.db('DATABASE_URL')  # NOQA
@@ -73,17 +78,12 @@ DEFAULT_FROM_EMAIL = env(
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[AdminSmart]')
 
-# Admin
-ADMIN_URL = env('DJANGO_ADMIN_URL')
-
-# Anymail (Mailgun)
-INSTALLED_APPS += ['anymail']  # noqa F405
-EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
-ANYMAIL = {
-    'MAILGUN_API_KEY': env('MAILGUN_API_KEY'),
-    'MAILGUN_SENDER_DOMAIN': env('MAILGUN_DOMAIN')
-}
-
+# Email
+EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = '172.21.0.1'
+EMAIL_PORT = 25
+EMAIL_USE_TLS=False
+EMAIL_USE_SSL=False
 # Gunicorn
 INSTALLED_APPS += ['gunicorn']  # noqa F405
 
