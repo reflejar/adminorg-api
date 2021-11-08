@@ -48,7 +48,6 @@ DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.humanize',
     'django_afip',
-    'django_mercadopago',
     'corsheaders',
     'import_export'
 ]
@@ -157,19 +156,11 @@ SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 
 # Email
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-## Agregue esto por las dudas
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'localhost'
-#EMAIL_PORT = 25
-#EMAIL_HOST_USER = ''
-#EMAIL_HOST_PASSWORD = ''
-#EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'Equipo de AdminSmart <info@admin-smart.com>'
 
 # Email con plantillas
 # Creo que esto esta al pedo
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
-
 
 # Admin
 ADMIN_URL = 'dj-admin/'
@@ -208,14 +199,5 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
 }
 
-# Configuracion de MercadoPago
-MERCADOPAGO = {
-    'autoprocess': True,
-    'success_url': 'mp-success',
-    'failure_url': 'mp-failed',
-    'pending_url': 'mp-pending',
-    'base_host': 'www.lalalalalal.com'
-}
-
 CORS_ORIGIN_ALLOW_ALL = True
-DEFAULT_FROM_EMAIL = 'Equipo de AdminSmart <info@admin-smart.com>'
+

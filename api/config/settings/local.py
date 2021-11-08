@@ -21,17 +21,11 @@ CACHES = {
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # NOQA
 
 # Email
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = '172.21.0.1'
 EMAIL_PORT = 25
 EMAIL_USE_TLS=False
 EMAIL_USE_SSL=False
-#EMAIL_HOST_USER=""
-#EMAIL_HOST_PASSWORD=""
-#EMAIL_TIMEOUT
-#EMAIL_SSL_KEYFILE
-#EMAIL_SSL_CERTFILE
-
 
 
 # django-extensions
