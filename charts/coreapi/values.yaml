@@ -6,7 +6,7 @@ replicaCount: 3
 
 image:
   repository: anopa/adminsmart_django
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -42,7 +42,7 @@ service:
   port: 8000
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -86,3 +86,11 @@ configMapVars:
   REDIS_URL: "redis://redis:6379/0"
   CELERY_FLOWER_USER: "f59a7aba6f436f1ed2e43769f7bdb861"
   CELERY_FLOWER_PASSWORD: "5f864a54f4e40fb8c363efb6aacbbee68615ea6a"
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "adminsmart"
+  POSTGRES_USER: "f59a7aba6f436f1ed2e43769f7bdb861"
+  DJANGO_SETTINGS_MODULE: "config.settings.production"
+
+secretsKeyVars:
+  POSTGRES_PASSWORD: "5f864a54f4e40fb8c363efb6aacbbee68615ea6a"
