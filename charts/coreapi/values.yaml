@@ -6,7 +6,7 @@ replicaCount: 3
 
 image:
   repository: anopa/adminsmart_django
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -86,11 +86,11 @@ configMapVars:
   REDIS_URL: "redis://redis:6379/0"
   CELERY_FLOWER_USER: "f59a7aba6f436f1ed2e43769f7bdb861"
   CELERY_FLOWER_PASSWORD: "5f864a54f4e40fb8c363efb6aacbbee68615ea6a"
-  POSTGRES_HOST: "postgres"
-  POSTGRES_PORT: "5432"
+  POSTGRES_HOST: "kfdjnavweyuv87y54v8h238v.digitalocean.db.postgres.1298378123"
+  POSTGRES_PORT: "54877"
   POSTGRES_DB: "adminsmart"
-  POSTGRES_USER: "f59a7aba6f436f1ed2e43769f7bdb861"
+  POSTGRES_USER: "anopa"
   DJANGO_SETTINGS_MODULE: "config.settings.production"
 
 secretsKeyVars:
-  POSTGRES_PASSWORD: "5f864a54f4e40fb8c363efb6aacbbee68615ea6a"
+  POSTGRES_PASSWORD: "SjlGTHhwSlhWdwo="

@@ -7,12 +7,8 @@ volumes:
 services:
   postgres:
     image: postgres:10.5
-    environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: adminsmart
-      POSTGRES_USER: f59a7aba6f436f1ed2e43769f7bdb861
-      POSTGRES_PASSWORD: 5f864a54f4e40fb8c363efb6aacbbee68615ea6a
+    env_file:
+      - config.env
     ports:
       - "5432:5432"
 

@@ -66,6 +66,7 @@ LOCAL_APPS = [
     'adminsmart.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
     'adminsmart.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
     'adminsmart.communications.apps.CommunicationsAppConfig',
+    'adminsmart.informes.apps.InformesAppConfig',
     'adminsmart._public.apps.PublicAPIAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
