@@ -18,7 +18,7 @@ INSTALLED_APPS += ['gunicorn']  # noqa F405
 # Databases
 DATABASES['default']['ATOMIC_REQUESTS'] = True  # NOQA
 DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # NOQA
-DATABASES['default']['OPTIONS'] = {'sslmode': 'require'},
+DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
 # Cache
 CACHES = {
