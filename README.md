@@ -34,7 +34,7 @@ docker-compose up
 _Y si se está ejecutando docker pero quiero, ademas, entrar al shell_plus para interactuar?_
 
 ```
-docker-compose exec api /entrypoint.sh sh
+docker-compose exec api /bin/sh
 ```
 
 _y luego..._
@@ -46,7 +46,7 @@ python manage.py shell_plus
 _o la versión rápida_
 
 ```
-docker-compose exec api /entrypoint.sh python manage.py shell_plus
+docker-compose exec api python manage.py shell_plus
 ```
 
 ### Consideraciones de db

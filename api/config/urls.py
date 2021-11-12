@@ -13,6 +13,7 @@ urlpatterns = [
     path('utils/', include(('adminsmart.utils.urls', 'utils'), namespace='utils')),
     path('files/', include(('adminsmart.files.urls', 'files'), namespace='files')),
     path('operative/', include(('adminsmart.operative.urls', 'operative'), namespace='operative')),
+    path('informes/', include(('adminsmart.informes.urls', 'informes'), namespace='informes')),
     path('api/', include(('adminsmart._public.urls', 'api'), namespace='api')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

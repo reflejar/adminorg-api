@@ -23,10 +23,18 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# DATABASES
 DATABASES = {
-    'default': env.db('DATABASE_URL'),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT'),
+    }
 }
+
+
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # URLs
@@ -66,6 +74,7 @@ LOCAL_APPS = [
     'adminsmart.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
     'adminsmart.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
     'adminsmart.communications.apps.CommunicationsAppConfig',
+    'adminsmart.informes.apps.InformesAppConfig',
     'adminsmart._public.apps.PublicAPIAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -174,7 +183,7 @@ MANAGERS = ADMINS
 INSTALLED_APPS += ['adminsmart.taskapp.celery.CeleryAppConfig']
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
-CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_BROKER_URL = env('REDIS_URL')
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
