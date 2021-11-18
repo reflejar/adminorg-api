@@ -8,17 +8,10 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='PB3aGvTmCkzaLGRAxDc3aMayKTPTDd5us
 # Gunicorn
 INSTALLED_APPS += ['gunicorn']  # noqa F405
 
-
-# ALLOWED_HOSTS = [
-#     env('HOST_IP', default="localhost"),
-#     "admin-smart.com",
-#     "api.admin-smart.com"
-# ]
-
 # Databases
 DATABASES['default']['ATOMIC_REQUESTS'] = True  # NOQA
 DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # NOQA
-DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+# DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
 # Cache
 CACHES = {
@@ -33,34 +26,37 @@ CACHES = {
 }
 
 # Security
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_HSTS_SECONDS = 60
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
-# SECURE_HSTS_PRELOAD = env.bool('DJANGO_SECURE_HSTS_PRELOAD', default=True)
-# SECURE_CONTENT_TYPE_NOSNIFF = env.bool('DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', default=True)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 60
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
+SECURE_HSTS_PRELOAD = env.bool('DJANGO_SECURE_HSTS_PRELOAD', default=True)
+SECURE_CONTENT_TYPE_NOSNIFF = env.bool('DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', default=True)
 
 # Storages
-# INSTALLED_APPS += ['storages']  # noqa F405
-# AWS_S3_REGION_NAME = "NYC3"
-# AWS_DEFAULT_ACL = None
-# AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
-# AWS_QUERYSTRING_AUTH = False
-# _AWS_EXPIRY = 60 * 60 * 24 * 7
-# AWS_S3_OBJECT_PARAMETERS = {
-#     'CacheControl': f'max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate',
-# }
+INSTALLED_APPS += ['storages']  # noqa F405
+AWS_ACCESS_KEY_ID = "AKIA44JZ4ACAULPKDEWP"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = 'adminsmart.files'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_DEFAULT_ACL = None
+AWS_QUERYSTRING_AUTH = False
+_AWS_EXPIRY = 60 * 60 * 24 * 7
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': f'max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate',
+}
 
 # Static  files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_STATIC_LOCATION = 'static'
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 
 # # Media
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# AWS_S3_ENDPOINT_URL = 'https://{}.digitaloceanspaces.com/'.format(AWS_S3_REGION_NAME)
-# MEDIA_URL = 'https://{}.digitaloceanspaces.com/'.format(AWS_S3_REGION_NAME)
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_MEDIA_LOCATION = 'media'
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
 
 # Templates
 TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa F405
