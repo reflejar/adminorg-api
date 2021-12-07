@@ -8,12 +8,9 @@ services:
   postgres:
     image: postgres:10.5
     env_file:
-      - config.env
+      - config-dev.env
     ports:
       - "5432:5432"
-
-  redis:
-    image: redis:6.0.9
 
   api: &api
     build:
@@ -26,12 +23,15 @@ services:
       - static:/api/static
       - media:/api/media
     env_file:
-      - config.env
+      - config-dev.env
     ports:
       - "8000:8000"
     links:
       - postgres:postgres
     command: /start-api-dev.sh
+
+  redis:
+    image: redis:6.0.9
 
   celeryworker:
     <<: *api
@@ -49,9 +49,3 @@ services:
       - postgres
     ports: []
     command: /start-celery-beat.sh
-
-  flower:
-    <<: *api
-    ports:
-      - "5555:5555"
-    command: /start-celery-flower.sh

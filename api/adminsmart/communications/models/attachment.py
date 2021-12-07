@@ -14,6 +14,13 @@ class Attachment(models.Model):
 	@property
 	def file(self):
 		if self.archivo:
-			return self.archivo.path
+			return self.archivo
 		else:
-			return self.pdf.path
+			return self.pdf
+
+	@property
+	def file_name(self):
+		if self.archivo:
+			return str(self.archivo.ubicacion)
+		else:
+			return str(self.pdf.location)
