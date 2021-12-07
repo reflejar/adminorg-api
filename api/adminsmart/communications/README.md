@@ -37,7 +37,7 @@ Lo meto por la pasarela de envíos (gateway.py) y ejecuto el metodo .send() de c
 #### Providers
 
 Son los proveedores/canales de comuncación hacia el socio/cliente
-Cada Provider tiene un Dispatcher que se encarga de su propia logica de envío. (Metodo importante: .send()
+Cada Provider tiene un Dispatcher que se encarga de su propia logica de envío. (Metodo importante: .send())
 
 | Nombre | Cómo hace |
 | ------ | ------ |

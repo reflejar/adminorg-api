@@ -12,9 +12,6 @@ services:
     ports:
       - "5432:5432"
 
-  redis:
-    image: redis:6.0.9
-
   api: &api
     build:
       context: .
@@ -33,6 +30,9 @@ services:
       - postgres:postgres
     command: /start-api-dev.sh
 
+  redis:
+    image: redis:6.0.9
+
   celeryworker:
     <<: *api
     depends_on:
@@ -49,9 +49,3 @@ services:
       - postgres
     ports: []
     command: /start-celery-beat.sh
-
-  flower:
-    <<: *api
-    ports:
-      - "5555:5555"
-    command: /start-celery-flower.sh
