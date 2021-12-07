@@ -1,6 +1,5 @@
-FROM python:3.7-alpine3.13
-
-ENV PYTHONUNBUFFERED 1
+# Stage 1
+FROM python:3.7-alpine3.13 as base
 
 ADD requirements /api/requirements
 
@@ -21,30 +20,33 @@ RUN apk update \
   # OpenSSL
   && apk add build-base libressl-dev libffi-dev cargo openssl-dev
 
-
-RUN addgroup -S django \
-    && adduser -S -G django django
-
-# RUN if [[ "${BUILD_ENV}" == "dev" ]] ; then pip install -r /api/requirements/dev.txt ; else pip install -r /api/requirements/prod.txt ; fi
 RUN pip install -r /api/requirements/prod.txt
 
 COPY ./bash/* /
-RUN sed -i 's/\r//' /*.sh
+RUN sed -i 's/\r//' /*.sh 
 RUN chmod +x /*.sh
-RUN chown django /*.sh
 
-ADD api /api
+ADD api /api 
 RUN chmod +x /api
-RUN chown -R django /api
 
-RUN mkdir -p /api/media
+RUN mkdir -p /api/media 
 RUN chmod +x /api/media
-RUN chown -R django /api/media
 
-USER django
+
+
+# Stage 2
+FROM python:3.7-alpine3.13
+
+ENV PYTHONUNBUFFERED 1
+
 WORKDIR /api
+COPY --from=base /usr/local/lib/python3.7/site-packages/ /usr/local/lib/python3.7/site-packages/
+COPY --from=base /usr/local/bin/ /usr/local/bin/
+COPY --from=base /usr/lib/*.so* /usr/lib/
+COPY --from=base /lib /lib
+COPY --from=base /api /api
+COPY --from=base /*.sh /
 
-EXPOSE 8000
 
 ARG BUILD_DATE
 ARG REVISION
@@ -59,4 +61,5 @@ LABEL vendor "AdminSmartLab"
 LABEL title "AdminSmart Core API"
 LABEL description "API for core of AdminSmart"
 
+EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
