@@ -27,7 +27,7 @@ class Queue(BaseCommunication):
 	def perform_confirm(self):
 		data = self.__dict__
 		data.pop("execute_at")
-		exec = Execution.objects.create(
+		execution = Execution.objects.create(
 			comunidad=self.comunidad,
 			addressee=self.addressee,
 			subject=self.subject,
@@ -35,7 +35,7 @@ class Queue(BaseCommunication):
 			client=self.client
 		)
 		for attach in self.attachments.all():
-			exec.attachments.add(attach)
+			execution.attachments.add(attach)
 		self.delete()
 
 	def perform_postpone(self, response, post):
