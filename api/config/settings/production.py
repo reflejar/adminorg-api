@@ -72,7 +72,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa F405
 # Email
 DEFAULT_FROM_EMAIL = env(
     'DJANGO_DEFAULT_FROM_EMAIL',
-    default='AdminSmart <noreply@admin-smart.com>'
+    default='AdminSmart <info@admin-smart.com>'
 )
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[AdminSmart]')

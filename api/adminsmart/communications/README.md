@@ -3,7 +3,8 @@
 ### Qué soy?
 
 Módulo que almacena y ejecuta todos los envíos (comunicaciones) que salen de la aplicación
-Los demás modulos de adminsmart se comunican conmigo para realizar envíos 
+Los demás modulos de adminsmart se comunican conmigo para realizar envíos - ellos son mis clientes (me solicitan enviar algo)
+Envío las cosas por diferentes plataformas (Mails, Simple Solutions, Expensas Pagas, etc) - ellos son mis proveedores
 
 ### A donde envío la información?
 
@@ -19,6 +20,7 @@ Y ejecuto su solicitud
 ### Por dónde la ejecuto?
 
 Lo meto por la pasarela de envíos (gateway.py) y ejecuto el metodo .send() de cada _Dispatcher..._ (...más abajo)
+
 
 ### Cómo me estructuro? 
 

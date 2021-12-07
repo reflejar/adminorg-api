@@ -24,6 +24,9 @@ class Archivo(BaseModel):
 	def path(self):
 		return self.ubicacion.path
 
+	def read(self):
+		return self.ubicacion.read()
+
 	def get_model(self, nombre):
 		return apps.get_model('files', nombre)
 

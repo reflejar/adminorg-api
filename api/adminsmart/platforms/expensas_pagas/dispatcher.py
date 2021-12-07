@@ -2,4 +2,4 @@
 
 class Dispatcher:
 
-	def send(self): pass
+	def send(self): return {'status': 'expensas-pagas-not-implemented'}

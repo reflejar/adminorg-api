@@ -29,7 +29,10 @@ class Gateway():
 	def dispatch(self):
 		response = self.dispatcher.send()
 		post = 60 if isinstance(response, str) else None
-		return response, post
+		return {
+			'status': response, 
+			'post': post
+		}
 
 
 
