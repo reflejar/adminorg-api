@@ -1,14 +1,13 @@
+import pandas as pd
 
-
-# class Analisis:
+class Analisis:
 	
-# 	def __init__(self, data, analisis_config):
-# 		self.group_by = analisis_config['group_by']
-# 		self.totalize = analisis_config['totalize']
-		
+	def __init__(self, queryset, analisis_config):
+		self.group_by = analisis_config['group_by']
+		self.totalize = analisis_config['totalize']
+		self.column_by = analisis_config['column_by']
 
-# 	def analisis(data_input, analisis_config):
+	def analisis(queryset, analisis_config):
+		q = queryset.values('cuenta')
 
-# 		# TODO: Analisis
-
-# 		return result
+		return q

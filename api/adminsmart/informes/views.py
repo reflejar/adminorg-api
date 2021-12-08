@@ -12,6 +12,7 @@ from adminsmart.operative.models import (
 	Operacion
 )
 from .filter import InformesFilter
+from .analisis import Analisis
 
 class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
@@ -26,7 +27,7 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		try:
 			datos = Operacion.objects.filter(
 				comunidad=self.comunidad,
-				documento__isnull=False
+				#documento__isnull=False
 			).select_related(
 				"cuenta", 
 				"cuenta__perfil", # Para el nombre de la cuenta
@@ -58,12 +59,13 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	def list(self, request):
 		queryset = self.get_queryset()
 
-		if "xls_all" in self.request.GET:
-			# TODO: Hacer el xls y retornar
-			return "xls"
+		#if "xls_all" in self.request.GET:
+			# Hacer el xls y retornar
+			#return "xls"
 
-		analisis_config = self.request.GET['analisis_config'] # JSON para el analisis
+		#analisis_config = self.request.GET['analisis_config'] JSON para el analisis, analisis_config
 
-		# data = analisis(queryset, analisis_config)
+		analisis_config = {'group_by':"pedo", 'column_by':'homa', 'totalize':'yosoyjesus'}
+		data = Analisis(queryset, analisis_config)
 
 		return Response(data)
