@@ -9,6 +9,3 @@ django-storages[boto3]==1.7.1
 
 # Email
 django-anymail[mailgun]==5.0
-
-# Tools
-django-extensions==2.1.4

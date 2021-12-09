@@ -1,8 +1,4 @@
-#!/bin/sh
-
-set -o errexit
-set -o nounset
-
+#!/bin/bash
 
 celery flower \
     --app=adminsmart.taskapp \
