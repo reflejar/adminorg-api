@@ -49,9 +49,3 @@ services:
       - postgres
     ports: []
     command: /start-celery-beat.sh
-
-  flower:
-    <<: *api
-    ports:
-      - "5555:5555"
-    command: /start-celery-flower.sh
