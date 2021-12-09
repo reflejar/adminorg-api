@@ -1,8 +1,4 @@
-#!/bin/sh
-
-set -o errexit
-set -o pipefail
-set -o nounset
+#!/bin/bash
 
 postgres_ready() {
 python << END

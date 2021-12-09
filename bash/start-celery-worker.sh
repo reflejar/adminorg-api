@@ -1,7 +1,3 @@
-#!/bin/sh
-
-set -o errexit
-set -o nounset
-
+#!/bin/bash
 
 celery -A adminsmart.taskapp worker -l INFO
