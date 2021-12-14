@@ -182,7 +182,8 @@ ADMINS = [
 MANAGERS = ADMINS
 
 # Cache
-REDIS_URL = "redis://{host}:{port}/0".format(
+REDIS_URL = "redis://:{password}@{host}:{port}/0".format(
+    password=env('REDIS_PASSWORD'),
     host=env('REDIS_HOST'),
     port=env('REDIS_PORT')
 )
