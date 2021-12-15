@@ -24,32 +24,37 @@ class Queue(BaseCommunication):
 	execute_at = models.DateTimeField(blank=True, null=True)
 	tried = models.PositiveSmallIntegerField(default=1)
 
-	def perform_confirm(self):
+	def __str__(self):
+		return "Envio: {}".format(self.subject)
+
+	def perform_confirm(self, response):
 		data = self.__dict__
 		data.pop("execute_at")
-		exec = Execution.objects.create(
+		execution = Execution.objects.create(
 			comunidad=self.comunidad,
 			addressee=self.addressee,
 			subject=self.subject,
 			body=self.body,
-			client=self.client
+			client=self.client,
+			observations=response['status']
 		)
 		for attach in self.attachments.all():
-			exec.attachments.add(attach)
+			execution.attachments.add(attach)
 		self.delete()
 
-	def perform_postpone(self, response, post):
+	def perform_postpone(self, response):
+		post = response['post']
 		if self.tried >= 5:
 			self.observations = self.OBS_MULTI_POSTPONE
 			self.execute_at = None
 		else:
 			self.tried += 1
-			self.observations = response
+			self.observations = response['status']
 			self.execute_at += timedelta(minutes=post)
 		self.save()
 
 	def perform_error(self, response):
-		self.observations = response
+		self.observations = response['status']
 		self.execute_at = None
 		self.save()
 
@@ -60,11 +65,11 @@ class Queue(BaseCommunication):
 			body=self.body,
 			attachments=self.attachments.all(),
 		)
-		response, post = g.dispatch()
+		response = g.dispatch()
 		try:
 			{
-				constants.CASE_OK: self.perform_confirm(),
-				constants.CASE_POSTPONE: self.perform_postpone(response, post),
-			}[response]
+				constants.CASE_OK: self.perform_confirm,
+				constants.CASE_POSTPONE: self.perform_postpone,
+			}[response['status']](response)
 		except KeyError:
 			self.perform_error(response)

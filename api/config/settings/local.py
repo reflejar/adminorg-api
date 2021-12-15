@@ -26,7 +26,3 @@ EMAIL_HOST = '172.21.0.1'
 EMAIL_PORT = 25
 EMAIL_USE_TLS=False
 EMAIL_USE_SSL=False
-
-
-# django-extensions
-INSTALLED_APPS += ['django_extensions']  # noqa F405

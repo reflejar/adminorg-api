@@ -1,7 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 
-set -o errexit
-set -o pipefail
-set -o nounset
-
-/usr/local/bin/gunicorn config.wsgi --bind 0.0.0.0:8000 --chdir=/api
+/usr/local/bin/gunicorn config.wsgi --bind 0.0.0.0:8000 --chdir=/api --timeout 360

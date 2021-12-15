@@ -3,7 +3,7 @@ from ..models import Execution
 
 
 class ExecutionAdmin(admin.ModelAdmin):
-	list_display = ['__str__']
-	list_filter = ['comunidad']
+	list_display = ['__str__', 'addressee', 'observations', 'client', 'executed_at']
+	list_filter = ['comunidad', 'client']
 
 admin.site.register(Execution, ExecutionAdmin)

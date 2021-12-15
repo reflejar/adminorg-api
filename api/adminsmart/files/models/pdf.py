@@ -27,6 +27,9 @@ class PDF(BaseModel):
 	def path(self):
 		return self.serve().path
 
+	def read(self):
+		return self.serve().read()		
+
 	@classmethod
 	def compress(cls, html_location, context):
 		html_string = render_to_string(html_location, context)

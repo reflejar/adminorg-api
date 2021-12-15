@@ -8,8 +8,10 @@ from .attachment import Attachment
 class BaseCommunication(BaseModel):
 	"""
 	Modelo para almacenar los envios
+	Base de cualquier comunicacion 
 	Cuando salga de aqui un envio puede enviarse
-	por mail o hacia simple solutions
+	por mail o hacia las plataformas de comunicacion 
+		a la fecha: simple_solutions, expensas_pagas
 	"""
 
 	addressee = models.ForeignKey('users.Perfil', on_delete=models.PROTECT)

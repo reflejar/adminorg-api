@@ -30,7 +30,7 @@ class Dispatcher(object):
 				)
 				msg.attach_alternative(self.body, "text/html")
 				for a in self.attachments:
-					msg.attach_file(a.file)
+					msg.attach(a.file_name, a.file.read())
 				try:
 					msg.send()
 				except:

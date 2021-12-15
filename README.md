@@ -34,7 +34,7 @@ docker-compose up
 _Y si se está ejecutando docker pero quiero, ademas, entrar al shell_plus para interactuar?_
 
 ```
-docker-compose exec api /bin/sh
+docker-compose exec api sh
 ```
 
 _y luego..._
