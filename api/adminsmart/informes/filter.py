@@ -14,8 +14,8 @@ class InformesFilter(FilterSet):
     class Meta:
         model = Operacion
         fields = {
-            'cuenta': ['in'],
+            'cuenta': ['exact','in'],
             'documento__receipt__receipt_type__description': ['exact', 'in'],
-            'cuenta__naturaleza__nombre': ['in'],
-            'cuenta__titulo': ['in']
+            'cuenta__naturaleza__nombre': ['exact', 'in'],
+            'cuenta__titulo': ['exact', 'in']
         }
