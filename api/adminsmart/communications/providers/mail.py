@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
+from email.mime.application import MIMEApplication
 
 from .. import constants
 
@@ -30,7 +31,7 @@ class Dispatcher(object):
 				)
 				msg.attach_alternative(self.body, "text/html")
 				for a in self.attachments:
-					file = a.file.read()
+					file = MIMEApplication(a.file.read())
 					file.add_header('Content-Disposition', 'attachment', filename=a.file_name)
 					msg.attach(file)
 				try:
