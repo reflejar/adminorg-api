@@ -23,6 +23,83 @@ from adminsmart.operative.serializers.estados import (
 	EstadoSaldosSerializer
 )
 
+class Totalidad():
+
+	def __init__(self, naturaleza, comunidad, *args, **kwargs):
+		self.comunidad = comunidad
+		self.naturaleza = Naturaleza.objects.get(nombre=naturaleza)
+		self.naturalezas = [self.naturaleza.nombre]
+		if self.naturaleza.nombre == "cliente":
+			self.naturalezas.append("dominio")
+
+
+	def estado_deuda(self, fecha=date.today()):	
+		kwargs = {
+			'cuenta__naturaleza__nombre__in': self.naturalezas,
+			'vinculo__isnull': True,
+			'documento__isnull': False,
+			'documento__fecha_anulacion__isnull': True
+		}
+		if self.naturaleza.nombre in ['cliente', 'caja']:
+			kwargs.update({'valor__gt': 0})
+			if self.naturaleza.nombre == 'caja':
+				kwargs.update({'cuenta__taxon__nombre': 'stockeable'})
+		else:
+			kwargs.update({'valor__lt': 0})
+		deudas = Operacion.objects.filter(**kwargs)
+		excluir = []
+		for d in deudas:
+			if d.saldo(fecha=fecha) <= 0:
+				excluir.append(d.id)
+		return deudas.exclude(id__in=excluir).order_by('-fecha', '-id')
+
+
+	def estado_cuenta(self, fecha=date.today()):
+		return Operacion.objects.filter(
+				fecha__lte=fecha,
+				documento__isnull=False,
+			).select_related(
+				"cuenta", 
+				"cuenta__perfil", # Para el nombre de la cuenta
+				"cuenta__naturaleza",
+				"documento__destinatario",
+				"documento__destinatario__naturaleza",				
+				"documento__receipt", 
+				"documento__receipt__receipt_type", 
+				"vinculo",
+			).prefetch_related(
+				"vinculos",
+				"vinculos__cuenta",
+				"vinculos__cuenta__naturaleza",
+				"vinculo__vinculos",
+				"vinculo__vinculos__cuenta",
+				"vinculo__vinculos__cuenta__naturaleza",
+			).order_by('fecha', 'id')
+
+		
+	def estado_saldos(self, fecha=date.today()):
+		kwargs = {
+			'cuenta__naturaleza__nombre__in': self.naturalezas,
+			'vinculo__isnull': True,
+			'documento__isnull': False,
+			'documento__fecha_anulacion__isnull': True
+		}
+		if self.naturaleza.nombre in ['cliente']:
+			kwargs.update({'valor__lt': 0})
+		elif self.naturaleza.nombre in ['proveedor']:
+			kwargs.update({'valor__gt': 0})
+
+		if self.naturaleza.nombre == 'caja':
+			kwargs.update({'cuenta__taxon__nombre': 'stockeable'})	
+			
+		saldos = Operacion.objects.filter(**kwargs)
+		excluir = []
+		for s in saldos:
+			if s.saldo(fecha=fecha) <= 0:
+				excluir.append(s.id)
+		return saldos.exclude(id__in=excluir).order_by('-fecha', '-id')
+		
+
 class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 		Estado de cuenta para Clientes, Proveedores y Cajas.
@@ -62,16 +139,19 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 		return [p() for p in permissions]
 
 	def get_object(self):
-		if 'titulo' in self.request.GET.keys():
-			obj = get_object_or_404(
-					Titulo.objects.filter(comunidad=self.comunidad), 
-					pk=self.kwargs["pk"]
-				)
+		if self.kwargs["pk"].isdigit():
+			if 'titulo' in self.request.GET.keys():
+				obj = get_object_or_404(
+						Titulo.objects.filter(comunidad=self.comunidad), 
+						pk=self.kwargs["pk"]
+					)
+			else:
+				obj = get_object_or_404(
+						Cuenta.objects.filter(comunidad=self.comunidad), 
+						pk=self.kwargs["pk"]
+					)
 		else:
-			obj = get_object_or_404(
-					Cuenta.objects.filter(comunidad=self.comunidad), 
-					pk=self.kwargs["pk"]
-				)
+			obj = Totalidad(naturaleza=self.kwargs["pk"], comunidad=self.comunidad)
 		self.check_object_permissions(self.request, obj)
 		return obj
 		
