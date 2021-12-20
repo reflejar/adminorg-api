@@ -81,11 +81,13 @@ class Cuenta(BaseModel):
 
 
 	def estado_cuenta(self, fecha=None):	
-		ops = self.get_model('Operacion').objects.filter(
-		cuenta__in=self.grupo)
 		fecha = fecha if fecha else date.today()
+		documentos = self.get_model('Documento').objects.filter(
+				operaciones__cuenta__in=self.grupo, 
+				# fecha__lte=fecha,
+			).order_by('receipt').distinct('receipt')
 		return self.get_model('Documento').objects.filter(
-				operaciones__in=ops, 
+				id__in=documentos, 
 				# fecha__lte=fecha,
 			).select_related(
 				"destinatario", 

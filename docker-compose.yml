@@ -12,12 +12,16 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:6.0.9      
+
   api: &api
     build:
       context: .
     image: anopa/adminsmart_django:latest
     depends_on:
       - postgres
+      - redis
     volumes:
       - ./api:/api
       - static:/api/static
@@ -29,9 +33,6 @@ services:
     links:
       - postgres:postgres
     command: /start-api-dev.sh
-
-  redis:
-    image: redis:6.0.9
 
   celeryworker:
     <<: *api
