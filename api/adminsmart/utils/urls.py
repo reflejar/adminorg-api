@@ -7,7 +7,7 @@ from .views import comunidades as comunidad_views
 
 
 router = DefaultRouter()
-router.register(r'comunidades', comunidad_views.ComunidadViewSet, base_name='comunidad')
+router.register(r'comunidades', comunidad_views.ComunidadViewSet, basename='comunidad')
 
 urlpatterns = [
      path('', include(router.urls))

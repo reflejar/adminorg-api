@@ -13,23 +13,23 @@ from adminsmart.operative.views import (
 )
 
 router = DefaultRouter()
-router.register(r'parametros/(?P<naturaleza>[-a-zA-Z0-0_]+)', parametros.ParametrosViewSet, base_name='operative')
+router.register(r'parametros/(?P<naturaleza>[-a-zA-Z0-0_]+)', parametros.ParametrosViewSet, basename='operative')
 
-# router.register(r'documentos/cliente/(?P<code>[-a-zA-Z0-9_]+)', documentos.ClienteViewSet, base_name='operative')
-router.register(r'documentos/cliente', documentos.ClienteViewSet, base_name='operative')
-router.register(r'documentos/proveedor', documentos.ProveedorViewSet, base_name='operative')
-router.register(r'documentos/tesoreria', documentos.TesoreriaViewSet, base_name='operative')
-router.register(r'documentos/asiento', documentos.AsientoViewSet, base_name='operative')
+# router.register(r'documentos/cliente/(?P<code>[-a-zA-Z0-9_]+)', documentos.ClienteViewSet, basename='operative')
+router.register(r'documentos/cliente', documentos.ClienteViewSet, basename='operative')
+router.register(r'documentos/proveedor', documentos.ProveedorViewSet, basename='operative')
+router.register(r'documentos/tesoreria', documentos.TesoreriaViewSet, basename='operative')
+router.register(r'documentos/asiento', documentos.AsientoViewSet, basename='operative')
 
-router.register(r'preconceptos', preconceptos.PreConceptoViewSet, base_name='operative')
-router.register(r'importacion', importacion.ImportacionViewSet, base_name='operative')
+router.register(r'preconceptos', preconceptos.PreConceptoViewSet, basename='operative')
+router.register(r'importacion', importacion.ImportacionViewSet, basename='operative')
 
-# router.register(r'plataformas', plataformas.PlataformasViewSet, base_name='operative')
-# router.register(r'plataformas/(?P<platform_code>[-a-zA-Z0-0_]+)', plataformas.PlataformasViewSet, base_name='operative')
+# router.register(r'plataformas', plataformas.PlataformasViewSet, basename='operative')
+# router.register(r'plataformas/(?P<platform_code>[-a-zA-Z0-0_]+)', plataformas.PlataformasViewSet, basename='operative')
 
-router.register(r'estados/(?P<tipo>[-a-zA-Z0-0_]+)', estados.EstadosViewSet, base_name='operative')
+router.register(r'estados/(?P<tipo>[-a-zA-Z0-0_]+)', estados.EstadosViewSet, basename='operative')
 
-router.register(r'informes', informes.InformesViewSet, base_name='operative')
+router.register(r'informes', informes.InformesViewSet, basename='operative')
 
 urlpatterns = [
      path('', include(router.urls))
