@@ -1,6 +1,5 @@
 from django.db import models
 from django_afip.models import TaxPayer
-# from django_mercadopago.models import Account
 
 
 class TipoComunidad(models.Model):

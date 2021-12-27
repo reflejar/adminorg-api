@@ -1,34 +1,27 @@
 from django.http import Http404
+from django.core.cache import cache
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
-from django_afip.models import (
-	ReceiptType,
-	PointOfSales
-)
+from django_afip.models import PointOfSales
+
 from adminsmart.users.permissions import IsAccountOwner, IsComunidadMember, IsAdministrativoUser
 from adminsmart.utils.generics import custom_viewsets
 from adminsmart.operative.serializers import (
 	CuentaModelSerializer,
 	TituloModelSerializer,
 	MetodoModelSerializer,
-	DocumentoModelSerializer,
 	PuntoModelSerializer
 )
 
 from adminsmart.operative.models import (
 	Cuenta,
-	Operacion,
 	Metodo,
 	Titulo,
-	Documento,
 	Naturaleza,
-)
-from adminsmart.operative.filters import (
-	ClienteFilter,
-	OperacionFilter
 )
 
 try:
@@ -85,7 +78,6 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 		except:
 			raise Http404
 
-
 	def get_serializer_class(self):
 		'''Define el serializer segun parametro de url.'''
 		try:
@@ -101,7 +93,6 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 		except:
 			raise Http404
 
-
 	def get_permissions(self):
 		'''Manejo de permisos'''
 		permissions = [IsAuthenticated, IsAdministrativoUser]
@@ -112,13 +103,11 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 			
 		return [p() for p in permissions]
 
-
 	def get_serializer_context(self):
 		'''Agregado de naturaleza 'cliente' al context serializer.'''
 		serializer_context = super().get_serializer_context()
 		serializer_context['naturaleza'] = self.kwargs['naturaleza']
 		return serializer_context
-
 
 	def create(self, request, naturaleza=None):
 		is_many = isinstance(request.data, list)
@@ -127,7 +116,12 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 		serializer.is_valid(raise_exception=True)
 		self.perform_create(serializer)
 		headers = self.get_success_headers(serializer.data)
+		self.remove_cache_key()
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+	def update(self, request, *args, **kwargs):
+		self.remove_cache_key()
+		return super().update(request, *args, **kwargs)
 
 
 	@action(detail=False, methods=['get'])
@@ -135,3 +129,16 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 		""" Devulve todas las cuentas """
 		
 		return Response(status=status.HTTP_201_CREATED)
+
+	def list(self, request, *args, **kwargs):
+		key_cache = self.make_cache_key()
+		cached = cache.get(key_cache)
+		if not cached:
+			result = super().list(request, *args, **kwargs)
+			cache.set(key_cache, result.data, 60*60*2)
+			cached = cache.get(key_cache)
+		return Response(cached)
+
+	def make_cache_key(self): return 'parametros_{}_{}'.format(self.kwargs['naturaleza'], self.comunidad.id)
+
+	def remove_cache_key(self): cache.delete(self.make_cache_key())

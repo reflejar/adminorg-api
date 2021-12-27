@@ -1,8 +1,8 @@
-from rest_framework import mixins, status, viewsets
 from django.http import HttpResponseRedirect
+
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.permissions import (
 	AllowAny,
 	IsAuthenticated

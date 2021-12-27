@@ -6,9 +6,9 @@ from .views import *
 
 
 router = DefaultRouter()
-router.register(r'carpetas', carpetas.CarpetaViewSet, base_name='files')
-router.register(r'archivos', archivos.ArchivoViewSet, base_name='files')
-router.register(r'pdf', pdfs.PDFViewSet, base_name='files')
+router.register(r'carpetas', carpetas.CarpetaViewSet, basename='files')
+router.register(r'archivos', archivos.ArchivoViewSet, basename='files')
+router.register(r'pdf', pdfs.PDFViewSet, basename='files')
 
 urlpatterns = [
      path('', include(router.urls))
