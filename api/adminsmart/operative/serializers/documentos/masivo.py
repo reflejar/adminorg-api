@@ -58,19 +58,19 @@ class MasivoClienteModelSerializer(DocumentoModelSerializer):
 			fecha_operacion=validated_data['fecha_operacion'],
 		)
 		list_of_docs = operacionesMasivo.CU(documento, validated_data).create()
-		self.hacer_pdfs(list_of_docs)
-		self.send_emails(list_of_docs)
+		# self.hacer_pdfs(list_of_docs)
+		# self.send_emails(list_of_docs)
 		return list_of_docs
-
-	def send_emails(self, list_of_docs):
-		for d in Documento.objects.filter(id__in=list_of_docs):
-			documento = DestinoClienteModelSerializer(instance=d)
-			documento.send_email(d)
 
 	def hacer_pdfs(self, list_of_docs):
 		documentos = Documento.objects.filter(id__in=list_of_docs)
 		for d in documentos:
 			d.hacer_pdf()
+
+	def send_emails(self, list_of_docs):
+		for d in Documento.objects.filter(id__in=list_of_docs):
+			documento = DestinoClienteModelSerializer(instance=d)
+			documento.send_email(d)
 
 
 
