@@ -107,13 +107,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Middlewares
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 
 ]
@@ -182,7 +181,8 @@ ADMINS = [
 MANAGERS = ADMINS
 
 # Cache
-REDIS_URL = "redis://{host}:{port}/0".format(
+REDIS_URL = "redis://:{password}@{host}:{port}/0".format(
+    password=env('REDIS_PASSWORD'),
     host=env('REDIS_HOST'),
     port=env('REDIS_PORT')
 )
@@ -192,7 +192,6 @@ CACHES = {
         'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'PASSWORD': env('REDIS_PASSWORD'),
             'IGNORE_EXCEPTIONS': True,
         }
     }

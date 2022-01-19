@@ -13,11 +13,7 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 		receipt_type = str(d.receipt.receipt_type)
 		formatted_number = str(d.receipt.formatted_number)
 		operaciones=[]
-		total = 0
-		for o in d.operaciones.all():
-			if o.cuenta in cuenta.grupo:
-				operaciones.append(o)
-				total += o.valor
+		total = sum([o.valor for o in d.operaciones.all() if o.cuenta in cuenta.grupo])
 		self.saldo += total
 
 		return {
@@ -30,12 +26,12 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 				'receipt_type': receipt_type,
 				'formatted_number': formatted_number,
 			},
-			'operaciones': [{
-				'cuenta': str(o.cuenta),
-				'concepto': str(o.concepto()),
-				'periodo': o.periodo(),
-				'valor': o.valor,
-			} for o in operaciones],
+			# 'operaciones': [{
+			# 	'cuenta': str(o.cuenta),
+			# 	'concepto': str(o.concepto()),
+			# 	'periodo': o.periodo(),
+			# 	'valor': o.valor,
+			# } for o in operaciones],
 			'total': total,
 			'saldo': self.saldo
 		}

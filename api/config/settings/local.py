@@ -9,14 +9,6 @@ DEBUG = True
 # Security
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='PB3aGvTmCkzaLGRAxDc3aMayKTPTDd5usT8gw4pCmKOk5AlJjh12pTrnNgQyOHCH')
 
-# Cache
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': ''
-    }
-}
-
 # Templates
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # NOQA
 

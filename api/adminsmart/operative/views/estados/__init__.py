@@ -98,23 +98,23 @@ class Totalidad():
 			if s.saldo(fecha=fecha) <= 0:
 				excluir.append(s.id)
 		return saldos.exclude(id__in=excluir).order_by('-fecha', '-id')
-
+		
 
 class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 		Estado de cuenta para Clientes, Proveedores y Cajas.
 		Deudas pendientes de cancelacion para Clientes y Proveedores.
 	"""
+	
 	http_method_names = ['get']
 
-	# naturalezas = ['cliente', 'proveedor', 'caja', 'ingreso']
-	estados = {
+	filterset_class = OperacionFilter
+
+	SERIALIZERS = {
 		'cuenta': EstadoCuentaSerializer,
 		'deudas': EstadoDeudasSerializer,
 		'saldos': EstadoDeudasSerializer # Si existe la necesidad de tener separados los saldos de las deudas aunque utilicen el mismo serializer
 	}
-
-	filterset_class = OperacionFilter
 
 	def get_queryset(self, **kwargs):
 		fecha = datetime.strptime(self.request.GET['end_date'], "%Y-%m-%d").date() if 'end_date' in self.request.GET.keys() else date.today()
@@ -138,7 +138,6 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 			permissions.append(IsAdministrativoUser)
 		return [p() for p in permissions]
 
-
 	def get_object(self):
 		if self.kwargs["pk"].isdigit():
 			if 'titulo' in self.request.GET.keys():
@@ -156,15 +155,12 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 		self.check_object_permissions(self.request, obj)
 		return obj
 		
-
-
 	def get_serializer_class(self):
 		'''Define el serializer segun parametro de url.'''
 		try:
-			return self.estados[self.kwargs['tipo']]
+			return self.SERIALIZERS[self.kwargs['tipo']]
 		except:
 			raise Http404
-
 
 	def retrieve(self, request, pk=None, **kwargs):
 		queryset = self.get_queryset()
