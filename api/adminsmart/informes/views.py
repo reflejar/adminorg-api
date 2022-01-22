@@ -63,9 +63,14 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 			# Hacer el xls y retornar
 			#return "xls"
 
-		#analisis_config = self.request.GET['analisis_config'] JSON para el analisis, analisis_config
+		# Escenario 1
+		analisis_config = {
+			'analizar': ['titulo'], 
+			'agrupar_por':['concepto'],
+			'encolumnar':['periodo'], 
+			'totalizar':'debe'
+		}
 
-		analisis_config = {'group_by':['concepto','tipo_documento'], 'column_by':['periodo'], 'totalize':'valor'}
-		data = Analisis(queryset, analisis_config).analisis()
+		analisis = Analisis(queryset, analisis_config)
 
-		return Response(data)
+		return Response(analisis.get_json())

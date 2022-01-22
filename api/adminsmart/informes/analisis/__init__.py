@@ -1,79 +1,116 @@
+import json
+from decimal import Decimal
 import pandas as pd
-from datetime import datetime 
 import numpy as np
 
 class Analisis:
-	
+
+	TRANSLATE = {
+		'fecha': 'FECHA',
+		'fecha_indicativa': 'PERIODO',
+		'cuenta__naturaleza__nombre': 'NATURALEZA',
+		'documento__receipt__receipt_type__description': 'DOCUMENTO_TIPO',
+		'documento__receipt__receipt_number': 'DOCUMENTO_NUMERO',	
+		'cuenta': 'CUENTA_ID',
+		'cuenta__nombre': 'CUENTA_NOMBRE',
+		'cuenta__titulo__nombre': 'TITULO_NOMBRE',
+		'cuenta__titulo__numero': 'NUMERO',
+		'descripcion': 'DESCRIPCION',
+		'valor': 'VALOR',
+		'cantidad': 'CANTIDAD',
+		'vinculos__cuenta__nombre': 'CONCEPTO',
+		'cuenta__perfil__nombre': 'CUENTA_PERFIL_NOMBRE',
+		'cuenta__perfil__apellido': 'CUENTA_PERFIL_APELLIDO',
+		}
+
+	QUERY_TRANSLATE = {
+		'concepto':'CONCEPTO', 
+		'periodo':'PERIODO',
+		'tipo_documento':'DOCUMENTO_TIPO',
+		}
+
+	AGGREGATE_VALUES = {
+		'valor':'VALOR',
+		'debe': 'VALOR',
+		'cantidad': 'CANTIDAD'
+	}		
+
 	def __init__(self, queryset, analisis_config):
-		self.group_by = analisis_config['group_by']
-		self.totalize = analisis_config['totalize']
-		self.column_by = analisis_config['column_by']
+		self.keep = analisis_config['analizar']
+		self.group_by = analisis_config['agrupar_por']
+		self.column_by = analisis_config['encolumnar']
+		self.totalize = analisis_config['totalizar']
+		
+		self.generate_initial_df(queryset.values(*self.TRANSLATE.keys()))
 		
 		
-		values = queryset.values(
-			'fecha',
-			'fecha_indicativa',	
-			'valor',
-			'descripcion',
-			'cuenta',
-			'cuenta__nombre',
-			'cuenta__naturaleza__nombre',
-			'cuenta__perfil__nombre',
-			'cuenta__perfil__apellido',
-			'cuenta__taxon__nombre',
-			'cuenta__titulo__nombre',
-			'documento__receipt__receipt_number',
-			'documento__receipt__receipt_type__description',		
-			'documento__descripcion')
-		
-		self.df = pd.DataFrame.from_records(values)
-		
-		
+	def generate_initial_df(self, values):
 
-	def analisis(self):
-
-		
-
-		q = {'concepto':'cuenta', 'periodo':'mes_año','tipo_documento':'documento__receipt__receipt_type__description','valor':'sum','cantidad':'count','debe':'tipo_saldo','dia':'fecha'}
-
-
-		if 'periodo' in self.column_by or 'periodo' in self.group_by:
-			self.df = self.df.assign(mes_año=pd.to_datetime(self.df['fecha']))
-			self.df['mes_año'] = self.df['mes_año'].dt.strftime('%Y-%m')
+		df = pd.DataFrame.from_records(values).copy()
+		self.df = df.rename(columns = self.TRANSLATE)
+		self.df['PERIODO'] = pd.to_datetime(self.df['PERIODO']).dt.strftime('%Y-%m')
+		if 'titulo' in self.keep:
+			self.df['NOMBRE'] = self.df['TITULO_NOMBRE']
 			
-
-		if 'debe' in self.column_by or 'debe' in self.group_by:
-			self.df['tipo_saldo'] = ["debe" if s >=0 else "haber" for s in self.df['valor']]
-			self.df['valor'] = self.df['valor'].abs()
-
-
-		encolumnar = []
-		for a in self.column_by:
-			encolumnar.append(q[a])
-
-		agrupar = []
-		for a in self.group_by:
-			agrupar.append(q[a])
+		elif 'cliente' in self.keep or 'proveedor'  in self.keep:
+			self.df['NOMBRE'] = self.df['CUENTA_PERFIL_APELLIDO'] + ", " + self.df['CUENTA_PERFIL_NOMBRE']
+		else:
+			self.df['NOMBRE'] = self.df['CUENTA_NOMBRE']
 
 
-		tabla_pivot = self.df.pivot_table('valor',agrupar,encolumnar, aggfunc={'valor':q[self.totalize]})
-		tabla_pivot = tabla_pivot.fillna(0)
+		if not 'titulo' in self.keep:
+		 	self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]
+
+		if 'debe' in self.totalize:
+			self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
+			self.df['VALOR'] = self.df['VALOR'].abs()
+
+	def get_json(self):
+
+		groups = ['NOMBRE'] + [self.QUERY_TRANSLATE[a] for a in self.group_by]
+		if 'titulo' in self.keep:
+			groups.append('NUMERO')
+		columns = [self.QUERY_TRANSLATE[a] for a in self.column_by]
+		if self.totalize == 'debe':
+			columns.append('TIPO_SALDO')
+
+		tabla_pivot = pd.pivot_table(
+			data=self.df, 
+			values=self.AGGREGATE_VALUES[self.totalize], 
+			index=groups, 
+			columns=columns, 
+			aggfunc='sum'
+		)
+		tabla_pivot = tabla_pivot.fillna(Decimal(0.00))
+		print(self.column_by)
+		if self.totalize == 'debe':
+			if len(self.column_by) > 0:
+				idx = pd.IndexSlice
+				tabla_pivot_temp = tabla_pivot.loc[:, idx[:, 'DEBE']] - tabla_pivot.loc[:, idx[:, 'HABER']].values 
+				tabla_pivot_temp = tabla_pivot_temp.rename(columns= {'DEBE': 'SALDO'})
+				tabla_pivot = pd.concat([tabla_pivot, tabla_pivot_temp], axis=1)
+				cat_idx = pd.CategoricalIndex(
+					tabla_pivot.columns.levels[1],
+					categories=['DEBE', 'HABER', 'SALDO'],
+					ordered=True
+				)
+				tabla_pivot.columns.set_levels(
+					cat_idx,
+					level=1,
+					inplace=True
+				)
+				tabla_pivot = tabla_pivot.sort_index(1)
+				tabla_pivot = (
+					tabla_pivot
+					.groupby(level=0)
+					.apply(lambda temporary: tabla_pivot.xs(temporary.name).to_dict())
+				)				
+			else:
+				tabla_pivot['SALDO'] = np.cumsum(tabla_pivot['DEBE'] - tabla_pivot['HABER']) 
 		
-		if 'debe' in self.column_by or 'debe' in self.group_by:
-			tabla_pivot['saldo'] = np.cumsum(tabla_pivot['debe'] - tabla_pivot['haber']) 
-
-
-
-
-
-
-		e = self.df.to_html()
-		c = tabla_pivot.to_html()
-		d = self.df.to_dict()
-		f = str(tabla_pivot.to_dict())
-		g = {'a': f}
-		print(f)
+		# if 'titulo' in self.keep:
+		# 	tabla_pivot = tabla_pivot.sort_values('NUMERO', ascending=True)
+		# else:
+		# 	tabla_pivot = tabla_pivot.sort_values('NOMBRE', ascending=True)
 		
-
-		return q, e, c, g, d
-		
+		return json.loads(tabla_pivot.reset_index().to_json(orient='records'))
