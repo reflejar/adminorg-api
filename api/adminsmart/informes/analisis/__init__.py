@@ -61,17 +61,20 @@ class Analisis:
 		if not 'titulo' in self.keep:
 		 	self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]
 
-		if 'debe' in self.totalize:
-			self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
-			self.df['VALOR'] = self.df['VALOR'].abs()
-
 	def get_json(self):
 		groups = ['NUMERO'] if 'titulo' in self.keep else []
 		groups += ['NOMBRE'] + [self.QUERY_TRANSLATE[a] for a in self.group_by]
 		
 		columns = [self.QUERY_TRANSLATE[a] for a in self.column_by]
+		
 		if self.totalize == 'debe':
-			columns.append('TIPO_SALDO')
+			debe_haber_df = self.df.copy()
+			
+			debe_haber_df['PERIODO'] = debe_haber_df.apply(lambda x: x['PERIODO'] + '/DEBE' if x['VALOR'] >= 0 else x['PERIODO'] + '/HABER', axis=1)
+			debe_haber_df['VALOR'] = debe_haber_df['VALOR'].abs()
+			self.df['PERIODO'] = self.df.apply(lambda x: x['PERIODO'] + "/SALDO", axis=1)
+			
+			self.df  = self.df.append(debe_haber_df)
 
 		tabla_pivot = pd.pivot_table(
 			data=self.df, 
@@ -81,34 +84,10 @@ class Analisis:
 			aggfunc='sum'
 		)
 		tabla_pivot = tabla_pivot.dropna(axis=0, how='all').fillna(Decimal(0.00))
-		if self.totalize == 'debe':
-			if len(self.column_by) > 0:
-				idx = pd.IndexSlice
-				tabla_pivot_temp = tabla_pivot.loc[:, idx[:, 'DEBE']] - tabla_pivot.loc[:, idx[:, 'HABER']].values 
-				tabla_pivot_temp = tabla_pivot_temp.rename(columns= {'DEBE': 'SALDO'})
-				tabla_pivot = pd.concat([tabla_pivot, tabla_pivot_temp], axis=1)
-				cat_idx = pd.CategoricalIndex(
-					tabla_pivot.columns.levels[1],
-					categories=['DEBE', 'HABER', 'SALDO'],
-					ordered=True
-				)
-				tabla_pivot.columns.set_levels(
-					cat_idx,
-					level=1,
-					inplace=True
-				)
-				tabla_pivot = tabla_pivot.sort_index(1)
-				tabla_pivot = (
-					tabla_pivot
-					.groupby(level=0)
-					.apply(lambda temporary: tabla_pivot.xs(temporary.name).to_dict())
-				)				
-			else:
-				tabla_pivot['SALDO'] = tabla_pivot['DEBE'] - tabla_pivot['HABER']
-		
-		# if 'titulo' in self.keep:
-		# 	tabla_pivot = tabla_pivot.sort_values('NUMERO', ascending=True)
-		# else:
-		# 	tabla_pivot = tabla_pivot.sort_values('NOMBRE', ascending=True)
+	
+		if 'titulo' in self.keep:
+			tabla_pivot = tabla_pivot.sort_values('NUMERO', ascending=True)
+		else:
+			tabla_pivot = tabla_pivot.sort_values('NOMBRE', ascending=True)
 		
 		return json.loads(tabla_pivot.reset_index().to_json(orient='records'))
