@@ -12,7 +12,7 @@ from adminsmart.operative.models import (
 	Operacion
 )
 from .filter import InformesFilter
-from .analisis import Analisis
+from .analisis import OperacionAnalisis
 
 class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
@@ -65,6 +65,6 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 
 		analisis_config = eval(request.GET['analisis'])
 
-		analisis = Analisis(queryset, analisis_config)
+		analisis = OperacionAnalisis(queryset, analisis_config)
 
 		return Response(analisis.get_json())
