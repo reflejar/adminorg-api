@@ -57,19 +57,13 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		return serializer_context
 
 	def list(self, request):
+		'''
+			TODO: Crear el escenario del usuario solicitando el xls crudo
+		'''
+
 		queryset = self.get_queryset()
 
-		#if "xls_all" in self.request.GET:
-			# Hacer el xls y retornar
-			#return "xls"
-
-		# Escenario 1
-		analisis_config = {
-			'analizar': ['titulo'], 
-			'agrupar_por':['concepto'],
-			'encolumnar':['periodo'], 
-			'totalizar':'debe'
-		}
+		analisis_config = eval(request.GET['analisis'])
 
 		analisis = Analisis(queryset, analisis_config)
 

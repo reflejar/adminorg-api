@@ -66,10 +66,9 @@ class Analisis:
 			self.df['VALOR'] = self.df['VALOR'].abs()
 
 	def get_json(self):
-
-		groups = ['NOMBRE'] + [self.QUERY_TRANSLATE[a] for a in self.group_by]
-		if 'titulo' in self.keep:
-			groups.append('NUMERO')
+		groups = ['NUMERO'] if 'titulo' in self.keep else []
+		groups += ['NOMBRE'] + [self.QUERY_TRANSLATE[a] for a in self.group_by]
+		
 		columns = [self.QUERY_TRANSLATE[a] for a in self.column_by]
 		if self.totalize == 'debe':
 			columns.append('TIPO_SALDO')
@@ -81,8 +80,7 @@ class Analisis:
 			columns=columns, 
 			aggfunc='sum'
 		)
-		tabla_pivot = tabla_pivot.fillna(Decimal(0.00))
-		print(self.column_by)
+		tabla_pivot = tabla_pivot.dropna(axis=0, how='all').fillna(Decimal(0.00))
 		if self.totalize == 'debe':
 			if len(self.column_by) > 0:
 				idx = pd.IndexSlice
@@ -106,7 +104,7 @@ class Analisis:
 					.apply(lambda temporary: tabla_pivot.xs(temporary.name).to_dict())
 				)				
 			else:
-				tabla_pivot['SALDO'] = np.cumsum(tabla_pivot['DEBE'] - tabla_pivot['HABER']) 
+				tabla_pivot['SALDO'] = tabla_pivot['DEBE'] - tabla_pivot['HABER']
 		
 		# if 'titulo' in self.keep:
 		# 	tabla_pivot = tabla_pivot.sort_values('NUMERO', ascending=True)
