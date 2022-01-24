@@ -12,6 +12,7 @@ from adminsmart.operative.models import (
 	Operacion
 )
 from .filter import InformesFilter
+from .analisis import OperacionAnalisis
 
 class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
@@ -26,7 +27,7 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		try:
 			datos = Operacion.objects.filter(
 				comunidad=self.comunidad,
-				documento__isnull=False
+				#documento__isnull=False
 			).select_related(
 				"cuenta", 
 				"cuenta__perfil", # Para el nombre de la cuenta
@@ -56,14 +57,14 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		return serializer_context
 
 	def list(self, request):
+		'''
+			TODO: Crear el escenario del usuario solicitando el xls crudo
+		'''
+
 		queryset = self.get_queryset()
 
-		if "xls_all" in self.request.GET:
-			# TODO: Hacer el xls y retornar
-			return "xls"
+		analisis_config = eval(request.GET['analisis'])
 
-		analisis_config = self.request.GET['analisis_config'] # JSON para el analisis
+		analisis = OperacionAnalisis(queryset, analisis_config)
 
-		# data = analisis(queryset, analisis_config)
-
-		return Response(data)
+		return Response(analisis.get_json())
