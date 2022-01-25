@@ -62,35 +62,20 @@ class OperacionAnalisis:
 
 		if not 'titulo' in self.keep:
 		 	self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]
+			
+		if 'debe' in self.totalize:
+			self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
+			self.df['VALOR'] = self.df['VALOR'].abs()
+			
 
 	def get_json(self):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []
 		groups += ['NOMBRE'] + [self.QUERY_COLUMN_NAMES[a] for a in self.group_by]
 
 		columns = [self.QUERY_COLUMN_NAMES[a] for a in self.column_by]
+
 		if self.totalize == 'debe':
-			if len(columns) > 0:
-
-				for c in columns:
-					debe_haber_df = self.df.copy()
-					debe_haber_df[c] = debe_haber_df.apply(lambda x: x[c] if x[c] != None else f'S/{c}', axis=1)
-					debe_haber_df[c] = debe_haber_df.apply(lambda x: x[c] + '/DEBE' if x['VALOR'] >= 0 else x[c] + '/HABER', axis=1)
-					debe_haber_df['VALOR'] = debe_haber_df['VALOR'].abs()
-
-					self.df[c] = self.df.apply(lambda x: x[c] if x[c] != None else f'S/{c}', axis=1)
-					self.df[c] = self.df.apply(lambda x: x[c] + "/SALDO", axis=1)
-					
-					self.df  = self.df.append(debe_haber_df)
-			
-			else:
-				debe_haber_df = self.df.copy()
-				debe_haber_df['TIPO_SALDO'] = debe_haber_df.apply(lambda x: 'DEBE' if x['VALOR'] >= 0 else 'HABER', axis=1)
-				debe_haber_df['VALOR'] = debe_haber_df['VALOR'].abs()
-
-				self.df['TIPO_SALDO'] = self.df.apply(lambda x: "SALDO", axis=1)
-
-				self.df  = self.df.append(debe_haber_df)
-				columns = ['TIPO_SALDO']
+			columns.append('TIPO_SALDO')
 
 		tabla_pivot = pd.pivot_table(
 			data=self.df, 
@@ -99,7 +84,32 @@ class OperacionAnalisis:
 			columns=columns, 
 			aggfunc='sum'
 		)
-		tabla_pivot = tabla_pivot.dropna(axis=0, how='all').fillna(Decimal(0.00))
+		tabla_pivot = tabla_pivot.dropna(axis=0, how='all').fillna(Decimal(0.00))	
+		
+		if 'debe' in self.totalize:
+			if len(self.column_by) > 0:
+				idx = pd.IndexSlice
+				tabla_pivot_temp = tabla_pivot.loc[:, idx[:, 'DEBE']] - tabla_pivot.loc[:, idx[:, 'HABER']].values 
+				tabla_pivot_temp = tabla_pivot_temp.rename(columns= {'DEBE': 'SALDO'})
+				tabla_pivot = pd.concat([tabla_pivot, tabla_pivot_temp], axis=1)
+				cat_idx = pd.CategoricalIndex(
+					tabla_pivot.columns.levels[1],
+					categories=['DEBE', 'HABER', 'SALDO'],
+					ordered=True
+				)
+				tabla_pivot.columns.set_levels(
+					cat_idx,
+					level=1,
+					inplace=True
+				)
+				tabla_pivot = tabla_pivot.sort_index(1)
+				tabla_pivot = (
+					tabla_pivot
+					.groupby(level=0)
+					.apply(lambda temporary: tabla_pivot.xs(temporary.name).to_dict())
+				)				
+			else:
+				tabla_pivot['SALDO'] = tabla_pivot['DEBE'] - tabla_pivot['HABER']		
 	
 		if 'titulo' in self.keep:
 			tabla_pivot = tabla_pivot.sort_values('TITULO_NUMERO', ascending=True)
