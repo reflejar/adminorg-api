@@ -66,5 +66,5 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		analisis_config = eval(request.GET['analisis'])
 
 		analisis = OperacionAnalisis(queryset, analisis_config)
-
+		
 		return Response(analisis.get_json())
