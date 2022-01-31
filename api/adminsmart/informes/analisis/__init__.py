@@ -1,5 +1,6 @@
 import json
 from decimal import Decimal
+import numpy as np
 import pandas as pd
 
 class OperacionAnalisis:
@@ -39,14 +40,7 @@ class OperacionAnalisis:
 		self.totalize = analisis_config['totalizar']
 		self.generate_initial_df(queryset.values(*self.COLUMN_NAMES.keys()))
 		
-		
-	def generate_initial_df(self, values):
-
-		df = pd.DataFrame.from_records(values).copy()
-		self.df = df.rename(columns = self.COLUMN_NAMES)
-		self.df['PERIODO'] = pd.to_datetime(self.df['PERIODO']).dt.strftime('%Y-%m')
-		self.df['VINCULO_ID'] = self.df['VINCULO_ID'].fillna(0).astype(int)
-
+	def prepare_nombre(self):
 		if 'titulo' in self.keep:
 			self.df['NOMBRE'] = self.df['TITULO_NOMBRE']
 		else:
@@ -54,7 +48,9 @@ class OperacionAnalisis:
 					lambda x: x['PERFIL_RAZON_SOCIAL'] if x['PERFIL_RAZON_SOCIAL'] else ', '.join([x['PERFIL_APELLIDO'], x['PERFIL_NOMBRE']]) if x['NATURALEZA'] in ['cliente', 'proveedor']  \
 					else '#' + str(int(x['CUENTA_NUMERO'])) if x['NATURALEZA'] in ['dominio'] \
 					else x['CUENTA_NOMBRE'], 
-					axis=1)
+					axis=1)		
+
+	def prepare_conceptos(self):
 		# Generacion del concepto
 		df_conceptos = self.df.copy()
 		
@@ -87,16 +83,31 @@ class OperacionAnalisis:
 		self.df['CONCEPTO'] = self.df['CONCEPTO_PADRE'].fillna(self.df['CONCEPTO_HIJO'])
 		self.df['CONCEPTO'] = self.df['CONCEPTO'].fillna("")
 
+	def filter_solicitados(self):
 		if not 'titulo' in self.keep:
-		 	self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]
+		 	self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]		
+
+	def configure_dhs(self):
+		self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
+		df_temp = self.df.copy()
+		df_temp['TIPO_SALDO'] = "SALDO"
+		self.df['VALOR'] = self.df['VALOR'].abs()
+		self.df = self.df.append(df_temp)
+
+	def generate_initial_df(self, values):
+
+		df = pd.DataFrame.from_records(values).copy()
+		self.df = df.rename(columns = self.COLUMN_NAMES)
+		self.df['PERIODO'] = pd.to_datetime(self.df['PERIODO']).dt.strftime('%Y-%m')
+		self.df['VINCULO_ID'] = self.df['VINCULO_ID'].fillna(0).astype(int)
+
+		self.prepare_nombre()
+		self.prepare_conceptos()
+
+		self.filter_solicitados()
 
 		if 'debe' in self.totalize:
-			self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
-			df_temp = self.df.copy()
-			df_temp['TIPO_SALDO'] = "SALDO"
-			self.df['VALOR'] = self.df['VALOR'].abs()
-			self.df = self.df.append(df_temp)
-
+			self.configure_dhs()
 		
 	def generate_groups(self):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []
@@ -109,11 +120,21 @@ class OperacionAnalisis:
 			columns.append('TIPO_SALDO')
 		return columns		
 
-	def sort_pivot_df(self):
+	def sort_rows_pivot_df(self):
 		if 'titulo' in self.keep:
 			self.pivot_df = self.pivot_df.sort_values('TITULO_NUMERO', ascending=True)
 		else:
 			self.pivot_df = self.pivot_df.sort_values('NOMBRE', ascending=True)
+
+	def sort_columns_pivot_df(self, columns):
+		if len(columns) > 0:
+			col = columns[0]
+			ordered = self.df[col].sort_values(ascending=False if col == "PERIODO" else True).unique()
+			if len(columns) > 1:
+				pass
+				self.pivot_df = self.pivot_df.reindex(columns=ordered, level=col)
+			else:
+				self.pivot_df = self.pivot_df.reindex(ordered, axis=1)
 
 	def get_json(self):
 		
@@ -127,8 +148,13 @@ class OperacionAnalisis:
 			columns=columns, 
 			aggfunc='sum'
 		)
-		self.pivot_df = self.pivot_df.dropna(axis=0, how='all').fillna(Decimal(0.00))	
+		self.pivot_df = self.pivot_df\
+			.replace(Decimal(0), np.nan)\
+			.replace(Decimal(0.00), np.nan)\
+			.dropna(axis=0, how='all')\
+			.fillna(Decimal(0.00))
 	
-		self.sort_pivot_df()
+		self.sort_rows_pivot_df()
+		self.sort_columns_pivot_df(columns)
 		
 		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
