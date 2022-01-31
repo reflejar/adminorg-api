@@ -130,7 +130,5 @@ class OperacionAnalisis:
 		self.pivot_df = self.pivot_df.dropna(axis=0, how='all').fillna(Decimal(0.00))	
 	
 		self.sort_pivot_df()
-
-		self.pivot_df.to_csv('tablita.csv')
 		
 		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
