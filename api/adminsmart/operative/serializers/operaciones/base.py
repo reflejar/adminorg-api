@@ -18,4 +18,4 @@ class OperacionModelSerializer(serializers.ModelSerializer):
 		)
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.fields['monto'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0.01)
+		self.fields['monto'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0.00)
