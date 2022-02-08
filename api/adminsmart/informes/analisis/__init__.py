@@ -20,7 +20,6 @@ class OperacionAnalisis:
 		'cuenta__perfil__razon_social': 'PERFIL_RAZON_SOCIAL',
 		'cuenta__titulo__nombre': 'TITULO_NOMBRE',
 		'cuenta__titulo__numero': 'TITULO_NUMERO',
-		'cuenta__vinculo1__id': 'CLIENTE_ID', # Solo para dominios
 		'vinculo': 'VINCULO_ID',
 		'descripcion': 'DESCRIPCION',
 		'valor': 'VALOR',
@@ -83,31 +82,33 @@ class OperacionAnalisis:
 		self.df['CONCEPTO'] = self.df['CONCEPTO_PADRE'].fillna(self.df['CONCEPTO_HIJO'])
 		self.df['CONCEPTO'] = self.df['CONCEPTO'].fillna("")
 
-	def filter_solicitados(self):
+	def filter_query(self):
 		if not 'titulo' in self.keep:
 		 	self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]		
 
 	def configure_dhs(self):
-		self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
 		df_temp = self.df.copy()
 		df_temp['TIPO_SALDO'] = "SALDO"
+		self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
 		self.df['VALOR'] = self.df['VALOR'].abs()
 		self.df = self.df.append(df_temp)
 
 	def generate_initial_df(self, values):
 
 		df = pd.DataFrame.from_records(values).copy()
-		self.df = df.rename(columns = self.COLUMN_NAMES)
-		self.df['PERIODO'] = pd.to_datetime(self.df['PERIODO']).dt.strftime('%Y-%m')
-		self.df['VINCULO_ID'] = self.df['VINCULO_ID'].fillna(0).astype(int)
-
-		self.prepare_nombre()
-		self.prepare_conceptos()
-
-		self.filter_solicitados()
-
-		if 'debe' in self.totalize:
-			self.configure_dhs()
+		if len(df):
+			self.df = df.rename(columns = self.COLUMN_NAMES)
+			self.df['PERIODO'] = pd.to_datetime(self.df['PERIODO']).dt.strftime('%Y-%m')
+			self.df['VINCULO_ID'] = self.df['VINCULO_ID'].fillna(0).astype(int)
+			self.prepare_nombre()
+			if 'concepto' in self.group_by + self.column_by:
+				self.prepare_conceptos()
+			self.filter_query()
+			if 'debe' in self.totalize:
+				self.configure_dhs()
+		else:
+			self.df = df
+		
 		
 	def generate_groups(self):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []
@@ -131,16 +132,13 @@ class OperacionAnalisis:
 			col = columns[0]
 			ordered = self.df[col].sort_values(ascending=False if col == "PERIODO" else True).unique()
 			if len(columns) > 1:
-				pass
 				self.pivot_df = self.pivot_df.reindex(columns=ordered, level=col)
 			else:
+				if not 'TIPO_SALDO' in columns:
+					ordered = ['TOTAL'] + list(ordered)
 				self.pivot_df = self.pivot_df.reindex(ordered, axis=1)
 
-	def get_json(self):
-		
-		groups = self.generate_groups()
-		columns = self.generate_columns()
-
+	def generate_pivot_table(self, groups, columns):
 		self.pivot_df = pd.pivot_table(
 			data=self.df, 
 			values=self.AGGREGATE_VALUES[self.totalize], 
@@ -151,9 +149,23 @@ class OperacionAnalisis:
 		self.pivot_df = self.pivot_df\
 			.replace(Decimal(0), np.nan)\
 			.replace(Decimal(0.00), np.nan)\
-			.dropna(axis=0, how='all')\
 			.fillna(Decimal(0.00))
-	
+		
+		if len(self.column_by) != 0 and 'valor' in self.totalize:
+			self.pivot_df['TOTAL'] = self.pivot_df.sum(axis=1)
+			self.pivot_df = self.pivot_df[self.pivot_df['TOTAL'] != Decimal(0.00)]
+		
+		
+
+	def get_json(self):
+		
+		if not len(self.df):
+			return {}
+
+		groups = self.generate_groups()
+		columns = self.generate_columns()
+
+		self.generate_pivot_table(groups, columns)
 		self.sort_rows_pivot_df()
 		self.sort_columns_pivot_df(columns)
 		
