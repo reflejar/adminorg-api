@@ -16,9 +16,8 @@ from adminsmart.operative.models import (
 from django_afip.models import Receipt
 
 def borrar_data(modeladmin, request, queryset):
-	Operacion.all_objects.filter(comunidad__in=queryset).hard_delete()
-	Documento.all_objects.filter(comunidad__in=queryset).hard_delete()
-	Receipt.objects.all().delete()
+	Operacion.objects.filter(comunidad__in=queryset).delete()
+	Documento.objects.filter(comunidad__in=queryset).delete()
 	
 
 borrar_data.short_description = "Borrar toda la data operativa excepto las cuentas"
@@ -82,7 +81,6 @@ def crear_plan_basico(modeladmin, request, queryset):
 		)		
 
 crear_plan_basico.short_description = "Crear plan de cuentas basico"
-
 
 class ComunidadAdmin(admin.ModelAdmin):
 	list_display = ['nombre']
