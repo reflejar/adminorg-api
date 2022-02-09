@@ -32,22 +32,23 @@ class OperacionAnalisis:
 		'cantidad': 'CANTIDAD'
 	}		
 
-	def __init__(self, queryset, analisis_config):
+	def __init__(self, queryset, nombres, analisis_config):
 		self.keep = analisis_config['analizar']
 		self.group_by = analisis_config['agrupar_por']
 		self.column_by = analisis_config['encolumnar']
 		self.totalize = analisis_config['totalizar']
+		self.nombres = pd.DataFrame.from_records(nombres)
 		self.generate_initial_df(queryset.values(*self.COLUMN_NAMES.keys()))
 		
+	def prepare_dominios(self):
+		self.df['DOMINIO'] = self.df['CUENTA_NUMERO'].fillna(0).astype(int).astype(str).replace("0","-")
+
 	def prepare_nombre(self):
+
 		if 'titulo' in self.keep:
 			self.df['NOMBRE'] = self.df['TITULO_NOMBRE']
 		else:
-			self.df['NOMBRE'] = self.df.apply(
-					lambda x: x['PERFIL_RAZON_SOCIAL'] if x['PERFIL_RAZON_SOCIAL'] else ', '.join([x['PERFIL_APELLIDO'], x['PERFIL_NOMBRE']]) if x['NATURALEZA'] in ['cliente', 'proveedor']  \
-					else '#' + str(int(x['CUENTA_NUMERO'])) if x['NATURALEZA'] in ['dominio'] \
-					else x['CUENTA_NOMBRE'], 
-					axis=1)		
+			self.df = pd.merge(self.df, self.nombres, on=['CUENTA_ID', 'NATURALEZA'])
 
 	def prepare_conceptos(self):
 		# Generacion del concepto
@@ -83,10 +84,12 @@ class OperacionAnalisis:
 		self.df['CONCEPTO'] = self.df['CONCEPTO'].fillna("")
 
 	def filter_query(self):
-		if not 'titulo' in self.keep:
-		 	self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]		
+		if self.keep and not 'titulo' in self.keep:
+			if 'cliente' in self.keep:
+				self.keep.append("dominio")
+			self.df = self.df[self.df['NATURALEZA'].isin(self.keep)]		
 
-	def configure_dhs(self):
+	def prepare_dhs(self):
 		df_temp = self.df.copy()
 		df_temp['TIPO_SALDO'] = "SALDO"
 		self.df['TIPO_SALDO'] = ["DEBE" if s >=0 else "HABER" for s in self.df['VALOR']]
@@ -100,19 +103,29 @@ class OperacionAnalisis:
 			self.df = df.rename(columns = self.COLUMN_NAMES)
 			self.df['PERIODO'] = pd.to_datetime(self.df['PERIODO']).dt.strftime('%Y-%m')
 			self.df['VINCULO_ID'] = self.df['VINCULO_ID'].fillna(0).astype(int)
+
 			self.prepare_nombre()
+
+			if 'cliente' in self.keep:
+				self.prepare_dominios()
+
 			if 'concepto' in self.group_by + self.column_by:
 				self.prepare_conceptos()
+
 			self.filter_query()
+
 			if 'debe' in self.totalize:
-				self.configure_dhs()
+				self.prepare_dhs()
 		else:
 			self.df = df
 		
-		
 	def generate_groups(self):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []
-		groups += ['NOMBRE'] + [a.upper() for a in self.group_by]		
+		groups += ['NOMBRE'] 
+		if 'cliente' in self.keep:
+			groups.append("DOMINIO")
+		groups += [a.upper() for a in self.group_by]
+		
 		return groups
 
 	def generate_columns(self):
@@ -124,7 +137,7 @@ class OperacionAnalisis:
 	def sort_rows_pivot_df(self):
 		if 'titulo' in self.keep:
 			self.pivot_df = self.pivot_df.sort_values('TITULO_NUMERO', ascending=True)
-		else:
+		elif set(['ingreso', 'gasto']).issubset(self.keep):
 			self.pivot_df = self.pivot_df.sort_values('NOMBRE', ascending=True)
 
 	def sort_columns_pivot_df(self, columns):
@@ -154,19 +167,20 @@ class OperacionAnalisis:
 		if len(self.column_by) != 0 and 'valor' in self.totalize:
 			self.pivot_df['TOTAL'] = self.pivot_df.sum(axis=1)
 			self.pivot_df = self.pivot_df[self.pivot_df['TOTAL'] != Decimal(0.00)]
-		
-		
 
 	def get_json(self):
 		
 		if not len(self.df):
 			return {}
 
-		groups = self.generate_groups()
-		columns = self.generate_columns()
+		if self.keep:
+			groups = self.generate_groups()
+			columns = self.generate_columns()
 
-		self.generate_pivot_table(groups, columns)
-		self.sort_rows_pivot_df()
-		self.sort_columns_pivot_df(columns)
-		
-		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
+			self.generate_pivot_table(groups, columns)
+			self.sort_rows_pivot_df()
+			self.sort_columns_pivot_df(columns)
+			
+			return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
+		else:
+			return json.loads(self.df.to_json(orient="split"))

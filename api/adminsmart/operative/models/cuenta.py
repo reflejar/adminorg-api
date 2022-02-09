@@ -37,12 +37,15 @@ class Cuenta(BaseModel):
 	metodos = models.ManyToManyField(Metodo, blank=True)
 
 	def __str__(self):
-		nombre = ""
+					# else '#' + str(int(x['CUENTA_NUMERO'])) if x['NATURALEZA'] in ['dominio'] \
+					# else x['CUENTA_NOMBRE'], 
 		if self.perfil:
-			nombre += "{}".format(str(self.perfil)) 
-		else:
-			nombre += "{}".format(self.nombre if self.nombre else self.numero) 
-		return nombre
+			if self.perfil.razon_social:
+				return self.perfil.razon_social
+			return ', '.join([self.perfil.apellido, self.perfil.nombre])
+		if self.numero:
+			return f"#{self.numero}"
+		return self.nombre
 
 	@property
 	def grupo(self):

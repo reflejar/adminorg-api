@@ -9,7 +9,8 @@ from django_afip.models import (
 )
 from adminsmart.utils.generics import custom_viewsets
 from adminsmart.operative.models import (
-	Operacion
+	Operacion,
+	Cuenta
 )
 from .filter import InformesFilter
 from .analisis import OperacionAnalisis
@@ -56,6 +57,24 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		serializer_context['end_date'] = end_date
 		return serializer_context
 
+
+	def get_nombres(self):
+		cuentas = Cuenta.objects.filter(
+					comunidad=self.comunidad, 
+					).select_related(
+						"naturaleza",
+					).prefetch_related(
+						"vinculo2",
+					)
+		nombres = [
+			{
+				'CUENTA_ID': c.id, 
+				'NATURALEZA': c.naturaleza.nombre,
+				'NOMBRE': str(c) if c.naturaleza.nombre != "dominio" else str(c.inquilino())
+			} for c in cuentas
+		]		
+		return nombres
+
 	def list(self, request):
 		'''
 			TODO: Crear el escenario del usuario solicitando el xls crudo
@@ -65,6 +84,9 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 
 		analisis_config = eval(request.GET['analisis'])
 
-		analisis = OperacionAnalisis(queryset, analisis_config)
-		
+		analisis = OperacionAnalisis(
+				queryset=queryset, 
+				nombres=self.get_nombres(), 
+				analisis_config=analisis_config
+			)
 		return Response(analisis.get_json())
