@@ -1,3 +1,4 @@
+import tempfile
 import json
 from decimal import Decimal
 import numpy as np
@@ -11,6 +12,7 @@ class OperacionAnalisis:
 		'fecha_indicativa': 'PERIODO',
 		'cuenta__naturaleza__nombre': 'NATURALEZA',
 		'documento__receipt__receipt_type__description': 'TIPO_DOCUMENTO',
+		'documento__receipt__point_of_sales': 'DOCUMENTO_PUNTO',	
 		'documento__receipt__receipt_number': 'DOCUMENTO_NUMERO',	
 		'cuenta': 'CUENTA_ID',
 		'cuenta__numero': 'CUENTA_NUMERO',
@@ -21,7 +23,9 @@ class OperacionAnalisis:
 		'cuenta__titulo__nombre': 'TITULO_NOMBRE',
 		'cuenta__titulo__numero': 'TITULO_NUMERO',
 		'vinculo': 'VINCULO_ID',
-		'descripcion': 'DESCRIPCION',
+		'documento__destinatario': "COMPROBANTE_ID",
+		'detalle': 'DETALLE',
+		'documento__descripcion': 'DESCRIPCION',
 		'valor': 'VALOR',
 		'cantidad': 'CANTIDAD',
 		}
@@ -43,12 +47,18 @@ class OperacionAnalisis:
 	def prepare_dominios(self):
 		self.df['DOMINIO'] = self.df['CUENTA_NUMERO'].fillna(0).astype(int).astype(str).replace("0","-")
 
-	def prepare_nombre(self):
-
+	def prepare_nombres(self):
 		if 'titulo' in self.keep:
 			self.df['NOMBRE'] = self.df['TITULO_NOMBRE']
 		else:
 			self.df = pd.merge(self.df, self.nombres, on=['CUENTA_ID', 'NATURALEZA'])
+
+	def prepare_cuenta_vinculada(self):
+		self.nombres['COMPROBANTE_ID'] = self.nombres['CUENTA_ID']
+		self.nombres['CUENTA_VINCULADA'] = self.nombres['NOMBRE']
+		self.nombres = self.nombres[["COMPROBANTE_ID", 'CUENTA_VINCULADA']]
+		self.df['COMPROBANTE_ID'] = self.df['COMPROBANTE_ID'].fillna(0)
+		self.df = pd.merge(self.df, self.nombres, on=['COMPROBANTE_ID'])
 
 	def prepare_conceptos(self):
 		# Generacion del concepto
@@ -104,13 +114,15 @@ class OperacionAnalisis:
 			self.df['PERIODO'] = pd.to_datetime(self.df['PERIODO']).dt.strftime('%Y-%m')
 			self.df['VINCULO_ID'] = self.df['VINCULO_ID'].fillna(0).astype(int)
 
-			self.prepare_nombre()
+			self.prepare_nombres()
 
 			if 'cliente' in self.keep:
 				self.prepare_dominios()
 
 			if 'concepto' in self.group_by + self.column_by:
 				self.prepare_conceptos()
+
+			self.prepare_cuenta_vinculada()
 
 			self.filter_query()
 
@@ -170,17 +182,40 @@ class OperacionAnalisis:
 
 	def get_json(self):
 		
-		if not len(self.df):
-			return {}
+		if not len(self.df) or not self.keep:
+			return {"columns": [""], "data": [[""]]}
 
-		if self.keep:
+		groups = self.generate_groups()
+		columns = self.generate_columns()
+
+		self.generate_pivot_table(groups, columns)
+		self.sort_rows_pivot_df()
+		self.sort_columns_pivot_df(columns)
+		
+		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
+
+	def get_excel(self):
+		df_to_file = None
+
+		if not len(self.df):
+			df_to_file = pd.DataFrame()
+		if not self.keep:
+			df_to_file = self.df
+
+		if not isinstance(df_to_file, pd.DataFrame):	
 			groups = self.generate_groups()
 			columns = self.generate_columns()
 
 			self.generate_pivot_table(groups, columns)
 			self.sort_rows_pivot_df()
 			self.sort_columns_pivot_df(columns)
+
+			df_to_file = self.pivot_df.reset_index()
 			
-			return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
-		else:
-			return json.loads(self.df.to_json(orient="split"))
+		filename = "informe.xlsx"
+		with tempfile.NamedTemporaryFile(suffix='.xlsx') as tmp:
+			df_to_file.to_excel(tmp.name, sheet_name="Informe")
+			tmp.flush()
+			tmp.seek(0)
+			data = tmp.read()
+		return (data, filename)

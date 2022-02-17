@@ -1,12 +1,13 @@
+import tempfile
+import os
 from django.http import Http404
 from datetime import datetime
+from django.http import HttpResponse
 
 from rest_framework.response import Response
 from rest_framework import status
-from django_afip.models import (
-	DocumentType,
-	ReceiptType,
-)
+from rest_framework.decorators import action
+
 from adminsmart.utils.generics import custom_viewsets
 from adminsmart.operative.models import (
 	Operacion,
@@ -76,17 +77,31 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		return nombres
 
 	def list(self, request):
-		'''
-			TODO: Crear el escenario del usuario solicitando el xls crudo
-		'''
-
 		queryset = self.get_queryset()
-
 		analisis_config = eval(request.GET['analisis'])
-
 		analisis = OperacionAnalisis(
 				queryset=queryset, 
 				nombres=self.get_nombres(), 
 				analisis_config=analisis_config
 			)
 		return Response(analisis.get_json())
+
+	@action(detail=False, methods=['get'])
+	def xlsx(self, request):
+		queryset = self.get_queryset()
+		analisis_config = eval(request.GET['analisis'])
+		nombres = self.get_nombres()
+		nombres.append({
+				'CUENTA_ID': 0, 
+				'NATURALEZA': "",
+				'NOMBRE': "-"
+			})
+		analisis = OperacionAnalisis(
+				queryset=queryset, 
+				nombres=nombres, 
+				analisis_config=analisis_config
+			)
+		data, filename = analisis.get_excel()
+		response = HttpResponse(data, content_type="application/vnd.ms-excel")
+		response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filename)
+		return response
