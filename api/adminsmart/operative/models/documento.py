@@ -333,9 +333,11 @@ class Documento(BaseModel):
 			self.pdf.remove()
 			self.pdf.delete()
 
-		documento = self
-		ciphertext = PDF.compress('pdfs/{}.html'.format(self.receipt.receipt_type.code), {'documento': documento})
-		self.pdf = PDF.objects.create(comunidad=self.comunidad, ciphertext=ciphertext)
+		# documento = self
+		# ciphertext = PDF.compress('pdfs/{}.html'.format(self.receipt.receipt_type.code), {'documento': documento})
+		# self.pdf = PDF.objects.create(comunidad=self.comunidad, ciphertext=ciphertext)
+		content_field = PDF.generate_content_fields(self)
+		self.pdf = PDF.objects.create(comunidad=self.comunidad, content_field=content_field)
 		self.save()
 
 		

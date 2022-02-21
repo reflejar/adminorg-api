@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>{{documento.receipt.receipt_type}} {{documento.receipt.formatted_number}}</title>
+    <title>{{ documento.receipt.receipt_type}} {{ documento.receipt.formatted_number}}</title>
     <!-- <link href="{% static 'anopa/pdf.css' %}" rel="stylesheet" type="text/css" /> -->
     <style>
       html, body {
@@ -235,7 +235,7 @@
             <small>
               C.U.I.T.:{{ documento.comunidad.contribuyente.cuit }}<br>
               Ingresos Brutos: Exento<br>
-              Inicio de actividad: {{documento.comunidad.contribuyente.active_since|date:"d/m/Y"}}<br>
+              Inicio de actividad: {{ documento.comunidad.contribuyente.active_since|date:"d/m/Y"}}<br>
               Fecha Operacion: {{ documento.fecha_operacion|date:"d/m/Y" }}
             </small>
           </div>
@@ -268,7 +268,7 @@
       
       {% if documento.descripcion %}
         <p><strong>Descripcion:</strong></p>
-        <i>{{documento.descripcion}}</i>
+        <i>{{ documento.descripcion}}</i>
       {% endif %}
       
       <div class="taxpayer-details group">
