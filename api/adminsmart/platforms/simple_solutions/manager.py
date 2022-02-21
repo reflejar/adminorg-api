@@ -4,7 +4,7 @@ import paramiko
 import json
 
 from .models import *
-from adminsmart.operative.models import Documento
+from adminsmart.core.models import Documento
 from adminsmart.platforms.expensas_pagas.models import Preference
 from adminsmart.files.models import Archivo
 

@@ -3,7 +3,7 @@ from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from adminsmart.operative.models import Cuenta
+from adminsmart.core.models import Cuenta
 from adminsmart.users.permissions import IsPlatformClientUser
 from adminsmart._public.serializers import EstadoCuentaModelSerializer
 

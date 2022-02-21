@@ -70,7 +70,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'adminsmart.utils.apps.UtilsAppConfig',
     'adminsmart.users.apps.UsersAppConfig',
-    'adminsmart.operative.apps.OperativeAppConfig',
+    'adminsmart.core.apps.OperativeAppConfig',
     'adminsmart.platforms.apps.PlatformsAppConfig',
     'adminsmart.files.apps.FilesAppConfig',
     'adminsmart.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
