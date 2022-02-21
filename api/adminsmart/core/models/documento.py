@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import json
 import base64
 from datetime import date
 
@@ -315,32 +316,6 @@ class Documento(BaseModel):
 	def plataforma(self):
 		return self.cobros_plataforma.first()
 
-	# Funciones Operativas
-	def hacer_pdf(self):
-
-		if self.receipt.receipt_type.code == "400":
-			return 
-
-		if self.destinatario:
-			if self.destinatario.naturaleza.nombre == "proveedor" and self.receipt.receipt_type.code != "301":
-				return 			
-
-			if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
-				generator = ReceiptBarcodeGenerator(self.receipt_afip)
-				barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
-		
-		if self.pdf:
-			self.pdf.remove()
-			self.pdf.delete()
-
-		# documento = self
-		# ciphertext = PDF.compress('pdfs/{}.html'.format(self.receipt.receipt_type.code), {'documento': documento})
-		# self.pdf = PDF.objects.create(comunidad=self.comunidad, ciphertext=ciphertext)
-		content_field = PDF.generate_content_fields(self)
-		self.pdf = PDF.objects.create(comunidad=self.comunidad, content_field=content_field)
-		self.save()
-
-		
 
 	def anulacion_documentos(self, documentos_relacionados):
 		"""
@@ -477,3 +452,62 @@ class Documento(BaseModel):
 	# 			asiento=identifier
 	# 		)
 	# 	)
+
+	def generate_content_fields(self):
+		fields = {
+			'cuenta': 'CUENTA',
+			'concepto': 'CONCEPTO',
+			'fecha_indicativa': 'PERIODO',
+			'monto': 'MONTO',
+			'detalle': "DETALLE",
+			'vinculo.pdf.receipt.receipt_type': "DOC_TYPE_VINCULO",
+			'vinculo.pdf.receipt.formatted_number': "DOC_NUM_VINCULO"
+		}
+		
+		result = {
+			'CREDITOS': [],
+			'COBROS': [],
+			'A_CUENTA': [],
+			'PAGOS': [],
+		}
+		for key in result.keys():
+			list_objects = []
+			for op in getattr(self, key.lower())():
+				new_obj = {}
+				for f in fields:
+					dispatcher = getattr(op, f, None)
+					if callable(dispatcher):
+						dispatcher = dispatcher()
+					new_obj[fields[f]] = str(dispatcher)
+				list_objects.append(new_obj)
+			result[key] = list_objects
+
+		
+		return json.dumps(result)		
+
+	# Funciones Operativas
+	def hacer_pdf(self):
+
+		if self.receipt.receipt_type.code == "400":
+			return 
+
+		if self.destinatario:
+			if self.destinatario.naturaleza.nombre == "proveedor" and self.receipt.receipt_type.code != "301":
+				return 			
+
+			if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
+				generator = ReceiptBarcodeGenerator(self.receipt_afip)
+				barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
+		
+		if self.pdf:
+			self.pdf.remove()
+			self.pdf.delete()
+
+		# documento = self
+		# ciphertext = PDF.compress('pdfs/{}.html'.format(self.receipt.receipt_type.code), {'documento': documento})
+		# self.pdf = PDF.objects.create(comunidad=self.comunidad, ciphertext=ciphertext)
+		content_field = self.generate_content_fields()
+		self.pdf = PDF.objects.create(comunidad=self.comunidad, content_field=content_field)
+		self.save()
+
+		

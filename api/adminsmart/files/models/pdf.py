@@ -22,6 +22,7 @@ class PDF(BaseModel):
 	"""
 
 	ciphertext = models.BinaryField(blank=True, null=True)
+	fields_content = models.TextField(blank=True, null=True)
 	location = models.FileField(upload_to="pdfs/", blank=True, null=True)
 
 	@property
@@ -36,64 +37,13 @@ class PDF(BaseModel):
 		html_string = render_to_string(html_location, context)
 		return zlib.compress(html_string.encode('utf-8'))
 
-	@classmethod
-	def generate_content_fields(cls, doc):
-		fields = {
-			'cuenta': 'CUENTA',
-			'concepto': 'CONCEPTO',
-			'fecha_indicativa': 'PERIODO',
-			'monto': 'MONTO',
-			'detalle': "DETALLE",
-			'vinculo.pdf.receipt.receipt_type': "DOC_TYPE_VINCULO",
-			'vinculo.pdf.receipt.formatted_number': "DOC_NUM_VINCULO"
-		}
-		
-		result = {
-			'CREDITOS': [],
-			'COBROS': [],
-			'A_CUENTA': [],
-			'PAGOS': [],
-		}
-		for key in result.keys():
-			list_objects = []
-			for op in getattr(doc, key.lower())():
-				new_obj = {}
-				for f in fields:
-					dispatcher = getattr(op, f, None)
-					if callable(dispatcher):
-						dispatcher = dispatcher()
-					new_obj[fields[f]] = str(dispatcher)
-				list_objects.append(new_obj)
-			result[key] = list_objects
-
-		
-		return json.dumps(result)
-					
-		# if doc.creditos():
-		# 	objects['creditos'] = doc.creditos().values()
-		# 	# objects['creditos'] = [{
-		# 	# 	'cuenta': str(c.cuenta),
-		# 	# 	'concepto': str(c.concepto()),
-		# 	# 	'periodo': str(c.periodo()),
-		# 	# 	'monto': "{:.2f}".format(c.monto),
-		# 	# 	'detalle': c.detalle
-		# 	# } for c in creditos]
-		# if cobros:
-		# 	objects['cobros'] = [{
-		# 		'cuenta': str(c.cuenta),
-		# 		'concepto': str(c.concepto()),
-		# 		'periodo': str(c.periodo()),
-		# 		'monto': "{:.2f}".format(c.monto),
-		# 	} for c in cobros]
-		# if a_cuenta
-
-		# html_string = render_to_string(html_location, context)
-
 	def serve(self):
 		if not self.location:
 			file = []
 			completed = []
-			html_string = zlib.decompress(self.ciphertext)
+			# html_string = zlib.decompress(self.ciphertext)
+			context = {'pdf': json.loads(self.fields_content)}
+			html_string = render_to_string("pdfs/gateway.html", context)
 			html = HTML(string=html_string, base_url='http://localhost:8000/')
 			pdf = html.render()
 			completed.append(pdf)
