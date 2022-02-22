@@ -17,12 +17,13 @@ from adminsmart.utils.models import BaseModel
 class PDF(BaseModel):
 	"""
 		Modelo para almacenar los textos de los pdfs
-		Cada vez que se solicita un pdf se genera de nuevo a traves del ciphertext
+		Cada vez que se solicita un pdf se genera de nuevo a traves template y el context
 		deberian eliminarse todas las noches
 	"""
 
 	ciphertext = models.BinaryField(blank=True, null=True)
-	fields_content = models.TextField(blank=True, null=True)
+	context = models.TextField(blank=True, null=True)
+	template = models.CharField(max_length=300, blank=True, null=True)
 	location = models.FileField(upload_to="pdfs/", blank=True, null=True)
 
 	@property
@@ -42,8 +43,8 @@ class PDF(BaseModel):
 			file = []
 			completed = []
 			# html_string = zlib.decompress(self.ciphertext)
-			context = {'pdf': json.loads(self.fields_content)}
-			html_string = render_to_string("pdfs/gateway.html", context)
+			context = {'pdf': json.loads(self.context)}
+			html_string = render_to_string(self.template, context)
 			html = HTML(string=html_string, base_url='http://localhost:8000/')
 			pdf = html.render()
 			completed.append(pdf)

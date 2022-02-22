@@ -14,7 +14,7 @@
       <table>
         <tr>
           <th>Total facturado:</th>
-          <th>${{ documento.receipt.total_amount|intcomma }}</th>
+          <th>${{ pdf.DOC_TOTAL }}</th>
         </tr>
       </table>
     </div>
@@ -24,7 +24,7 @@
 
 {% block footer %}
 
-  {% include 'pdfs/barcode.html' with items=documento.creditos %}
+  {% include 'pdfs/barcode.html' with items=pdf.CREDITOS %}
 
 {% endblock %}      
 

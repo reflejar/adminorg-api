@@ -11,12 +11,12 @@
     </tr>
   </thead>
   <tbody>
-    {% for cobro in pdf.COBROS %}
+    {% for c in pdf.COBROS %}
       <tr>
-        <td>{{ cobro.CUENTA }}</td>
-        <td>{{ cobro.CONCEPTO }}{% if cobro.DETALLE %}*{% endif %}</td>
-        <td>{{ cobro.PERIODO }}</td>
-        <td>{{ cobro.MONTO }}</td>
+        <td>{{ c.CUENTA }}</td>
+        <td>{{ c.CONCEPTO }}{% if c.DETALLE %}*{% endif %}</td>
+        <td>{{ c.PERIODO }}</td>
+        <td>{{ c.MONTO }}</td>
       </tr>
     {% endfor %}
     {% if pdf.A_CUENTA %}
@@ -25,7 +25,7 @@
           <td>Nuevo saldo a favor</td>
           <td></td>
           <td></td>
-          <td>{{ A_CUENTA.MONTO }}</td>
+          <td>{{ a_cuenta.MONTO }}</td>
         </tr>
       {% endwith %}
     {% endif %}

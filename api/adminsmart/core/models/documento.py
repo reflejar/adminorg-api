@@ -87,6 +87,7 @@ class Documento(BaseModel):
 		identifier = self.operaciones.first().asiento
 		return self.get_model('Operacion').objects.filter(
 			asiento=identifier,
+			documento__destinatario__isnull=True,
 			vinculo__isnull=True,
 			valor__gt=0,
 		).exclude(descripcion="ANULACION")
@@ -453,40 +454,83 @@ class Documento(BaseModel):
 	# 		)
 	# 	)
 
-	def generate_content_fields(self):
-		fields = {
+	def generate_context_pdf(self):
+		
+		def fillna(dispatcher):
+			return str(dispatcher) if dispatcher else ''
+
+		header_fields = {
+			'DOC_TIPO': fillna(self.receipt.receipt_type),
+			'DOC_NUM': fillna(self.receipt.formatted_number),
+			'DOC_CODIGO': fillna(self.receipt.receipt_type.code),
+			'DOC_FECHA': fillna(self.receipt.issued_date.strftime("%d/%m/%Y")),
+			'DOC_TOTAL': fillna(self.receipt.total_amount),
+
+			'COMUNIDAD_LOGO': fillna(self.comunidad.contribuyente.extras.logo.url),
+			'COMUNIDAD_NOMBRE': fillna(self.comunidad),
+			'COMUNIDAD_DOMICILIO': fillna(self.comunidad.domicilio),
+			'COMUNIDAD_CUIT': fillna(self.comunidad.contribuyente.cuit),
+			'COMUNIDAD_ACTIVIDAD': fillna(self.comunidad.contribuyente.active_since.strftime("%d/%m/%Y")),
+			
+			'TITULAR_NOMBRE': fillna(self.destinatario),
+			'TITULAR_DOC_TIPO': fillna(self.destinatario.perfil.tipo_documento if self.destinatario else None),
+			'TITULAR_DOC_NUM': fillna(self.destinatario.perfil.numero_documento if self.destinatario else None),
+
+			'ANULACION': fillna(self.fecha_anulacion.strftime("%d/%m/%Y") if self.fecha_anulacion else None),
+			'FECHA_OP': fillna(self.fecha_operacion.strftime("%d/%m/%Y") if self.fecha_operacion else None),
+			'DESCRIPCION': fillna(self.descripcion),
+		}
+
+		
+		fields_operacion = {
+			# Operacion
 			'cuenta': 'CUENTA',
 			'concepto': 'CONCEPTO',
-			'fecha_indicativa': 'PERIODO',
+			'periodo': 'PERIODO',
 			'monto': 'MONTO',
+			'valor': 'VALOR',
 			'detalle': "DETALLE",
-			'vinculo.pdf.receipt.receipt_type': "DOC_TYPE_VINCULO",
-			'vinculo.pdf.receipt.formatted_number': "DOC_NUM_VINCULO"
+			'vinculo.documento.receipt.receipt_type': "VINCULO_DOC_TIPO",
+			'vinculo.documento.receipt.formatted_number': "VINCULO_DOC_NUM",
+			'documento.receipt.receipt_type': 'DOC_TIPO'
 		}
-		
-		result = {
+
+
+		content_fields = {
 			'CREDITOS': [],
 			'COBROS': [],
 			'A_CUENTA': [],
 			'PAGOS': [],
+			'UTILIZACIONES_SALDOS': [],
+			'UTILIZACIONES_DISPONIBILIDADES': [],
+			'CAJAS': [],
+			'CARGAS': [],
+			'RETENCIONES': []
 		}
-		for key in result.keys():
+		for key in content_fields.keys():
 			list_objects = []
-			for op in getattr(self, key.lower())():
-				new_obj = {}
-				for f in fields:
-					dispatcher = getattr(op, f, None)
-					if callable(dispatcher):
-						dispatcher = dispatcher()
-					new_obj[fields[f]] = str(dispatcher)
-				list_objects.append(new_obj)
-			result[key] = list_objects
-
+			try:
+				for op in getattr(self, key.lower())():
+					new_obj = {}
+					for f in fields_operacion:
+						dispatcher = getattr(op, f, None)
+						if callable(dispatcher):
+							dispatcher = dispatcher()
+						new_obj[fields_operacion[f]] = fillna(dispatcher)
+					list_objects.append(new_obj)
+				content_fields[key] = list_objects
+			except:
+				pass
+		result = {**header_fields, **content_fields}
 		
 		return json.dumps(result)		
 
 	# Funciones Operativas
 	def hacer_pdf(self):
+		
+		if self.pdf:
+			self.pdf.remove()
+			self.pdf.delete()		
 
 		if self.receipt.receipt_type.code == "400":
 			return 
@@ -495,19 +539,15 @@ class Documento(BaseModel):
 			if self.destinatario.naturaleza.nombre == "proveedor" and self.receipt.receipt_type.code != "301":
 				return 			
 
-			if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
-				generator = ReceiptBarcodeGenerator(self.receipt_afip)
-				barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
-		
-		if self.pdf:
-			self.pdf.remove()
-			self.pdf.delete()
+			# if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
+			# 	generator = ReceiptBarcodeGenerator(self.receipt_afip)
+			# 	barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
 
-		# documento = self
-		# ciphertext = PDF.compress('pdfs/{}.html'.format(self.receipt.receipt_type.code), {'documento': documento})
-		# self.pdf = PDF.objects.create(comunidad=self.comunidad, ciphertext=ciphertext)
-		content_field = self.generate_content_fields()
-		self.pdf = PDF.objects.create(comunidad=self.comunidad, content_field=content_field)
+		self.pdf = PDF.objects.create(
+				comunidad=self.comunidad,
+				template='pdfs/{}.html'.format(self.receipt.receipt_type.code),
+				context=self.generate_context_pdf()
+			)
 		self.save()
 
 		

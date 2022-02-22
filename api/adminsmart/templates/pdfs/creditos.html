@@ -11,12 +11,12 @@
     </tr>
   </thead>
   <tbody>
-    {% for credito in pdf.CREDITOS %}
+    {% for c in pdf.CREDITOS %}
       <tr>
-        <td>{{ credito.CUENTA }}</td>
-        <td>{{ credito.CONCEPTO }}{% if credito.DETALLE %}*{% endif %}</td>
-        <td>{{ credito.PERIODO }}</td>
-        <td>{{ credito.MONTO }}</td>
+        <td>{{ c.CUENTA }}</td>
+        <td>{{ c.CONCEPTO }}{% if c.DETALLE %}*{% endif %}</td>
+        <td>{{ c.PERIODO }}</td>
+        <td>{{ c.MONTO }}</td>
       </tr>
     {% endfor %}
   </tbody>
@@ -25,9 +25,9 @@
 <p><strong>* Detalles:</strong></p>
 <p>
   <ul>
-    {% for credito in pdf.CREDITOS %}
-      {% if credito.DETALLE %}
-        <li>{{credito.DETALLE}}</li>
+    {% for c in pdf.CREDITOS %}
+      {% if c.DETALLE %}
+        <li>{{c.DETALLE}}</li>
       {% endif %}
     {% endfor %}
   </ul>

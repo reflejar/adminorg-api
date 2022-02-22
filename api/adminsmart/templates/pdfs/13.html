@@ -12,7 +12,7 @@
 
   <tr>
     <th>Total acreditado:</th>
-    <th>${{ documento.receipt.total_amount|intcomma }}</th>
+    <th>${{ pdf.DOC_TOTAL }}</th>
   </tr>
   
 {% endblock %}
@@ -20,7 +20,7 @@
 
 {% block footer %}
 
-  {% include 'pdfs/barcode.html' with items=documento.cobros %}
+  {% include 'pdfs/barcode.html' with items=pdf.COBROS %}
 
 {% endblock %}      
 

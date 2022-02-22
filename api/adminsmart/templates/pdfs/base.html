@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>{{ documento.receipt.receipt_type}} {{ documento.receipt.formatted_number}}</title>
+    <title>{{ pdf.DOC_TIPO}} {{ pdf.DOC_NUM}}</title>
     <!-- <link href="{% static 'anopa/pdf.css' %}" rel="stylesheet" type="text/css" /> -->
     <style>
       html, body {
@@ -209,34 +209,34 @@
       <header>
         <div class="taxpayer-details group">
           <address>
-            {% if documento.comunidad.contribuyente.extras %}
-              <img src="{{ documento.comunidad.contribuyente.extras.logo_as_data_uri }}" alt="Logo"><br>
+            {% if pdf.COMUNIDAD_LOGO %}
+              <img src="{{ pdf.COMUNIDAD_LOGO }}" alt="Logo"><br>
             {% else %}
-              <h3>{{ documento.comunidad }}</h3>
+              <h3>{{ pdf.COMUNIDAD_NOMBRE }}</h3>
             {% endif %}
-            {{ documento.comunidad.domicilio }}<br>
+            {{ pdf.COMUNIDAD_DOMICILIO }}<br>
           </address>
 
           <div class="receipt-type">
             <div class="identifier">
-              {{ documento.receipt.receipt_type.description|slice:"-1:" }}
+              {{ pdf.DOC_TIPO|slice:"-1:" }}
             </div>
             <div class="code">
-              Código {{ documento.receipt.receipt_type.code }}
+              Código {{ pdf.DOC_CODIGO }}
             </div>
           </div>
 
           <div class="receipt-details">
             <div class="receipt-type-description">
-              {{ documento.receipt.receipt_type.description }} {% if documento.fecha_anulacion %} <strong style="color: #FF0000;" >| ANULADO |</strong>{% endif %}
+              {{ pdf.DOC_TIPO }} {% if pdf.ANULACION %} <strong style="color: #FF0000;" >| ANULADO |</strong>{% endif %}
             </div>
-            <strong>Nº</strong> {{ documento.receipt.formatted_number }}<br>
-            Fecha Documento: {{ documento.receipt.issued_date|date:"d/m/Y" }}<br>
+            <strong>Nº</strong> {{ pdf.DOC_NUM }}<br>
+            Fecha Documento: {{ pdf.DOC_FECHA }}<br>
             <small>
-              C.U.I.T.:{{ documento.comunidad.contribuyente.cuit }}<br>
+              C.U.I.T.: {{ pdf.COMUNIDAD_CUIT }}<br>
               Ingresos Brutos: Exento<br>
-              Inicio de actividad: {{ documento.comunidad.contribuyente.active_since|date:"d/m/Y"}}<br>
-              Fecha Operacion: {{ documento.fecha_operacion|date:"d/m/Y" }}
+              Inicio de actividad: {{ pdf.COMUNIDAD_ACTIVIDAD}}<br>
+              Fecha Operacion: {{ pdf.FECHA_OP }}
             </small>
           </div>
         </div>
@@ -246,11 +246,11 @@
         <div class="client">
 
           <div class="client-data">
-            {% if documento.destinatario %}
-              <strong>DESTINATARIO:</strong>
-              {{ documento.destinatario }} <br>
-              <strong>{{ documento.destinatario.perfil.tipo_documento }}:</strong>
-              {{ documento.destinatario.perfil.numero_documento }} <br>
+            {% if pdf.TITULAR_NOMBRE %}
+              <strong>TITULAR:</strong>
+              {{ pdf.TITULAR_NOMBRE }} <br>
+              <strong>{{ pdf.TITULAR_DOC_TIPO }}:</strong>
+              {{ pdf.TITULAR_DOC_NUM }} <br>
             {% else %}
               <strong>DOCUMENTO INTERNO</strong>
             {% endif %}
@@ -266,9 +266,9 @@
       {% block content %}
       {% endblock %}
       
-      {% if documento.descripcion %}
+      {% if pdf.DESCRIPCION %}
         <p><strong>Descripcion:</strong></p>
-        <i>{{ documento.descripcion}}</i>
+        <i>{{ pdf.DESCRIPCION}}</i>
       {% endif %}
       
       <div class="taxpayer-details group">

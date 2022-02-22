@@ -9,10 +9,10 @@
     </tr>
   </thead>
   <tbody>
-    {% for pago in pdf.PAGOS %}
+    {% for p in pdf.PAGOS %}
       <tr>
-        <td>{{ pago.DOC_TYPE_VINCULO }} {{pago.DOC_NUM_VINCULO}}</td>
-        <td>{{ pago.MONTO }}</td>
+        <td>{{ p.VINCULO_DOC_TIPO }} {{p.VINCULO_DOC_NUM}}</td>
+        <td>{{ p.MONTO }}</td>
       </tr>
     {% endfor %}
     {% if pdf.A_CUENTA %}
