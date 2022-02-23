@@ -9,3 +9,6 @@ django-storages[boto3]==1.7.1
 
 # Email
 django-anymail[mailgun]==5.0
+
+# Sentry
+sentry-sdk==1.5.6
