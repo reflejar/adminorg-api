@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import json
 import base64
+from functools import reduce
 from datetime import date
 
 from django.db.models import Max
@@ -466,7 +467,7 @@ class Documento(BaseModel):
 			'DOC_FECHA': fillna(self.receipt.issued_date.strftime("%d/%m/%Y")),
 			'DOC_TOTAL': fillna(self.receipt.total_amount),
 
-			'COMUNIDAD_LOGO': fillna(self.comunidad.contribuyente.extras.logo.url),
+			'COMUNIDAD_LOGO': fillna(self.comunidad.contribuyente.extras.logo.url if self.comunidad.contribuyente.extras else None),
 			'COMUNIDAD_NOMBRE': fillna(self.comunidad),
 			'COMUNIDAD_DOMICILIO': fillna(self.comunidad.domicilio),
 			'COMUNIDAD_CUIT': fillna(self.comunidad.contribuyente.cuit),
@@ -483,7 +484,6 @@ class Documento(BaseModel):
 
 		
 		fields_operacion = {
-			# Operacion
 			'cuenta': 'CUENTA',
 			'concepto': 'CONCEPTO',
 			'periodo': 'PERIODO',
@@ -494,8 +494,6 @@ class Documento(BaseModel):
 			'vinculo.documento.receipt.formatted_number': "VINCULO_DOC_NUM",
 			'documento.receipt.receipt_type': 'DOC_TIPO'
 		}
-
-
 		content_fields = {
 			'CREDITOS': [],
 			'COBROS': [],
@@ -512,12 +510,22 @@ class Documento(BaseModel):
 			try:
 				for op in getattr(self, key.lower())():
 					new_obj = {}
-					for f in fields_operacion:
-						dispatcher = getattr(op, f, None)
+					for f in fields_operacion.keys():
+						if "." in f:
+							try:
+								dispatcher = reduce(getattr, f.split("."), op)
+							except:
+								pass
+						else:
+							try:
+								dispatcher = getattr(op, f, None)
+							except:
+								pass
 						if callable(dispatcher):
 							dispatcher = dispatcher()
 						new_obj[fields_operacion[f]] = fillna(dispatcher)
 					list_objects.append(new_obj)
+
 				content_fields[key] = list_objects
 			except:
 				pass
