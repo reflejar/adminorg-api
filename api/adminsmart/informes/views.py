@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 
 from adminsmart.utils.generics import custom_viewsets
-from adminsmart.operative.models import (
+from adminsmart.core.models import (
 	Operacion,
 	Cuenta
 )

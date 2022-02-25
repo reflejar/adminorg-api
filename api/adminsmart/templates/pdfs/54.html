@@ -14,31 +14,31 @@
       <hr>
       <p><strong>Medios de cobro:</strong></p>
       <table>
-        {% for s in documento.utilizaciones_saldos.all %}
+        {% for s in pdf.UTILIZACIONES_SALDOS %}
           <tr>
-            <td>{{s.vinculo.documento.receipt.receipt_type}} {{s.vinculo.documento.receipt.formatted_number}}</td>
-            <td>{{s.detalle|default:""}}</td>
-            <td>{{s.monto|intcomma}}</td>
+            <td>{{s.VINCULO_DOC_TIPO}} {{s.VINCULO_DOC_NUM}}</td>
+            <td>{{s.DETALLE}}</td>
+            <td>{{s.MONTO}}</td>
           </tr>
         {% endfor %}
-        {% for d in documento.utilizaciones_disponibilidades.all %}
+        {% for d in pdf.UTILIZACIONES_DISPONIBILIDADES %}
           <tr>
-            <td>{{d.vinculo.documento.receipt.receipt_type}} {{d.vinculo.documento.receipt.formatted_number}}</td>
-            <td>{{d.detalle|default:""}}</td>
-            <td>{{d.monto|intcomma}}</td>
+            <td>{{d.VINCULO_DOC_TIPO}} {{d.VINCULO_DOC_NUM}}</td>
+            <td>{{d.DETALLE}}</td>
+            <td>{{d.MONTO}}</td>
           </tr>
         {% endfor %}        
-        {% for c in documento.cajas.all %}
+        {% for c in pdf.CAJAS %}
           <tr>
-            <td>{{c.cuenta}}</td>
-            <td>{{c.detalle|default:""}}</td>
-            <td>{{c.valor|intcomma}}</td>
+            <td>{{c.CUENTA}}</td>
+            <td>{{c.DETALLE}}</td>
+            <td>{{c.VALOR}}</td>
           </tr>
         {% endfor %}
           <tr>
             <th>Total del comprobante</th>
             <th></th>
-            <th>{{ documento.receipt.total_amount|intcomma }}</th>
+            <th>{{ pdf.DOC_TOTAL }}</th>
           </tr>
       </table>
     </div>

@@ -7,7 +7,7 @@ from adminsmart.utils.models import (
     Provincia
 )
 
-from adminsmart.operative.models import (
+from adminsmart.core.models import (
 	Operacion,
 	Documento,
 	Titulo

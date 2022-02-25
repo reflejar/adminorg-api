@@ -15,7 +15,7 @@ urlpatterns = [
 	path('users/', include(('adminsmart.users.urls', 'users'), namespace='users')),
 	path('utils/', include(('adminsmart.utils.urls', 'utils'), namespace='utils')),
 	path('files/', include(('adminsmart.files.urls', 'files'), namespace='files')),
-	path('operative/', include(('adminsmart.operative.urls', 'operative'), namespace='operative')),
+	path('operative/', include(('adminsmart.core.urls', 'operative'), namespace='operative')),
 	path('informes/', include(('adminsmart.informes.urls', 'informes'), namespace='informes')),
 	path('api/', include(('adminsmart._public.urls', 'api'), namespace='api')),
 	path('k8s/readiness/', readiness),

@@ -1,6 +1,6 @@
 from django.db import models
 from adminsmart.utils.models import BaseModel
-from adminsmart.operative.models import Documento
+from adminsmart.core.models import Documento
 
 # class CuentaEP(models.Model):
 

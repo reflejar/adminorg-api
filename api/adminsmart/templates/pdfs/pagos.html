@@ -9,17 +9,17 @@
     </tr>
   </thead>
   <tbody>
-    {% for pago in documento.pagos %}
+    {% for p in pdf.PAGOS %}
       <tr>
-        <td>{{ pago.vinculo.documento.receipt.receipt_type }} {{pago.vinculo.documento.receipt.formatted_number}}</td>
-        <td>{{ pago.monto|intcomma }}</td>
+        <td>{{ p.VINCULO_DOC_TIPO }} {{p.VINCULO_DOC_NUM}}</td>
+        <td>{{ p.MONTO }}</td>
       </tr>
     {% endfor %}
-    {% if documento.a_cuenta %}
-      {% with a_cuenta=documento.a_cuenta.first %}
+    {% if pdf.A_CUENTA %}
+      {% with a_cuenta=pdf.A_CUENTA|first %}
         <tr>
           <td>Nuevo saldo a favor</td>
-          <td>{{ a_cuenta.monto|intcomma }}</td>
+          <td>{{ a_cuenta.MONTO }}</td>
         </tr>
       {% endwith %}
     {% endif %}

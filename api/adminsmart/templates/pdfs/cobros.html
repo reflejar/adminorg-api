@@ -11,21 +11,21 @@
     </tr>
   </thead>
   <tbody>
-    {% for cobro in documento.cobros %}
+    {% for c in pdf.COBROS %}
       <tr>
-        <td>{{ cobro.cuenta }}</td>
-        <td>{{ cobro.concepto|default:"" }}{% if cobro.detalle %}*{% endif %}</td>
-        <td>{{ cobro.fecha_indicativa|date:"Y-m" }}</td>
-        <td>{{ cobro.monto|intcomma }}</td>
+        <td>{{ c.CUENTA }}</td>
+        <td>{{ c.CONCEPTO }}{% if c.DETALLE %}*{% endif %}</td>
+        <td>{{ c.PERIODO }}</td>
+        <td>{{ c.MONTO }}</td>
       </tr>
     {% endfor %}
-    {% if documento.a_cuenta %}
-      {% with a_cuenta=documento.a_cuenta.first %}
+    {% if pdf.A_CUENTA %}
+      {% with a_cuenta=pdf.A_CUENTA|first %}
         <tr>
           <td>Nuevo saldo a favor</td>
           <td></td>
           <td></td>
-          <td>{{ a_cuenta.monto|intcomma }}</td>
+          <td>{{ a_cuenta.MONTO }}</td>
         </tr>
       {% endwith %}
     {% endif %}

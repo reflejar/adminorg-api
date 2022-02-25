@@ -1,4 +1,4 @@
-from adminsmart.operative.models import Operacion
+from adminsmart.core.models import Operacion
 from django_filters.rest_framework import FilterSet, DateFilter, CharFilter
 
 

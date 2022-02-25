@@ -11,12 +11,12 @@
     </tr>
   </thead>
   <tbody>
-    {% for credito in documento.creditos %}
+    {% for c in pdf.CREDITOS %}
       <tr>
-        <td>{{ credito.cuenta }}</td>
-        <td>{{ credito.concepto|default:"" }}{% if credito.detalle %}*{% endif %}</td>
-        <td>{{ credito.fecha_indicativa|date:"Y-m" }}</td>
-        <td>{{ credito.monto|intcomma }}</td>
+        <td>{{ c.CUENTA }}</td>
+        <td>{{ c.CONCEPTO }}{% if c.DETALLE %}*{% endif %}</td>
+        <td>{{ c.PERIODO }}</td>
+        <td>{{ c.MONTO }}</td>
       </tr>
     {% endfor %}
   </tbody>
@@ -25,9 +25,9 @@
 <p><strong>* Detalles:</strong></p>
 <p>
   <ul>
-    {% for credito in documento.creditos %}
-      {% if credito.detalle %}
-        <li>{{credito.detalle}}</li>
+    {% for c in pdf.CREDITOS %}
+      {% if c.DETALLE %}
+        <li>{{c.DETALLE}}</li>
       {% endif %}
     {% endfor %}
   </ul>
@@ -36,7 +36,7 @@
 <!-- <p><strong>** Descuentos:</strong></p>
 <p>
   <ul>
-    {% for credito in documento.creditos %}
+    {% for credito in pdf.CREDITOS %}
       {% if credito.fecha_gracia %}
         {% if credito.fecha_gracia != credito.fecha %}
           <li>Descuento por pronto pago hasta el {{credito.fecha_gracia|date:"d/m/Y"}}</li>
