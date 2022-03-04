@@ -119,7 +119,7 @@ class OperacionAnalisis:
 			if 'cliente' in self.keep:
 				self.prepare_dominios()
 
-			if 'concepto' in self.group_by + self.column_by:
+			if 'concepto' in self.group_by + self.column_by or len(self.keep) == 0:
 				self.prepare_conceptos()
 
 			self.prepare_cuenta_vinculada()

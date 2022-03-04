@@ -21,7 +21,7 @@ class PDF(BaseModel):
 		deberian eliminarse todas las noches
 	"""
 
-	ciphertext = models.BinaryField(blank=True, null=True)
+	ciphertext = models.BinaryField(blank=True, null=True) # Deprected
 	context = models.TextField(blank=True, null=True)
 	template = models.CharField(max_length=300, blank=True, null=True)
 	location = models.FileField(upload_to="pdfs/", blank=True, null=True)
@@ -34,7 +34,7 @@ class PDF(BaseModel):
 		return self.serve().read()		
 
 	@classmethod
-	def compress(cls, html_location, context):
+	def compress(cls, html_location, context): # Deprected
 		html_string = render_to_string(html_location, context)
 		return zlib.compress(html_string.encode('utf-8'))
 

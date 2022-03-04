@@ -1,7 +1,6 @@
 """Production settings."""
 
 from .base import *  # NOQA
-from .base import env
 
 # Base
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='PB3aGvTmCkzaLGRAxDc3aMayKTPTDd5usT8gw4pCmKOk5AlJjh12pTrnNgQyOHCH')
@@ -29,6 +28,7 @@ AWS_ACCESS_KEY_ID = "AKIA44JZ4ACAULPKDEWP"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = 'adminsmart.files'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_CUSTOM_DOMAIN = "d3dmzz5192bnwx.cloudfront.net"
 AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = False
 _AWS_EXPIRY = 60 * 60 * 24 * 7
