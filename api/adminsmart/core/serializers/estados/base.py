@@ -1,4 +1,4 @@
-from adminsmart.core.models import Operacion, Documento
+from adminsmart.core.models import Operacion, Documento, Cuenta
 from typing import Dict, Any, Union
 from decimal import Decimal
 

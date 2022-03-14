@@ -28,7 +28,8 @@ class Titulo(BaseModel):
 	def get_model(self, nombre):
 			return apps.get_model('operative', nombre)
 
-	def familia(self):
+	@property
+	def grupo(self):
 		titulos = Titulo.objects.filter(
 					Q(id=self.id) |
 					Q(supertitulo=self) |
@@ -40,22 +41,27 @@ class Titulo(BaseModel):
 
 	def estado_cuenta(self, fecha=None):
 		fecha = fecha if fecha else date.today()
-		return self.get_model('Operacion').objects.filter(
-				cuenta__titulo__in=self.familia(), 
+		documentos = self.get_model('Documento').objects.filter(
+				operaciones__cuenta__titulo__in=self.grupo, 
 				# fecha__lte=fecha,
-				documento__isnull=False,
+			).order_by('receipt').distinct('receipt')
+		return self.get_model('Documento').objects.filter(
+				id__in=documentos, 
+				# fecha__lte=fecha,
 			).select_related(
-				"cuenta", 
-				"cuenta__perfil", # Para el nombre de la cuenta
-				"cuenta__naturaleza",
-				"documento__receipt", 
-				"documento__receipt__receipt_type", 
-				"vinculo",
+				"destinatario", 
+				"destinatario__perfil", # Para el nombre de la cuenta
+				"destinatario__naturaleza",
+				"receipt", 
+				"receipt__receipt_type", 
 			).prefetch_related(
-				"vinculos",
-				"vinculos__cuenta",
-				"vinculos__cuenta__naturaleza",
-				"vinculo__vinculos",
-				"vinculo__vinculos__cuenta",
-				"vinculo__vinculos__cuenta__naturaleza",
-			).order_by('fecha', 'id')
+				"operaciones",
+				"operaciones__cuenta",
+				"operaciones__cuenta__naturaleza",
+				"operaciones__vinculos",
+				"operaciones__vinculos__cuenta",
+				"operaciones__vinculos__cuenta__naturaleza",
+			).order_by('fecha_operacion', 'id')
+
+
+
