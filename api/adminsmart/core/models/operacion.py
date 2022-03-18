@@ -69,7 +69,7 @@ class Operacion(BaseModel):
 			conceptos = list(filter(lambda x: x.naturaleza in ["ingreso", "gasto", "caja"], self.vinculo.vinculos.all()))
 		if conceptos:
 			return conceptos[0].cuenta
-		return ""
+		return self.cuenta
 
 		# conceptos = self.vinculos.all()
 		# if not any([True if o.naturaleza() in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
