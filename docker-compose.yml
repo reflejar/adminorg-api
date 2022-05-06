@@ -2,7 +2,6 @@ version: '3'
 
 volumes:
   media: {}
-  static: {}
 
 services:
   postgres:
@@ -24,7 +23,6 @@ services:
       - redis
     volumes:
       - ./app:/app
-      - static:/app/adminsmart/static
       - media:/app/adminsmart/media
     env_file:
       - ./config/db/dev.env
