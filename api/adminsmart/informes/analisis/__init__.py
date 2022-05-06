@@ -131,6 +131,8 @@ class OperacionAnalisis:
 		else:
 			self.df = df
 		
+		self.df = self.df.drop_duplicates()			
+		
 	def generate_groups(self):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []
 		groups += ['NOMBRE'] 
@@ -201,6 +203,7 @@ class OperacionAnalisis:
 			df_to_file = pd.DataFrame()
 		if not self.keep:
 			df_to_file = self.df
+			df_to_file.to_excel("informe.xlsx")
 
 		if not isinstance(df_to_file, pd.DataFrame):	
 			groups = self.generate_groups()
