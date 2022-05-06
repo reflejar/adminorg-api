@@ -3,21 +3,21 @@ FROM python:3.7 as base
 
 ENV PYTHONUNBUFFERED 1
 
-ADD requirements /api/requirements
+ADD requirements /app/requirements
 
 RUN apt-get update
 
-RUN pip install -r /api/requirements/prod.txt
+RUN pip install -r /app/requirements/prod.txt
 
 COPY ./bash/* /
 RUN sed -i 's/\r//' /*.sh 
 RUN chmod +x /*.sh
 
-ADD api /api 
-RUN chmod +x /api
+ADD app /app 
+RUN chmod +x /app
 
-RUN mkdir -p /api/media 
-RUN chmod +x /api/media
+RUN mkdir -p /app/adminsmart/media 
+RUN chmod +x /app/adminsmart/media
 
 ARG BUILD_DATE
 ARG REVISION
@@ -33,6 +33,6 @@ LABEL title "AdminSmart Core API"
 LABEL description "API for core of AdminSmart"
 
 ENV PYTHONUNBUFFERED 1
-WORKDIR /api
+WORKDIR /app
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]

@@ -15,7 +15,7 @@ services:
   redis:
     image: redis:6.0.9      
 
-  api: &api
+  app: &app
     build:
       context: .
     image: anopa/adminsmart_django:latest
@@ -23,9 +23,9 @@ services:
       - postgres
       - redis
     volumes:
-      - ./api:/api
-      - static:/api/static
-      - media:/api/media
+      - ./app:/app
+      - static:/app/adminsmart/static
+      - media:/app/adminsmart/media
     env_file:
       - ./config/db/dev.env
       - ./config/django/dev.env
@@ -33,10 +33,10 @@ services:
       - "8000:8000"
     links:
       - postgres:postgres
-    command: /start-api-dev.sh
+    command: /start-app-dev.sh
 
   celeryworker:
-    <<: *api
+    <<: *app
     depends_on:
       - redis
       - postgres
@@ -44,7 +44,7 @@ services:
     command: /start-celery-worker.sh
 
   celerybeat:
-    <<: *api
+    <<: *app
     user: root
     depends_on:
       - redis

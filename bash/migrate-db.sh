@@ -1,4 +1,4 @@
 #!/bin/bash
 
-python /api/manage.py migrate
+python /app/manage.py migrate
 
