@@ -1,8 +1,9 @@
-import tempfile
-import os
+import json
+import pandas as pd
 from django.http import Http404
 from datetime import datetime
 from django.http import HttpResponse
+from io import BytesIO
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -84,24 +85,26 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 				nombres=self.get_nombres(), 
 				analisis_config=analisis_config
 			)
-		return Response(analisis.get_json())
+		df_json = analisis.get_df().to_json(orient='split')
+		return Response(json.loads(df_json))
 
 	@action(detail=False, methods=['get'])
 	def xlsx(self, request):
 		queryset = self.get_queryset()
 		analisis_config = eval(request.GET['analisis'])
-		nombres = self.get_nombres()
-		nombres.append({
-				'CUENTA_ID': 0, 
-				'NATURALEZA': "",
-				'NOMBRE': "-"
-			})
 		analisis = OperacionAnalisis(
 				queryset=queryset, 
-				nombres=nombres, 
+				nombres=self.get_nombres(), 
 				analisis_config=analisis_config
 			)
-		data, filename = analisis.get_excel()
-		response = HttpResponse(data, content_type="application/vnd.ms-excel")
-		response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filename)
-		return response
+		df = analisis.get_df(raw_data=True)
+		with BytesIO() as b:
+			# Use the StringIO object as the filehandle.
+			writer = pd.ExcelWriter(b, engine='xlsxwriter')
+			df.to_excel(writer, sheet_name='Informe')
+			writer.save()
+			filename = 'informe'
+			content_type = 'application/vnd.ms-excel'
+			response = HttpResponse(b.getvalue(), content_type=content_type)
+			response['Content-Disposition'] = 'attachment; filename="' + filename + '.xlsx"'
+			return response			

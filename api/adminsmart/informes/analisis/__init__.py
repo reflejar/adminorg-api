@@ -1,5 +1,3 @@
-import tempfile
-import json
 from decimal import Decimal
 import numpy as np
 import pandas as pd
@@ -130,6 +128,8 @@ class OperacionAnalisis:
 				self.prepare_dhs()
 		else:
 			self.df = df
+
+		self.df = self.df.drop_duplicates()			
 		
 		self.df = self.df.drop_duplicates()			
 		
@@ -182,10 +182,12 @@ class OperacionAnalisis:
 			self.pivot_df['TOTAL'] = self.pivot_df.sum(axis=1)
 			self.pivot_df = self.pivot_df[self.pivot_df['TOTAL'] != Decimal(0.00)]
 
-	def get_json(self):
-		
-		if not len(self.df) or not self.keep:
-			return {"columns": [""], "data": [[""]]}
+
+	def get_df(self, raw_data=False):
+		if not len(self.df) or (not raw_data and not self.keep):
+			return pd.DataFrame()
+		if raw_data:
+			return self.df
 
 		groups = self.generate_groups()
 		columns = self.generate_columns()
@@ -193,6 +195,7 @@ class OperacionAnalisis:
 		self.generate_pivot_table(groups, columns)
 		self.sort_rows_pivot_df()
 		self.sort_columns_pivot_df(columns)
+<<<<<<< HEAD
 		
 		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
 
@@ -222,3 +225,7 @@ class OperacionAnalisis:
 			tmp.seek(0)
 			data = tmp.read()
 		return (data, filename)
+=======
+
+		return self.pivot_df.reset_index()
+>>>>>>> 955c79243aaaeb77b0c2b23e7fadaeb93328a9ce
