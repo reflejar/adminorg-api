@@ -227,3 +227,12 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+
+# Redireccion cuando el login no es correcto.
+LOGIN_URL = '/login/'
+
+# Redireccion cuando el login es correcto.
+LOGIN_REDIRECT_URL = "/"
+
+# Redireccion cuando el logout es correcto.
+LOGOUT_REDIRECT_URL = '/login/'

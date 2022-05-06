@@ -195,7 +195,6 @@ class OperacionAnalisis:
 		self.generate_pivot_table(groups, columns)
 		self.sort_rows_pivot_df()
 		self.sort_columns_pivot_df(columns)
-<<<<<<< HEAD
 		
 		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
 
@@ -225,7 +224,3 @@ class OperacionAnalisis:
 			tmp.seek(0)
 			data = tmp.read()
 		return (data, filename)
-=======
-
-		return self.pivot_df.reset_index()
->>>>>>> 955c79243aaaeb77b0c2b23e7fadaeb93328a9ce

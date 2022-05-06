@@ -1,0 +1,42 @@
+<li class="has-submenu">
+  <a href="a"><i class="fi-air-play"></i>Home</a>
+</li>
+
+{% if user.groups.all.0.name == "socio" %}
+
+  <li class="has-submenu">
+    <a href="s"><i class="fi-paper"></i>Mis deudas</a>
+  </li>
+  <li class="has-submenu">
+    <a href="s"><i class="fi-circle-check"></i>Mis movimientos</a>
+  </li>
+  <li class="has-submenu">
+    <a href="a"><i class="fi-content-left"></i>Reportes</a>
+  </li>
+  <li class="has-submenu">
+    <a href="s"><i class="fi-book"></i>Perfil</a>
+  </li>
+
+
+{% else %}
+
+  <li class="has-submenu">
+    <a href="b"><i class="fi-download"></i>Clientes</a>
+  </li>
+  <li class="has-submenu">
+    <a href="b"><i class="fi-upload"></i>Proveedores</a>
+  </li>
+  <li class="has-submenu">
+    <a href="b"><i class="fi-shuffle"></i>Tesoreria</a>
+  </li>
+  <li class="has-submenu">
+    <a href="b"><i class="fi-briefcase"></i>Contabilidad</a>
+  </li>
+  <li class="has-submenu">
+    <a href="a"><i class="fi-bar-graph-2"></i>Informes</a>
+  </li>
+  <li class="has-submenu">
+    <a href="a"><i class="fi-cog"></i>Configuración</a>
+  </li>  
+
+{% endif %}
