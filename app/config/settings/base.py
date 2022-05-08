@@ -77,7 +77,7 @@ LOCAL_APPS = [
     'adminsmart.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
     'adminsmart.communications.apps.CommunicationsAppConfig',
     'adminsmart.informes.apps.InformesAppConfig',
-    'adminsmart._public.apps.PublicAPIAppConfig',
+    'adminsmart.api._public.apps.PublicAPIAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -233,6 +233,9 @@ LOGIN_URL = '/login/'
 
 # Redireccion cuando el login es correcto.
 LOGIN_REDIRECT_URL = "/"
+USER_ADMIN_LOGIN_REDIRECT = "cuentas-a-cobrar/"
+USER_SOCIO_LOGIN_REDIRECT = "deudas/"
 
 # Redireccion cuando el logout es correcto.
 LOGOUT_REDIRECT_URL = '/login/'
+

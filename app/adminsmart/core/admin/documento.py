@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from adminsmart.core.models import Documento, Operacion
 from import_export.admin import ImportExportMixin
-from adminsmart.core.serializers.documentos.cliente import DestinoClienteModelSerializer
+from adminsmart.api.core.serializers.documentos.cliente import DestinoClienteModelSerializer
 
 # from adminsmart.communications.tasks import send_emails
 
