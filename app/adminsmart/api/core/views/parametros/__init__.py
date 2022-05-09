@@ -8,8 +8,8 @@ from rest_framework import status
 
 from django_afip.models import PointOfSales
 
-from adminsmart.users.permissions import IsAccountOwner, IsComunidadMember, IsAdministrativoUser
-from adminsmart.utils.generics import custom_viewsets
+from adminsmart.apps.users.permissions import IsAccountOwner, IsComunidadMember, IsAdministrativoUser
+from adminsmart.apps.utils.generics import custom_viewsets
 from adminsmart.api.core.serializers import (
 	CuentaModelSerializer,
 	TituloModelSerializer,
@@ -17,7 +17,7 @@ from adminsmart.api.core.serializers import (
 	PuntoModelSerializer
 )
 
-from adminsmart.core.models import (
+from adminsmart.apps.core.models import (
 	Cuenta,
 	Metodo,
 	Titulo,

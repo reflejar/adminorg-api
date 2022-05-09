@@ -10,13 +10,13 @@ from django_afip.models import (
 	DocumentType,
 	ReceiptType,
 )
-from adminsmart.users.permissions import IsComunidadMember, IsAdministrativoUser
-from adminsmart.utils.generics import custom_viewsets
-from adminsmart.core.models import (
+from adminsmart.apps.users.permissions import IsComunidadMember, IsAdministrativoUser
+from adminsmart.apps.utils.generics import custom_viewsets
+from adminsmart.apps.core.models import (
 	Operacion
 )
 from adminsmart.api.core.serializers.informes import InformesModelSerializer
-from adminsmart.core.filters import InformesFilter
+from adminsmart.apps.core.filters import InformesFilter
 
 class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""

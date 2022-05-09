@@ -1,6 +1,6 @@
 from adminsmart.api.core.serializers.operaciones.base import *
 
-from adminsmart.core.models import Metodo
+from adminsmart.apps.core.models import Metodo
 
 from adminsmart.api.core.serializers.metodo import MetodoModelSerializer
 

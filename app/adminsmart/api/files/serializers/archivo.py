@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from adminsmart.files.models import (
+from adminsmart.apps.files.models import (
 	Carpeta,
 	Archivo
 )

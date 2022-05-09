@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from adminsmart.core.CU.operaciones.proveedores import (
+from adminsmart.apps.core.CU.operaciones.proveedores import (
 	debitos as operacionesDebitos,
 	disminuciones as operacionesDisminuciones
 )

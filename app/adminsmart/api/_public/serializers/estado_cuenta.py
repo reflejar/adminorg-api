@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from adminsmart.core.models import Operacion
+from adminsmart.apps.core.models import Operacion
 
 
 class EstadoCuentaModelSerializer(serializers.ModelSerializer):

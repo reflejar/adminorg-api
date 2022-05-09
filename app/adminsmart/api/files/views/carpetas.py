@@ -1,10 +1,10 @@
 
-from adminsmart.utils.generics import custom_viewsets
+from adminsmart.apps.utils.generics import custom_viewsets
 from django.shortcuts import get_object_or_404 
 from rest_framework import serializers
 from django.db import transaction
 
-from adminsmart.files.models import Carpeta
+from adminsmart.apps.files.models import Carpeta
 from adminsmart.api.files.serializers import CarpetaModelSerializer
 
 class CarpetaViewSet(custom_viewsets.CustomModelViewSet):

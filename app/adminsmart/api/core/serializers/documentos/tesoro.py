@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from adminsmart.core.CU.operaciones.tesoreria import CU
+from adminsmart.apps.core.CU.operaciones.tesoreria import CU
 
 from adminsmart.api.core.serializers.operaciones.caja import (
 	CargaModelSerializer,

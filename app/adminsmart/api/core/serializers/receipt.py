@@ -9,8 +9,8 @@ from django_afip.models import (
 	Receipt,
 	ReceiptType
 )
-from adminsmart.utils.models import Comunidad
-from adminsmart.core.models import OwnReceipt 
+from adminsmart.apps.utils.models import Comunidad
+from adminsmart.apps.core.models import OwnReceipt 
 
 class ReceiptModelSerializer(serializers.ModelSerializer):
 	'''Receipt model serializer'''

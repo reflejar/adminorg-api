@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from typing import Dict, Any
 
-from adminsmart.core.models import Operacion
+from adminsmart.apps.core.models import Operacion
 
 """
 

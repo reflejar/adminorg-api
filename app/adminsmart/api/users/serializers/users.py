@@ -11,13 +11,13 @@ from rest_framework.validators import UniqueValidator
 from datetime import timedelta
 import jwt
 
-from adminsmart.communications.models import Queue
+from adminsmart.apps.communications.models import Queue
 
-from adminsmart.users.models import (
+from adminsmart.apps.users.models import (
 	Perfil,
 	User,
 )
-from adminsmart.utils.models import (
+from adminsmart.apps.utils.models import (
 	Comunidad
 )
 

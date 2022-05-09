@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from adminsmart.utils.models import Comunidad
+from adminsmart.apps.utils.models import Comunidad
 
 
 class ComunidadModelSerializer(serializers.ModelSerializer):

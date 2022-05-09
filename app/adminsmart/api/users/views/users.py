@@ -8,8 +8,8 @@ from rest_framework.permissions import (
 	IsAuthenticated
 )
 
-from adminsmart.users.permissions import IsAccountOwner
-from adminsmart.users.models import User
+from adminsmart.apps.users.permissions import IsAccountOwner
+from adminsmart.apps.users.models import User
 
 from adminsmart.api.users.serializers import (
 	UserModelSerializer,

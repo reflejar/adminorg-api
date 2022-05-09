@@ -1,7 +1,7 @@
 from django.db import transaction
 
-from adminsmart.core.models import Operacion
-from adminsmart.core.CU.operaciones.clientes import masivo as operacionesMasivo
+from adminsmart.apps.core.models import Operacion
+from adminsmart.apps.core.CU.operaciones.clientes import masivo as operacionesMasivo
 
 from .base import *
 from .cliente import DestinoClienteModelSerializer

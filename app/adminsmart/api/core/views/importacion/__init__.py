@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
-from adminsmart.users.permissions import IsComunidadMember, IsAdministrativoUser
-from adminsmart.utils.generics import custom_viewsets
-from adminsmart.core.models import PreOperacion
+from adminsmart.apps.users.permissions import IsComunidadMember, IsAdministrativoUser
+from adminsmart.apps.utils.generics import custom_viewsets
+from adminsmart.apps.core.models import PreOperacion
 from adminsmart.api.core.serializers.importacion import ImportacionModelSerializer
 
 class ImportacionViewSet(custom_viewsets.CustomModelViewSet):

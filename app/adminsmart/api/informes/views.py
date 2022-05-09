@@ -9,13 +9,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 
-from adminsmart.utils.generics import custom_viewsets
-from adminsmart.core.models import (
+from adminsmart.apps.utils.generics import custom_viewsets
+from adminsmart.apps.core.models import (
 	Operacion,
 	Cuenta
 )
-from adminsmart.informes.filter import InformesFilter
-from adminsmart.informes.analisis import OperacionAnalisis
+from adminsmart.apps.informes.filter import InformesFilter
+from adminsmart.apps.informes.analisis import OperacionAnalisis
 
 class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""

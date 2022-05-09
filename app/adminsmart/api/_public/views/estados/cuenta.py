@@ -3,8 +3,8 @@ from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from adminsmart.core.models import Cuenta
-from adminsmart.users.permissions import IsPlatformClientUser
+from adminsmart.apps.core.models import Cuenta
+from adminsmart.apps.users.permissions import IsPlatformClientUser
 from adminsmart.api._public.serializers import EstadoCuentaModelSerializer
 
 class EstadoCuentaViewSet(viewsets.ModelViewSet):

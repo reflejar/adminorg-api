@@ -2,7 +2,7 @@ import hashlib
 from django.views import generic
 from django.core.cache import cache
 
-from adminsmart.core.models.cuenta import Cuenta
+from adminsmart.apps.core.models.cuenta import Cuenta
 
 class BaseFrontView(generic.TemplateView):
 
@@ -32,20 +32,19 @@ class BaseFrontView(generic.TemplateView):
 		key_cache = self.make_cache_key()
 		
 		elements = self.get_elements()
-		elements = cache.get(key_cache)
+		# elements = cache.get(key_cache)
 		if not elements:
 			print("Hola")
 			elements = self.get_elements()
 			# hashed = hashlib.md5(str(result).encode())
 			# cache.set(key_cache, hashed, 60*60*2)
 			cache.set(key_cache, elements, 60*60*2)
-			elements = cache.get(key_cache)
+			# elements = cache.get(key_cache)
 		context.update({
 			'module_name': self.MODULE_NAME,
 			'comunidad': self.comunidad,
 			'elements': elements
-		})			
-		print(elements)
+		})
 		return context
 
 class AdminFrontView(BaseFrontView):

@@ -3,7 +3,7 @@ dependiendo de la extension necesaria para cada tipo de objeto'''
 
 from rest_framework import serializers
 
-from adminsmart.utils.models import Domicilio, Provincia
+from adminsmart.apps.utils.models import Domicilio, Provincia
 
 try:
 	PROVINCIAS_CHOICES = list(Provincia.objects.all().values_list('nombre', flat=True))

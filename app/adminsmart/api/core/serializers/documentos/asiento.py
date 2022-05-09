@@ -2,7 +2,7 @@ from django.db import transaction
 
 from .base import *
 
-from adminsmart.core.CU.operaciones.contabilidad import CU
+from adminsmart.apps.core.CU.operaciones.contabilidad import CU
 from adminsmart.api.core.serializers.operaciones.asiento import LineaModelSerializer
 
 class AsientoModelSerializer(DocumentoModelSerializer):

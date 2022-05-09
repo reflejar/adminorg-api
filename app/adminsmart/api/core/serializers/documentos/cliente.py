@@ -6,11 +6,11 @@ from .base import *
 
 from django.template.loader import render_to_string
 
-from adminsmart.core.CU.operaciones.clientes import (
+from adminsmart.apps.core.CU.operaciones.clientes import (
 	creditos as operacionesCreditos,
 	disminuciones as operacionesDisminuciones
 )
-from adminsmart.communications.models import Queue, Attachment
+from adminsmart.apps.communications.models import Queue, Attachment
 
 from adminsmart.api.core.serializers.operaciones.cliente import (
 	CreditoModelSerializer,

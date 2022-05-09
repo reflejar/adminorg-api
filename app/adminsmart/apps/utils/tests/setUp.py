@@ -1,0 +1,1 @@
+from adminsmart.apps.utils.generics.setups import *

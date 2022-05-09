@@ -3,7 +3,7 @@ from django.db.models import fields
 
 from rest_framework import serializers
 
-from adminsmart.core.models import (
+from adminsmart.apps.core.models import (
 	PreOperacion,
 	Cuenta
 	) 

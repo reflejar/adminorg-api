@@ -9,7 +9,7 @@ from django_afip.models import (
 	CurrencyType
 )
 
-from adminsmart.core.models import (
+from adminsmart.apps.core.models import (
 	Documento,
 	Cuenta, 
 	OwnReceipt

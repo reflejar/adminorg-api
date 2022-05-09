@@ -5,8 +5,8 @@ from rest_framework.permissions import (
 )
 
 from adminsmart.api.utils.serializers import ComunidadModelSerializer
-from adminsmart.utils.models import Comunidad
-from adminsmart.users.permissions import IsAdministrativoUser
+from adminsmart.apps.utils.models import Comunidad
+from adminsmart.apps.users.permissions import IsAdministrativoUser
 
 class ComunidadViewSet(viewsets.ModelViewSet):
     '''Comunidad view set.'''

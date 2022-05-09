@@ -1,5 +1,5 @@
 
-from adminsmart.utils.generics import custom_viewsets
+from adminsmart.apps.utils.generics import custom_viewsets
 from django.shortcuts import get_object_or_404 
 from rest_framework import serializers
 from django.db import transaction
@@ -9,7 +9,7 @@ from rest_framework.parsers import (
 	MultiPartParser
 )
 
-from adminsmart.files.models import Archivo
+from adminsmart.apps.files.models import Archivo
 from adminsmart.api.files.serializers import ArchivoModelSerializer
 
 class ArchivoViewSet(custom_viewsets.CustomModelViewSet):

@@ -12,8 +12,8 @@ from django_afip.models import (
 	DocumentType,
 	ReceiptType,
 )
-from adminsmart.users.permissions import IsComunidadMember, IsAdministrativoUser
-from adminsmart.utils.generics import custom_viewsets
+from adminsmart.apps.users.permissions import IsComunidadMember, IsAdministrativoUser
+from adminsmart.apps.utils.generics import custom_viewsets
 from adminsmart.api.core.serializers import (
 	MasivoClienteModelSerializer,
 	DestinoClienteModelSerializer,
@@ -21,10 +21,10 @@ from adminsmart.api.core.serializers import (
 	TesoroModelSerializer,
 	AsientoModelSerializer
 )
-from adminsmart.core.models import (
+from adminsmart.apps.core.models import (
 	Documento,
 )
-from adminsmart.core.filters import (
+from adminsmart.apps.core.filters import (
 	DocumentoFilter
 )
 

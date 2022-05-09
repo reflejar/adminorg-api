@@ -2,8 +2,8 @@ from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404 
 from django.http import Http404
 
-from adminsmart.utils.generics import custom_viewsets
-from adminsmart.files.models import PDF
+from adminsmart.apps.utils.generics import custom_viewsets
+from adminsmart.apps.files.models import PDF
 
 class PDFViewSet(custom_viewsets.CustomModelViewSet):
 	"""

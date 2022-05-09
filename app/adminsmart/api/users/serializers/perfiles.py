@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django_afip.models import DocumentType
 
 from adminsmart.api.utils.serializers import DomicilioModelSerializer
-from adminsmart.users.models import Perfil
+from adminsmart.apps.users.models import Perfil
 
 try:
 	TIPO_DOCUMENTO_CHOICES = list(DocumentType.objects.all().values_list('description', flat=True))

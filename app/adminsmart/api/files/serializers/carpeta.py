@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import Group
 
-from adminsmart.files.models import Carpeta
+from adminsmart.apps.files.models import Carpeta
 from adminsmart.api.files.serializers import ArchivoModelSerializer
 
 class CarpetaModelSerializer(serializers.ModelSerializer):

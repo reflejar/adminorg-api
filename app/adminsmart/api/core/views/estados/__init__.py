@@ -5,12 +5,12 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404 
 from decimal import Decimal
 
-from adminsmart.users.permissions import IsAccountOwner, IsComunidadMember, IsAdministrativoUser
-from adminsmart.utils.generics import custom_viewsets
+from adminsmart.apps.users.permissions import IsAccountOwner, IsComunidadMember, IsAdministrativoUser
+from adminsmart.apps.utils.generics import custom_viewsets
 
-from adminsmart.core.filters.operacion import OperacionFilter
+from adminsmart.apps.core.filters.operacion import OperacionFilter
 
-from adminsmart.core.models import (
+from adminsmart.apps.core.models import (
 	Naturaleza,
 	Cuenta,
 	Operacion,

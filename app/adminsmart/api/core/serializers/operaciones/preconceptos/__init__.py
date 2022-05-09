@@ -2,7 +2,7 @@
 # from .masivo import *
 from django.db import transaction
 
-from adminsmart.core.models import Operacion
+from adminsmart.apps.core.models import Operacion
 from adminsmart.api.core.serializers.operaciones.cliente import CreditoModelSerializer
 
 

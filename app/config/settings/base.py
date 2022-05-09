@@ -68,15 +68,15 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'adminsmart.utils.apps.UtilsAppConfig',
-    'adminsmart.users.apps.UsersAppConfig',
-    'adminsmart.core.apps.OperativeAppConfig',
-    'adminsmart.platforms.apps.PlatformsAppConfig',
-    'adminsmart.files.apps.FilesAppConfig',
-    'adminsmart.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
-    'adminsmart.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
-    'adminsmart.communications.apps.CommunicationsAppConfig',
-    'adminsmart.informes.apps.InformesAppConfig',
+    'adminsmart.apps.utils.apps.UtilsAppConfig',
+    'adminsmart.apps.users.apps.UsersAppConfig',
+    'adminsmart.apps.core.apps.OperativeAppConfig',
+    'adminsmart.apps.platforms.apps.PlatformsAppConfig',
+    'adminsmart.apps.files.apps.FilesAppConfig',
+    'adminsmart.apps.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
+    'adminsmart.apps.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
+    'adminsmart.apps.communications.apps.CommunicationsAppConfig',
+    'adminsmart.apps.informes.apps.InformesAppConfig',
     'adminsmart.api._public.apps.PublicAPIAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

@@ -4,15 +4,15 @@ from django_afip.models import DocumentType
 
 from adminsmart.api.utils.serializers import DomicilioModelSerializer
 from adminsmart.api.users.serializers import PerfilModelSerializer
-from adminsmart.utils.models import (
+from adminsmart.apps.utils.models import (
 	Comunidad,
 	Provincia,
 	Domicilio
 )
-from adminsmart.users.models import (
+from adminsmart.apps.users.models import (
 	Perfil,
 )
-from adminsmart.core.models import (
+from adminsmart.apps.core.models import (
 	Titulo,
 	Taxon,
 
@@ -25,7 +25,7 @@ from adminsmart.api.core.serializers import (
 	MetodoModelSerializer,
 	TituloModelSerializer,
 )
-from adminsmart.core.CU.cuenta import CU
+from adminsmart.apps.core.CU.cuenta import CU
 
 
 class CuentaModelSerializer(serializers.ModelSerializer):
