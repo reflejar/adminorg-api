@@ -1,4 +1,4 @@
-from adminsmart.views.tools.base import AdminFrontView
+from .base import AdminFrontView
 
 class ClientesView(AdminFrontView):
 
@@ -6,7 +6,8 @@ class ClientesView(AdminFrontView):
 
 	# model = Liquidacion
 	# filterset_class = LiquidacionFilter
-	MODULE_NAME = "Clientes"
+	MODULE_NAME = "Cuentas a cobrar"
+	MODULE_NATURALEZA = "cliente"
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
