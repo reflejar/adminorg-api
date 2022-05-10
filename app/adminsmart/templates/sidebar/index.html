@@ -1,5 +1,5 @@
 <li class="has-submenu">
-  <a href="{% url 'views:home' %}"><i class="fi-air-play"></i>Home</a>
+  <a href="{% url 'front:home' %}"><i class="fi-air-play"></i>Home</a>
 </li>
 
 {% if user.groups.all.0.name == "socio" %}
@@ -21,22 +21,22 @@
 {% else %}
 
   <li class="has-submenu">
-    <a href="{% url 'views:clientes' %}"><i class="fi-download"></i>Cuentas a cobrar</a>
+    <a href="{% url 'front:clientes' %}"><i class="fi-download"></i>Cuentas a cobrar</a>
   </li>
   <li class="has-submenu">
-    <a href="{% url 'views:proveedores' %}"><i class="fi-upload"></i>Cuentas a pagar</a>
+    <a href="{% url 'front:proveedores' %}"><i class="fi-upload"></i>Cuentas a pagar</a>
   </li>
   <li class="has-submenu">
-    <a href="{% url 'views:tesoreria' %}"><i class="fi-shuffle"></i>Tesoreria</a>
+    <a href="{% url 'front:tesoreria' %}"><i class="fi-shuffle"></i>Tesoreria</a>
   </li>
   <li class="has-submenu">
-    <a href="{% url 'views:contabilidad' %}"><i class="fi-briefcase"></i>Contabilidad</a>
+    <a href="{% url 'front:contabilidad' %}"><i class="fi-briefcase"></i>Contabilidad</a>
   </li>
   <li class="has-submenu">
-    <a href="{% url 'views:informes' %}"><i class="fi-bar-graph-2"></i>Informes</a>
+    <a href="{% url 'front:informes' %}"><i class="fi-bar-graph-2"></i>Informes</a>
   </li>
   <li class="has-submenu">
-    <a href="{% url 'views:configuracion' %}"><i class="fi-cog"></i>Configuración</a>
+    <a href="{% url 'front:configuracion:index' %}"><i class="fi-cog"></i>Configuración</a>
   </li>  
 
 {% endif %}

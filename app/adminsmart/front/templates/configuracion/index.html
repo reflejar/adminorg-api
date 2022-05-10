@@ -1,0 +1,231 @@
+{% extends 'portals/admin/index.html' %}
+{% load staticfiles %}
+
+{% block contenido %}
+  <div class="row">
+
+    <div class="col-md-6">
+
+      <div class="card-box ribbon-box">
+
+        <div class="ribbon ribbon-success">Area de relaciones humanas</div>
+        <p class="text-muted m-b-10 font-14"></p>
+
+        <div class="row">
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='cliente' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if clientes == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/businesswoman.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Socios y clientes</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ clientes }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='dominio' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if dominios == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/home.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Dominios</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ dominios }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='grupo' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/conference_call.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Grupos</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ grupos }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='proveedor' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if proveedores == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/business_contact.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Proveedores</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ proveedores }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-6">
+
+      <div class="card-box ribbon-box">
+
+        <div class="ribbon ribbon-warning">Area economica</div>
+        <p class="text-muted m-b-10 font-14"></p>
+
+        <div class="row">
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='caja' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if cajas == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/safe.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Tesorería</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ cajas }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>          
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='ingreso' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if ingresos == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/sales_performance.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Ingresos</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ ingresos }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='gasto' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if gastos == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/donate.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Gastos</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ gastos }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='Punto' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if puntos == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/fine_print.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Puntos</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ puntos }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div> -->
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='interes' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/external.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Intereses</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ intereses }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='descuento' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/internal.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Descuentos</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ descuentos }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='titulo' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                {% if titulos == 0 %}
+                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                {% endif %}                
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/briefcase.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Títulos contables</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ titulos }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+
+          <!-- <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='bonificacion' %}">
+              <div class="card-box widget-box-three ribbon-box">
+                <div class="bg-icon pull-left">
+                  <img src="{% static 'assets/images/icons/low_priority.svg' %}">
+                </div>
+                <div class="text-right">
+                  <p class="m-t-5 text-uppercase font-14 font-600">Bonificaciones</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ bonificaciones }}</span></h2>
+                </div>
+              </div>
+            </a>
+          </div> -->
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+{% endblock %}

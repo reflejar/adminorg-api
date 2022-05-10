@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 from .index import index
-from .modules.clientes import *
+from .modules import *
 
 urlpatterns = [
 
@@ -14,6 +14,6 @@ urlpatterns = [
 	path('tesoreria/', ClientesView.as_view(), name='tesoreria'),
 	path('contabilidad/', ClientesView.as_view(), name='contabilidad'),
 	path('informes/', ClientesView.as_view(), name='informes'),
-	path('configuracion/', ClientesView.as_view(), name='configuracion'),
+	path('configuracion/', include(('adminsmart.front.modules.configuracion.urls', 'configuracion'), namespace='configuracion')),
 
 ]

@@ -37,7 +37,7 @@
 
             <div class="logo">
 
-                <a href="{% url 'views:home' %}" class="logo">
+                <a href="{% url 'front:home' %}" class="logo">
                   <img src='{% static "anopa/images/icono.svg" %}' alt="" height="40"> <small>{{ comunidad }}</small>
                 </a>
             </div>
@@ -107,7 +107,7 @@
               {% endif %}
             </div>
           </div>
-          {% block contenido %}{% endblock %}
+          {% block content %}{% endblock %}
         </div>
 
 

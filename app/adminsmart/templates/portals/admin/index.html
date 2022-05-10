@@ -1,0 +1,29 @@
+{% extends 'raiz.html' %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block titulo %}
+  {{module_name}}
+{% endblock %}
+
+{% block breadcrum %}
+  {% include 'tools/breadcrum.html' with bpadre=module_name %}
+{% endblock %}
+
+{% block header %}
+  {{module_name}}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    {% if sidebuttons %}
+      <div class="col-md-3">
+        {% include 'tools/sidebuttons.html' %}
+      </div>
+    {% endif %}
+    <div class="col-md-{% if sidebuttons %}9{% else %}12{% endif %}">
+      {% block contenido %}{% endblock %}
+    </div>
+  </div>
+  
+{% endblock %}

@@ -27,7 +27,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
 	path('signup/', LoginView.as_view(), name='signup'),
 
-	## Custom
-	path('', include(('adminsmart.views.urls', 'views'), namespace='views')),
+	## Frontend
+	path('', include(('adminsmart.front.urls', 'views'), namespace='front')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

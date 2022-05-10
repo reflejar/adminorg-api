@@ -1,0 +1,7 @@
+<div class="card-box ribbon-box">
+    <div class="ribbon ribbon-success">Menu {{ module_name }}</div>
+    <p class="text-muted m-b-10 font-14"></p>
+    {% for button in sidebuttons %}
+        <a class="btn btn-block btn-bordered btn-{%if button.url in request.path %}primary{%else%}default{%endif%}" href="{{button.url}}">{{button.label}}</a>
+    {% endfor %}
+</div>
