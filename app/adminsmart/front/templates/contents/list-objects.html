@@ -1,0 +1,79 @@
+{% extends 'layout.html' %}
+{% load humanize %}
+{% load staticfiles %}
+
+{% block css %}
+  <link rel="stylesheet" href='{% static "plugins/datatables/jquery.dataTables.min.css" %}'>
+  <link rel="stylesheet" href='{% static "plugins/datatables/buttons.bootstrap.min.css" %}'>
+  <link rel="stylesheet" href='{% static "plugins/datatables/dataTables.bootstrap.min.css" %}'>
+{% endblock %}
+
+{% block contenido %}
+<div class="panel panel-border panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ module_name }}</h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-12">
+        <a href="create" class="btn btn-info pull-right">
+          <i class="fa fa-plus"></i> Nuevo
+        </a>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive" >
+
+          <table class="table table-striped table-sm anopa display nowrap" style="width:100%">
+            <thead>
+              <tr>
+                <th class="text-info" width="20"></th>                
+                {% for title in titles %}
+                  {% if title != "id" %}
+                    <th>{{title|capfirst}}</th>
+                  {% endif %}
+                {% endfor %}
+                <th class="text-warning" width="20"></th>            
+              </tr>
+            </thead>
+            <tbody>
+            {% for object in objects %}
+              <tr>
+                <td class="text-center">
+                    <a href="{{object.id}}/deudas" title="Detalle de deudas" class="btn btn-icon btn-bordered btn-info btn-xs">
+                        <i class="fa fa-money"></i>
+                    </a>
+                    <a href="{{object.id}}/cuenta" title="Cuenta histórica" class="btn btn-icon btn-bordered btn-purple btn-xs">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </td>
+                {% for key, value in object.items %}
+                  {% if key != "id" %}
+                    <td>{{ value|default:"" }}</td>
+                  {% endif %}
+                {% endfor %}
+                <td class="text-center">
+                    <a href="{{object.id}}" class="btn btn-icon btn-bordered btn-warning btn-xs">
+                        <i class="fa fa-address-card"></i>
+                    </a>
+                </td>        
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+    <script src='{% static "assets/pages/jquery.toastr.js" %}'></script>
+    {% include 'tools/js_datatable.html' %}
+{% endblock %}

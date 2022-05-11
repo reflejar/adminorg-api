@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>{% block titulo %}{% endblock %}</title>
+    <title>{% block titulo %}{{module_name}}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -100,8 +100,8 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="page-title-box">
-                {% block breadcrum %}{% endblock %}
-                <h4 class="page-title">{% block header %}{% endblock %}</h4>
+                {% block breadcrum %}{% include 'tools/breadcrum.html' with bpadre=module_name %}{% endblock %}
+                <h4 class="page-title">{% block header %}{{module_name}}{% endblock %}</h4>
               </div>
               {% if validacion_demo %}
                 <div class="alert alert-icon alert-white alert-warning alert-dismissible fade in" role="alert">
@@ -115,7 +115,16 @@
               {% endif %}
             </div>
           </div>
-          {% block content %}{% endblock %}
+            <div class="row">
+              {% if sidebuttons %}
+                <div class="col-md-3">
+                  {% include 'tools/sidebuttons.html' %}
+                </div>
+              {% endif %}
+              <div class="col-md-{% if sidebuttons %}9{% else %}12{% endif %}">
+                {% block contenido %}{% endblock %}
+              </div>
+            </div>
         </div>
 
 

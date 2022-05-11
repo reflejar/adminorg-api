@@ -1,4 +1,4 @@
-{% extends 'portals/admin/index.html' %}
+{% extends 'layout.html' %}
 {% load humanize %}
 {% load staticfiles %}
 
@@ -11,12 +11,12 @@
 {% block contenido %}
 <div class="panel panel-border panel-info">
   <div class="panel-heading">
-    <h3 class="panel-title">Configuracion {{ naturaleza|capfirst }}</h3>
+    <h3 class="panel-title">Configuración {{ naturaleza|capfirst }}</h3>
   </div>
   <div class="panel-body">
     <div class="row">
       <div class="col-xs-12">
-        <a href="" class="btn btn-info pull-right">
+        <a href="create" class="btn btn-info pull-right">
           <i class="fa fa-plus"></i> Nuevo
         </a>
       </div>
@@ -32,7 +32,9 @@
                 <th width="20"></th>
                 <th width="20"></th>
                 {% for title in titles %}
-                  <th>{{title|capfirst}}</th>
+                  {% if title != "id" %}
+                    <th>{{title|capfirst}}</th>
+                  {% endif %}
                 {% endfor %}
               </tr>
             </thead>
@@ -40,17 +42,19 @@
             {% for object in objects %}
               <tr>
                 <td class="text-center">
-                  <a href="" class="btn btn-icon btn-bordered btn-warning btn-xs">
+                  <a href="{{object.id}}" class="btn btn-icon btn-bordered btn-warning btn-xs">
                     <i class="fa fa-pencil"></i>
                   </a>
                 </td>
                 <td>
-                  <a href="" class="btn btn-icon btn-bordered btn-danger btn-xs">
+                  <a href="{{object.id}}/delete" class="btn btn-icon btn-bordered btn-danger btn-xs">
                     <i class="fa fa-trash"></i>
                   </a>
                 </td>
-                {% for field in object.values %}
-                  <td>{{ field|default:"" }}</td>
+                {% for key, value in object.items %}
+                  {% if key != "id" %}
+                    <td>{{ value|default:"" }}</td>
+                  {% endif %}
                 {% endfor %}
               </tr>
             {% endfor %}

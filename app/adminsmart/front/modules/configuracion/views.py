@@ -37,12 +37,12 @@ class IndexView(AdminFrontView):
 		return context
 
 
-class ListView(IndexView):
+class ListView(AdminFrontView):
 
 	""" Vista de listado de cuentas, titulos y metodos """
 
 	MODULE_NAME = "Configuracion"
-	template_name = 'configuracion/list.html'
+	template_name = 'configuracion/list-objects.html'	
 	MODULE_BUTTONS = MODULE_BUTTONS
 
 	def get_titulo(self):
@@ -55,7 +55,7 @@ class ListView(IndexView):
 			))
 		
 	def get_caja(self): 
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.kwargs['naturaleza'])\
+		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
 					.order_by("nombre")\
 					.annotate(
 						tipo=F('taxon__nombre'),
@@ -67,7 +67,7 @@ class ListView(IndexView):
 	get_gasto = get_caja	
 
 	def get_ingreso(self):
-		cuentas = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.kwargs['naturaleza'])\
+		cuentas = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
 			.order_by("nombre")\
 			.annotate(
 				metodos_descuento_interes=F('metodos__nombre'),
@@ -87,7 +87,7 @@ class ListView(IndexView):
 		return objects		
 
 	def get_interes(self):
-		return list(Metodo.objects.filter(comunidad=self.comunidad, naturaleza=self.kwargs['naturaleza'])\
+		return list(Metodo.objects.filter(comunidad=self.comunidad, naturaleza=self.MODULE_NATURALEZA)\
 				.order_by('-id')\
 				.values(
 				'id',"nombre","tipo",
@@ -96,7 +96,8 @@ class ListView(IndexView):
 	get_descuento = get_interes	
 
 	def get_cliente(self): 
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.kwargs['naturaleza'])\
+		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
+					.order_by("perfil__apellido")\
 					.annotate(
 						apellido_cliente=F('perfil__apellido'),
 						nombre_cliente=F('perfil__nombre'),
@@ -109,8 +110,9 @@ class ListView(IndexView):
 						'id', 'apellido_cliente','nombre_cliente','razon_social',
 						'tipo_documento','documento','titulo_contable',
 					))		
+
 	def get_proveedor(self): 
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.kwargs['naturaleza'])\
+		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
 					.annotate(
 						razon_social=F('perfil__razon_social'),
 						apellido_proveedor=F('perfil__apellido'),
@@ -125,7 +127,7 @@ class ListView(IndexView):
 					))		
 
 	def get_dominio(self): 
-		cuentas = list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.kwargs['naturaleza'])\
+		cuentas = list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
 					.order_by('numero')\
 					.values(
 						'id', 'numero', 
@@ -148,15 +150,16 @@ class ListView(IndexView):
 	def get_grupo(self): return []
 
 	def get_objects(self): # Funcion pensada para cachear
-		method = getattr(self, f"get_{self.kwargs['naturaleza']}")
+		method = getattr(self, f"get_{self.MODULE_NATURALEZA}")
 		objects = method()
 		return objects
 
 	def get_context_data(self, **kwargs):
+		self.MODULE_NATURALEZA = kwargs['naturaleza']
 		context = super().get_context_data(**kwargs)
 		objects = self.get_objects()
 		context.update({
-			"naturaleza": kwargs['naturaleza'],
+			"naturaleza": self.MODULE_NATURALEZA,
 			"objects": objects,
 			"titles": objects[0].keys() if objects else []
 		})
