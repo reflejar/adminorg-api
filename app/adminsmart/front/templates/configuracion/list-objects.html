@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load humanize %}
+{% load to_space %}
 {% load staticfiles %}
 
 {% block css %}
@@ -33,7 +34,7 @@
                 <th width="20"></th>
                 {% for title in titles %}
                   {% if title != "id" %}
-                    <th>{{title|capfirst}}</th>
+                    <th>{{title|to_space|capfirst}}</th>
                   {% endif %}
                 {% endfor %}
               </tr>

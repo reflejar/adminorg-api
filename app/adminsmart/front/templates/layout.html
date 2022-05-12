@@ -54,9 +54,9 @@
                         </li>
                         <li><a href="a"><i class="dripicons-user m-r-10"></i> Perfil</a></li>
                         <li>
-                          <select name="select_comunidad" id="select_comunidad">
+                          <select class="selector form-control" name="select_comunidad" id="select_comunidad" value="{{comunidad.id}}">
                             {% for com in user.perfil_set.first.comunidades.all %}
-                              <option value="{{com.id}}">{{com.nombre}}</option>
+                              <option {%if com.id == comunidad.id %}selected disabled{%endif%} value="{{com.id}}">{{com.nombre}}</option>
                             {% endfor %}
                           </select>
                           
@@ -87,7 +87,7 @@
         <div class="container">
           <div id="navigation">
             <ul class="navigation-menu">
-              {% include 'sidebar/index.html' %}
+              {% include 'tools/navbar.html' %}
             </ul>
           </div>
         </div>

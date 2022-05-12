@@ -1,9 +1,8 @@
 from ..base import AdminFrontView
-from ..configuracion.views import ListView
 
 from .buttons import MODULE_BUTTONS
 
-class IndexView(ListView):
+class IndexView(AdminFrontView):
 
 	""" Vista de clientes """
 
@@ -21,10 +20,4 @@ class IndexView(ListView):
 			o.pop("razon_social")
 			o.pop("tipo_documento")
 		return objects
-
-	def get_context_data(self, **kwargs):
-		kwargs['naturaleza'] = self.MODULE_NATURALEZA
-		context = super().get_context_data(**kwargs)
-		return context
-
 	
