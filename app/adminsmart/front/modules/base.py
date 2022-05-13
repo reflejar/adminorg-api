@@ -71,6 +71,10 @@ class AdminModuleView(BaseAdminView):
 			))
 		
 	def get_all_caja(self): 
+		default_fields = ['id', 'nombre', 'tipo', 'titulo_contable']
+		field_display = self.MODULE_FIELD_DISPLAY \
+						if getattr(self, 'MODULE_FIELD_DISPLAY', None) \
+						else default_fields		
 		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
 					.order_by("nombre")\
 					.annotate(
@@ -78,7 +82,7 @@ class AdminModuleView(BaseAdminView):
 						titulo_contable=F('titulo__nombre'),						
 					)\
 					.values(
-						'id', 'nombre', 'tipo', 'titulo_contable'
+						*field_display
 					))		
 	get_all_gasto = get_all_caja	
 
@@ -117,7 +121,7 @@ class AdminModuleView(BaseAdminView):
 			'razon_social', 'tipo_documento','documento','titulo_contable'
 		]
 		field_display = self.MODULE_FIELD_DISPLAY \
-						if getattr(self, 'MODULE_DISPLAY_FIELD', None) \
+						if getattr(self, 'MODULE_FIELD_DISPLAY', None) \
 						else default_fields
 		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
 					.order_by("perfil__apellido")\
@@ -175,13 +179,60 @@ class AdminModuleView(BaseAdminView):
 class AdminEstadoView(BaseAdminView):
 
 	""" Base obtencion de estados de los modulos """
+	
 	template_name = 'contents/estados.html'		
 
 	def get_all_estado_deuda(self):	
-		return self.cuenta.estado_deuda().values()
+		""" PROBLEMA A SOLUCIONAR: LA ITERACION"""
+		deudas = []
+		for o in self.cuenta.estado_deuda():
+			pago_capital = o.pago_capital()
+			interes = o.interes()
+			descuento = o.descuento()
+			receipt_type = str(o.documento.receipt.receipt_type)
+			formatted_number = str(o.documento.receipt.formatted_number)
+			saldo = o.monto - pago_capital + interes - descuento
+			deudas.append({
+				'documento_id': o.documento.id,
+				'fecha': o.fecha,
+				'fecha_anulacion': o.documento.fecha_anulacion,
+				'tipo_comprobante': receipt_type,
+				'numero': formatted_number,
+				'cuenta': str(o.cuenta),
+				'concepto': str(o.concepto()), 
+				'periodo': o.periodo(),
+				'monto': o.monto,
+				'pago_capital': pago_capital,
+				'interes': interes,
+				'saldo': saldo
+			})
+			
+		return deudas
 	
 	def get_all_estado_cuenta(self):	
-		return self.cuenta.estado_cuenta().values()
+		cuenta = []
+		saldo = 0
+		for d in self.cuenta.estado_cuenta():
+			obj = self.cuenta
+			receipt_type = str(d.receipt.receipt_type)
+			formatted_number = str(d.receipt.formatted_number)
+			total = sum([o.valor for o in d.operaciones.all() if o.cuenta in obj.grupo])
+			# if isinstance(obj, Cuenta):
+			# 	total = sum([o.valor for o in d.operaciones.all() if o.cuenta in obj.grupo])
+			# else:
+			# 	total = sum([o.valor for o in d.operaciones.all() if o.cuenta.titulo in obj.grupo])
+			saldo += total
+			cuenta.append({
+				'documento_id': d.id,
+				'fecha': d.fecha_operacion,
+				'fecha_anulacion': d.fecha_anulacion,
+				'tipo_comprobante': receipt_type,
+				'numero': formatted_number,
+				'total': total,
+				'saldo': saldo
+			}) 
+
+		return cuenta
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)

@@ -170,6 +170,12 @@
           {% endfor %}
         </script>
     {% endif %}
+      
+    <script>
+      $('.dropdown-menu').click(function(e) {
+          e.stopPropagation();
+      });
+    </script>
 
   </body>
 </html>

@@ -18,8 +18,8 @@
   <div class="panel-body">
     <div class="row">
       <div class="col-xs-12">
-        <a href="create" class="btn btn-info pull-right">
-          <i class="fa fa-plus"></i> Nuevo
+        <a href="create" class="btn btn-info pull-right tooltip-animation" title="Agregá un nuevo {{module_handler}}" >
+          <i class="fa fa-plus"></i> Nuevo {{module_handler}}
         </a>
       </div>
     </div>
@@ -44,6 +44,9 @@
             {% for object in objects %}
               <tr>
                 <td class="text-center">
+                    <a href="{{object.id}}/edit" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-primary btn-xs">
+                        <i class="fa fa-address-card"></i>
+                    </a>                  
                     <a href="{{object.id}}/deudas" title="Detalle de deudas" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
                         <i class="fa fa-money"></i>
                     </a>
@@ -55,10 +58,16 @@
                   {% if key != "id" %}
                     <td>{{ value|default:"" }}</td>
                   {% endif %}
-                {% endfor %}
-                <td class="text-center">
-                    <a href="{{object.id}}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-warning btn-xs">
-                        <i class="fa fa-address-card"></i>
+                {% endfor %}                     
+                  <td class="text-center">
+                    <a href="{{object.id}}/factura" title="Hacer factura" class="btn btn-icon btn-bordered tooltip-animation btn-success btn-xs">
+                        + F
+                    </a>
+                    <a href="{{object.id}}/nota-credito" title="Hacer nota de crédito" class="btn btn-icon btn-bordered tooltip-animation btn-warning btn-xs">
+                        +NC
+                    </a>                    
+                    <a href="{{object.id}}/cobro" title="Hacer Recibo" class="btn btn-icon btn-bordered tooltip-animation btn-danger btn-xs">
+                        + R
                     </a>
                 </td>        
               </tr>

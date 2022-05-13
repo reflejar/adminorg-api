@@ -9,16 +9,16 @@ class IndexView(AdminModuleView):
 
 	""" Vista de clientes """
 
-	MODULE_NAME = "Cuentas a cobrar"
-	MODULE_HANDLER = "cliente"
+	MODULE_NAME = "Tesoreria"
+	MODULE_HANDLER = "caja"
 	MODULE_BUTTONS = MODULE_BUTTONS
-	MODULE_FIELD_DISPLAY = ['id', 'apellido_cliente', 'nombre_cliente', 'razon_social']
+	MODULE_FIELD_DISPLAY = ['id', 'nombre', 'tipo']
 	
 class EstadoDeudasView(AdminEstadoView):
 
 	""" Vista de clientes """
 
-	MODULE_NAME = "Cuentas a cobrar"
+	MODULE_NAME = "Tesoreria"
 	MODULE_HANDLER = "estado_deuda"
 	MODULE_BUTTONS = MODULE_BUTTONS
 
@@ -26,6 +26,6 @@ class EstadoCuentaView(AdminEstadoView):
 
 	""" Vista de clientes """
 
-	MODULE_NAME = "Cuentas a cobrar"
+	MODULE_NAME = "Tesoreria"
 	MODULE_HANDLER = "estado_cuenta"
 	MODULE_BUTTONS = MODULE_BUTTONS

@@ -12,7 +12,9 @@ urlpatterns = [
 		('adminsmart.front.modules.clientes.urls', 'clientes'), namespace='clientes')
 	),
 	path('cuentas-a-pagar/', ClientesView.as_view(), name='proveedores'),
-	path('tesoreria/', ClientesView.as_view(), name='tesoreria'),
+	path('tesoreria/', include(
+		('adminsmart.front.modules.tesoreria.urls', 'tesoreria'), namespace='tesoreria')
+	),
 	path('contabilidad/', ClientesView.as_view(), name='contabilidad'),
 	path('informes/', ClientesView.as_view(), name='informes'),
 	path('configuracion/', include(
