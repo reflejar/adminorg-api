@@ -1,17 +1,18 @@
-from ..base import AdminFrontView
+from ..base import (
+	AdminModuleView,
+	AdminEstadoView
+)
 
 from .buttons import MODULE_BUTTONS
 
-class IndexView(AdminFrontView):
+class IndexView(AdminModuleView):
 
 	""" Vista de clientes """
 
-	# model = Liquidacion
-	# filterset_class = LiquidacionFilter
 	MODULE_NAME = "Cuentas a cobrar"
-	MODULE_NATURALEZA = "cliente"
+	MODULE_HANDLER = "cliente"
 	MODULE_BUTTONS = MODULE_BUTTONS
-	template_name = 'contents/list-objects.html'	
+	MODULE_FIELD_DISPLAY = ['apellido_cliente', 'nombre_cliente', 'razon_social']
 
 	def get_objects(self):
 		objects = super().get_objects()
@@ -21,3 +22,18 @@ class IndexView(AdminFrontView):
 			o.pop("tipo_documento")
 		return objects
 	
+class EstadoDeudasView(AdminEstadoView):
+
+	""" Vista de clientes """
+
+	MODULE_NAME = "Cuentas a cobrar"
+	MODULE_HANDLER = "estado_deuda"
+	MODULE_BUTTONS = MODULE_BUTTONS
+
+class EstadoCuentaView(AdminEstadoView):
+
+	""" Vista de clientes """
+
+	MODULE_NAME = "Cuentas a cobrar"
+	MODULE_HANDLER = "estado_cuenta"
+	MODULE_BUTTONS = MODULE_BUTTONS

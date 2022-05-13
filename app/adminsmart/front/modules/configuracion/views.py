@@ -4,17 +4,17 @@ from adminsmart.apps.core.models import (
 	Titulo
 )
 
-from ..base import AdminFrontView
+from ..base import AdminModuleView
 
 from .buttons import MODULE_BUTTONS
 
 
-class IndexView(AdminFrontView):
+class IndexView(AdminModuleView):
 
 	""" Vista de configuracion """
 
 	MODULE_NAME = "Configuracion"
-	MODULE_NATURALEZA = ""
+	MODULE_HANDLER = ""
 	template_name = 'configuracion/index.html'
 
 	def get_context_data(self, **kwargs):
@@ -34,7 +34,7 @@ class IndexView(AdminFrontView):
 		return context
 
 
-class ListView(AdminFrontView):
+class ListView(AdminModuleView):
 
 	""" Vista de listado de cuentas, titulos y metodos """
 
@@ -43,9 +43,9 @@ class ListView(AdminFrontView):
 	MODULE_BUTTONS = MODULE_BUTTONS
 
 	def get_context_data(self, **kwargs):
-		self.MODULE_NATURALEZA = kwargs['naturaleza']
+		self.MODULE_HANDLER = kwargs['naturaleza']
 		context = super().get_context_data(**kwargs)
-		context.update({"naturaleza": self.MODULE_NATURALEZA})
+		context.update({"naturaleza": self.MODULE_HANDLER})
 		return context
 
 	

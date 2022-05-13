@@ -6,7 +6,8 @@ urlpatterns = [
 
 	# Custom Views
 	path('', IndexView.as_view(), name='index'),
-	# path('<str:naturaleza>/', ListView.as_view(), name='list'),
+	path('<int:pk>/deudas', EstadoDeudasView.as_view(), name='deudas'),
+	path('<int:pk>/cuenta', EstadoCuentaView.as_view(), name='cuenta'),
 
 ]
 

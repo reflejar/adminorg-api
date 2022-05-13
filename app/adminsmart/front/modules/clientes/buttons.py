@@ -1,14 +1,14 @@
 MODULE_BUTTONS = [
     {
-        "url": "/clientes/cliente/",
+        "url": "comprobante/",
         "label": "+ Comprobante"
     },
     {
-        "url": "/clientes/dominio/",
+        "url": "nota-credito/",
         "label": "+ Nota de Credito"
     },
     {
-        "url": "/clientes/proveedor/",
+        "url": "cobro/",
         "label": "+ Cobro"
     },
     {
@@ -16,19 +16,19 @@ MODULE_BUTTONS = [
         "label": "---"
     },
     {
-        "url": "/clientes/importacion/",
+        "url": "importacion/",
         "label": "Importación"
     },
+    # {
+    #     "url": "/clientes/masivo/",
+    #     "label": "+ Comprobantes masivos"
+    # },    
+    # {
+    #     "url": "",
+    #     "label": "---"
+    # },
     {
-        "url": "/clientes/masivo/",
-        "label": "+ Comprobantes masivos"
-    },    
-    {
-        "url": "",
-        "label": "---"
-    },
-    {
-        "url": "/clientes/registros/",
+        "url": "registros/",
         "label": "Registros"
     },           
 

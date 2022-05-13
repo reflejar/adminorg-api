@@ -19,6 +19,7 @@ class BaseFrontView(generic.TemplateView):
 
 	def dispatch(self, request, *args, **kwargs):
 		self.comunidad = self.request.user.perfil_set.first().comunidad
+		self.cuenta = Cuenta.objects.get(id=kwargs['pk']) if 'pk' in kwargs.keys() else None
 		return super(BaseFrontView, self).dispatch(request, *args, **kwargs)	
 
 	def get_context_data(self, **kwargs):
@@ -29,13 +30,38 @@ class BaseFrontView(generic.TemplateView):
 		})
 		return context
 
-class AdminFrontView(BaseFrontView):
+
+class BaseAdminView(BaseFrontView):
 
 	""" Base Admin Front """
 
-	def make_cache_key(self): return f'views_{self.MODULE_NATURALEZA}_{self.comunidad.id}'
+	def make_cache_key(self): return f'views_{self.MODULE_HANDLER}_{self.comunidad.id}'
 
-	def get_all_itulo(self):
+	def get_objects(self): # Funcion pensada para cachear
+		method = getattr(self, f"get_all_{self.MODULE_HANDLER}")
+		return method()
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		if getattr(self, "MODULE_BUTTONS", False):
+			context.update({'sidebuttons': self.MODULE_BUTTONS})
+		if getattr(self, "MODULE_HANDLER", False):
+			objects = self.get_objects()
+			context.update({
+				'module_handler': self.MODULE_HANDLER,
+				"objects": objects,
+				"titles": objects[0].keys() if objects else []
+			})
+		return context
+
+
+class AdminModuleView(BaseAdminView):
+
+	""" Base obtencion de objetos de los modulos """
+
+	template_name = 'contents/list-objects.html'
+
+	def get_all_titulo(self):
 		return list(Titulo.objects.filter(comunidad=self.comunidad)\
 			.order_by("numero")\
 			.annotate(predeterminado_para=F('predeterminado__nombre'))\
@@ -45,7 +71,7 @@ class AdminFrontView(BaseFrontView):
 			))
 		
 	def get_all_caja(self): 
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
+		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
 					.order_by("nombre")\
 					.annotate(
 						tipo=F('taxon__nombre'),
@@ -57,7 +83,7 @@ class AdminFrontView(BaseFrontView):
 	get_all_gasto = get_all_caja	
 
 	def get_all_ingreso(self):
-		cuentas = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
+		cuentas = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
 			.order_by("nombre")\
 			.annotate(
 				metodos_descuento_interes=F('metodos__nombre'),
@@ -77,7 +103,7 @@ class AdminFrontView(BaseFrontView):
 		return objects		
 
 	def get_all_interes(self):
-		return list(Metodo.objects.filter(comunidad=self.comunidad, naturaleza=self.MODULE_NATURALEZA)\
+		return list(Metodo.objects.filter(comunidad=self.comunidad, naturaleza=self.MODULE_HANDLER)\
 				.order_by('-id')\
 				.values(
 				'id',"nombre","tipo",
@@ -86,7 +112,14 @@ class AdminFrontView(BaseFrontView):
 	get_all_descuento = get_all_interes	
 
 	def get_all_cliente(self): 
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
+		default_fields = [
+			'id', 'apellido_cliente','nombre_cliente',
+			'razon_social', 'tipo_documento','documento','titulo_contable'
+		]
+		field_display = self.MODULE_FIELD_DISPLAY \
+						if getattr(self, 'MODULE_DISPLAY_FIELD', None) \
+						else default_fields
+		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
 					.order_by("perfil__apellido")\
 					.annotate(
 						apellido_cliente=F('perfil__apellido'),
@@ -97,12 +130,11 @@ class AdminFrontView(BaseFrontView):
 						titulo_contable=F('titulo__nombre'),						
 					)\
 					.values(
-						'id', 'apellido_cliente','nombre_cliente','razon_social',
-						'tipo_documento','documento','titulo_contable',
+						*field_display
 					))		
 
 	def get_all_proveedor(self): 
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
+		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
 					.annotate(
 						razon_social=F('perfil__razon_social'),
 						apellido_proveedor=F('perfil__apellido'),
@@ -117,7 +149,7 @@ class AdminFrontView(BaseFrontView):
 					))		
 
 	def get_all_dominio(self): 
-		cuentas = list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_NATURALEZA)\
+		cuentas = list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
 					.order_by('numero')\
 					.values(
 						'id', 'numero', 
@@ -139,23 +171,22 @@ class AdminFrontView(BaseFrontView):
 
 	def get_all_grupo(self): return []
 
-	def get_objects(self): # Funcion pensada para cachear
-		method = getattr(self, f"get_all_{self.MODULE_NATURALEZA}")
-		objects = method()
-		return objects	
+
+class AdminEstadoView(BaseAdminView):
+
+	""" Base obtencion de estados de los modulos """
+	template_name = 'contents/estados.html'		
+
+	def get_all_estado_deuda(self):	
+		return self.cuenta.estado_deuda().values()
+	
+	def get_all_estado_cuenta(self):	
+		return self.cuenta.estado_cuenta().values()
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		if getattr(self, "MODULE_BUTTONS", False):
-			context.update({'sidebuttons': self.MODULE_BUTTONS})
-		if getattr(self, "MODULE_NATURALEZA", False):
-			objects = self.get_objects()
-			context.update({
-				"objects": objects,
-				"titles": objects[0].keys() if objects else []
-			})
-		return context
-
+		context.update({'cuenta': self.cuenta})
+		return context		
 
 class SocioFrontView(BaseFrontView):
 

@@ -1,19 +1,18 @@
 {% extends 'layout.html' %}
-{% load to_space %}
 {% load humanize %}
+{% load to_space %}
 {% load staticfiles %}
 
 {% block css %}
   <link rel="stylesheet" href='{% static "plugins/datatables/jquery.dataTables.min.css" %}'>
   <link rel="stylesheet" href='{% static "plugins/datatables/buttons.bootstrap.min.css" %}'>
   <link rel="stylesheet" href='{% static "plugins/datatables/dataTables.bootstrap.min.css" %}'>
-  <link rel="stylesheet" href='{% static "plugins/tooltipster/tooltipster.bundle.min.css" %}'>
 {% endblock %}
 
 {% block contenido %}
 <div class="panel panel-border panel-info">
   <div class="panel-heading">
-    <h3 class="panel-title">{{ module_name }}</h3>
+    <h3 class="panel-title">{{ module_handler|to_space|capfirst }} {{cuenta}}</h3>
   </div>
   <div class="panel-body">
     <div class="row">
@@ -28,39 +27,36 @@
       <div class="col-md-12">
         <div class="table-responsive" >
 
-          <table class="table table-striped table-sm anopa display nowrap" style="width:100%">
+          <table class="table table-striped anopa display nowrap" style="width:100%">
             <thead>
               <tr>
-                <th class="text-info" width="20"></th>                
+                <th width="20"></th>
+                <th width="20"></th>
                 {% for title in titles %}
                   {% if title != "id" %}
                     <th>{{title|to_space|capfirst}}</th>
                   {% endif %}
                 {% endfor %}
-                <th class="text-warning" width="20"></th>            
               </tr>
             </thead>
             <tbody>
             {% for object in objects %}
               <tr>
                 <td class="text-center">
-                    <a href="{{object.id}}/deudas" title="Detalle de deudas" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
-                        <i class="fa fa-money"></i>
-                    </a>
-                    <a href="{{object.id}}/cuenta" title="Cuenta histórica" class="btn btn-icon btn-bordered btn-purple tooltip-animation btn-xs">
-                        <i class="fa fa-bars"></i>
-                    </a>
+                  <a href="{{object.id}}" class="btn btn-icon btn-bordered btn-warning btn-xs">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                </td>
+                <td>
+                  <a href="{{object.id}}/delete" class="btn btn-icon btn-bordered btn-danger btn-xs">
+                    <i class="fa fa-trash"></i>
+                  </a>
                 </td>
                 {% for key, value in object.items %}
                   {% if key != "id" %}
                     <td>{{ value|default:"" }}</td>
                   {% endif %}
                 {% endfor %}
-                <td class="text-center">
-                    <a href="{{object.id}}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-warning btn-xs">
-                        <i class="fa fa-address-card"></i>
-                    </a>
-                </td>        
               </tr>
             {% endfor %}
             </tbody>
@@ -77,11 +73,5 @@
 
 {% block js %}
     <script src='{% static "assets/pages/jquery.toastr.js" %}'></script>
-    <script src='{% static "plugins/tooltipster/tooltipster.bundle.min.js" %}'></script>
-    {% include 'tools/js_datatable.html' %}
-    <script>
-    $('.tooltip-animation').tooltipster({
-        animation: 'grow'
-    });      
-    </script>
+    {% include 'tools/js_datatable_print_excel_titulo.html' %}
 {% endblock %}
