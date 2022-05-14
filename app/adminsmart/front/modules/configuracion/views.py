@@ -8,12 +8,16 @@ from ..base import AdminModuleView
 
 from .buttons import MODULE_BUTTONS
 
+MODULE = {
+	'name': "Configuración",
+	'path': "front:configuracion:index"
+}
 
 class IndexView(AdminModuleView):
 
 	""" Vista de configuracion """
 
-	MODULE_NAME = "Configuracion"
+	MODULE = MODULE
 	MODULE_HANDLER = ""
 	template_name = 'configuracion/index.html'
 
@@ -38,12 +42,13 @@ class ListView(AdminModuleView):
 
 	""" Vista de listado de cuentas, titulos y metodos """
 
-	MODULE_NAME = "Configuracion"
-	template_name = 'configuracion/list-objects.html'	
+	MODULE = MODULE
 	MODULE_BUTTONS = MODULE_BUTTONS
+	template_name = 'configuracion/list-objects.html'	
 
 	def get_context_data(self, **kwargs):
 		self.MODULE_HANDLER = kwargs['naturaleza']
+		self.SUBMODULE = {'name': kwargs['naturaleza']}
 		context = super().get_context_data(**kwargs)
 		context.update({"naturaleza": self.MODULE_HANDLER})
 		return context

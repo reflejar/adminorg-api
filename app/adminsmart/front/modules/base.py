@@ -26,8 +26,10 @@ class BaseFrontView(generic.TemplateView):
 		context = super().get_context_data(**kwargs)
 		context.update({
 			'comunidad': self.comunidad,
-			'module_name': self.MODULE_NAME,
+			'module': self.MODULE,
 		})
+		if getattr(self, "SUBMODULE", False):
+			context.update({'submodule': self.SUBMODULE})
 		return context
 
 
@@ -232,7 +234,7 @@ class AdminEstadoView(BaseAdminView):
 				'saldo': saldo
 			}) 
 
-		return cuenta
+		return list(reversed(cuenta))
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
