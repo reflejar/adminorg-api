@@ -19,15 +19,14 @@ class BaseFrontView(generic.TemplateView):
 
 	def dispatch(self, request, *args, **kwargs):
 		self.comunidad = self.request.user.perfil_set.first().comunidad
-		self.cuenta = Cuenta.objects.get(id=kwargs['pk']) if 'pk' in kwargs.keys() else None
+		self.cuenta = Cuenta.objects.get(id=kwargs['cuenta_pk']) if 'cuenta_pk' in kwargs.keys() else None
 		return super(BaseFrontView, self).dispatch(request, *args, **kwargs)	
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context.update({
-			'comunidad': self.comunidad,
-			'module': self.MODULE,
-		})
+		context.update({'comunidad': self.comunidad})
+		if getattr(self, "MODULE", False):
+			context.update({'module': self.MODULE})
 		if getattr(self, "SUBMODULE", False):
 			context.update({'submodule': self.SUBMODULE})
 		return context
@@ -195,6 +194,7 @@ class AdminEstadoView(BaseAdminView):
 			formatted_number = str(o.documento.receipt.formatted_number)
 			saldo = o.monto - pago_capital + interes - descuento
 			deudas.append({
+				'cuenta_id': o.cuenta.id,
 				'documento_id': o.documento.id,
 				'fecha': o.fecha,
 				'fecha_anulacion': o.documento.fecha_anulacion,
@@ -225,6 +225,7 @@ class AdminEstadoView(BaseAdminView):
 			# 	total = sum([o.valor for o in d.operaciones.all() if o.cuenta.titulo in obj.grupo])
 			saldo += total
 			cuenta.append({
+				'cuenta_id': d.destinatario.id,
 				'documento_id': d.id,
 				'fecha': d.fecha_operacion,
 				'fecha_anulacion': d.fecha_anulacion,
@@ -244,3 +245,14 @@ class AdminEstadoView(BaseAdminView):
 class SocioFrontView(BaseFrontView):
 
 	""" Base Socio Front """
+
+
+class BlankView(AdminModuleView):
+
+	""" Vista blank """
+
+	MODULE = {
+		'name': "Plantilla",
+		'path': 'front:index'
+	}
+	template_name = "layout.html"

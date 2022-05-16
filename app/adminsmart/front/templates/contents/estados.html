@@ -5,9 +5,8 @@
 {% load staticfiles %}
 
 {% block css %}
-  <link rel="stylesheet" href='{% static "plugins/datatables/jquery.dataTables.min.css" %}'>
-  <link rel="stylesheet" href='{% static "plugins/datatables/buttons.bootstrap.min.css" %}'>
-  <link rel="stylesheet" href='{% static "plugins/datatables/dataTables.bootstrap.min.css" %}'>
+  {% include 'tools/css/datatable.html' %}
+  {% include 'tools/css/tooltipster.html' %}
 {% endblock %}
 
 {% block contenido %}
@@ -25,27 +24,14 @@
               <tr>
                 <th width="20"></th>
                 {% for title in titles %}
-                  {% if title != "documento_id" %}
+                  {% if not title in "documento_id,cuenta_id" %}
                     <th>{{title|to_space|capfirst}}</th>
                   {% endif %}
                 {% endfor %}
               </tr>
             </thead>
             <tbody>
-            {% for object in objects %}
-              <tr>
-                <td class="text-center">
-                  <a href="{{object.id}}/comprobante" class="btn btn-icon btn-bordered btn-info btn-xs">
-                    <i class="fa fa-file"></i>
-                  </a>
-                </td>
-                {% for key, value in object.items %}
-                  {% if key != "documento_id" %}
-                    <td>{{ value|formatter }}</td>
-                  {% endif %}
-                {% endfor %}
-              </tr>
-            {% endfor %}
+              {% block table_body %}{% endblock %}
             </tbody>
           </table>
         </div>
@@ -59,6 +45,6 @@
 
 
 {% block js %}
-    <script src='{% static "assets/pages/jquery.toastr.js" %}'></script>
-    {% include 'tools/js_datatable_print_excel_titulo.html' %}
+    {% include 'tools/js/datatable.html' %}
+    {% include 'tools/js/tooltipster.html' %}
 {% endblock %}

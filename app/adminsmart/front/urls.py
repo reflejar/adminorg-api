@@ -1,24 +1,31 @@
 from django.urls import include, path
 
-from .index import index
-from .modules.clientes.views import IndexView as ClientesView
+from .modules.base import BlankView
+from . import views
 
 urlpatterns = [
 
 	# Front door
-    path('', index, name='index'),
-	path('home/', ClientesView.as_view(), name='home'),
+    path('', views.index, name='index'),
+
+	# Generic Views
+	path('pdf/<int:pk>/', views.PDFViewer.as_view(), name='pdf-viewer'),
+
+	# System App Views
+	path('home/', BlankView.as_view(), name='home'),
 	path('cuentas-a-cobrar/', include(
 		('adminsmart.front.modules.clientes.urls', 'clientes'), namespace='clientes')
 	),
-	path('cuentas-a-pagar/', ClientesView.as_view(), name='proveedores'),
-	path('tesoreria/', include(
-		('adminsmart.front.modules.tesoreria.urls', 'tesoreria'), namespace='tesoreria')
-	),
-	path('contabilidad/', ClientesView.as_view(), name='contabilidad'),
-	path('informes/', ClientesView.as_view(), name='informes'),
+	path('cuentas-a-pagar/', BlankView.as_view(), name='proveedores'),
+	path('tesoreria/', BlankView.as_view(), name='tesoreria'),
+	path('contabilidad/', BlankView.as_view(), name='contabilidad'),
+	path('informes/', BlankView.as_view(), name='informes'),
 	path('configuracion/', include(
 		('adminsmart.front.modules.configuracion.urls', 'configuracion'), namespace='configuracion')
 	),
+
+	# Others
+	path('perfil/', BlankView.as_view(), name='perfil'),
+	path('biblioteca/', BlankView.as_view(), name='biblioteca'),
 
 ]

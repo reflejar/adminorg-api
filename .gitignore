@@ -268,7 +268,7 @@ tags
 
 ### Project template
 
-django/media/
+app/media/
 
 .pytest_cache/
 

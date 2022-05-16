@@ -129,9 +129,7 @@ class OperacionAnalisis:
 		else:
 			self.df = df
 
-		self.df = self.df.drop_duplicates()			
-		
-		self.df = self.df.drop_duplicates()			
+		self.df = self.df.drop_duplicates()					
 		
 	def generate_groups(self):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []

@@ -4,9 +4,8 @@
 {% load staticfiles %}
 
 {% block css %}
-  <link rel="stylesheet" href='{% static "plugins/datatables/jquery.dataTables.min.css" %}'>
-  <link rel="stylesheet" href='{% static "plugins/datatables/buttons.bootstrap.min.css" %}'>
-  <link rel="stylesheet" href='{% static "plugins/datatables/dataTables.bootstrap.min.css" %}'>
+  {% include 'tools/css/datatable.html' %}
+  {% include 'tools/css/tooltipster.html' %}
 {% endblock %}
 
 {% block contenido %}
@@ -31,7 +30,6 @@
             <thead>
               <tr>
                 <th width="20"></th>
-                <th width="20"></th>
                 {% for title in titles %}
                   {% if title != "id" %}
                     <th>{{title|to_space|capfirst}}</th>
@@ -42,13 +40,11 @@
             <tbody>
             {% for object in objects %}
               <tr>
-                <td class="text-center">
-                  <a href="{{object.id}}" class="btn btn-icon btn-bordered btn-warning btn-xs">
-                    <i class="fa fa-pencil"></i>
-                  </a>
-                </td>
                 <td>
-                  <a href="{{object.id}}/delete" class="btn btn-icon btn-bordered btn-danger btn-xs">
+                  <a href="{{object.id}}/edit" title="Editar" class="btn btn-icon btn-bordered btn-warning tooltip-animation btn-xs">
+                    <i class="fa fa-pencil"></i>
+                  </a>                  
+                  <a href="{{object.id}}/delete" title="Eliminar/Desactivar" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
                     <i class="fa fa-trash"></i>
                   </a>
                 </td>
@@ -72,6 +68,6 @@
 
 
 {% block js %}
-    <script src='{% static "assets/pages/jquery.toastr.js" %}'></script>
-    {% include 'tools/js_datatable_print_excel_titulo.html' %}
+    {% include 'tools/js/datatable-print-excel-titulo.html' %}
+    {% include 'tools/js/tooltipster.html' %}
 {% endblock %}

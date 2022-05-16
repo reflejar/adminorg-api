@@ -1,0 +1,26 @@
+{% extends 'contents/estados.html' %}
+{% load to_space %}
+{% load formatter %}
+{% load humanize %}
+{% load staticfiles %}
+
+{% block table_body %}
+
+    {% for object in objects %}
+        <tr>
+        <td class="text-center">
+            <a href="{% url 'front:pdf-viewer' pk=object.documento_id %}" target="_blank" title="Ver PDF" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
+            <i class="fa fa-file-pdf-o"></i>
+            </a>
+            <a href="{% url 'front:clientes:cbte-edit' cuenta_pk=object.cuenta_id tipo_cbte='factura' pk=object.documento_id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
+            <i class="fa fa-eye"></i>
+            </a>                  
+        </td>
+        {% for key, value in object.items %}
+            {% if not key in "documento_id,cuenta_id" %}
+            <td>{{ value|formatter }}</td>
+            {% endif %}
+        {% endfor %}
+        </tr>
+    {% endfor %}
+{% endblock %}

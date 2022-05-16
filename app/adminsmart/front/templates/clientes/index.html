@@ -1,0 +1,38 @@
+{% extends 'contents/list-objects.html' %}
+{% load to_space %}
+{% load humanize %}
+{% load staticfiles %}
+
+{% block table_body %}
+  {% for object in objects %}
+    <tr>
+      <td class="text-center">
+          <a href="{% url 'front:clientes:cuenta' pk=object.id %}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-primary btn-xs">
+              <i class="fa fa-address-card"></i>
+          </a>                  
+          <a href="{% url 'front:clientes:estado-deudas' cuenta_pk=object.id %}" title="Detalle de deudas" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
+              <i class="fa fa-money"></i>
+          </a>
+          <a href="{% url 'front:clientes:estado-cuenta' cuenta_pk=object.id %}" title="Cuenta histórica" class="btn btn-icon btn-bordered btn-purple tooltip-animation btn-xs">
+              <i class="fa fa-bars"></i>
+          </a>
+      </td>
+      {% for key, value in object.items %}
+        {% if key != "id" %}
+          <td>{{ value|default:"" }}</td>
+        {% endif %}
+      {% endfor %}                     
+        <td class="text-center">
+          <a href="{% url 'front:clientes:cbte-create' cuenta_pk=object.id tipo_cbte='factura' %}" title="Hacer factura" class="btn btn-icon btn-bordered tooltip-animation btn-success btn-xs">
+              + F
+          </a>
+          <a href="{% url 'front:clientes:cbte-create' cuenta_pk=object.id tipo_cbte='nota-credito' %}" title="Hacer nota de crédito" class="btn btn-icon btn-bordered tooltip-animation btn-warning btn-xs">
+              +NC
+          </a>                    
+          <a href="{% url 'front:clientes:cbte-create' cuenta_pk=object.id tipo_cbte='recibo' %}" title="Hacer recibo" class="btn btn-icon btn-bordered tooltip-animation btn-danger btn-xs">
+              + R
+          </a>
+      </td>        
+    </tr>
+  {% endfor %}
+{% endblock %}

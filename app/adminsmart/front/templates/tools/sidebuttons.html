@@ -2,10 +2,20 @@
     <div class="ribbon ribbon-success">Menu {{ module.name }}</div>
     <p class="text-muted m-b-10 font-14"></p>
     {% for button in sidebuttons %}
-        {% if button.url %}
-            <a class="btn btn-block btn-bordered btn-{%if button.url in request.path %}primary{%else%}default{%endif%}" href="{{button.url}}">{{button.label}}</a>
+        {% if button.path %}
+            <a 
+                {%if button.parameter %}
+                    {% url button.path button.parameter as button_path %}
+                {% else %}
+                    {% url button.path as button_path %}
+                {% endif %}
+                href="{{button_path}}"
+                class="btn btn-block btn-bordered btn-{%if button_path in request.path %}primary{%else%}default{%endif%}"  
+                >
+                {{button.label}}
+            </a>
         {% else %}
-            <br>
+            <hr />
         {% endif %}
     {% endfor %}
     <br>

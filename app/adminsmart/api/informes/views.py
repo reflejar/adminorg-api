@@ -97,6 +97,8 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 				nombres=self.get_nombres(), 
 				analisis_config=analisis_config
 			)
+		xlsx = analisis.get_excel()
+		return HttpResponse("OK")
 		df = analisis.get_df(raw_data=True)
 		with BytesIO() as b:
 			# Use the StringIO object as the filehandle.

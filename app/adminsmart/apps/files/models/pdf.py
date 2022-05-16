@@ -40,22 +40,25 @@ class PDF(BaseModel):
 
 	def serve(self):
 		if not self.location:
-			file = []
-			completed = []
-			# html_string = zlib.decompress(self.ciphertext)
-			context = {'pdf': json.loads(self.context)}
-			html_string = render_to_string(self.template, context)
-			html = HTML(string=html_string, base_url='http://localhost:8000/')
-			pdf = html.render()
-			completed.append(pdf)
-			for p in pdf.pages:
-				file.append(p)
-
-			pdf = completed[0].copy(file).write_pdf()
+			pdf = self.prepare_pages().write_pdf()
 			file_name = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(30)]) + ".pdf"
 			self.location = SimpleUploadedFile(file_name, pdf, content_type='application/pdf')
 			self.save()
 		return self.location
+
+	def prepare_pages(self):
+		file = []
+		completed = []
+		# html_string = zlib.decompress(self.ciphertext)
+		context = {'pdf': json.loads(self.context)}
+		html_string = render_to_string(self.template, context)
+		html = HTML(string=html_string, base_url='http://localhost:8000/')
+		pdf = html.render()
+		completed.append(pdf)
+		for p in pdf.pages:
+			file.append(p)
+		return completed[0].copy(file)
+
 
 	def remove(self):
 		self.location.delete(False)
