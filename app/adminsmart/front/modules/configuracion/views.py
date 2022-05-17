@@ -4,13 +4,13 @@ from adminsmart.apps.core.models import (
 	Titulo
 )
 
-from ..base import AdminModuleView
+from ..base import AdminListObjectsView
 
 from . import config
 
 
 
-class IndexView(AdminModuleView):
+class IndexView(AdminListObjectsView):
 
 	""" Vista de configuracion """
 
@@ -35,7 +35,7 @@ class IndexView(AdminModuleView):
 		return context
 
 
-class ListView(AdminModuleView):
+class ListView(AdminListObjectsView):
 
 	""" Vista de listado de cuentas, titulos y metodos """
 

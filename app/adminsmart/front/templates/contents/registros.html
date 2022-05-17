@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+{% load staticfiles %}
+{% load add_attr %}
+
+{% block css %}
+  {% include 'tools/css/datatable.html' %}
+{% endblock %}
+
+{% block contenido %}
+<div class="row">
+  <div class="col-md-9">
+    <div class="card-box">
+      {% include 'tools/paginator.html' %}
+      <div class="table-responsive">
+        
+      </div>
+      {% include 'tools/paginator.html' %}
+    </div>
+</div>
+    <div class="col-md-3">
+      <div class="card-box ribbon-box">
+        <div class="ribbon ribbon-purple">Filtrar por</div>
+    
+        <form action="" method="GET">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for field in filter.form %}
+                        <p> {{field.label_tag}} </p>
+                        <p>{{ field|add_attr:"class:form-control"}}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-8">
+                    <button class="btn btn-purple btn-block" type="submit">Filtrar</button>
+                </div>
+            </div>
+    
+        </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+    {% include 'tools/js/datatable-print-excel.html' %}
+{% endblock %}

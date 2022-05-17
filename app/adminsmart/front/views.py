@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views import generic
 
 from adminsmart.apps.core.models import Documento
+from .tools import UserCommunityPermissions, UserObjectCommunityPermissions
 
 DISPATCHER = {
 	'superuser': settings.ADMIN_URL,
@@ -25,7 +26,11 @@ def index(request):
 	return HttpResponseRedirect(DISPATCHER[group])
 
 
-class PDFViewer(generic.DetailView):
+class PDFViewer(
+		UserCommunityPermissions, 
+		UserObjectCommunityPermissions, 
+		generic.DetailView
+	):
 	
 	model = Documento
 

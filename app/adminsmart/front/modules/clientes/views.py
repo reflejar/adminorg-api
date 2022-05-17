@@ -1,11 +1,12 @@
 from ..base import (
-	AdminModuleView,
-	AdminEstadoView
+	AdminListObjectsView,
+	AdminEstadoView,
+	AdminRegistroView
 )
 
 from . import config
 
-class IndexView(AdminModuleView):
+class IndexView(AdminListObjectsView):
 
 	""" Vista de clientes """
 
@@ -17,7 +18,7 @@ class IndexView(AdminModuleView):
 	
 class EstadoDeudasView(AdminEstadoView):
 
-	""" Vista de clientes """
+	""" Vista de estado de deudas """
 
 	MODULE = config.MODULE
 	SUBMODULE = {'name': 'Detalle de deudas'}
@@ -27,10 +28,20 @@ class EstadoDeudasView(AdminEstadoView):
 
 class EstadoCuentaView(AdminEstadoView):
 
-	""" Vista de clientes """
+	""" Vista de estado de cuenta """
 
 	MODULE = config.MODULE
 	SUBMODULE = {'name': 'Cuenta histórica'}
 	MODULE_HANDLER = "estado_cuenta"
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	template_name = f'{config.TEMPLATE_FOLDER}/estados.html'			
+
+
+class RegistroView(AdminRegistroView):
+
+	""" Vista de registro de comprobantes """
+
+	MODULE = config.MODULE
+	SUBMODULE = {'name': 'Registro de comprobantes'}
+	MODULE_BUTTONS = config.MODULE_BUTTONS
+	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'

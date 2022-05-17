@@ -10,10 +10,10 @@
           <a href="{% url 'front:clientes:cuenta' pk=object.id %}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-primary btn-xs">
               <i class="fa fa-address-card"></i>
           </a>                  
-          <a href="{% url 'front:clientes:estado-deudas' cuenta_pk=object.id %}" title="Detalle de deudas" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
+          <a href="{% url 'front:clientes:estado-deudas' object.id %}" title="Detalle de deudas" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
               <i class="fa fa-money"></i>
           </a>
-          <a href="{% url 'front:clientes:estado-cuenta' cuenta_pk=object.id %}" title="Cuenta histórica" class="btn btn-icon btn-bordered btn-purple tooltip-animation btn-xs">
+          <a href="{% url 'front:clientes:estado-cuenta' object.id %}" title="Cuenta histórica" class="btn btn-icon btn-bordered btn-purple tooltip-animation btn-xs">
               <i class="fa fa-bars"></i>
           </a>
       </td>

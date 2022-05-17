@@ -1,26 +1,32 @@
 from itertools import groupby
 from django.db.models import F
-import hashlib
 from django.views import generic
 from django.core.cache import cache
+from django.shortcuts import get_object_or_404 
+from django.core.paginator import Paginator
 
 from adminsmart.apps.core.models import (
 	Cuenta,
 	Metodo,
-	Titulo
+	Titulo,
+	Documento
 )
 
-class BaseFrontView(generic.TemplateView):
+from adminsmart.apps.core.filters import (
+	DocumentoFilter
+)
+
+from ..tools import (
+	UserCommunityPermissions,
+	UserObjectCommunityPermissions
+)
+
+class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
 
 	""" Base Front """
 	
 	template_name = 'layout.html'
 	paginate_by = 10
-
-	def dispatch(self, request, *args, **kwargs):
-		self.comunidad = self.request.user.perfil_set.first().comunidad
-		self.cuenta = Cuenta.objects.get(id=kwargs['cuenta_pk']) if 'cuenta_pk' in kwargs.keys() else None
-		return super(BaseFrontView, self).dispatch(request, *args, **kwargs)	
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -56,7 +62,7 @@ class BaseAdminView(BaseFrontView):
 		return context
 
 
-class AdminModuleView(BaseAdminView):
+class AdminListObjectsView(BaseAdminView):
 
 	""" Base obtencion de objetos de los modulos """
 
@@ -177,16 +183,20 @@ class AdminModuleView(BaseAdminView):
 	def get_all_grupo(self): return []
 
 
-class AdminEstadoView(BaseAdminView):
+class AdminEstadoView(
+		BaseAdminView, 
+		UserObjectCommunityPermissions, 
+		generic.detail.SingleObjectMixin
+	):
 
 	""" Base obtencion de estados de los modulos """
 	
-	template_name = 'contents/estados.html'		
+	template_name = 'contents/estados.html'	
 
 	def get_all_estado_deuda(self):	
 		""" PROBLEMA A SOLUCIONAR: LA ITERACION"""
 		deudas = []
-		for o in self.cuenta.estado_deuda():
+		for o in self.object.estado_deuda():
 			pago_capital = o.pago_capital()
 			interes = o.interes()
 			descuento = o.descuento()
@@ -214,11 +224,10 @@ class AdminEstadoView(BaseAdminView):
 	def get_all_estado_cuenta(self):	
 		cuenta = []
 		saldo = 0
-		for d in self.cuenta.estado_cuenta():
-			obj = self.cuenta
+		for d in self.object.estado_cuenta():
 			receipt_type = str(d.receipt.receipt_type)
 			formatted_number = str(d.receipt.formatted_number)
-			total = sum([o.valor for o in d.operaciones.all() if o.cuenta in obj.grupo])
+			total = sum([o.valor for o in d.operaciones.all() if o.cuenta in self.object.grupo])
 			# if isinstance(obj, Cuenta):
 			# 	total = sum([o.valor for o in d.operaciones.all() if o.cuenta in obj.grupo])
 			# else:
@@ -237,17 +246,59 @@ class AdminEstadoView(BaseAdminView):
 
 		return list(reversed(cuenta))
 
+	def get_object(self):
+		return get_object_or_404(
+			Cuenta.objects.filter(comunidad=self.comunidad),
+			pk=self.kwargs['pk']
+		)
+
 	def get_context_data(self, **kwargs):
+		self.object = self.get_object()
 		context = super().get_context_data(**kwargs)
-		context.update({'cuenta': self.cuenta})
+		context.update({'cuenta': self.object})
 		return context		
+
+class AdminRegistroView(BaseAdminView, generic.ListView):
+
+	""" Base registros de comprobantes """
+	
+	model = Documento
+	filterset_class = DocumentoFilter
+	paginate_by = 100
+	template_name = 'contents/registros.html'	
+
+
+	def get_queryset(self, **kwargs):
+		any_filters = any(self.request.GET.values())
+		if any_filters:
+			datos = self.model.objects.filter(comunidad=self.comunidad, **kwargs).order_by('-receipt__issued_date')
+		else:
+			datos = self.model.objects.none()
+		self.filter = self.filterset_class(self.request.GET, queryset=datos)
+		return self.filter.qs
+
+	def get_context_data(self, **kwargs):
+		self.object_list = self.get_queryset()
+		context = super().get_context_data(**kwargs)
+		context['filter'] = self.filter
+		datos = self.filter.qs
+		if datos or self.request.GET.get('page'):
+			paginador = Paginator(datos, self.paginate_by)
+			pagina = self.request.GET.get('page')
+			context['lista'] = paginador.get_page(pagina)
+		else:
+			context['is_paginated'] = False
+			context['lista'] = datos
+		return context
+
+
 
 class SocioFrontView(BaseFrontView):
 
 	""" Base Socio Front """
 
 
-class BlankView(AdminModuleView):
+class BlankView(AdminListObjectsView):
 
 	""" Vista blank """
 
