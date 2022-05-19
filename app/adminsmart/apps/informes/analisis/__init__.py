@@ -21,7 +21,7 @@ class OperacionAnalisis:
 		'cuenta__titulo__nombre': 'TITULO_NOMBRE',
 		'cuenta__titulo__numero': 'TITULO_NUMERO',
 		'vinculo': 'VINCULO_ID',
-		'documento__destinatario': "COMPROBANTE_ID",
+		'documento__destinatario': "COMPROBANTE_DESTINATARIO_ID",
 		'detalle': 'DETALLE',
 		'documento__descripcion': 'DESCRIPCION',
 		'valor': 'VALOR',
@@ -52,11 +52,11 @@ class OperacionAnalisis:
 			self.df = pd.merge(self.df, self.nombres, on=['CUENTA_ID', 'NATURALEZA'])
 
 	def prepare_cuenta_vinculada(self):
-		self.nombres['COMPROBANTE_ID'] = self.nombres['CUENTA_ID']
+		self.nombres['COMPROBANTE_DESTINATARIO_ID'] = self.nombres['CUENTA_ID']
 		self.nombres['CUENTA_VINCULADA'] = self.nombres['NOMBRE']
-		self.nombres = self.nombres[["COMPROBANTE_ID", 'CUENTA_VINCULADA']]
-		self.df['COMPROBANTE_ID'] = self.df['COMPROBANTE_ID'].fillna(0)
-		self.df = pd.merge(self.df, self.nombres, on=['COMPROBANTE_ID'])
+		self.nombres = self.nombres[["COMPROBANTE_DESTINATARIO_ID", 'CUENTA_VINCULADA']]
+		self.df['COMPROBANTE_DESTINATARIO_ID'] = self.df['COMPROBANTE_DESTINATARIO_ID'].fillna(0)
+		self.df = pd.merge(self.df, self.nombres, on=['COMPROBANTE_DESTINATARIO_ID'])
 
 	def prepare_conceptos(self):
 		# Generacion del concepto
@@ -120,7 +120,7 @@ class OperacionAnalisis:
 			if 'concepto' in self.group_by + self.column_by or len(self.keep) == 0:
 				self.prepare_conceptos()
 
-			self.prepare_cuenta_vinculada()
+			# self.prepare_cuenta_vinculada()
 
 			self.filter_query()
 
@@ -129,7 +129,7 @@ class OperacionAnalisis:
 		else:
 			self.df = df
 
-		self.df = self.df.drop_duplicates()					
+		self.df = self.df.drop_duplicates()						
 		
 	def generate_groups(self):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []
@@ -202,8 +202,8 @@ class OperacionAnalisis:
 		if not len(self.df):
 			df_to_file = pd.DataFrame()
 		if not self.keep:
+			self.df.to_excel("informe.xlsx")
 			df_to_file = self.df
-			df_to_file.to_excel("informe.xlsx")
 
 		if not isinstance(df_to_file, pd.DataFrame):	
 			groups = self.generate_groups()

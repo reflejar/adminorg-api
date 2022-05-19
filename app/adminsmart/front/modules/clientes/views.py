@@ -42,6 +42,6 @@ class RegistroView(AdminRegistroView):
 	""" Vista de registro de comprobantes """
 
 	MODULE = config.MODULE
-	SUBMODULE = {'name': 'Registro de comprobantes'}
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'
+	INITAL_FILTERS = {'destinatario__naturaleza__nombre':'cliente'}

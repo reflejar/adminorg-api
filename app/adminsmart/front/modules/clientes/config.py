@@ -16,7 +16,7 @@ MODULE_BUTTONS = [
     },
     {
         "path": "front:clientes:pre-operaciones",
-        "label": "Pre conceptos"
+        "label": "+ Cargas/Cobros"
     },
     {
         "path": "front:clientes:cbte-masivo",

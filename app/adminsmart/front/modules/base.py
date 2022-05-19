@@ -266,12 +266,14 @@ class AdminRegistroView(BaseAdminView, generic.ListView):
 	filterset_class = DocumentoFilter
 	paginate_by = 100
 	template_name = 'contents/registros.html'	
+	INITAL_FILTERS = {}
+	SUBMODULE = {'name': 'Registro de comprobantes'}
 
 
 	def get_queryset(self, **kwargs):
 		any_filters = any(self.request.GET.values())
 		if any_filters:
-			datos = self.model.objects.filter(comunidad=self.comunidad, **kwargs).order_by('-receipt__issued_date')
+			datos = self.model.objects.filter(comunidad=self.comunidad, **self.INITAL_FILTERS).order_by('-receipt__issued_date')
 		else:
 			datos = self.model.objects.none()
 		self.filter = self.filterset_class(self.request.GET, queryset=datos)
