@@ -10,7 +10,7 @@
           <a href="{% url 'front:tesoreria:cuenta' pk=object.id %}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-primary btn-xs">
               <i class="fa fa-address-card"></i>
           </a>                  
-          <a href="{% url 'front:tesoreria:estado-deudas' object.id %}" title="Stock de disponibilidades" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
+          <a {% if object.tipo == "stockeable" %}href="{% url 'front:tesoreria:estado-deudas' object.id %}"{% else %}disabled{% endif %} title="Stock de disponibilidades" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
               <i class="fa fa-money"></i>
           </a>
           <a href="{% url 'front:tesoreria:estado-cuenta' object.id %}" title="Movimientos" class="btn btn-icon btn-bordered btn-purple tooltip-animation btn-xs">

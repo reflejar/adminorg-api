@@ -24,7 +24,7 @@ class IndexView(AdminListObjectsView):
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"	
 	filterset_class = InformesFilter
 
-	def get_queryset(self):
+	def get_operaciones(self):
 		try:
 			datos = Operacion.objects.filter(
 				comunidad=self.comunidad,
@@ -52,7 +52,7 @@ class IndexView(AdminListObjectsView):
 
 
 	def get_all_titulo(self):
-		queryset = self.get_queryset()
+		queryset = self.get_operaciones()
 		objects = super().get_all_titulo()
 		for o in objects:
 			o['debe'] = queryset.filter(cuenta__titulo_id=o['id'], valor__gte=0).aggregate(debe=Sum('valor'))['debe'] or \
@@ -63,6 +63,14 @@ class IndexView(AdminListObjectsView):
 			o['saldo'] = o['debe'] - o['haber']
 		return objects
 
+class RegistroView(AdminRegistroView):
+
+	""" Vista de registro de comprobantes """
+
+	MODULE = config.MODULE
+	MODULE_BUTTONS = config.MODULE_BUTTONS
+	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'		
+	ORDER_BY = '-receipt__receipt_number'
 class MayoresView(AdminRegistroView):
 
 	""" Base registros de comprobantes """

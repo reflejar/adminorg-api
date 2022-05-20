@@ -19,6 +19,14 @@ MODULE_BUTTONS = [
         "label": "+ Asiento"
     },
     {
+        "path": "",
+        "label": "---"
+    },    
+    {
+        "path": "front:contabilidad:registros",
+        "label": "Registro de asientos"
+    },        
+    {
         "path": "front:contabilidad:mayores",
         "label": "Mayores"
     },       

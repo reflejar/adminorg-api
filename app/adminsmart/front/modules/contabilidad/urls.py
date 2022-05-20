@@ -18,6 +18,7 @@ urlpatterns = [
 	path('cbte/asiento/<int:pk>', BlankView.as_view(), name='cbte-edit'),
 	
 	# Registros
+	path('registros/', RegistroView.as_view(), name='registros'),
 	path('mayores/', MayoresView.as_view(), name='mayores'),	
 
 ]

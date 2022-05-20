@@ -24,7 +24,7 @@ MODULE_BUTTONS = [
     },
     {
         "path": "front:tesoreria:registros",
-        "label": "Registro de comprobantes"
+        "label": "Registro de transferencias"
     },           
 
 ]
