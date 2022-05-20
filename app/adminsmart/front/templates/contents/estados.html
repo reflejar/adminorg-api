@@ -19,19 +19,37 @@
       <div class="col-md-12">
         <div class="table-responsive" >
 
-          <table class="table table-striped anopa display nowrap" style="width:100%">
+          <table class="table table-striped table-condensed anopa display nowrap" style="width:100%">
             <thead>
               <tr>
                 <th width="20"></th>
                 {% for title in titles %}
-                  {% if not title in "documento_id,cuenta_id" %}
+                  {% if not title in "documento_id,cuenta_id,pdf" %}
                     <th>{{title|to_space|capfirst}}</th>
                   {% endif %}
                 {% endfor %}
               </tr>
             </thead>
             <tbody>
-              {% block table_body %}{% endblock %}
+              {% block table_body %}
+                {% for object in objects %}
+                    <tr>
+                    <td class="text-center">
+                        <a {% if object.pdf %}href="{% url 'front:pdf-viewer' pk=object.documento_id %}"{% else %}disabled{% endif %} target="_blank" title="Ver PDF" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
+                        <i class="fa fa-file-pdf-o"></i>
+                        </a>
+                        <a href="{% url edit_url cuenta_pk=object.cuenta_id tipo_cbte='factura' pk=object.documento_id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
+                        <i class="fa fa-eye"></i>
+                        </a>                  
+                    </td>
+                    {% for key, value in object.items %}
+                        {% if not key in "documento_id,cuenta_id,pdf" %}
+                        <td>{{ value|formatter }}</td>
+                        {% endif %}
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+              {% endblock %}
             </tbody>
           </table>
         </div>

@@ -3,7 +3,7 @@ MODULE = {
 	'path': "front:configuracion:index"
 }
 
-TEMPLATE_FOLDER = "configuracion/"
+TEMPLATE_FOLDER = "modules/configuracion/"
 
 MODULE_BUTTONS = [
     {

@@ -10,7 +10,7 @@ urlpatterns = [
 	path('', IndexView.as_view(), name='index'),
 
 	# Estados
-	path('estados/<int:pk>/deuda/', EstadoDeudasView.as_view(), name='estado-deudas'),
+	path('estados/<int:pk>/deuda/', EstadoDeudasView.as_view(), name='estado-deudas'), # Stockeables 
 	path('estados/<int:pk>/cuenta/', EstadoCuentaView.as_view(), name='estado-cuenta'),
 
 	# Cuenta
@@ -18,8 +18,8 @@ urlpatterns = [
 	path('cuenta/edit/<int:pk>/', BlankView.as_view(), name='cuenta'),
 
 	# Comprobantes
-	path('cbte/<cuenta_pk>/<str:tipo_cbte>/', BlankView.as_view(), name='cbte-create'),
-	path('cbte/<cuenta_pk>/<str:tipo_cbte>/<int:pk>', BlankView.as_view(), name='cbte-edit'),
+	path('cbte/transferencia/', BlankView.as_view(), name='cbte-create'),
+	path('cbte/transferencia/<int:pk>', BlankView.as_view(), name='cbte-edit'),
 
 	# Registros
 	path('registros/', RegistroView.as_view(), name='registros'),

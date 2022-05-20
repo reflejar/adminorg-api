@@ -8,12 +8,12 @@ from . import config
 
 class IndexView(AdminListObjectsView):
 
-	""" Vista de clientes """
+	""" Vista de tesoreria """
 
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	MODULE_HANDLER = "cliente"
-	MODULE_FIELD_DISPLAY = ['id', 'apellido_cliente', 'nombre_cliente', 'razon_social']
+	MODULE_HANDLER = "caja"
+	MODULE_FIELD_DISPLAY = ['id', 'nombre', 'tipo']
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"
 	
 class EstadoDeudasView(AdminEstadoView):
@@ -21,22 +21,22 @@ class EstadoDeudasView(AdminEstadoView):
 	""" Vista de estado de deudas """
 
 	MODULE = config.MODULE
-	SUBMODULE = {'name': 'Detalle de deudas'}
+	SUBMODULE = {'name': 'Stock de disponibilidades'}
 	MODULE_HANDLER = "estado_deuda"
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	EDIT_URL = 'front:clientes:cbte-edit'			
-	template_name = f'{config.TEMPLATE_FOLDER}/estados.html'
+	EDIT_URL = 'front:tesoreria:cbte-edit'		
+	template_name = f'{config.TEMPLATE_FOLDER}/estados.html'			
 
 class EstadoCuentaView(AdminEstadoView):
 
 	""" Vista de estado de cuenta """
 
 	MODULE = config.MODULE
-	SUBMODULE = {'name': 'Cuenta histórica'}
+	SUBMODULE = {'name': 'Movimientos'}
 	MODULE_HANDLER = "estado_cuenta"
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	EDIT_URL = 'front:clientes:cbte-edit'		
-	template_name = f'{config.TEMPLATE_FOLDER}/estados.html'	
+	EDIT_URL = 'front:tesoreria:cbte-edit'		
+	template_name = f'{config.TEMPLATE_FOLDER}/estados.html'			
 
 
 class RegistroView(AdminRegistroView):
@@ -46,4 +46,3 @@ class RegistroView(AdminRegistroView):
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'
-	INITAL_FILTERS = {'destinatario__naturaleza__nombre':'cliente'}

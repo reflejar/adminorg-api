@@ -1,0 +1,29 @@
+{% extends 'contents/list-objects.html' %}
+{% load to_space %}
+{% load humanize %}
+{% load staticfiles %}
+
+{% block table_body %}
+  {% for object in objects %}
+    <tr>
+      <td class="text-center">
+          <a href="{% url 'front:tesoreria:cuenta' pk=object.id %}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-primary btn-xs">
+              <i class="fa fa-address-card"></i>
+          </a>                  
+          <a href="{% url 'front:tesoreria:estado-deudas' object.id %}" title="Stock de disponibilidades" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
+              <i class="fa fa-money"></i>
+          </a>
+          <a href="{% url 'front:tesoreria:estado-cuenta' object.id %}" title="Movimientos" class="btn btn-icon btn-bordered btn-purple tooltip-animation btn-xs">
+              <i class="fa fa-bars"></i>
+          </a>
+      </td>
+      {% for key, value in object.items %}
+        {% if key != "id" %}
+          <td>{{ value|default:"" }}</td>
+        {% endif %}
+      {% endfor %}                     
+        <td class="text-center">
+        </td>        
+    </tr>
+  {% endfor %}
+{% endblock %}

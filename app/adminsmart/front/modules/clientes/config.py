@@ -3,7 +3,7 @@ MODULE = {
 	'path': 'front:clientes:index'
 }
 
-TEMPLATE_FOLDER = "clientes/"
+TEMPLATE_FOLDER = "modules/clientes/"
 
 MODULE_BUTTONS = [
     {

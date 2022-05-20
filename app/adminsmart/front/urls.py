@@ -16,9 +16,15 @@ urlpatterns = [
 	path('cuentas-a-cobrar/', include(
 		('adminsmart.front.modules.clientes.urls', 'clientes'), namespace='clientes')
 	),
-	path('cuentas-a-pagar/', BlankView.as_view(), name='proveedores'),
-	path('tesoreria/', BlankView.as_view(), name='tesoreria'),
-	path('contabilidad/', BlankView.as_view(), name='contabilidad'),
+	path('cuentas-a-pagar/', include(
+		('adminsmart.front.modules.proveedores.urls', 'proveedores'), namespace='proveedores')
+	),
+	path('tesoreria/', include(
+		('adminsmart.front.modules.tesoreria.urls', 'tesoreria'), namespace='tesoreria')
+	),
+	path('contabilidad/', include(
+		('adminsmart.front.modules.contabilidad.urls', 'contabilidad'), namespace='contabilidad')
+	),
 	path('informes/', BlankView.as_view(), name='informes'),
 	path('configuracion/', include(
 		('adminsmart.front.modules.configuracion.urls', 'configuracion'), namespace='configuracion')

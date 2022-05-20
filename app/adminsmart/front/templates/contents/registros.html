@@ -39,46 +39,46 @@
       </form>
     </div>    
     <div class="card-box">
-      {% include 'tools/paginator.html' %}
-      <div class="table-responsive">
-
-        <table class="table table-striped table-sm anopa display nowrap" style="width:100%">
-          <thead>
-            <tr>
-              <th width="20"></th>                
-              <th>Tipo</th>
-              <th>Numero</th>
-              <th>Fecha Cbte.</th>
-              <th>Fecha Operación</th>
-              <th>Portador</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% block table_body %}
-              {% for doc in object_list %}
-                <tr>
-                  <td class="text-center">
-                    <a href="{% url 'front:pdf-viewer' pk=doc.id %}" target="_blank" title="Ver PDF" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
-                    <i class="fa fa-file-pdf-o"></i>
-                    </a>
-                    <a href="{% url 'front:clientes:cbte-edit' cuenta_pk=1 tipo_cbte='factura' pk=doc.id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
-                    <i class="fa fa-eye"></i>
-                    </a>                  
-                </td>
-                  <td>{{doc.receipt.receipt_type.description|formatter}}</td>
-                  <td>{{doc.numero|formatter}}</td>
-                  <td>{{doc.receipt.issued_date|formatter}}</td>
-                  <td>{{doc.fecha_operacion|formatter}}</td>
-                  <td>{{doc.destinatario|formatter}}</td>
-                  <td>{{doc.receipt.total_amount|formatter}}</td>
-                </tr>
-              {% endfor %}
-            {% endblock %}
-          </tbody>
-        </table>
-      </div>
-      {% include 'tools/paginator.html' %}
+      {% block table %}
+        {% include 'tools/paginator.html' %}
+        <div class="table-responsive">
+          <table class="table table-striped table-condensed table-sm anopa display nowrap" style="width:100%">
+            <thead>
+              <tr>
+                <th width="20"></th>                
+                <th>Tipo</th>
+                <th>Numero</th>
+                <th>Fecha Cbte.</th>
+                <th>Fecha Operación</th>
+                <th>Portador</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                {% for doc in object_list %}
+                  <tr>
+                    <td class="text-center">
+                      <a {% if doc.pdf %}href="{% url 'front:pdf-viewer' pk=doc.id %}"{% else %}disabled{% endif %} target="_blank" title="Ver PDF" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
+                      <i class="fa fa-file-pdf-o"></i>
+                      </a>
+                      <a href="{% url 'front:clientes:cbte-edit' cuenta_pk=1 tipo_cbte='factura' pk=doc.id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
+                      <i class="fa fa-eye"></i>
+                      </a>                  
+                  </td>
+                    <td>{{doc.receipt.receipt_type.description|formatter}}</td>
+                    <td>{{doc.numero|formatter}}</td>
+                    <td>{{doc.receipt.issued_date|formatter}}</td>
+                    <td>{{doc.fecha_operacion|formatter}}</td>
+                    <td>{{doc.destinatario|formatter}}</td>
+                    <td>{{doc.receipt.total_amount|formatter}}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% include 'tools/paginator.html' %}
+        {% endblock %}
     </div>
 
 

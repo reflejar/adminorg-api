@@ -41,7 +41,7 @@ class ListView(AdminListObjectsView):
 
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	template_name = 'configuracion/list-objects.html'	
+	template_name = f'{config.TEMPLATE_FOLDER}/list-objects.html'	
 
 	def get_context_data(self, **kwargs):
 		self.MODULE_HANDLER = kwargs['naturaleza']

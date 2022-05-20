@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 import numpy as np
 import pandas as pd
@@ -193,7 +194,7 @@ class OperacionAnalisis:
 		self.generate_pivot_table(groups, columns)
 		self.sort_rows_pivot_df()
 		self.sort_columns_pivot_df(columns)
-		
+		return self.pivot_df.reset_index()
 		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
 
 	def get_excel(self):

@@ -69,12 +69,18 @@ class AdminListObjectsView(BaseAdminView):
 	template_name = 'contents/list-objects.html'
 
 	def get_all_titulo(self):
+		default_fields = [
+			'id', 'numero','nombre',
+			'predeterminado_para'
+		]
+		field_display = self.MODULE_FIELD_DISPLAY \
+						if getattr(self, 'MODULE_FIELD_DISPLAY', None) \
+						else default_fields				
 		return list(Titulo.objects.filter(comunidad=self.comunidad)\
 			.order_by("numero")\
 			.annotate(predeterminado_para=F('predeterminado__nombre'))\
 			.values(
-			'id', 'numero','nombre',
-			'predeterminado_para'
+				*field_display
 			))
 		
 	def get_all_caja(self): 
@@ -145,7 +151,15 @@ class AdminListObjectsView(BaseAdminView):
 					))		
 
 	def get_all_proveedor(self): 
+		default_fields = [
+			'id', 'razon_social','apellido_proveedor','nombre_proveedor',
+			'tipo_documento','documento','titulo_contable',
+		]
+		field_display = self.MODULE_FIELD_DISPLAY \
+						if getattr(self, 'MODULE_FIELD_DISPLAY', None) \
+						else default_fields		
 		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
+					.order_by("perfil__razon_social", "perfil__apellido")\
 					.annotate(
 						razon_social=F('perfil__razon_social'),
 						apellido_proveedor=F('perfil__apellido'),
@@ -155,8 +169,7 @@ class AdminListObjectsView(BaseAdminView):
 						titulo_contable=F('titulo__nombre'),						
 					)\
 					.values(
-						'id', 'razon_social','apellido_proveedor','nombre_proveedor',
-						'tipo_documento','documento','titulo_contable',
+						*field_display
 					))		
 
 	def get_all_dominio(self): 
@@ -216,7 +229,8 @@ class AdminEstadoView(
 				'monto': o.monto,
 				'pago_capital': pago_capital,
 				'interes': interes,
-				'saldo': saldo
+				'saldo': saldo,
+				'pdf': o.id if o.documento.pdf else None
 			})
 			
 		return deudas
@@ -241,7 +255,8 @@ class AdminEstadoView(
 				'tipo_comprobante': receipt_type,
 				'numero': formatted_number,
 				'total': total,
-				'saldo': saldo
+				'saldo': saldo,
+				'pdf': d.id if d.pdf else None
 			}) 
 
 		return list(reversed(cuenta))
@@ -255,7 +270,8 @@ class AdminEstadoView(
 	def get_context_data(self, **kwargs):
 		self.object = self.get_object()
 		context = super().get_context_data(**kwargs)
-		context.update({'cuenta': self.object})
+		if getattr(self, 'EDIT_URL', None):
+			context.update({'edit_url': self.EDIT_URL})
 		return context		
 
 class AdminRegistroView(BaseAdminView, generic.ListView):
@@ -268,12 +284,13 @@ class AdminRegistroView(BaseAdminView, generic.ListView):
 	template_name = 'contents/registros.html'	
 	INITAL_FILTERS = {}
 	SUBMODULE = {'name': 'Registro de comprobantes'}
+	ORDER_BY = '-receipt__issued_date'
 
 
 	def get_queryset(self, **kwargs):
 		any_filters = any(self.request.GET.values())
 		if any_filters:
-			datos = self.model.objects.filter(comunidad=self.comunidad, **self.INITAL_FILTERS).order_by('-receipt__issued_date')
+			datos = self.model.objects.filter(comunidad=self.comunidad, **self.INITAL_FILTERS).order_by(self.ORDER_BY)
 		else:
 			datos = self.model.objects.none()
 		self.filter = self.filterset_class(self.request.GET, queryset=datos)
