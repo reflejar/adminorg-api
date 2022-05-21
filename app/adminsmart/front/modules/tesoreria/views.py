@@ -45,4 +45,5 @@ class RegistroView(AdminRegistroView):
 
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
+	INITAL_FILTERS = {'receipt__receipt_type__description':'Transferencia X'}
 	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'
