@@ -1,6 +1,10 @@
-from django.http import Http404
+import tempfile
+import pandas as pd
+from django.http import (
+	Http404,
+	FileResponse
+)
 from django.db.models import Sum
-from django.views import generic
 
 from adminsmart.apps.informes.filter import InformesFilter
 from adminsmart.apps.core.models import Operacion
@@ -69,8 +73,11 @@ class RegistroView(AdminRegistroView):
 
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'		
+	INITAL_FILTERS = {'receipt__receipt_type__description':'Asiento'}
 	ORDER_BY = '-receipt__receipt_number'
+	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'		
+
+	
 class MayoresView(AdminRegistroView):
 
 	""" Base registros de comprobantes """
@@ -78,9 +85,11 @@ class MayoresView(AdminRegistroView):
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	SUBMODULE = {'name': 'Mayores'}
+	ORDER_BY = '-pk'
 	model = Operacion
 	filterset_class = InformesFilter
 	template_name = f'{config.TEMPLATE_FOLDER}/mayores.html'	
-	ORDER_BY = '-pk'
-	# paginate_by = 100000
 
+	def get(self, *args, **kwargs):
+		""" Para la exportación a excel """
+		return super().get(*args, **kwargs)
