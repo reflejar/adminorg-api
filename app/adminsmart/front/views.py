@@ -1,16 +1,24 @@
 from io import BytesIO
 from django.http import FileResponse
+from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
 from django.conf import settings
 from django.http import (
 	FileResponse,
-	HttpResponseRedirect
+	HttpResponseRedirect,
+	Http404
 )
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 
+from adminsmart.apps.utils.models import Comunidad
 from adminsmart.apps.core.models import Documento
-from .tools import UserCommunityPermissions, UserObjectCommunityPermissions
+
+from .tools import (
+	UserCommunityPermissions,
+	UserObjectCommunityPermissions
+)
 
 DISPATCHER = {
 	'superuser': settings.ADMIN_URL,
@@ -39,3 +47,18 @@ class PDFViewer(
 		documento = self.get_object()
 		filename = str(documento)
 		return FileResponse(documento.pdf.serve(), content_type='application/pdf', filename=f"{filename}.pdf")
+
+
+class ChangeCommunity(generic.TemplateView, UserCommunityPermissions):
+	
+	""" Vista para cambiar de comunidad"""
+	
+	http_method_names = ['post']
+
+	def post(self, request, *args, **kwargs):
+		profile = self.request.user.perfil_set.first()
+		community = get_object_or_404(Comunidad.objects.all(), pk=request.POST["community"])
+		if community in profile.comunidades.all():
+			profile.comunidad = community
+			profile.save()
+		return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

@@ -34,4 +34,6 @@ urlpatterns = [
 	path('perfil/', BlankView.as_view(), name='perfil'),
 	path('biblioteca/', BlankView.as_view(), name='biblioteca'),
 
+	path('change-community/', views.ChangeCommunity.as_view(), name='change-community'),
+
 ]
