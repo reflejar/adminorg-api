@@ -10,7 +10,6 @@ Este serializer es de tipo funcion por razones de optimizacion
 """
 
 def InformesModelSerializer(o: Operacion) -> Dict[str, Any]:
-	print(o)
 	return {
 		'fecha': o.fecha,
 		'titulo_numero': o.cuenta.titulo.numero,
