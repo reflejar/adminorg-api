@@ -195,7 +195,6 @@ class OperacionAnalisis:
 		self.sort_rows_pivot_df()
 		self.sort_columns_pivot_df(columns)
 		return self.pivot_df.reset_index()
-		return json.loads(self.pivot_df.reset_index().to_json(orient='split'))
 
 	def get_excel(self):
 		df_to_file = None

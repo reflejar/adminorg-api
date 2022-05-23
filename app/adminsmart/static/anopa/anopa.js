@@ -4,7 +4,7 @@ $(window).load(function() {
 $(function(){
   $('form').submit(function (e) {
       if ($(this).valid()) {
-        $(".se-pre-con").show();
+        $(this).find("button:submit").prop("disabled", true).append(' <i class="fa fa-spin fa-spinner"></i>');
         return true;
       } else {
         e.preventDefault();
