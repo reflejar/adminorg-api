@@ -1,6 +1,8 @@
 import pandas as pd
 from io import BytesIO
 
+from django.views import generic
+
 from django.http import (
 	Http404,
 	HttpResponse
@@ -18,6 +20,7 @@ from adminsmart.apps.core.models import (
 from ..base import (
 	AdminListObjectsView,
 	AdminRegistroView,
+	AdminCUDView
 )
 
 from . import config
@@ -29,7 +32,7 @@ class IndexView(AdminListObjectsView):
 
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	MODULE_HANDLER = "titulo"
+	MODULE_HANDLER = config.MODULE_HANDLER
 	MODULE_FIELD_DISPLAY = ['id', 'numero', 'nombre', 'supertitulo']
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"	
 	filterset_class = InformesFilter
@@ -72,6 +75,17 @@ class IndexView(AdminListObjectsView):
 			o['haber'] = -o['haber']
 			o['saldo'] = o['debe'] - o['haber']
 		return objects
+
+class CUDObjectView(
+		AdminCUDView, 
+		generic.CreateView,
+		generic.UpdateView,
+	):
+
+	MODULE = config.MODULE
+	MODULE_BUTTONS = config.MODULE_BUTTONS
+	MODULE_HANDLER = config.MODULE_HANDLER
+	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	
 
 class RegistroView(AdminRegistroView):
 

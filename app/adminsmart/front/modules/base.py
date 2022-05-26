@@ -4,6 +4,9 @@ from django.views import generic
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404 
 from django.core.paginator import Paginator
+from django.db import transaction
+from django.contrib import messages
+from django.urls import reverse_lazy
 
 from adminsmart.apps.core.models import (
 	Cuenta,
@@ -21,6 +24,12 @@ from ..tools import (
 	UserObjectCommunityPermissions
 )
 
+from .forms import (
+	CuentaForm,
+	TituloForm,
+	MetodoForm
+)
+
 class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
 
 	""" Base Front """
@@ -35,6 +44,10 @@ class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
 			context.update({'module': self.MODULE})
 		if getattr(self, "SUBMODULE", False):
 			context.update({'submodule': self.SUBMODULE})
+		if getattr(self, "MODULE_BUTTONS", False):
+			context.update({'sidebuttons': self.MODULE_BUTTONS})	
+		if getattr(self, "MODULE_HANDLER", False):
+			context.update({'module_handler': self.MODULE_HANDLER})					
 		return context
 
 
@@ -50,12 +63,9 @@ class BaseAdminView(BaseFrontView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		if getattr(self, "MODULE_BUTTONS", False):
-			context.update({'sidebuttons': self.MODULE_BUTTONS})
 		if getattr(self, "MODULE_HANDLER", False):
 			objects = self.get_objects()
 			context.update({
-				'module_handler': self.MODULE_HANDLER,
 				"objects": objects,
 				"titles": objects[0].keys() if objects else []
 			})
@@ -326,3 +336,73 @@ class BlankView(AdminListObjectsView):
 		'path': 'front:index'
 	}
 	template_name = "layout.html"
+
+
+class AdminCUDView(BaseFrontView):
+
+	MODELS = {
+		'cliente': Cuenta,
+		'proveedor': Cuenta,
+		'dominio': Cuenta,
+		'grupo': Cuenta,
+		'caja': Cuenta,
+		'ingreso': Cuenta,
+		'gasto': Cuenta,
+		'titulo': Titulo,
+		'interes': Metodo,
+		'descuento': Metodo
+	}
+
+	FORMS = {
+		'cliente': CuentaForm,
+		'proveedor': CuentaForm,
+		'dominio': CuentaForm,
+		'grupo': CuentaForm,
+		'caja': CuentaForm,
+		'ingreso': CuentaForm,
+		'gasto': CuentaForm,
+		'titulo': TituloForm,
+		'interes': MetodoForm,
+		'descuento': MetodoForm
+	}
+
+	@property
+	def SUBMODULE(self):
+		if 'pk' in self.kwargs.keys():
+			return {'name': f'Editar {self.MODULE_HANDLER}'}
+		return {'name': f'Nuevo {self.MODULE_HANDLER}'}	
+
+	def get_form_class(self):
+		return self.FORMS[self.MODULE_HANDLER]
+
+	def get_form_kwargs(self):
+		kwargs = super().get_form_kwargs()
+		kwargs['context'] = {
+			'comunidad': self.comunidad,
+			'request': self.request,
+			'naturaleza': self.MODULE_HANDLER
+		}
+		return kwargs
+
+	def get_object(self):
+		if not 'pk' in self.kwargs.keys():
+			return None
+		return get_object_or_404(
+			self.MODELS[self.MODULE_HANDLER].objects.filter(comunidad=self.comunidad),
+			pk=self.kwargs['pk']
+		)
+
+	def get_context_data(self, **kwargs):
+		self.object = self.get_object()
+		return super().get_context_data(**kwargs)
+
+	@transaction.atomic
+	def form_valid(self, form):
+		mensaje = "{} guardado con exito".format(self.MODULE_HANDLER)
+		messages.success(self.request, mensaje)
+		return super().form_valid(form)		
+
+	def get_success_url(self, **kwargs):
+		if self.MODULE['path'] != "front:configuracion:index":
+			return reverse_lazy(self.MODULE['path'])	
+		return reverse_lazy('front:configuracion:list', args=(self.MODULE_HANDLER,))		

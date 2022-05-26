@@ -1,7 +1,10 @@
+from django.views import generic
+
 from ..base import (
 	AdminListObjectsView,
 	AdminEstadoView,
-	AdminRegistroView
+	AdminRegistroView,
+	AdminCUDView
 )
 
 from . import config
@@ -12,10 +15,23 @@ class IndexView(AdminListObjectsView):
 
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	MODULE_HANDLER = "caja"
+	MODULE_HANDLER = config.MODULE_HANDLER
 	MODULE_FIELD_DISPLAY = ['id', 'nombre', 'tipo']
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"
 	
+	
+class CUDObjectView(
+		AdminCUDView, 
+		generic.CreateView,
+		generic.UpdateView,
+	):
+
+	MODULE = config.MODULE
+	MODULE_BUTTONS = config.MODULE_BUTTONS
+	MODULE_HANDLER = config.MODULE_HANDLER
+	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	
+
+
 class EstadoDeudasView(AdminEstadoView):
 
 	""" Vista de estado de deudas """
@@ -47,3 +63,4 @@ class RegistroView(AdminRegistroView):
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	INITAL_FILTERS = {'receipt__receipt_type__description':'Transferencia X'}
 	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'
+

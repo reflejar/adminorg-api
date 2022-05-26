@@ -1,6 +1,5 @@
 from io import BytesIO
 from django.http import FileResponse
-from django.urls import reverse
 from django.shortcuts import get_object_or_404
 
 from django.conf import settings

@@ -12,7 +12,6 @@ urlpatterns = [
 	path('pdf/<int:pk>/', views.PDFViewer.as_view(), name='pdf-viewer'),
 
 	# System App Views
-	path('home/', BlankView.as_view(), name='home'),
 	path('cuentas-a-cobrar/', include(
 		('adminsmart.front.modules.clientes.urls', 'clientes'), namespace='clientes')
 	),

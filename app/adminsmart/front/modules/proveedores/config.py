@@ -3,6 +3,8 @@ MODULE = {
 	'path': 'front:proveedores:index'
 }
 
+MODULE_HANDLER = "proveedor"
+
 TEMPLATE_FOLDER = "modules/proveedores/"
 
 MODULE_BUTTONS = [

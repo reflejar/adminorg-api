@@ -236,7 +236,7 @@ LOGIN_URL = '/login/'
 
 # Redireccion cuando el login es correcto.
 LOGIN_REDIRECT_URL = "/"
-USER_ADMIN_LOGIN_REDIRECT = "home/"
+USER_ADMIN_LOGIN_REDIRECT = "informes/"
 USER_SOCIO_LOGIN_REDIRECT = "deudas/"
 
 # Redireccion cuando el logout es correcto.

@@ -3,6 +3,8 @@ MODULE = {
 	'path': 'front:clientes:index'
 }
 
+MODULE_HANDLER = "cliente"
+
 TEMPLATE_FOLDER = "modules/clientes/"
 
 MODULE_BUTTONS = [

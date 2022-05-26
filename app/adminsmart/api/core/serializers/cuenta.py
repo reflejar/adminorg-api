@@ -61,7 +61,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 
 		# Incorporacion de Taxon
 		if self.context['naturaleza'] in ['cliente', 'caja', 'ingreso', 'gasto']:
-			self.fields['taxon'] = serializers.ChoiceField(required=True, choices=list(Taxon.objects.filter(naturaleza__nombre=self.context['naturaleza']).values_list('nombre', flat=True)))
+			self.fields['taxon'] = serializers.PrimaryKeyRelatedField(queryset=Taxon.objects.filter(naturaleza__nombre=self.context['naturaleza']), required=True)
 
 		# Incorporacion de Perfil
 		if self.context['naturaleza'] in ['cliente', 'proveedor']:
@@ -91,13 +91,15 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 				gastos
 		"""
 
-		if self.context['request'].method == 'POST':
-			if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto']:
-				if Cuenta.objects.filter(
-					comunidad=self.context['comunidad'], 
-					nombre=nombre
-				):			
-					raise serializers.ValidationError('Ya existe una cuenta con el nombre solicitado')
+
+		query = Cuenta.objects.filter(
+				comunidad=self.context['comunidad'], 
+				nombre=nombre
+			)
+
+		if query and self.context['naturaleza'] in ['caja', 'ingreso', 'gasto']:
+			if not self.instance in query:
+				raise serializers.ValidationError('Ya existe una cuenta con el nombre solicitado')
 		
 		return nombre
 

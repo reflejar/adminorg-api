@@ -44,8 +44,7 @@ class TituloModelSerializer(serializers.ModelSerializer):
 		super(TituloModelSerializer, self).__init__(*args, **kwargs)
 		self.fields['supertitulo'] = serializers.PrimaryKeyRelatedField(queryset=Titulo.objects.filter(comunidad=self.context['comunidad']), allow_null=True)
 		self.fields['cuentas'] = CuentaModelSerializer(read_only=True, many=True)
-		self.fields['predeterminado'] = serializers.ChoiceField(required=True, choices=list(Naturaleza.objects.all().values_list('nombre', flat=True)))
-		
+		self.fields['predeterminado'] = serializers.PrimaryKeyRelatedField(queryset=Naturaleza.objects.all(), allow_null=True)
 
 
 	def validate_nombre(self, nombre):
@@ -59,7 +58,7 @@ class TituloModelSerializer(serializers.ModelSerializer):
 			)
 
 		if query:
-			if self.context['request'].method == 'POST' or not self.instance in query:
+			if not self.instance in query:
 				raise serializers.ValidationError('Ya existe un titulo con el nombre solicitado')
 
 		return nombre
@@ -75,7 +74,7 @@ class TituloModelSerializer(serializers.ModelSerializer):
 			)
 
 		if query:
-			if self.context['request'].method == 'POST' or not self.instance in query:
+			if not self.instance in query:
 				raise serializers.ValidationError('Ya existe un titulo con el numero solicitado')
 			
 		return numero
@@ -112,7 +111,7 @@ class TituloModelSerializer(serializers.ModelSerializer):
 		instance.numero = validate_data['numero']
 		instance.nombre = validate_data['nombre']
 		instance.supertitulo = validate_data['supertitulo']
-		instance.predeterminado = Naturaleza.objects.get(nombre=validate_data['predeterminado'])
+		instance.predeterminado = validate_data['predeterminado']
 		instance.save()
 
 

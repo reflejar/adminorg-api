@@ -14,8 +14,8 @@ urlpatterns = [
 	path('estados/<int:pk>/cuenta/', EstadoCuentaView.as_view(), name='estado-cuenta'),
 
 	# Cuenta
-	path('cuenta/create/', BlankView.as_view(), name='create'),
-	path('cuenta/edit/<int:pk>/', BlankView.as_view(), name='cuenta'),
+	path('cuenta/create/', CUDObjectView.as_view(), name='create'),
+	path('cuenta/edit/<int:pk>/', CUDObjectView.as_view(), name='cuenta'),
 
 	# Comprobantes
 	path('cbte/transferencia/', BlankView.as_view(), name='cbte-create'),

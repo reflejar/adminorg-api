@@ -3,6 +3,8 @@ MODULE = {
 	'path': 'front:tesoreria:index'
 }
 
+MODULE_HANDLER = "caja"
+
 TEMPLATE_FOLDER = "modules/tesoreria/"
 
 MODULE_BUTTONS = [

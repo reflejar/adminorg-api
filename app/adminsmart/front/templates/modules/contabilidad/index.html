@@ -34,7 +34,7 @@
             {% for object in objects %}
               <tr {% if not object.supertitulo %}class="info"{% endif %}>
                 <td>
-                  <a href="{% url 'front:contabilidad:cuenta' pk=1 %}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-primary btn-xs">
+                  <a href="{% url 'front:contabilidad:cuenta' pk=object.id %}" title="Ver detalle de {{module_handler}}" class="btn btn-icon btn-bordered tooltip-animation btn-primary btn-xs">
                     <i class="fa fa-address-card"></i>
                 </a>      
                 </td>                            

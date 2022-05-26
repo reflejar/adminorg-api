@@ -16,7 +16,7 @@
   <div class="panel-body">
     <div class="row">
       <div class="col-xs-12">
-        <a href="create" class="btn btn-info pull-right">
+        <a href="{% url 'front:configuracion:create' naturaleza=module_handler  %}" class="btn btn-info pull-right">
           <i class="fa fa-plus"></i> Nuevo
         </a>
       </div>
@@ -41,10 +41,10 @@
             {% for object in objects %}
               <tr>
                 <td>
-                  <a href="{{object.id}}/edit" title="Editar" class="btn btn-icon btn-bordered btn-warning tooltip-animation btn-xs">
+                  <a href="{% url 'front:configuracion:edit' naturaleza=module_handler pk=object.id %}" title="Editar" class="btn btn-icon btn-bordered btn-warning tooltip-animation btn-xs">
                     <i class="fa fa-pencil"></i>
                   </a>                  
-                  <a href="{{object.id}}/delete" title="Eliminar/Desactivar" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
+                  <a href="{% url 'front:configuracion:delete' naturaleza=module_handler pk=object.id %}" title="Eliminar/Desactivar" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
                     <i class="fa fa-trash"></i>
                   </a>
                 </td>

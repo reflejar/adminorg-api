@@ -1,10 +1,10 @@
 <form id="process" action="{{ vista }}" method="POST" enctype="multipart/form-data">{% csrf_token %}
   <div class="panel panel-default">
-    {% if pregunta %}
+    {% if module_handler %}
     <div class="panel-heading">
-      <h3 class="panel-title">{{ pregunta|capfirst }} </h3>
+      <h3 class="panel-title">{{ module_handler|capfirst }} {{ object }}</h3>
     </div>
-    {% endif %}
+    {% endif %}    
     <div class="panel-body">
       {% if respuesta %}
         <p>{{respuesta}}</p>
@@ -13,9 +13,7 @@
         <p>Descargar el archivo modelo haciendo <a href="{% url 'bib_descargar' slug=slug_archivo %}">click aqui</a> y rellena los campos.</p>
       {% endif %}
     	{{ form.as_p }}
-      {{ form_anexo.as_p}}
-      <input type="hidden" name="pregunta" value="{{ pregunta }}">
-      <input type="hidden" name="respuesta" value="{{ respuesta }}">
+      <!-- {{ form_anexo.as_p}} -->
     </div>
     <div class="panel-footer">
       <div class="row">

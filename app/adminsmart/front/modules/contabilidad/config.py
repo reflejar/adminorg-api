@@ -3,6 +3,8 @@ MODULE = {
 	'path': 'front:contabilidad:index'
 }
 
+MODULE_HANDLER = "titulo"
+
 TEMPLATE_FOLDER = "modules/contabilidad/"
 
 MODULE_BUTTONS = [

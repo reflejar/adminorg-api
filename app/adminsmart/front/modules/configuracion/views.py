@@ -1,10 +1,14 @@
+from django.views import generic
 from adminsmart.apps.core.models import (
 	Cuenta,
 	Metodo,
 	Titulo
 )
 
-from ..base import AdminListObjectsView
+from ..base import (
+	AdminListObjectsView,
+	AdminCUDView
+)
 
 from . import config
 
@@ -35,7 +39,23 @@ class IndexView(AdminListObjectsView):
 		return context
 
 
-class ListView(AdminListObjectsView):
+class AddModuleContextData:
+
+	@property
+	def MODULE_HANDLER(self): return self.kwargs['naturaleza']
+	
+	@property
+	def SUBMODULE(self): return {'name': self.kwargs['naturaleza']}
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context.update({"naturaleza": self.MODULE_HANDLER})
+		return context	
+
+class ListView(
+		AddModuleContextData, 
+		AdminListObjectsView
+	):
 
 	""" Vista de listado de cuentas, titulos y metodos """
 
@@ -43,11 +63,14 @@ class ListView(AdminListObjectsView):
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	template_name = f'{config.TEMPLATE_FOLDER}/list-objects.html'	
 
-	def get_context_data(self, **kwargs):
-		self.MODULE_HANDLER = kwargs['naturaleza']
-		self.SUBMODULE = {'name': kwargs['naturaleza']}
-		context = super().get_context_data(**kwargs)
-		context.update({"naturaleza": self.MODULE_HANDLER})
-		return context
 
-	
+class CUDObjectView(
+		AddModuleContextData,
+		AdminCUDView, 
+		generic.CreateView,
+		generic.UpdateView,
+	):
+
+	MODULE = config.MODULE
+	MODULE_BUTTONS = config.MODULE_BUTTONS
+	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	

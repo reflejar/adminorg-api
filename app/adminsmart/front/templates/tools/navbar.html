@@ -1,5 +1,5 @@
 <li class="has-submenu">
-  <a href="{% url 'front:home' %}"><i class="fi-air-play"></i>Home</a>
+  <a href="{% url 'front:informes' %}"><i class="fi-bar-graph-2"></i>Informes</a>
 </li>
 
 {% if user.groups.all.0.name == "socio" %}
@@ -31,9 +31,6 @@
   </li>
   <li class="has-submenu">
     <a href="{% url 'front:contabilidad:index' %}"><i class="fi-briefcase"></i>Contabilidad</a>
-  </li>
-  <li class="has-submenu">
-    <a href="{% url 'front:informes' %}"><i class="fi-bar-graph-2"></i>Informes</a>
   </li>
   <li class="has-submenu">
     <a href="{% url 'front:configuracion:index' %}"><i class="fi-cog"></i>Configuración</a>
