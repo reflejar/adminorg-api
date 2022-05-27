@@ -4,7 +4,8 @@ _Frontend del proyecto AdminSmart. Sistema web creado para la administración, g
 
 ## Sobre el módulo
 
-Aquí se alojan todos los archivos necesarios para la interfaz, que no sean de la lógica estructural del sistema (Estos se encuentran en la carpeta /app/adminsmart/apps)
+Aquí se alojan todos los archivos necesarios para la interfaz. 
+Osea que aquí no se encuentra lo que sea de la lógica estructural del sistema (Estos se encuentran en la carpeta /app/adminsmart/apps) ni de la api servida para utilizar con otros frontends (Estos se encuentran en la carpeta /app/adminsmart/api)
 
 
 

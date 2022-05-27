@@ -8,12 +8,18 @@ from adminsmart.apps.core.models import (
 	Titulo,
 	Metodo,
 )
+from adminsmart.apps.users.models import (
+	Perfil
+)
 
 from adminsmart.api.core.serializers import (
 	CuentaModelSerializer,
 	TituloModelSerializer,
 	MetodoModelSerializer
 )
+from adminsmart.api.users.serializers import PerfilModelSerializer
+from adminsmart.api.utils.serializers import DomicilioModelSerializer
+from adminsmart.apps.utils.models import Domicilio
 # from django.db.models import Q
 
 
@@ -47,13 +53,54 @@ class FormControl:
 		return serializer.create(self.validated_data)
 
 
+class PerfilForm(FormControl, forms.ModelForm):
+
+	SERIALIZER = PerfilModelSerializer
+
+	class Meta:
+		model = Perfil
+		fields = [
+			'nombre','apellido','razon_social',
+			'tipo_documento','numero_documento','fecha_nacimiento',
+			'es_extranjero','mail','telefono'
+		]
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		
+
+class DomicilioForm(FormControl, forms.ModelForm):
+
+	SERIALIZER = DomicilioModelSerializer
+
+	class Meta:
+		model = Domicilio
+		fields = [
+			'provincia','localidad','calle',
+			'numero','piso','oficina',
+			'sector','torre','manzana',
+			'parcela','catastro',
+		]		
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		if kwargs['context']['naturaleza'] in ['cliente', 'proveedor']:
+			self.fields.pop('piso')
+			self.fields.pop('oficina')
+			self.fields.pop('sector')
+			self.fields.pop('torre')
+			self.fields.pop('manzana')
+			self.fields.pop('parcela')
+			self.fields.pop('catastro')
+
+
 class CuentaForm(FormControl, forms.ModelForm):
 
 	SERIALIZER = CuentaModelSerializer
 
 	class Meta:
 		model = Cuenta
-		fields = ['nombre', 'numero', 'taxon', 'perfil', 'domicilio', 'titulo']
+		fields = ['titulo', 'nombre', 'numero', 'taxon']
 		labels = {
 			'taxon': 'Tipo',
 			'titulo': 'Título contable',
@@ -63,8 +110,6 @@ class CuentaForm(FormControl, forms.ModelForm):
 		super().__init__(*args, **kwargs)
 		if kwargs['context']['naturaleza'] in ['gasto', 'caja', 'ingreso']:
 			self.fields.pop('numero')
-			self.fields.pop('perfil')
-			self.fields.pop('domicilio')
 			self.fields['taxon'].queryset = Taxon.objects.filter(naturaleza__nombre=kwargs['context']['naturaleza'])
 			if kwargs['context']['naturaleza'] in ['ingreso']:
 				for t in ['interes', 'descuento']:
@@ -78,13 +123,10 @@ class CuentaForm(FormControl, forms.ModelForm):
 						self.fields[t].required = False
 		elif kwargs['context']['naturaleza'] in ['cliente', 'dominio', 'proveedor', 'grupo']:
 			self.fields.pop('nombre')
-			self.fields.pop('numero')
 			self.fields.pop('taxon')
-			self.fields.pop('perfil')
-			self.fields.pop('domicilio')
-
+			if not kwargs['context']['naturaleza'] in ['dominio']:
+				self.fields.pop('numero')
 		self.fields['titulo'].queryset = Titulo.objects.filter(comunidad=kwargs['context']['comunidad']).order_by("numero")
-
 
 class TituloForm(FormControl, forms.ModelForm):
 

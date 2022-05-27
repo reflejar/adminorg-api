@@ -26,8 +26,10 @@ from ..tools import (
 
 from .forms import (
 	CuentaForm,
+	PerfilForm,
 	TituloForm,
-	MetodoForm
+	MetodoForm,
+	DomicilioForm
 )
 
 class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
@@ -354,9 +356,20 @@ class AdminCUDView(BaseFrontView):
 	}
 
 	FORMS = {
-		'cliente': CuentaForm,
-		'proveedor': CuentaForm,
-		'dominio': CuentaForm,
+		'cliente': {
+			'cuenta': CuentaForm,
+			'perfil': PerfilForm,
+			'domicilio': DomicilioForm
+		},
+		'proveedor': {
+			'cuenta': CuentaForm,
+			'perfil': PerfilForm,
+			'domicilio': DomicilioForm
+		},
+		'dominio': {
+			'cuenta': CuentaForm,
+			'domicilio': DomicilioForm
+		},
 		'grupo': CuentaForm,
 		'caja': CuentaForm,
 		'ingreso': CuentaForm,
@@ -373,6 +386,8 @@ class AdminCUDView(BaseFrontView):
 		return {'name': f'Nuevo {self.MODULE_HANDLER}'}	
 
 	def get_form_class(self):
+		if isinstance(self.FORMS[self.MODULE_HANDLER], dict):
+			return self.FORMS[self.MODULE_HANDLER][list(self.FORMS[self.MODULE_HANDLER].keys())[0]]
 		return self.FORMS[self.MODULE_HANDLER]
 
 	def get_form_kwargs(self):
@@ -394,7 +409,20 @@ class AdminCUDView(BaseFrontView):
 
 	def get_context_data(self, **kwargs):
 		self.object = self.get_object()
-		return super().get_context_data(**kwargs)
+		context = super().get_context_data(**kwargs)
+		forms = self.FORMS[self.MODULE_HANDLER]
+		if isinstance(forms, dict):
+			form_kwargs = self.get_form_kwargs()
+			n_form = 1
+			for f in forms.keys():
+				if f != "cuenta":
+					instance = getattr(self.object, f, None) if self.object else None
+					if not instance:
+						instance = getattr(self.object.perfil, f, None) if self.object else None
+					form_kwargs['instance'] = instance
+					context.update({f'form{n_form+1}': forms[f](**form_kwargs)})
+					n_form += 1
+		return context
 
 	@transaction.atomic
 	def form_valid(self, form):

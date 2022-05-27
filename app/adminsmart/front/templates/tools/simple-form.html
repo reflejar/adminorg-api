@@ -13,6 +13,14 @@
         <p>Descargar el archivo modelo haciendo <a href="{% url 'bib_descargar' slug=slug_archivo %}">click aqui</a> y rellena los campos.</p>
       {% endif %}
     	{{ form.as_p }}
+      {% if form2 %}
+        <hr />
+        {{ form2.as_p }}
+      {% endif %}
+      {% if form3 %}
+        <hr />
+        {{ form3.as_p }}
+      {% endif %}      
       <!-- {{ form_anexo.as_p}} -->
     </div>
     <div class="panel-footer">
