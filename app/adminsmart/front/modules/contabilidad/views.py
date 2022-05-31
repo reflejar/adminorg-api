@@ -20,7 +20,7 @@ from adminsmart.apps.core.models import (
 from ..base import (
 	AdminListObjectsView,
 	AdminRegistroView,
-	AdminCUDView
+	AdminParametrosCUDView
 )
 
 from . import config
@@ -76,8 +76,8 @@ class IndexView(AdminListObjectsView):
 			o['saldo'] = o['debe'] - o['haber']
 		return objects
 
-class CUDObjectView(
-		AdminCUDView, 
+class CUDParametroView(
+		AdminParametrosCUDView, 
 		generic.CreateView,
 		generic.UpdateView,
 	):

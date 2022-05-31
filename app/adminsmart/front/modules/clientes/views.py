@@ -4,7 +4,8 @@ from ..base import (
 	AdminListObjectsView,
 	AdminEstadoView,
 	AdminRegistroView,
-	AdminCUDView
+	AdminParametrosCUDView,
+	AdminDocumentosCUDView
 )
 
 from . import config
@@ -21,8 +22,8 @@ class IndexView(AdminListObjectsView):
 	
 
 
-class CUDObjectView(
-		AdminCUDView, 
+class CUDParametroView(
+		AdminParametrosCUDView, 
 		generic.CreateView,
 		generic.UpdateView,
 	):
@@ -30,6 +31,18 @@ class CUDObjectView(
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	MODULE_HANDLER = config.MODULE_HANDLER
+	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	
+
+
+class CUDDocumentoView(
+		AdminDocumentosCUDView, 
+		generic.CreateView,
+		generic.UpdateView,
+	):
+
+	MODULE = config.MODULE
+	MODULE_BUTTONS = config.MODULE_BUTTONS
+	MODULE_HANDLER = 'documento_cliente'
 	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	
 
 

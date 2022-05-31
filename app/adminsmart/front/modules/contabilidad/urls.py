@@ -10,8 +10,8 @@ urlpatterns = [
 	path('', IndexView.as_view(), name='index'),
 
 	# Cuenta
-	path('titulo/create/', CUDObjectView.as_view(), name='create'),
-	path('titulo/edit/<int:pk>/', CUDObjectView.as_view(), name='cuenta'),
+	path('titulo/create/', CUDParametroView.as_view(), name='create'),
+	path('titulo/edit/<int:pk>/', CUDParametroView.as_view(), name='cuenta'),
 
 	# Comprobantes
 	path('cbte/', BlankView.as_view(), name='cbte-create'),

@@ -3,6 +3,11 @@ from adminsmart.api.core.serializers import (
 	TituloModelSerializer,
 	MetodoModelSerializer
 )
+from adminsmart.api.core.serializers.documentos import (
+	DestinoClienteModelSerializer,
+	OrigenProveedorModelSerializer,
+	TesoroModelSerializer
+)
 
 
 class FormControl:
@@ -20,4 +25,13 @@ class TituloForm(FormControl, TituloModelSerializer):
 	pass
 
 class MetodoForm(FormControl, MetodoModelSerializer):
+	pass
+
+class DocumentoClienteForm(FormControl, DestinoClienteModelSerializer):
+	pass
+
+class DocumentoProveedorForm(FormControl, OrigenProveedorModelSerializer):
+	pass
+
+class DocumentoTesoreriaForm(FormControl, TesoroModelSerializer):
 	pass

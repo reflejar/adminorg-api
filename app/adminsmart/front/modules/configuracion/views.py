@@ -7,7 +7,7 @@ from adminsmart.apps.core.models import (
 
 from ..base import (
 	AdminListObjectsView,
-	AdminCUDView
+	AdminParametrosCUDView
 )
 
 from . import config
@@ -64,9 +64,9 @@ class ListView(
 	template_name = f'{config.TEMPLATE_FOLDER}/list-objects.html'	
 
 
-class CUDObjectView(
+class CUDParametroView(
 		AddModuleContextData,
-		AdminCUDView, 
+		AdminParametrosCUDView, 
 		generic.CreateView,
 		generic.UpdateView,
 	):

@@ -8,6 +8,8 @@ from django.db import transaction
 from django.contrib import messages
 from django.urls import reverse_lazy
 
+from django_afip.models import ReceiptType
+
 from adminsmart.apps.core.models import (
 	Cuenta,
 	Metodo,
@@ -28,6 +30,9 @@ from .forms import (
 	CuentaForm,
 	TituloForm,
 	MetodoForm,
+	DocumentoClienteForm,
+	DocumentoProveedorForm,
+	DocumentoTesoreriaForm
 )
 
 class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
@@ -50,7 +55,6 @@ class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
 			context.update({'module_handler': self.MODULE_HANDLER})					
 		return context
 
-
 class BaseAdminView(BaseFrontView):
 
 	""" Base Admin Front """
@@ -70,7 +74,6 @@ class BaseAdminView(BaseFrontView):
 				"titles": objects[0].keys() if objects else []
 			})
 		return context
-
 
 class AdminListObjectsView(BaseAdminView):
 
@@ -205,7 +208,6 @@ class AdminListObjectsView(BaseAdminView):
 
 	def get_all_grupo(self): return []
 
-
 class AdminEstadoView(
 		BaseAdminView, 
 		UserObjectCommunityPermissions, 
@@ -320,9 +322,7 @@ class AdminRegistroView(BaseAdminView, generic.ListView):
 			context['lista'] = datos
 		return context
 
-
-
-class AdminCUDView(BaseFrontView):
+class BaseCUDView(BaseFrontView):
 
 	MODELS = {
 		'cliente': Cuenta,
@@ -334,28 +334,15 @@ class AdminCUDView(BaseFrontView):
 		'gasto': Cuenta,
 		'titulo': Titulo,
 		'interes': Metodo,
-		'descuento': Metodo
-	}
-
-	FORMS = {
-		'cliente': CuentaForm,
-		'proveedor': CuentaForm,
-		'dominio': CuentaForm,
-		'grupo': CuentaForm,
-		'caja': CuentaForm,
-		'ingreso': CuentaForm,
-		'gasto': CuentaForm,
-		'titulo': TituloForm,
-		'interes': MetodoForm,
-		'descuento': MetodoForm,
-	}
+		'descuento': Metodo,
+		'documento_cliente': Documento
+	}	
 
 	@property
 	def SUBMODULE(self):
 		if 'pk' in self.kwargs.keys():
 			return {'name': f'Editar {self.MODULE_HANDLER}'}
-		return {'name': f'Nuevo {self.MODULE_HANDLER}'}	
-
+		return {'name': f'Nuevo {self.MODULE_HANDLER}'}		
 
 	def get_form_class(self):
 		return self.FORMS[self.MODULE_HANDLER]
@@ -365,7 +352,6 @@ class AdminCUDView(BaseFrontView):
 		kwargs['context'] = {
 			'comunidad': self.comunidad,
 			'request': self.request,
-			'naturaleza': self.MODULE_HANDLER
 		}
 		return kwargs
 
@@ -375,7 +361,7 @@ class AdminCUDView(BaseFrontView):
 		return get_object_or_404(
 			self.MODELS[self.MODULE_HANDLER].objects.filter(comunidad=self.comunidad),
 			pk=self.kwargs['pk']
-		)
+		)		
 
 	def get_context_data(self, **kwargs):
 		self.object = self.get_object()
@@ -392,6 +378,53 @@ class AdminCUDView(BaseFrontView):
 		if self.MODULE['path'] != "front:configuracion:index":
 			return reverse_lazy(self.MODULE['path'])	
 		return reverse_lazy('front:configuracion:list', args=(self.MODULE_HANDLER,))		
+
+class AdminParametrosCUDView(BaseCUDView):
+
+	FORMS = {
+		'cliente': CuentaForm,
+		'proveedor': CuentaForm,
+		'dominio': CuentaForm,
+		'grupo': CuentaForm,
+		'caja': CuentaForm,
+		'ingreso': CuentaForm,
+		'gasto': CuentaForm,
+		'titulo': TituloForm,
+		'interes': MetodoForm,
+		'descuento': MetodoForm,
+	}
+
+	def get_form_kwargs(self):
+		kwargs = super().get_form_kwargs()
+		kwargs['context'].update({'naturaleza': self.MODULE_HANDLER})
+		return kwargs
+
+
+class AdminDocumentosCUDView(BaseCUDView):
+
+	FORMS = {
+		'documento_cliente': DocumentoClienteForm,
+		'documento_proveedor': DocumentoProveedorForm,
+		'documento_caja': DocumentoTesoreriaForm,
+	}	
+
+	@property
+	def RECEIPT_TYPE(self):
+		tipo_cbte = self.request.GET.get('tipo_cbte')
+		if self.object:
+			return self.object.receipt.receipt_type
+		elif tipo_cbte:
+			return ReceiptType.objects.get(description=tipo_cbte)
+		return ReceiptType()
+
+	def get_form_kwargs(self):
+		kwargs = super().get_form_kwargs()
+		kwargs['context'].update({
+			'sin_destinatario': False,
+			'causante': self.MODULE_HANDLER.split("_")[1],
+			'receipt_type': self.RECEIPT_TYPE
+		})
+		return kwargs
 
 
 class SocioFrontView(BaseFrontView):

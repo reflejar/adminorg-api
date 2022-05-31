@@ -4,7 +4,7 @@ from ..base import (
 	AdminListObjectsView,
 	AdminEstadoView,
 	AdminRegistroView,
-	AdminCUDView
+	AdminParametrosCUDView
 )
 
 from . import config
@@ -20,8 +20,8 @@ class IndexView(AdminListObjectsView):
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"
 	
 	
-class CUDObjectView(
-		AdminCUDView, 
+class CUDParametroView(
+		AdminParametrosCUDView, 
 		generic.CreateView,
 		generic.UpdateView,
 	):
