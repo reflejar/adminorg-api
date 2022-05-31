@@ -6,9 +6,12 @@
 {% endblock %}
 
 {% block contenido %}
-  	{% include 'tools/simple-form.html' %}
+  	{% include 'tools/simple-serializer.html' %}
 {% endblock %}
 
 {% block js %}
   {% include 'tools/js/datepicker.html' %}
+  <script>
+    $('select[name=titulo]').attr('disabled', 'disabled');
+  </script>
 {% endblock %}
