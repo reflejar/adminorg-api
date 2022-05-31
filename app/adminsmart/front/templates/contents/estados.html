@@ -38,7 +38,7 @@
                         <a {% if object.pdf %}href="{% url 'front:pdf-viewer' pk=object.documento_id %}"{% else %}disabled{% endif %} target="_blank" title="Ver PDF" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
                         <i class="fa fa-file-pdf-o"></i>
                         </a>
-                        <a href="{% url edit_url cuenta_pk=object.cuenta_id tipo_cbte='factura' pk=object.documento_id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
+                        <a href="{% url edit_url pk=object.documento_id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
                         <i class="fa fa-eye"></i>
                         </a>                  
                     </td>

@@ -258,7 +258,7 @@ class AdminEstadoView(
 			# 	total = sum([o.valor for o in d.operaciones.all() if o.cuenta.titulo in obj.grupo])
 			saldo += total
 			cuenta.append({
-				'cuenta_id': d.destinatario.id,
+				'cuenta_id': d.destinatario.id if d.destinatario else None,
 				'documento_id': d.id,
 				'fecha': d.fecha_operacion,
 				'fecha_anulacion': d.fecha_anulacion,
@@ -320,22 +320,6 @@ class AdminRegistroView(BaseAdminView, generic.ListView):
 			context['lista'] = datos
 		return context
 
-
-
-class SocioFrontView(BaseFrontView):
-
-	""" Base Socio Front """
-
-
-class BlankView(AdminListObjectsView):
-
-	""" Vista blank """
-
-	MODULE = {
-		'name': "Plantilla",
-		'path': 'front:index'
-	}
-	template_name = "layout.html"
 
 
 class AdminCUDView(BaseFrontView):
@@ -408,3 +392,20 @@ class AdminCUDView(BaseFrontView):
 		if self.MODULE['path'] != "front:configuracion:index":
 			return reverse_lazy(self.MODULE['path'])	
 		return reverse_lazy('front:configuracion:list', args=(self.MODULE_HANDLER,))		
+
+
+class SocioFrontView(BaseFrontView):
+
+	""" Base Socio Front """
+
+
+class BlankView(AdminListObjectsView):
+
+	""" Vista blank """
+
+	MODULE = {
+		'name': "Plantilla",
+		'path': 'front:index'
+	}
+	template_name = "layout.html"
+

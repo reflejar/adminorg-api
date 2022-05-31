@@ -18,8 +18,8 @@ urlpatterns = [
 	path('cuenta/edit/<int:pk>/', CUDObjectView.as_view(), name='cuenta'),
 
 	# Comprobantes
-	path('cbte/transferencia/', BlankView.as_view(), name='cbte-create'),
-	path('cbte/transferencia/<int:pk>', BlankView.as_view(), name='cbte-edit'),
+	path('cbte/', BlankView.as_view(), name='cbte-create'),
+	path('cbte/<int:pk>', BlankView.as_view(), name='cbte-edit'),
 
 	# Registros
 	path('registros/', RegistroView.as_view(), name='registros'),
