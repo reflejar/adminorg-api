@@ -61,7 +61,11 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 
 		# Incorporacion de Taxon
 		if self.context['naturaleza'] in ['cliente', 'caja', 'ingreso', 'gasto']:
-			self.fields['taxon'] = serializers.PrimaryKeyRelatedField(queryset=Taxon.objects.filter(naturaleza__nombre=self.context['naturaleza']), required=True)
+			self.fields['taxon'] = serializers.PrimaryKeyRelatedField(
+					queryset=Taxon.objects.filter(naturaleza__nombre=self.context['naturaleza']), 
+					label="Tipo",
+					required=True
+				)
 
 		# Incorporacion de Perfil
 		if self.context['naturaleza'] in ['cliente', 'proveedor']:
@@ -75,8 +79,16 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		if self.context['naturaleza'] == 'proveedor':
 			self.fields['retiene'] = serializers.PrimaryKeyRelatedField(queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="retencion"), many=True)
 		elif self.context['naturaleza'] == 'ingreso':
-			self.fields['interes'] = serializers.PrimaryKeyRelatedField(queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="interes"), allow_null=True)
-			self.fields['descuento'] = serializers.PrimaryKeyRelatedField(queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="descuento"), allow_null=True)
+			self.fields['interes'] = serializers.PrimaryKeyRelatedField(
+					queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="interes"), 
+					label="Metodología de intereses",
+					allow_null=True
+				)
+			self.fields['descuento'] = serializers.PrimaryKeyRelatedField(
+					queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="descuento"), 
+					label="Metodología de descuentos",
+					allow_null=True
+				)
 	
 		# Incorporacion de Propietario y Ocupante (para Dominios)
 		if self.context['naturaleza'] in ['dominio']:

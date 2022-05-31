@@ -42,9 +42,17 @@ class TituloModelSerializer(serializers.ModelSerializer):
 
 	def __init__(self, *args, **kwargs):
 		super(TituloModelSerializer, self).__init__(*args, **kwargs)
-		self.fields['supertitulo'] = serializers.PrimaryKeyRelatedField(queryset=Titulo.objects.filter(comunidad=self.context['comunidad']), allow_null=True)
+		self.fields['supertitulo'] = serializers.PrimaryKeyRelatedField(
+				queryset=Titulo.objects.filter(comunidad=self.context['comunidad']).order_by('numero'), 
+				label="Rubro al que pertenece",
+				allow_null=True
+			)
 		self.fields['cuentas'] = CuentaModelSerializer(read_only=True, many=True)
-		self.fields['predeterminado'] = serializers.PrimaryKeyRelatedField(queryset=Naturaleza.objects.all(), allow_null=True)
+		self.fields['predeterminado'] = serializers.PrimaryKeyRelatedField(
+				queryset=Naturaleza.objects.all(), 
+				label="Predeterminado para",
+				allow_null=True
+			)
 
 
 	def validate_nombre(self, nombre):
