@@ -19,19 +19,31 @@
 
 
 {% else %}
-
-  <li class="has-submenu">
-    <a href="{% url 'front:clientes:index' %}"><i class="fi-download"></i>Cuentas a cobrar</a>
-  </li>
-  <li class="has-submenu">
-    <a href="{% url 'front:proveedores:index' %}"><i class="fi-upload"></i>Cuentas a pagar</a>
-  </li>
-  <li class="has-submenu">
-    <a href="{% url 'front:tesoreria:index' %}"><i class="fi-shuffle"></i>Tesoreria</a>
-  </li>
+  {% if 'cuentas-a-cobrar' in allowed_modules %}
+    <li class="has-submenu">
+      <a href="{% url 'front:clientes:index' %}"><i class="fi-download"></i>Cuentas a cobrar</a>
+    </li>
+  {% endif %}
+  {% if 'cuentas-a-pagar' in allowed_modules %}
+    <li class="has-submenu">
+      <a href="{% url 'front:proveedores:index' %}"><i class="fi-upload"></i>Cuentas a pagar</a>
+    </li>
+  {% endif %}  
+  {% if 'tesoreria' in allowed_modules %}
+    <li class="has-submenu">
+      <a href="{% url 'front:tesoreria:index' %}"><i class="fi-shuffle"></i>Tesoreria</a>
+    </li>
+  {% endif %}
+  {% if 'stock' in allowed_modules %}
+    <li class="has-submenu">
+      <a href="{% url 'front:stock:index' %}"><i class="fi-layers"></i>Stock</a>
+    </li>  
+  {% endif %}
+  {% if 'contabilidad' in allowed_modules %}
   <li class="has-submenu">
     <a href="{% url 'front:contabilidad:index' %}"><i class="fi-briefcase"></i>Contabilidad</a>
   </li>
+  {% endif %}
   <li class="has-submenu">
     <a href="{% url 'front:configuracion:index' %}"><i class="fi-cog"></i>Configuración</a>
   </li>  

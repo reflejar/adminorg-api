@@ -15,7 +15,7 @@ from adminsmart.apps.utils.models import Comunidad
 from adminsmart.apps.core.models import Documento
 
 from .tools import (
-	UserCommunityPermissions,
+	CommunityPermissions,
 	UserObjectCommunityPermissions
 )
 
@@ -34,7 +34,7 @@ def index(request):
 
 
 class PDFViewer(
-		UserCommunityPermissions, 
+		CommunityPermissions, 
 		UserObjectCommunityPermissions, 
 		generic.DetailView
 	):
@@ -48,7 +48,7 @@ class PDFViewer(
 		return FileResponse(documento.pdf.serve(), content_type='application/pdf', filename=f"{filename}.pdf")
 
 
-class ChangeCommunity(generic.TemplateView, UserCommunityPermissions):
+class ChangeCommunity(generic.TemplateView, CommunityPermissions):
 	
 	""" Vista para cambiar de comunidad"""
 	

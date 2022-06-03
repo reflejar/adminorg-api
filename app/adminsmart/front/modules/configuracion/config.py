@@ -43,6 +43,11 @@ MODULE_BUTTONS = [
     },
     {
         "path": "front:configuracion:list",
+        "parameter": "bien_de_cambio",
+        "label": "Bienes de cambio"
+    },    
+    {
+        "path": "front:configuracion:list",
         "parameter": "interes",
         "label": "Intereses"
     },    

@@ -21,6 +21,9 @@ urlpatterns = [
 	path('tesoreria/', include(
 		('adminsmart.front.modules.tesoreria.urls', 'tesoreria'), namespace='tesoreria')
 	),
+	path('stock/', include(
+		('adminsmart.front.modules.stock.urls', 'stock'), namespace='stock')
+	),	
 	path('contabilidad/', include(
 		('adminsmart.front.modules.contabilidad.urls', 'contabilidad'), namespace='contabilidad')
 	),

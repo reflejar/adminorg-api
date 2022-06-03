@@ -4,7 +4,8 @@ from adminsmart.apps.utils.models import (
     Comunidad,
     Domicilio,
     TipoComunidad,
-    Provincia
+    Provincia,
+	Modulo
 )
 
 from adminsmart.apps.core.models import (
@@ -112,3 +113,9 @@ class ProvinciaAdmin(admin.ModelAdmin):
 	list_filter = ['nombre']
 
 admin.site.register(Provincia, ProvinciaAdmin)
+
+class ModuloAdmin(admin.ModelAdmin):
+	list_display = ['nombre']
+	list_filter = ['nombre']
+
+admin.site.register(Modulo, ModuloAdmin)

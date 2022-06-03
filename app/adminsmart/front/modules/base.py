@@ -22,8 +22,9 @@ from adminsmart.apps.core.filters import (
 )
 
 from ..tools import (
-	UserCommunityPermissions,
-	UserObjectCommunityPermissions
+	CommunityPermissions,
+	UserObjectCommunityPermissions,
+	ModulePermissions
 )
 
 from .forms import (
@@ -35,7 +36,7 @@ from .forms import (
 	DocumentoTesoreriaForm
 )
 
-class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
+class BaseFrontView(CommunityPermissions, ModulePermissions, generic.TemplateView):
 
 	""" Base Front """
 	
@@ -44,7 +45,10 @@ class BaseFrontView(UserCommunityPermissions, generic.TemplateView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context.update({'comunidad': self.comunidad})
+		context.update({
+			'comunidad': self.comunidad,
+			'allowed_modules': "/".join(self.allowed_modules)
+		})
 		if getattr(self, "MODULE", False):
 			context.update({'module': self.MODULE})
 		if getattr(self, "SUBMODULE", False):
@@ -111,6 +115,7 @@ class AdminListObjectsView(BaseAdminView):
 						*field_display
 					))		
 	get_all_gasto = get_all_caja	
+	get_all_bien_de_cambio = get_all_caja
 
 	def get_all_ingreso(self):
 		cuentas = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
@@ -139,7 +144,8 @@ class AdminListObjectsView(BaseAdminView):
 				'id',"nombre","tipo",
 				"plazo","monto",
 				))
-	get_all_descuento = get_all_interes	
+	get_all_descuento = get_all_interes
+	
 
 	def get_all_cliente(self): 
 		default_fields = [
@@ -332,6 +338,7 @@ class BaseCUDView(BaseFrontView):
 		'caja': Cuenta,
 		'ingreso': Cuenta,
 		'gasto': Cuenta,
+		'bien_de_cambio': Cuenta,
 		'titulo': Titulo,
 		'interes': Metodo,
 		'descuento': Metodo,
@@ -387,6 +394,7 @@ class AdminParametrosCUDView(BaseCUDView):
 		'dominio': CuentaForm,
 		'grupo': CuentaForm,
 		'caja': CuentaForm,
+		'bien_de_cambio': CuentaForm,
 		'ingreso': CuentaForm,
 		'gasto': CuentaForm,
 		'titulo': TituloForm,

@@ -32,6 +32,7 @@ class IndexView(AdminListObjectsView):
 			"cajas": Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre="caja").count(),
 			"ingresos": Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre="ingreso").count(),
 			"gastos": Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre="gasto").count(),
+			"bienes_de_cambio": Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre="bien_de_cambio").count(),
 			"intereses": Metodo.objects.filter(comunidad=self.comunidad, naturaleza="interes").count(),
 			"descuentos": Metodo.objects.filter(comunidad=self.comunidad, naturaleza="descuento").count(),
 			"titulos": Titulo.objects.filter(comunidad=self.comunidad).count(),
@@ -40,6 +41,19 @@ class IndexView(AdminListObjectsView):
 
 
 class AddModuleContextData:
+
+	@property
+	def MODULE_BUTTONS(self): 
+		module_buttons = config.MODULE_BUTTONS 
+		if not 'contabilidad' in self.allowed_modules:
+			module_buttons = list(filter(lambda button: not button['parameter'] in ['titulo'], module_buttons))
+		if not 'stock' in self.allowed_modules:
+			module_buttons = list(filter(lambda button: not button['parameter'] in ['bien_de_cambio'], module_buttons))
+		if not 'cuentas-a-cobrar' in self.allowed_modules:
+			module_buttons = list(filter(lambda button: not button['parameter'] in ['cliente', 'dominio', 'grupo', 'ingreso', 'interes', 'descuento'], module_buttons))			
+		if not 'cuentas-a-pagar' in self.allowed_modules:
+			module_buttons = list(filter(lambda button: not button['parameter'] in ['proveedor', 'gasto'], module_buttons))						
+		return module_buttons
 
 	@property
 	def MODULE_HANDLER(self): return self.kwargs['naturaleza']
@@ -60,7 +74,6 @@ class ListView(
 	""" Vista de listado de cuentas, titulos y metodos """
 
 	MODULE = config.MODULE
-	MODULE_BUTTONS = config.MODULE_BUTTONS
 	template_name = f'{config.TEMPLATE_FOLDER}/list-objects.html'	
 
 
@@ -72,5 +85,4 @@ class CUDParametroView(
 	):
 
 	MODULE = config.MODULE
-	MODULE_BUTTONS = config.MODULE_BUTTONS
 	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	

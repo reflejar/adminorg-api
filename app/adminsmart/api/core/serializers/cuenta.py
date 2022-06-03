@@ -52,7 +52,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		super(CuentaModelSerializer, self).__init__(*args, **kwargs)
 		
 		# Incorporacion de Nombre
-		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto']:
+		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto', 'bien_de_cambio']:
 			self.fields['nombre'] = serializers.CharField(max_length=150, required=True)
 
 		# Incorporacion de Numero

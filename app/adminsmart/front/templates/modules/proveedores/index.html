@@ -23,14 +23,8 @@
         {% endif %}
       {% endfor %}                     
         <td class="text-center">
-          <a href="{% url 'front:proveedores:cbte-create' %}?cuenta_pk={{object.id}}&tipo_cbte=factura" title="Hacer factura" class="btn btn-icon btn-bordered tooltip-animation btn-custom btn-xs">
-              + F
-          </a>
-          <a href="{% url 'front:proveedores:cbte-create' %}?cuenta_pk={{object.id}}&tipo_cbte=nota-credito" title="Hacer nota de crédito" class="btn btn-icon btn-bordered tooltip-animation btn-custom btn-xs">
-              +NC
-          </a>                    
-          <a href="{% url 'front:proveedores:cbte-create' %}?cuenta_pk={{object.id}}&tipo_cbte=recibo" title="Hacer orden de pago" class="btn btn-icon btn-bordered tooltip-animation btn-custom btn-xs">
-              +OP
+          <a href="{% url 'front:clientes:cbte-create' %}?cuenta_pk={{object.id}}" title="Nuevo Comprobante" class="btn btn-icon btn-bordered tooltip-animation btn-custom btn-xs">
+            + <i class="fa fa-file-text-o"></i>
           </a>
       </td>        
     </tr>

@@ -7,7 +7,7 @@ from django.http import (
 	HttpResponseRedirect
 )
 
-class UserCommunityPermissions(LoginRequiredMixin):
+class CommunityPermissions(LoginRequiredMixin):
 
 	def dispatch(self, request, *args, **kwargs):
 		try:
@@ -25,3 +25,11 @@ class UserObjectCommunityPermissions:
 		if self.object.comunidad != self.comunidad:
 			raise Http404("No se encontró el objeto")
 		return self.object
+
+class ModulePermissions:
+
+	def dispatch(self, request, *args, **kwargs):
+		self.allowed_modules = ['informes', 'configuracion'] + [module['path'] for module in self.comunidad.modulos.all().values()]
+		if not request.META['PATH_INFO'].split("/")[1] in self.allowed_modules:
+			return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
+		return super().dispatch(request, *args, **kwargs)

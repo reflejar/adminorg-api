@@ -64,7 +64,7 @@
                         <a {% if doc.pdf %}href="{% url 'front:pdf-viewer' pk=doc.id %}"{% else %}disabled{% endif %} target="_blank" title="Ver PDF" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
                         <i class="fa fa-file-pdf-o"></i>
                         </a>
-                        <a href="{% url 'front:clientes:cbte-edit' cuenta_pk=1 tipo_cbte='factura' pk=doc.id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
+                        <a href="{% url 'front:clientes:cbte-edit' pk=doc.id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
                         <i class="fa fa-eye"></i>
                         </a>                  
                     </td>

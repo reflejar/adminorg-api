@@ -12,54 +12,56 @@
         <p class="text-muted m-b-10 font-14"></p>
 
         <div class="row">
-          <div class="col-md-6">
-            <a href="{% url 'front:configuracion:list' naturaleza='cliente' %}">
-              <div class="card-box widget-box-three ribbon-box">
-                {% if clientes == 0 %}
-                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
-                {% endif %}
-                <div class="bg-icon pull-left">
-                  <img src="{% static 'assets/images/icons/businesswoman.svg' %}">
+            {% if 'cuentas-a-cobrar' in allowed_modules %}
+            <div class="col-md-6">
+              <a href="{% url 'front:configuracion:list' naturaleza='cliente' %}">
+                <div class="card-box widget-box-three ribbon-box">
+                  {% if clientes == 0 %}
+                    <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                  {% endif %}
+                  <div class="bg-icon pull-left">
+                    <img src="{% static 'assets/images/icons/businesswoman.svg' %}">
+                  </div>
+                  <div class="text-right">
+                    <p class="m-t-5 text-uppercase font-14 font-600">Socios y clientes</p>
+                    <h2 class="m-b-10"><span data-plugin="counterup">{{ clientes }}</span></h2>
+                  </div>
                 </div>
-                <div class="text-right">
-                  <p class="m-t-5 text-uppercase font-14 font-600">Socios y clientes</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ clientes }}</span></h2>
+              </a>
+            </div>
+            <div class="col-md-6">
+              <a href="{% url 'front:configuracion:list' naturaleza='dominio' %}">
+                <div class="card-box widget-box-three ribbon-box">
+                  {% if dominios == 0 %}
+                    <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
+                  {% endif %}
+                  <div class="bg-icon pull-left">
+                    <img src="{% static 'assets/images/icons/home.svg' %}">
+                  </div>
+                  <div class="text-right">
+                    <p class="m-t-5 text-uppercase font-14 font-600">Dominios</p>
+                    <h2 class="m-b-10"><span data-plugin="counterup">{{ dominios }}</span></h2>
+                  </div>
                 </div>
-              </div>
-            </a>
-          </div>
+              </a>
+            </div>
 
-          <div class="col-md-6">
-            <a href="{% url 'front:configuracion:list' naturaleza='dominio' %}">
-              <div class="card-box widget-box-three ribbon-box">
-                {% if dominios == 0 %}
-                  <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
-                {% endif %}
-                <div class="bg-icon pull-left">
-                  <img src="{% static 'assets/images/icons/home.svg' %}">
+            <div class="col-md-6">
+              <a href="{% url 'front:configuracion:list' naturaleza='grupo' %}">
+                <div class="card-box widget-box-three ribbon-box">
+                  <div class="bg-icon pull-left">
+                    <img src="{% static 'assets/images/icons/conference_call.svg' %}">
+                  </div>
+                  <div class="text-right">
+                    <p class="m-t-5 text-uppercase font-14 font-600">Grupos</p>
+                    <h2 class="m-b-10"><span data-plugin="counterup">{{ grupos }}</span></h2>
+                  </div>
                 </div>
-                <div class="text-right">
-                  <p class="m-t-5 text-uppercase font-14 font-600">Dominios</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ dominios }}</span></h2>
-                </div>
-              </div>
-            </a>
-          </div>
-
-          <div class="col-md-6">
-            <a href="{% url 'front:configuracion:list' naturaleza='grupo' %}">
-              <div class="card-box widget-box-three ribbon-box">
-                <div class="bg-icon pull-left">
-                  <img src="{% static 'assets/images/icons/conference_call.svg' %}">
-                </div>
-                <div class="text-right">
-                  <p class="m-t-5 text-uppercase font-14 font-600">Grupos</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ grupos }}</span></h2>
-                </div>
-              </div>
-            </a>
-          </div>
-
+              </a>
+            </div>
+          {% endif %}
+          
+          {% if 'cuentas-a-pagar' in allowed_modules %}
           <div class="col-md-6">
             <a href="{% url 'front:configuracion:list' naturaleza='proveedor' %}">
               <div class="card-box widget-box-three ribbon-box">
@@ -76,6 +78,7 @@
               </div>
             </a>
           </div>
+          {% endif %}
 
         </div>
 
@@ -107,7 +110,7 @@
               </div>
             </a>
           </div>          
-
+          {% if 'cuentas-a-cobrar' in allowed_modules %}
           <div class="col-md-6">
             <a href="{% url 'front:configuracion:list' naturaleza='ingreso' %}">
               <div class="card-box widget-box-three ribbon-box">
@@ -124,7 +127,9 @@
               </div>
             </a>
           </div>
+          {% endif %}
 
+          {% if 'cuentas-a-pagar' in allowed_modules %}
           <div class="col-md-6">
             <a href="{% url 'front:configuracion:list' naturaleza='gasto' %}">
               <div class="card-box widget-box-three ribbon-box">
@@ -141,24 +146,28 @@
               </div>
             </a>
           </div>
+          {% endif %}          
 
-          <!-- <div class="col-md-6">
-            <a href="{% url 'front:configuracion:list' naturaleza='Punto' %}">
+          {% if 'stock' in allowed_modules %}
+          <div class="col-md-6">
+            <a href="{% url 'front:configuracion:list' naturaleza='bien_de_cambio' %}">
               <div class="card-box widget-box-three ribbon-box">
-                {% if puntos == 0 %}
+                {% if bienes_de_cambio == 0 %}
                   <div class="ribbon-two ribbon-two-danger"><span>Completar</span></div>
                 {% endif %}
                 <div class="bg-icon pull-left">
-                  <img src="{% static 'assets/images/icons/fine_print.svg' %}">
+                  <img src="{% static 'assets/images/icons/shop.svg' %}">
                 </div>
                 <div class="text-right">
-                  <p class="m-t-5 text-uppercase font-14 font-600">Puntos</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ puntos }}</span></h2>
+                  <p class="m-t-5 text-uppercase font-14 font-600">Bienes de cambio</p>
+                  <h2 class="m-b-10"><span data-plugin="counterup">{{ bienes_de_cambio }}</span></h2>
                 </div>
               </div>
             </a>
-          </div> -->
+          </div>          
+          {% endif %}          
 
+          {% if 'cuentas-a-cobrar' in allowed_modules %}
           <div class="col-md-6">
             <a href="{% url 'front:configuracion:list' naturaleza='interes' %}">
               <div class="card-box widget-box-three ribbon-box">
@@ -173,7 +182,6 @@
             </a>
           </div>
 
-
           <div class="col-md-6">
             <a href="{% url 'front:configuracion:list' naturaleza='descuento' %}">
               <div class="card-box widget-box-three ribbon-box">
@@ -187,7 +195,9 @@
               </div>
             </a>
           </div>
+          {% endif %}               
 
+          {% if 'contabilidad' in allowed_modules %}
           <div class="col-md-6">
             <a href="{% url 'front:configuracion:list' naturaleza='titulo' %}">
               <div class="card-box widget-box-three ribbon-box">
@@ -204,6 +214,7 @@
               </div>
             </a>
           </div>
+          {% endif %}          
 
 
           <!-- <div class="col-md-6">
