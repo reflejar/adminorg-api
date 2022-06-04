@@ -161,7 +161,7 @@ class MayoresView(AdminRegistroView):
 			analisis = OperacionAnalisis(
 					queryset=queryset, 
 					nombres=self.get_nombres(), 
-					analisis_config={"analizar":[],"agrupar_por":[],"encolumnar":[],"totalizar":"debe"}
+					analisis_config={"analizar":[],"agrupar_por":[],"encolumnar":[],"totalizar":"valor"}
 				)
 			df = analisis.get_df(raw_data=True)
 			with BytesIO() as b:
