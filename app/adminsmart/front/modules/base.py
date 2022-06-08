@@ -306,11 +306,7 @@ class AdminRegistroView(BaseAdminView, generic.ListView):
 
 
 	def get_queryset(self, **kwargs):
-		any_filters = any(self.request.GET.values())
-		if any_filters:
-			datos = self.model.objects.filter(comunidad=self.comunidad, **self.INITAL_FILTERS).order_by(self.ORDER_BY)
-		else:
-			datos = self.model.objects.none()
+		datos = self.model.objects.filter(comunidad=self.comunidad, **self.INITAL_FILTERS).order_by(self.ORDER_BY)
 		self.filter = self.filterset_class(self.request.GET, queryset=datos)
 		return self.filter.qs
 
