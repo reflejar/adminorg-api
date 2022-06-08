@@ -11,7 +11,7 @@
               <i class="fa fa-address-card"></i>
           </a>                  
           <a {% if object.tipo == "stockeable" %}href="{% url 'front:tesoreria:estado-deudas' object.id %}"{% else %}disabled{% endif %} title="Stock de disponibilidades" class="btn btn-icon btn-bordered btn-info tooltip-animation btn-xs">
-              <i class="fa fa-money"></i>
+              <i class="fa fa-dollar"></i>
           </a>
           <a href="{% url 'front:tesoreria:estado-cuenta' object.id %}" title="Movimientos" class="btn btn-icon btn-bordered btn-purple tooltip-animation btn-xs">
               <i class="fa fa-bars"></i>

@@ -36,7 +36,7 @@
                     <tr>
                     <td class="text-center">
                         <a {% if object.pdf %}href="{% url 'front:pdf-viewer' pk=object.documento_id %}"{% else %}disabled{% endif %} target="_blank" title="Ver PDF" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
-                        <i class="fa fa-file-pdf-o"></i>
+                        <i class="fa fa-file-pdf"></i>
                         </a>
                         <a href="{% url edit_url pk=object.documento_id %}" title="Ver comprobante" class="btn btn-icon btn-bordered btn-primary tooltip-animation btn-xs">
                         <i class="fa fa-eye"></i>

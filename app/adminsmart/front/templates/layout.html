@@ -14,7 +14,7 @@
     <link href='{% static "assets/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/core.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/components.css" %}' rel="stylesheet" type="text/css" />
-    <link href='{% static "assets/css/icons.css" %}' rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href='{% static "assets/css/pages.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/menu.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/responsive.css" %}' rel="stylesheet" type="text/css" />
@@ -52,7 +52,7 @@
                         <li class="text-center">
                             <h5>Hola, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</h5>
                         </li>
-                        <li><a href="{% url 'front:perfil' %}"><i class="dripicons-user m-r-10"></i> Perfil</a></li>
+                        <li><a href="{% url 'front:perfil' %}"><i class="fa fa-user m-r-10"></i> Perfil</a></li>
                         <li>
                           <form action="{% url 'front:change-community' %}" method="POST">{% csrf_token %}
                             <select class="selector form-control" name="community" id="change-community" value="{{comunidad.id}}">
@@ -63,8 +63,8 @@
                           </form>
                           
                         </li>
-                        <li><a href="{% url 'front:biblioteca' %}"><i class="dripicons-bookmark m-r-10"></i> Biblioteca</a></li>
-                        <li><a href="{% url 'logout' %}"><i class="dripicons-power m-r-10"></i> Logout</a></li>
+                        <li><a href="{% url 'front:biblioteca' %}"><i class="fa fa-book-bookmark m-r-10"></i> Biblioteca</a></li>
+                        <li><a href="{% url 'logout' %}"><i class="fa fa-power-off m-r-10"></i> Logout</a></li>
                     </ul>
 
                 </li>
