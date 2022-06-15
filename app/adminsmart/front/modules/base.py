@@ -21,7 +21,7 @@ from adminsmart.apps.core.filters import (
 	DocumentoFilter
 )
 
-from ..tools import (
+from ..permissions import (
 	CommunityPermissions,
 	UserObjectCommunityPermissions,
 	ModulePermissions
@@ -54,9 +54,12 @@ class BaseFrontView(CommunityPermissions, ModulePermissions, generic.TemplateVie
 		if getattr(self, "SUBMODULE", False):
 			context.update({'submodule': self.SUBMODULE})
 		if getattr(self, "MODULE_BUTTONS", False):
-			context.update({'sidebuttons': self.MODULE_BUTTONS})	
+			context.update({'side_buttons': self.MODULE_BUTTONS})	
 		if getattr(self, "MODULE_HANDLER", False):
 			context.update({'module_handler': self.MODULE_HANDLER})					
+		if getattr(self, "MODULE_CHART", False):
+			self.MODULE_CHART.comunidad = self.comunidad
+			context.update({'side_chart': self.MODULE_CHART})
 		return context
 
 class BaseAdminView(BaseFrontView):

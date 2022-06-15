@@ -14,7 +14,7 @@ from django.views import generic
 from adminsmart.apps.utils.models import Comunidad
 from adminsmart.apps.core.models import Documento
 
-from .tools import (
+from .permissions import (
 	CommunityPermissions,
 	UserObjectCommunityPermissions
 )

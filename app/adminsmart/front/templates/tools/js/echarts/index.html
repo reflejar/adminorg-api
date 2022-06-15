@@ -1,0 +1,5 @@
+{% if chart.kind == "donut" %}
+    {% include 'tools/js/echarts/donut.html' %}
+{% elif chart.kind == "gauge" %}
+    {% include 'tools/js/echarts/gauge.html' %}
+{% endif %}

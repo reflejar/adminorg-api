@@ -131,12 +131,15 @@
             </div>
           </div>
             <div class="row">
-              {% if sidebuttons %}
+              {% if side_buttons %}
                 <div class="col-md-3">
-                  {% include 'tools/sidebuttons.html' %}
+                  {% include 'tools/side-buttons.html' %}
+                  {% if side_chart %}
+                    {% include 'tools/side-chart.html' %}
+                  {% endif %}
                 </div>
               {% endif %}
-              <div class="col-md-{% if sidebuttons %}9{% else %}12{% endif %}">
+              <div class="col-md-{% if side_buttons %}9{% else %}12{% endif %}">
                 {% block contenido %}{% endblock %}
               </div>
             </div>
@@ -168,6 +171,11 @@
     <script src='{% static "assets/js/jquery.app.js" %}'></script>
     <script src='{% static "plugins/jquery-validation/jquery.validate.js" %}'></script>
     <script src='{% static "plugins/jquery-validation/localization/messages_es.js" %}'></script>
+    {% if side_chart %}
+      <script src='{% static "plugins/echart/echarts-all.js" %}'></script>
+      {% include 'tools/js/echarts/index.html' with chart=side_chart %}
+    {% endif %}
+
     {% if messages %}
         <script>
           {% for message in messages %}

@@ -1,0 +1,62 @@
+{% load staticfiles %}
+{% load formatter %}
+
+<script>
+$(document).ready(function () {
+    if($("#gauge_chart").length){
+
+// Initialize after dom ready
+      var myChart = echarts.init(document.getElementById('gauge_chart'));
+
+      var option = {
+
+        tooltip : {
+          formatter: "{b} : {c}%"
+        },
+        toolbox: {show : false},
+        series : [
+          {
+            name:'Server Load',
+            type:'gauge',
+            center: ['50%', '50%'],
+            radius: ['0%', '100%'],
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: [
+                  [0.2, '#64c5b1'],
+                  [0.8, '#4489e4'],
+                  [1, '#e52b4c']
+                ],
+                width: 10
+              }
+            }  ,
+            title: {show : false}  ,
+            detail: {
+              show : true,
+              backgroundColor: 'rgba(0,0,0,0)',
+              borderWidth: 0,
+              borderColor: '#ccc',
+              width: 100,
+              height: 40,
+              offsetCenter: [0, '40%'],
+              formatter:'{value}%',
+              textStyle: {
+                color: 'auto',
+                fontSize : 20
+              }
+            },
+
+            data:[{value: {{chart.gauge}}, name: '{{chart.title}}'}]
+          }
+        ]
+      };
+      myChart.setOption(option);
+
+    
+
+    }
+})
+</script>
+
+

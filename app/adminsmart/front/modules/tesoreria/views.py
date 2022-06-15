@@ -1,5 +1,8 @@
 from django.views import generic
 
+from adminsmart.front.modules import charts
+
+
 from ..base import (
 	AdminListObjectsView,
 	AdminEstadoView,
@@ -17,8 +20,9 @@ class IndexView(AdminListObjectsView):
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	MODULE_HANDLER = config.MODULE_HANDLER
 	MODULE_FIELD_DISPLAY = ['id', 'nombre', 'tipo']
+	MODULE_CHART = charts.Donut('arqueo')
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"
-	
+
 	
 class CUDParametroView(
 		AdminParametrosCUDView, 
