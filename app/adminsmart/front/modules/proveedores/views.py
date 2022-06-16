@@ -19,7 +19,7 @@ class IndexView(AdminListObjectsView):
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	MODULE_HANDLER = config.MODULE_HANDLER
 	MODULE_FIELD_DISPLAY = ['id', 'apellido_proveedor', 'nombre_proveedor', 'razon_social']
-	MODULE_CHART = charts.Gauge('a_pagar')
+	MODULE_CHART = charts.Pie('a_pagar')
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"
 
 

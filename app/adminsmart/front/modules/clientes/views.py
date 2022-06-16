@@ -20,7 +20,7 @@ class IndexView(AdminListObjectsView):
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	MODULE_HANDLER = config.MODULE_HANDLER
 	MODULE_FIELD_DISPLAY = ['id', 'apellido_cliente', 'nombre_cliente', 'razon_social']
-	MODULE_CHART = charts.Donut('a_cobrar')
+	MODULE_CHART = charts.Pie('a_cobrar')
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"
 
 

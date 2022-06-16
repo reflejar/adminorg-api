@@ -171,10 +171,6 @@
     <script src='{% static "assets/js/jquery.app.js" %}'></script>
     <script src='{% static "plugins/jquery-validation/jquery.validate.js" %}'></script>
     <script src='{% static "plugins/jquery-validation/localization/messages_es.js" %}'></script>
-    {% if side_chart %}
-      <script src='{% static "plugins/echart/echarts-all.js" %}'></script>
-      {% include 'tools/js/echarts/index.html' with chart=side_chart %}
-    {% endif %}
 
     {% if messages %}
         <script>
