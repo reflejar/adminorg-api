@@ -12,6 +12,7 @@ class Chart:
 	KINDS = {
 		'pie': go.Pie,
 	}
+	COLORS = ['#34d3eb','#ec6794','#32c861','#4489e4','#ffa91c','#5553ce','#f96a74']
 
 	def __init__(
 			self, 
@@ -52,7 +53,13 @@ class Chart:
 	def render(self):
 		labels, values = self.exec()
 		fig = go.Figure(
-			data=[self.kind(labels=labels, text=labels, textinfo="text+value", values=values)],
+			data=[self.kind(
+				labels=labels, 
+				text=labels, 
+				textinfo="text+value", 
+				values=values,
+				marker=dict(colors=self.COLORS),
+			)],
 			layout=go.Layout(
 				margin=dict(l=50, r=50, t=0, b=0),
 				legend=dict(orientation="h"),
