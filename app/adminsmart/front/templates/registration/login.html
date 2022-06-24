@@ -1,4 +1,4 @@
-{% extends 'registration/raiz.html' %}
+{% extends 'registration/layout.html' %}
 {% block titulo %}Login{% endblock %}
 {% block content %}
   <div class="row">
@@ -7,10 +7,10 @@
         {% for field in form %}
           <div class="form-group m-b-20">
               {% if field.name == "password" %}
-                <a href="{% url 'password_reset' %}" class="text-muted pull-right"><small>Olvidaste tu contraseña?</small></a>
+                <a href="{% url 'password_reset' %}" tabindex="4" class="pull-right"><small>Olvidaste tu contraseña?</small></a>
               {% endif %}
-              <label for="{{field.id}}">{% if field.name == "username" %}Usuario{% else %}Contraseña{% endif %}</label>
-              <input tabindex={{forloop.counter}} type="{% if field.name == "username" %}text{% else %}password{% endif %}" class="form-control" name="{{ field.name }}" id="{{field.id}}" required="" placeholder="">
+              <label for="{{field.name}}">{% if field.name == "username" %}Usuario{% else %}Contraseña{% endif %}</label>
+              <input id="{{field.name}}" tabindex={{forloop.counter}} type="{% if field.name == "username" %}text{% else %}password{% endif %}" class="form-control" name="{{ field.name }}" id="{{field.id}}" required="" placeholder="">
           </div>
         {% endfor %}
 
@@ -21,7 +21,7 @@
 
         <div class="form-group text-center m-t-10">
           <div class="col-xs-12">
-            <button class="btn btn-md btn-block btn-info waves-effect waves-light" type="submit">Ingresar</button>
+            <button class="btn btn-md btn-block btn-info waves-effect waves-light" tabindex="3" type="submit">Ingresar</button>
             <hr>
           </div>
         </div>
@@ -33,7 +33,7 @@
 
   <div class="row">
     <div class="col-xs-12 text-center">
-      <p class="text-muted">No tenes una cuenta? <a href="{% url 'signup' %}" class="text-dark m-l-5"><b>Registrate!</b></a></p>
+      <p class="text-muted">No tenes una cuenta? <a href="{% url 'signup' %}" tabindex="5" class="text-dark m-l-5"><b>Registrate!</b></a></p>
     </div>
   </div>
 {% endblock %}

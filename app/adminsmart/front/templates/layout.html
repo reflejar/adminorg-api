@@ -1,10 +1,10 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <title>{% block titulo %}{{module.name}}{% if submodule %} - {{submodule.name}}{% endif %}{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="shortcut icon" href='{% static "anopa/images/favicon.svg" %}'>
@@ -15,14 +15,10 @@
     <link href='{% static "assets/css/core.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/components.css" %}' rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href='{% static "assets/css/pages.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/menu.css" %}' rel="stylesheet" type="text/css" />
-    <link href='{% static "assets/css/responsive.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "anopa/anopa.css" %}' rel="stylesheet" type="text/css" />
 
     {% block css %}{% endblock %}
-
-    <script src='{% static "assets/js/modernizr.min.js" %}'></script>
     <script src='{% static "assets/js/jquery.min.js" %}'></script>
 
   </head>
@@ -38,7 +34,7 @@
             <div class="logo">
 
                 <a href="{% url 'front:informes' %}" class="logo">
-                  <img src='{% static "anopa/images/icono.svg" %}' alt="" height="40"> <small>{{ comunidad }}</small>
+                  <img src='{% static "anopa/images/icono.svg" %}' alt="" width="40" height="40"> <small>{{ comunidad }}</small>
                 </a>
             </div>
 
@@ -61,6 +57,16 @@
                               {% endfor %}
                             </select>
                           </form>
+                          <script>
+                            $('.dropdown-menu').click(function(e) {
+                                e.stopPropagation();
+                            });
+                          </script>
+                          <script>
+                            $("#change-community").change(function() {
+                              this.form.submit(); 
+                            });
+                          </script>
                           
                         </li>
                         <li><a href="{% url 'front:biblioteca' %}"><i class="fa fa-book-bookmark m-r-10"></i> Biblioteca</a></li>
@@ -162,17 +168,10 @@
 
     
     <script src='{% static "assets/js/bootstrap.min.js" %}'></script>
-    <script src='{% static "assets/js/waves.js" %}'></script>
-    <script src='{% static "assets/js/jquery.slimscroll.js" %}'></script>
-    <script src='{% static "plugins/waypoints/jquery.waypoints.min.js" %}'></script>
-    <script src='{% static "plugins/counterup/jquery.counterup.min.js" %}'></script>
-    <script src='{% static "plugins/jquery-toastr/jquery.toast.min.js" %}'></script>
     <script src='{% static "anopa/anopa.js" %}'></script>
     {% block js %}{% endblock %}
     <script src='{% static "assets/js/jquery.core.js" %}'></script>
     <script src='{% static "assets/js/jquery.app.js" %}'></script>
-    <script src='{% static "plugins/jquery-validation/jquery.validate.js" %}'></script>
-    <script src='{% static "plugins/jquery-validation/localization/messages_es.js" %}'></script>
 
     {% if messages %}
         <script>
@@ -192,16 +191,7 @@
         </script>
     {% endif %}
       
-    <script>
-      $('.dropdown-menu').click(function(e) {
-          e.stopPropagation();
-      });
-    </script>
-    <script>
-      $("#change-community").change(function() {
-        this.form.submit(); 
-      });
-    </script>
+
 
   </body>
 </html>
