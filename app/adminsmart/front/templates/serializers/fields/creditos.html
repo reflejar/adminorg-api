@@ -1,0 +1,24 @@
+{% load rest_framework %}
+
+{% if form.creditos %}
+
+    <div class="row">
+        <div class="col-md-12">
+        <div class="portlet">
+            <div class="portlet-heading bg-info">
+                <h3 class="portlet-title">Items del comprobante</h3>
+                <div class="portlet-widgets">
+                    <a data-toggle="collapse" data-parent="#accordion-creditos" href="#portlet-creditos"><i class="fa fa-minus"></i></a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div id="portlet-creditos" class="panel-collapse collapse in">
+                <div class="portlet-body">
+                    {% render_field form.creditos style=inline_style %}
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+{% endif %}

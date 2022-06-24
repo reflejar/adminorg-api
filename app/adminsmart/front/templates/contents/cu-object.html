@@ -1,16 +1,11 @@
 {% extends 'layout.html' %}
 {% load humanize %}
 
-{% block css %}
-  {% include 'tools/css/datepicker.html' %}
-{% endblock %}
-
 {% block contenido %}
-  	{% include 'tools/simple-serializer.html' %}
+  	{% include 'serializers/simple.html' %}
 {% endblock %}
 
 {% block js %}
-  {% include 'tools/js/datepicker.html' %}
   <script>
     $('select[name=titulo]').attr('disabled', 'disabled');
   </script>

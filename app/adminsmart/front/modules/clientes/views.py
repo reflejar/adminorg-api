@@ -45,7 +45,7 @@ class CUDDocumentoView(
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	MODULE_HANDLER = 'documento_cliente'
-	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	
+	template_name = f'{config.TEMPLATE_FOLDER}/cu-document.html'	
 
 
 class EstadoDeudasView(AdminEstadoView):

@@ -414,6 +414,8 @@ class AdminDocumentosCUDView(BaseCUDView):
 		'documento_proveedor': DocumentoProveedorForm,
 		'documento_caja': DocumentoTesoreriaForm,
 	}	
+	VERTICAL_STYLE = {'template_pack': 'rest_framework/vertical'}
+	INLINE_STYLE = {'template_pack': 'rest_framework/inline'}
 
 	@property
 	def RECEIPT_TYPE(self):
@@ -432,6 +434,12 @@ class AdminDocumentosCUDView(BaseCUDView):
 			'receipt_type': self.RECEIPT_TYPE
 		})
 		return kwargs
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['vertical_style'] = self.VERTICAL_STYLE
+		context['inline_style'] = self.INLINE_STYLE
+		return context
 
 
 class SocioFrontView(BaseFrontView):

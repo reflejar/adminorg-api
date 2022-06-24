@@ -1,0 +1,19 @@
+{% load rest_framework %}
+
+<div class="col-md-2">
+  {% render_field form.fecha_operacion style=vertical_style %}
+</div>
+<script>
+  $('input[name="fecha_operacion"]').change(function() {
+    var URL = document.URL;
+    var NEW = `fecha_operacion=${this.value}`;
+    if(URL.indexOf('fecha_operacion') != -1) {
+      var PARAMETER = URL.split("&").filter((par)=> par.indexOf('fecha_operacion') != -1)[0]
+      URL = URL.replace(PARAMETER, NEW)
+    }
+    else {
+      URL = URL + "&" + NEW
+    }
+    window.location = URL;
+  });
+</script>      

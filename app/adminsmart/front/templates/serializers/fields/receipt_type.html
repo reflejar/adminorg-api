@@ -1,0 +1,19 @@
+{% load rest_framework %}
+
+<div class="col-md-2">
+  {% render_field form.receipt.receipt_type style=vertical_style %}
+</div>
+<script>
+  $('select[name="receipt.receipt_type"]').change(function() {
+    var URL = document.URL;
+    var NEW = `tipo_cbte=${this.value}`;
+    if(URL.indexOf('tipo_cbte') != -1) {
+      var PARAMETER = URL.split("&").filter((par)=> par.indexOf('tipo_cbte') != -1)[0]
+      URL = URL.replace(PARAMETER, NEW)
+    }
+    else {
+      URL = URL + "&" + NEW
+    }
+    window.location = URL;
+  });
+</script>

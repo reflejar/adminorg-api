@@ -6,7 +6,8 @@ from ..base import (
 	AdminListObjectsView,
 	AdminEstadoView,
 	AdminRegistroView,
-	AdminParametrosCUDView
+	AdminParametrosCUDView,
+	AdminDocumentosCUDView
 )
 
 from . import config
@@ -33,6 +34,17 @@ class CUDParametroView(
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	MODULE_HANDLER = config.MODULE_HANDLER
 	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	
+
+class CUDDocumentoView(
+		AdminDocumentosCUDView, 
+		generic.CreateView,
+		generic.UpdateView,
+	):
+
+	MODULE = config.MODULE
+	MODULE_BUTTONS = config.MODULE_BUTTONS
+	MODULE_HANDLER = 'documento_proveedor'
+	template_name = f'{config.TEMPLATE_FOLDER}/cu-document.html'
 	
 class EstadoDeudasView(AdminEstadoView):
 

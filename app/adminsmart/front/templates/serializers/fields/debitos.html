@@ -1,0 +1,19 @@
+{% if form.debitos %}
+<div class="row">
+    <div class="col-md-12">
+    <div class="portlet">
+        <div class="portlet-heading bg-info">
+            <h3 class="portlet-title">Items del comprobante</h3>
+            <div class="portlet-widgets">
+                <a data-toggle="collapse" data-parent="#accordion-debitos" href="#portlet-debitos"><i class="fa fa-minus"></i></a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="portlet-debitos" class="panel-collapse collapse in">
+            <div class="portlet-body">
+            </div>
+        </div>
+    </div>             
+    </div>
+</div>
+{% endif %}

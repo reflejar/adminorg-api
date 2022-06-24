@@ -25,30 +25,66 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		self.fields['total_amount'] = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
-		self.fields['receipt_type'] = serializers.ChoiceField(choices=list(ReceiptType.objects.all().values_list('description', flat=True)))
+		self.fields['total_amount'] = serializers.DecimalField(
+				max_digits=15, 
+				decimal_places=2, 
+				read_only=True
+			)
+		self.fields['receipt_type'] = serializers.ChoiceField(
+			choices=list(ReceiptType.objects.all().values_list('description', flat=True)),
+			label="Tipo"
+		)
 		point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))
 		
 		if self.context['causante'] in ["cliente", "caja"]:
-			self.fields['point_of_sales'] = serializers.ChoiceField(choices=point_of_sales_owner)
-			self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
+			self.fields['point_of_sales'] = serializers.ChoiceField(
+				choices=point_of_sales_owner, 
+				label="Punto de venta"
+			)
+			self.fields['receipt_number'] = serializers.IntegerField(
+				read_only=True,
+				label="Número"
+			)
 			
 		elif self.context['causante'] == "cliente-masivo":
-			self.fields['point_of_sales'] = serializers.ChoiceField(choices=point_of_sales_owner)
+			self.fields['point_of_sales'] = serializers.ChoiceField(
+				choices=point_of_sales_owner,
+				label="Punto de venta"
+			)
 	
 		elif self.context['causante'] == "proveedor":
 			if 'receipt_type' in self.context.keys():
-				self.fields['point_of_sales'] = serializers.CharField(max_length=4, required=True)
+				self.fields['point_of_sales'] = serializers.CharField(
+					max_length=4, 
+					required=True,
+					label="Punto de venta"
+				)
 				if self.context['receipt_type'].code != "301":
-					self.fields['receipt_number'] = serializers.IntegerField(read_only=False, required=True)
+					self.fields['receipt_number'] = serializers.IntegerField(
+						read_only=False, 
+						required=True,
+						label="Número"
+					)
 				else:
-					self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
+					self.fields['receipt_number'] = serializers.IntegerField(
+						read_only=True,
+						label="Número"
+					)
 			else:
-				self.fields['point_of_sales'] = serializers.CharField(read_only=True)
-				self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
+				self.fields['point_of_sales'] = serializers.CharField(
+					read_only=True,
+					label="Punto de venta"
+				)
+				self.fields['receipt_number'] = serializers.IntegerField(
+					read_only=True,
+					label="Número"
+				)
 				
 		elif self.context['causante'] == "asiento":
-			self.fields['receipt_number'] = serializers.IntegerField(read_only=True)
+			self.fields['receipt_number'] = serializers.IntegerField(
+				read_only=True,
+				label="Número"
+			)
 
 	def get_point_of_sales(self, point_of_sales):
 
