@@ -41,6 +41,8 @@
       {% include 'serializers/fields/utilizaciones_disponibilidades.html' %}
       {% include 'serializers/fields/cajas.html' %}
       {% include 'serializers/fields/descripcion.html' %}
+
+      {{form.data|json_script:"documento"}}
       
       <div class="row">
         <div class="col-xs-6">
@@ -56,14 +58,6 @@
 
 {% block js %}
   <script>
-    var csrftoken = $('input[name=csrfmiddlewaretoken]').val()
-    $.ajax ({
-      url: "/api/operative/documentos/cliente/20857",
-      type: 'GET',
-      headers: {"X-CSRFToken": csrftoken},
-      success: function (res) {
-        console.log(res)
-      }
-    })
+    var value = JSON.parse(document.getElementById('documento').textContent)
   </script>
 {% endblock %}

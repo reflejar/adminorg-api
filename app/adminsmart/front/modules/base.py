@@ -14,7 +14,8 @@ from adminsmart.apps.core.models import (
 	Cuenta,
 	Metodo,
 	Titulo,
-	Documento
+	Documento,
+	Operacion
 )
 
 from adminsmart.apps.core.filters import (
@@ -341,7 +342,8 @@ class BaseCUDView(BaseFrontView):
 		'titulo': Titulo,
 		'interes': Metodo,
 		'descuento': Metodo,
-		'documento_cliente': Documento
+		'documento_cliente': Documento,
+		'informes': Operacion,
 	}	
 
 	@property

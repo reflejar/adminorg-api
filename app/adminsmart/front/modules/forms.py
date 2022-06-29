@@ -9,6 +9,10 @@ from adminsmart.api.core.serializers.documentos import (
 	TesoroModelSerializer
 )
 
+from adminsmart.api.informes.serializer import (
+	InformeSerializer
+)
+
 
 class FormControl:
 
@@ -34,4 +38,7 @@ class DocumentoProveedorForm(FormControl, OrigenProveedorModelSerializer):
 	pass
 
 class DocumentoTesoreriaForm(FormControl, TesoroModelSerializer):
+	pass
+
+class InformeForm(FormControl, InformeSerializer):
 	pass

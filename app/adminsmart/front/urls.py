@@ -27,7 +27,9 @@ urlpatterns = [
 	path('contabilidad/', include(
 		('adminsmart.front.modules.contabilidad.urls', 'contabilidad'), namespace='contabilidad')
 	),
-	path('informes/', BlankView.as_view(), name='informes'),
+	path('informes/', include(
+		('adminsmart.front.modules.informes.urls', 'informes'), namespace='informes')
+	),
 	path('configuracion/', include(
 		('adminsmart.front.modules.configuracion.urls', 'configuracion'), namespace='configuracion')
 	),

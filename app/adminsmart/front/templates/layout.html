@@ -33,7 +33,7 @@
 
             <div class="logo">
 
-                <a href="{% url 'front:informes' %}" class="logo">
+                <a href="{% url 'front:index' %}" class="logo">
                   <img src='{% static "anopa/images/icono.svg" %}' alt="" width="40" height="40"> <small>{{ comunidad }}</small>
                 </a>
             </div>
@@ -147,7 +147,7 @@
               </div>
               {% if side_chart %}
                 <div class="col-md-3">
-                    {% include 'tools/side-chart.html' %}
+                  {{side_chart.render|safe}}
                 </div>
               {% endif %}              
             </div>

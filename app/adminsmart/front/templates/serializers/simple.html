@@ -1,6 +1,6 @@
 {% load rest_framework %}
 
-<form id="process" action="{{ vista }}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+<form id="process" action="{{ vista }}" method="{{method|default:'POST'}}" enctype="multipart/form-data">{% csrf_token %}
   <div class="panel panel-default">
     {% if module_handler %}
     <div class="panel-heading">

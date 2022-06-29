@@ -11,6 +11,7 @@ class Chart:
 
 	KINDS = {
 		'pie': go.Pie,
+		'bar': go.Pie,
 	}
 	COLORS = ['#34d3eb','#ec6794','#32c861','#4489e4','#ffa91c','#5553ce','#f96a74']
 
@@ -61,8 +62,8 @@ class Chart:
 				marker=dict(colors=self.COLORS),
 			)],
 			layout=go.Layout(
-				margin=dict(l=50, r=50, t=0, b=0),
 				legend=dict(orientation="h"),
+				title=self.title
 			)
 		)
 		return fig.to_html()
@@ -93,4 +94,3 @@ class Chart:
 # 		df = df.groupby(['cuenta__nombre'])['valor'].sum().reset_index()
 # 		df = df[df['valor'] > 0]
 # 		return df['cuenta__nombre'].unique(), df['valor'].unique()
-

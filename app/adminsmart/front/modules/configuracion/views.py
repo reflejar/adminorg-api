@@ -6,6 +6,7 @@ from adminsmart.apps.core.models import (
 )
 
 from ..base import (
+	BaseAdminView,
 	AdminListObjectsView,
 	AdminParametrosCUDView
 )
@@ -14,7 +15,7 @@ from . import config
 
 
 
-class IndexView(AdminListObjectsView):
+class IndexView(BaseAdminView):
 
 	""" Vista de configuracion """
 
