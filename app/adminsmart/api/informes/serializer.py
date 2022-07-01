@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from adminsmart.apps.informes.analisis import OperacionAnalisis
+from adminsmart.apps.core.analytics import Report
 
 GROUPS = [
 	('periodo', 'Periodo'),
@@ -48,6 +48,7 @@ class InformeSerializer(serializers.Serializer):
 		)
 
 	def create(self, validated_data):
-		pd = OperacionAnalisis(validated_data)
+		validated_data['initial_filters'] = self.context['initial_filters']
+		pd = Report(validated_data)
 		print(pd)
 		return validated_data

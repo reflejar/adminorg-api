@@ -48,6 +48,7 @@ class CUDView(
 		'informes': InformeForm,
 	}
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		return context
+	def get_form_kwargs(self):
+		kwargs = super().get_form_kwargs()
+		kwargs['context'].update({'comunidad':self.comunidad})
+		return kwargs

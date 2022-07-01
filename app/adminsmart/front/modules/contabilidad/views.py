@@ -10,7 +10,7 @@ from django.http import (
 from django.db.models import Sum
 
 from adminsmart.apps.informes.filter import InformesFilter
-from adminsmart.apps.informes.analisis import OperacionAnalisis
+from adminsmart.apps.core.analytics import Report
 
 from adminsmart.apps.core.models import (
 	Operacion,
@@ -110,23 +110,6 @@ class MayoresView(AdminRegistroView):
 	filterset_class = InformesFilter
 	template_name = f'{config.TEMPLATE_FOLDER}/mayores.html'	
 
-	def get_nombres(self):
-		cuentas = Cuenta.objects.filter(
-					comunidad=self.comunidad, 
-					).select_related(
-						"naturaleza",
-					).prefetch_related(
-						"vinculo2",
-					)
-		nombres = [
-			{
-				'CUENTA_ID': c.id, 
-				'NATURALEZA': c.naturaleza.nombre,
-				'NOMBRE': str(c) if c.naturaleza.nombre != "dominio" else str(c.inquilino())
-			} for c in cuentas
-		]		
-		return nombres
-
 	def get_queryset(self):
 		any_filters = any(self.request.GET.values())
 		if any_filters:		
@@ -158,12 +141,10 @@ class MayoresView(AdminRegistroView):
 		any_filters = any(self.request.GET.values())
 		if any_filters:
 			queryset = self.get_queryset()
-			analisis = OperacionAnalisis(
-					queryset=queryset, 
-					nombres=self.get_nombres(), 
-					analisis_config={"analizar":[],"agrupar_por":[],"encolumnar":[],"totalizar":"valor"}
-				)
-			df = analisis.get_df(raw_data=True)
+			df = Report(
+					comunidad=self.comunidad,
+					data=queryset
+					).get_df(raw_data=True)
 			with BytesIO() as b:
 				# Use the StringIO object as the filehandle.
 				writer = pd.ExcelWriter(b, engine='xlsxwriter')
