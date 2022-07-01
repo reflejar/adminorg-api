@@ -52,21 +52,24 @@ class Chart:
 
 
 	def render(self):
-		labels, values = self.exec()
-		fig = go.Figure(
-			data=[self.kind(
-				labels=labels, 
-				text=labels, 
-				textinfo="text+value", 
-				values=values,
-				marker=dict(colors=self.COLORS),
-			)],
-			layout=go.Layout(
-				legend=dict(orientation="h"),
-				title=self.title
+		try:	
+			labels, values = self.exec()
+			fig = go.Figure(
+				data=[self.kind(
+					labels=labels, 
+					text=labels, 
+					textinfo="text+value", 
+					values=values,
+					marker=dict(colors=self.COLORS),
+				)],
+				layout=go.Layout(
+					legend=dict(orientation="h"),
+					title=self.title
+				)
 			)
-		)
-		return fig.to_html()
+			return fig.to_html()
+		except:
+			return ""
 
 
 # class Pie(BaseChart):

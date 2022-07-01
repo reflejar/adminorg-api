@@ -80,7 +80,7 @@ class Cuenta(BaseModel):
 			if d.saldo() <= 0.00: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA pero excluyendo las pagadas posteriormente
 				excluir.append(d.id)
 		
-		return deudas.exclude(id__in=excluir).order_by('fecha', 'id')
+		return deudas.exclude(id__in=excluir).order_by('-fecha', 'id')
 
 
 	def estado_cuenta(self, fecha=None):	

@@ -18,8 +18,12 @@
     <link href='{% static "assets/css/menu.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "anopa/anopa.css" %}' rel="stylesheet" type="text/css" />
 
-    {% block css %}{% endblock %}
     <script src='{% static "assets/js/jquery.min.js" %}'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.22.0/bootstrap-vue.min.js" integrity="sha512-fpl6VxrVL83pzi0dMBPknsykT+mf3+TLzBigOtNKp1cPi2oEpooeOzTb+tOku1YhL7/0eDfe9nnzCPzuAwvtog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src='{% static "assets/js/bootstrap.min.js" %}'></script>
+    <script src='{% static "anopa/anopa.js" %}'></script>
+    {% block assets %}{% endblock %}
 
   </head>
 
@@ -166,12 +170,7 @@
 
     </div>
 
-    
-    <script src='{% static "assets/js/bootstrap.min.js" %}'></script>
-    <script src='{% static "anopa/anopa.js" %}'></script>
     {% block js %}{% endblock %}
-    <script src='{% static "assets/js/jquery.core.js" %}'></script>
-    <script src='{% static "assets/js/jquery.app.js" %}'></script>
 
     {% if messages %}
         <script>

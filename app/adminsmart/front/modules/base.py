@@ -1,5 +1,6 @@
 from itertools import groupby
 from django.db.models import F
+from django.http import Http404
 from django.views import generic
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404 
@@ -417,7 +418,6 @@ class AdminDocumentosCUDView(BaseCUDView):
 		'documento_caja': DocumentoTesoreriaForm,
 	}	
 	VERTICAL_STYLE = {'template_pack': 'rest_framework/vertical'}
-	INLINE_STYLE = {'template_pack': 'rest_framework/inline'}
 
 	@property
 	def RECEIPT_TYPE(self):
@@ -433,15 +433,23 @@ class AdminDocumentosCUDView(BaseCUDView):
 		kwargs['context'].update({
 			'sin_destinatario': False,
 			'causante': self.MODULE_HANDLER.split("_")[1],
-			'receipt_type': self.RECEIPT_TYPE
+			'receipt_type': self.RECEIPT_TYPE,
 		})
+		if 'cuenta_pk' in self.request.GET:
+			kwargs['context']['cuenta']	= Cuenta.objects.get(id=self.request.GET['cuenta_pk'])
+		elif self.object.destinatario:
+			kwargs['context']['cuenta'] = self.object.destinatario
 		return kwargs
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['vertical_style'] = self.VERTICAL_STYLE
-		context['inline_style'] = self.INLINE_STYLE
 		return context
+
+	def dispatch(self, request, *args, **kwargs):	
+		if not 'cuenta_pk' in self.request.GET and not 'pk' in kwargs:
+			raise Http404('There is no parameter cuenta_pk')
+		return super().dispatch(request, *args, **kwargs)
 
 
 class SocioFrontView(BaseFrontView):

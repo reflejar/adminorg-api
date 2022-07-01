@@ -5,59 +5,54 @@
 {% block contenido %}
 
 <form id="process" action="{{ vista }}" method="POST" enctype="multipart/form-data">{% csrf_token %}
-      <div class="row">
-        <div class="col-md-12">
-          <div class="portlet">
-            <div class="portlet-heading bg-info">
-                <h3 class="portlet-title">Encabezados</h3>
-                <div class="portlet-widgets">
-                    <a data-toggle="collapse" data-parent="#accordion-encabezados" href="#portlet-encabezados"><i class="fa fa-minus"></i></a>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div id="portlet-encabezados" class="panel-collapse collapse in">
-                <div class="portlet-body">
-                  <div class="row">
-                    {% include 'serializers/fields/receipt_type.html' %}
-                    {% include 'serializers/fields/point_of_sales.html' %}
-                    {% include 'serializers/fields/receipt_number.html' %}
-                    {% include 'serializers/fields/issued_date.html' %}
-                    {% include 'serializers/fields/fecha_operacion.html' %}
-                    {% include 'serializers/fields/condonacion.html' %}
-                  </div>
-                </div>
-            </div>
-          </div>             
-        </div>
-      </div>
-      {% csrf_token %}
-     
-      {% include 'serializers/fields/creditos.html' %}
-      {% include 'serializers/fields/debitos.html' %}
-      {% include 'serializers/fields/cobros.html' %}
-      {% include 'serializers/fields/pagos.html' %}
-      {% include 'serializers/fields/resultados.html' %}
-      {% include 'serializers/fields/utilizaciones_saldos.html' %}
-      {% include 'serializers/fields/utilizaciones_disponibilidades.html' %}
-      {% include 'serializers/fields/cajas.html' %}
-      {% include 'serializers/fields/descripcion.html' %}
-
-      {{form.data|json_script:"documento"}}
-      
-      <div class="row">
-        <div class="col-xs-6">
-          <a href="javascript:history.back()" class="btn btn-bordered btn-default btn-block">Cancelar</a>
-        </div>
-        <div class="col-xs-6">
-          <button type="submit" class="accion_envio btn btn-bordered btn-primary btn-block">Guardar</button>
-        </div>
-      </div>
-</form>
-{% endblock %}
-
-
-{% block js %}
+  {{ form.data|json_script:"data" }}
   <script>
-    var value = JSON.parse(document.getElementById('documento').textContent)
+    var data = JSON.parse(document.getElementById('data').textContent)
   </script>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="portlet">
+          <div class="portlet-heading bg-info">
+              <h3 class="portlet-title">Encabezados</h3>
+              <div class="portlet-widgets">
+                  <a data-toggle="collapse" data-parent="#accordion-encabezados" href="#portlet-encabezados"><i class="fa fa-minus"></i></a>
+              </div>
+              <div class="clearfix"></div>
+          </div>
+          <div id="portlet-encabezados" class="panel-collapse collapse in">
+              <div class="portlet-body">
+                <div class="row">
+                  {% include 'serializers/fields/receipt_type.html' %}
+                  {% include 'serializers/fields/point_of_sales.html' %}
+                  {% include 'serializers/fields/receipt_number.html' %}
+                  {% include 'serializers/fields/issued_date.html' %}
+                  {% include 'serializers/fields/fecha_operacion.html' %}
+                  {% include 'serializers/fields/condonacion.html' %}
+                </div>
+              </div>
+          </div>
+        </div>             
+      </div>
+    </div>
+    {% csrf_token %}
+    
+    {% include 'serializers/fields/creditos.html' %}
+    {% include 'serializers/fields/debitos.html' %}
+    {% include 'serializers/fields/cobros.html' %}
+    {% include 'serializers/fields/pagos.html' %}
+    {% include 'serializers/fields/resultados.html' %}
+    {% include 'serializers/fields/utilizaciones_saldos.html' %}
+    {% include 'serializers/fields/utilizaciones_disponibilidades.html' %}
+    {% include 'serializers/fields/cajas.html' %}
+    {% include 'serializers/fields/descripcion.html' %}
+    
+    <div class="row">
+      <div class="col-xs-6">
+        <a href="javascript:history.back()" class="btn btn-bordered btn-default btn-block">Cancelar</a>
+      </div>
+      <div class="col-xs-6">
+        <button type="submit" class="accion_envio btn btn-bordered btn-primary btn-block">Guardar</button>
+      </div>
+    </div>
+</form>
 {% endblock %}
