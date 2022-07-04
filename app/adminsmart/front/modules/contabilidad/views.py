@@ -144,7 +144,7 @@ class MayoresView(AdminRegistroView):
 			df = Report(
 					comunidad=self.comunidad,
 					data=queryset
-					).get_df(raw_data=True)
+				).get_df(raw_data=True)
 			with BytesIO() as b:
 				# Use the StringIO object as the filehandle.
 				writer = pd.ExcelWriter(b, engine='xlsxwriter')

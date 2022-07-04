@@ -80,22 +80,15 @@ class Report:
 				))
 		
 
-
-	def prepare_cuenta_vinculada(self):
-		self.labels['COMPROBANTE_DESTINATARIO_ID'] = self.labels['CUENTA_ID']
-		self.labels['CUENTA_VINCULADA'] = self.labels['NOMBRE']
-		self.labels = self.labels[["COMPROBANTE_DESTINATARIO_ID", 'CUENTA_VINCULADA']]
-		self.df['COMPROBANTE_DESTINATARIO_ID'] = self.df['COMPROBANTE_DESTINATARIO_ID'].fillna(0)
-		self.df = pd.merge(self.df, self.labels, on=['COMPROBANTE_DESTINATARIO_ID'])
-
-
 	def generate_initial_df(self, values):
-
 		df = pd.DataFrame.from_records(values).copy()
 		if len(df):
+			# Se renombran las variables
 			df = df.rename(columns = self.COLUMN_NAMES)
+
 			# Preparacion del periodo
 			df['PERIODO'] = pd.to_datetime(df['PERIODO']).dt.strftime('%Y-%m')
+
 			# Preparacion del vinculo
 			df['VINCULO_ID'] = df['VINCULO_ID'].fillna(0).astype(int)
 
@@ -115,10 +108,16 @@ class Report:
 					self.keep.append("dominio")
 				df = df[df['NATURALEZA'].isin(self.keep)]
 
-		df = df.drop_duplicates()
+			# Preparación de las cuentas vinculadas
+			self.labels['COMPROBANTE_DESTINATARIO_ID'] = self.labels['CUENTA_ID']
+			self.labels['CUENTA_VINCULADA'] = self.labels['NOMBRE']
+			self.labels = self.labels[["COMPROBANTE_DESTINATARIO_ID", 'CUENTA_VINCULADA']]
+			df['COMPROBANTE_DESTINATARIO_ID'] = df['COMPROBANTE_DESTINATARIO_ID'].fillna(0)
+			df = pd.merge(df, self.labels, on=['COMPROBANTE_DESTINATARIO_ID'], how='left')
+			df = df.drop_duplicates()
 		return df
 		
-	def generate_groups(self, group_by):
+	def generate_rows(self, group_by):
 		groups = ['TITULO_NUMERO'] if 'titulo' in self.keep else []
 		groups += ['NOMBRE'] 
 		if 'cliente' in self.keep:
@@ -206,6 +205,7 @@ class Report:
 		self.df['CONCEPTO'] = self.df['CONCEPTO_PADRE'].fillna(self.df['CONCEPTO_HIJO'])
 		self.df['CONCEPTO'] = self.df['CONCEPTO'].fillna("")		
 
+
 	def get_df(
 		self, 
 		group_by=[],
@@ -213,21 +213,28 @@ class Report:
 		totalize="valor"	,	
 		raw_data=False
 	):
-
+		# Retorno de data cruda
+		if raw_data:
+			return self.df
+		
+		# Retorno vacío
+		if (
+			not len(self.df) or # Si no hay datos en el Dataframe inicial 
+			(raw_data == False and not self.keep) # O si NO me solicitan data cruda, sino procesada, pero no especifica la variable de análisis 
+		): 
+			return pd.DataFrame()
+		
+		# Si se pide que se agrupe o encolumne por conceptos hay que preparar los conceptos
 		if 'concepto' in group_by + columns or len(self.keep) == 0:
 			self.prepare_conceptos()
 
-		# self.prepare_cuenta_vinculada()
-
+		# Si se pide totalizar por debe se debe totalizar por haber y por saldo
 		if 'debe' in totalize:
 			self.prepare_dhs()
 
-		if not len(self.df) or (not raw_data and not self.keep):
-			return pd.DataFrame()
-		if raw_data:
-			return self.df
-
-		groups = self.generate_groups(group_by)
+		# Generación de las filas
+		groups = self.generate_rows(group_by)
+		# Generación de las columnas
 		columns = self.generate_columns(columns)
 
 		self.generate_pivot_table(groups, columns)
