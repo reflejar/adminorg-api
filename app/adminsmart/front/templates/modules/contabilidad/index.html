@@ -5,8 +5,7 @@
 {% load staticfiles %}
 
 {% block assets %}
-  {% include 'tools/css/datatable.html' %}
-  {% include 'tools/css/tooltipster.html' %}  
+  {% include 'assets/datatable.html' with print_excel_titulo=1 %}
 {% endblock %}
 
 {% block contenido %}
@@ -54,10 +53,4 @@
   </div>
 </div>
 
-{% endblock %}
-
-
-{% block js %}
-    {% include 'tools/js/datatable-print-excel-titulo.html' %}
-    {% include 'tools/js/tooltipster.html' %}    
 {% endblock %}

@@ -4,10 +4,7 @@
 {% load formatter %}
 {% load staticfiles %}
 
-{% block assets %}
-  {% include 'tools/css/datatable.html' %}
-  {% include 'tools/css/tooltipster.html' %}
-{% endblock %}
+{% block assets %}{% include 'assets/datatable.html' %}{% endblock %}
 
 {% block contenido %}
 <div class="panel panel-border panel-info">
@@ -59,10 +56,4 @@
   </div>
 </div>
 
-{% endblock %}
-
-
-{% block js %}
-    {% include 'tools/js/datatable.html' %}
-    {% include 'tools/js/tooltipster.html' %}
 {% endblock %}

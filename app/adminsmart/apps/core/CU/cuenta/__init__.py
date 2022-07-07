@@ -52,10 +52,6 @@ class CU:
 			self.metodos_data.append(self.validate_data.pop('interes'))
 			self.metodos_data.append(self.validate_data.pop('descuento'))
 
-		elif self.naturaleza.nombre == "proveedor":
-			for r in self.validate_data.pop('retiene'):
-				self.metodos_data.append(r)
-
 		# Para agarrar las vinculaciones
 		if self.naturaleza.nombre in self.vinculaciones:
 			self.vinculos_data = [

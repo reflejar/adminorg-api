@@ -24,8 +24,6 @@ class PerfilModelSerializer(serializers.ModelSerializer):
 			'razon_social',
 			'tipo_documento',
 			'numero_documento',
-			'fecha_nacimiento',
-			'es_extranjero',
 			'mail',
 			'telefono',
 			'domicilio',

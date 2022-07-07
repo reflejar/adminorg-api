@@ -9,21 +9,16 @@
 
     <link rel="shortcut icon" href='{% static "anopa/images/favicon.svg" %}'>
 
-    <link href='{% static "plugins/jquery-toastr/jquery.toast.min.css" %}' rel="stylesheet" type="text/css" />
-
     <link href='{% static "assets/css/bootstrap.min.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/core.css" %}' rel="stylesheet" type="text/css" />
     <link href='{% static "assets/css/components.css" %}' rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href='{% static "assets/css/menu.css" %}' rel="stylesheet" type="text/css" />
-    <link href='{% static "anopa/anopa.css" %}' rel="stylesheet" type="text/css" />
+    <link href='{% static "assets/css/as.css" %}' rel="stylesheet" type="text/css" />
 
     <script src='{% static "assets/js/jquery.min.js" %}'></script>
-    <script src='{% static "assets/js/jquery.core.js" %}'></script>
-    <script src='{% static "assets/js/jquery.app.js" %}'></script>
     <script src='{% static "assets/js/bootstrap.min.js" %}'></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src='{% static "anopa/anopa.js" %}'></script>
+    <script src='{% static "assets/js/as.js" %}'></script>
     {% block assets %}{% endblock %}
 
   </head>
@@ -55,26 +50,22 @@
                         </li>
                         <li><a href="{% url 'front:perfil' %}"><i class="fa fa-user m-r-10"></i> Perfil</a></li>
                         <li>
-                          <form action="{% url 'front:change-community' %}" id="change-community" method="POST">{% csrf_token %}
-                            <select 
-                              class="selector form-control" 
-                              name="community" 
-                              v-on:change="changeCommunity()" 
-                              value="{{comunidad.id}}">
+                          <form action="{% url 'front:change-community' %}" method="POST">{% csrf_token %}
+                            <select class="selector form-control" name="community" id="change-community" value="{{comunidad.id}}">
                               {% for com in user.perfil_set.first.comunidades.all %}
                                 <option {%if com.id == comunidad.id %}selected disabled{%endif%} value="{{com.id}}">{{com.nombre}}</option>
                               {% endfor %}
                             </select>
                           </form>
                           <script>
-                            cc = new Vue({
-                              el: "#change-community",
-                              methods: {
-                                changeCommunity: function() {
-                                  this.$el.submit()
-                                }
-                              }
-                            })
+                            $('.dropdown-menu').click(function(e) {
+                                e.stopPropagation();
+                            });
+                          </script>
+                          <script>
+                            $("#change-community").change(function() {
+                              this.form.submit(); 
+                            });
                           </script>
                           
                         </li>
@@ -174,6 +165,7 @@
         </footer>
 
     </div>
+
 
     {% block js %}{% endblock %}
 

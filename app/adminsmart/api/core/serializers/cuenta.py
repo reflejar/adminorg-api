@@ -43,14 +43,11 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Cuenta
 
-		fields = (
-			'id',
-			'titulo'
-		)
+		fields = ('id',)
 
 	def __init__(self, *args, **kwargs):
 		super(CuentaModelSerializer, self).__init__(*args, **kwargs)
-		
+
 		# Incorporacion de Nombre
 		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto', 'bien_de_cambio']:
 			self.fields['nombre'] = serializers.CharField(max_length=150, required=True)
@@ -76,9 +73,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			self.fields['domicilio'] = DomicilioModelSerializer(read_only=False)
 
 		# Incorporacion de Metodos
-		if self.context['naturaleza'] == 'proveedor':
-			self.fields['retiene'] = serializers.PrimaryKeyRelatedField(queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="retencion"), many=True)
-		elif self.context['naturaleza'] == 'ingreso':
+		if self.context['naturaleza'] == 'ingreso':
 			self.fields['interes'] = serializers.PrimaryKeyRelatedField(
 					queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="interes"), 
 					label="Metodología de intereses",
@@ -124,19 +119,15 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 				proveedores
 		"""
 
-		if self.context['naturaleza'] in ['dominio', 'cliente', 'proveedor']:
-			try:
-				query = Cuenta.objects.get(
-							comunidad=self.context['comunidad'], 
-							naturaleza__nombre=self.context['naturaleza'], 
-							numero=numero
-						)
-			except:
-				query = None
+		query = Cuenta.objects.filter(
+				comunidad=self.context['comunidad'], 
+				naturaleza__nombre=self.context['naturaleza'], 
+				numero=numero
+			)
 
-			if query:
-				if self.context['request'].method == 'POST' or self.instance != query:
-					raise serializers.ValidationError('Ya existe un {} con el numero solicitado'.format(self.context['naturaleza']))
+		if query and self.context['naturaleza'] in ['dominio']:
+			if not self.instance in query:
+				raise serializers.ValidationError('Ya existe un {} con el numero solicitado'.format(self.context['naturaleza']))
 
 		return numero
 
@@ -166,24 +157,13 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 						
 		return perfil
 
-	def validate_retiene(self, retiene):
-		"""
-			No puede haber con los mismos retiene 
-				proveedores
-		"""
-
-		if self.context['naturaleza'] == 'proveedor':
-			for r in retiene:
-				query = Cuenta.objects.filter(
-						comunidad=self.context['comunidad'],
-						naturaleza__nombre=self.context['naturaleza'], 
-						metodos=r
-					)
-				if query:
-					if self.context['request'].method == 'POST' or self.instance != query:
-						raise serializers.ValidationError('El metodo seleccionado ya pertenece a otro proveedor')
-		
-		return retiene
+	def validate(self, data):
+		tipo = self.context['naturaleza'] if self.context['naturaleza'] != 'dominio' else 'cliente'
+		try:
+			data['titulo'] = Titulo.objects.get(comunidad=self.context['comunidad'], predeterminado__nombre=tipo)
+		except:
+			raise serializers.ValidationError({'titulo': 'Para agregar/modificar un nuevo {} es necesario configurar un Título Contable predeterminado'.format(self.context['naturaleza'])})
+		return data
 
 	@transaction.atomic
 	def create(self, validate_data):
@@ -294,11 +274,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			for m in instance.metodos.all():
 				instance.metodos.remove(m)
 
-			if self.context['naturaleza'] == 'proveedor':
-				retiene_data = validate_data['retiene']
-				for r in retiene_data:
-					instance.metodos.add(r)
-			elif self.context['naturaleza'] == 'ingreso':
+			if self.context['naturaleza'] == 'ingreso':
 				descuento_data = validate_data['descuento']
 				if descuento_data:
 					instance.metodos.add(descuento_data)

@@ -13,7 +13,7 @@
             </div>
             <div class="panel-collapse collapse in">
                 <div class="portlet-body" id="portlet-creditos" >
-                    <table>
+                    <table id="table-creditos">
                         <tr>
                             <td>{% render_field form.creditos.child.destinatario style=vertical_style %}</td>
                             <td>{% render_field form.creditos.child.concepto style=vertical_style %}</td>
@@ -25,27 +25,11 @@
                             <td>{% render_field form.creditos.child.cantidad style=vertical_style %}</td>
                             <td><button class="btn btn-link"><span class="fa fa-plus"></span></button></td>
                         </tr>
-                        <tr v-for="c in creditos" :key="c.id">
-                            <td>{& c &}</td>
-                        </tr>
                     </table>
                 </div>
             </div>
         </div>
         </div>
     </div>
-
-    <script>
-        new Vue({
-            el: '#portlet-creditos',
-            delimiters: ['{&', '&}'],
-            data: {
-                creditos: data.creditos
-            }
-
-        }) 
-    </script>
-
-
 {% endif %}
 

@@ -4,7 +4,7 @@
 {% block contenido %}
   <div class="row">
 
-    <div class="col-md-6">
+    <div class="col-lg-6">
 
       <div class="card-box ribbon-box">
 
@@ -24,7 +24,7 @@
                   </div>
                   <div class="text-right">
                     <p class="m-t-5 text-uppercase font-14 font-600">Socios y clientes</p>
-                    <h2 class="m-b-10"><span data-plugin="counterup">{{ clientes }}</span></h2>
+                    <h2 class="m-b-10">{{ clientes }}</h2>
                   </div>
                 </div>
               </a>
@@ -40,7 +40,7 @@
                   </div>
                   <div class="text-right">
                     <p class="m-t-5 text-uppercase font-14 font-600">Dominios</p>
-                    <h2 class="m-b-10"><span data-plugin="counterup">{{ dominios }}</span></h2>
+                    <h2 class="m-b-10">{{ dominios }}</h2>
                   </div>
                 </div>
               </a>
@@ -54,7 +54,7 @@
                   </div>
                   <div class="text-right">
                     <p class="m-t-5 text-uppercase font-14 font-600">Grupos</p>
-                    <h2 class="m-b-10"><span data-plugin="counterup">{{ grupos }}</span></h2>
+                    <h2 class="m-b-10">{{ grupos }}</h2>
                   </div>
                 </div>
               </a>
@@ -73,7 +73,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Proveedores</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ proveedores }}</span></h2>
+                  <h2 class="m-b-10">{{ proveedores }}</h2>
                 </div>
               </div>
             </a>
@@ -85,7 +85,7 @@
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-lg-6">
 
       <div class="card-box ribbon-box">
 
@@ -105,7 +105,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Tesorería</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ cajas }}</span></h2>
+                  <h2 class="m-b-10">{{ cajas }}</h2>
                 </div>
               </div>
             </a>
@@ -122,7 +122,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Ingresos</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ ingresos }}</span></h2>
+                  <h2 class="m-b-10">{{ ingresos }}</h2>
                 </div>
               </div>
             </a>
@@ -141,7 +141,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Gastos</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ gastos }}</span></h2>
+                  <h2 class="m-b-10">{{ gastos }}</h2>
                 </div>
               </div>
             </a>
@@ -160,7 +160,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Bienes de cambio</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ bienes_de_cambio }}</span></h2>
+                  <h2 class="m-b-10">{{ bienes_de_cambio }}</h2>
                 </div>
               </div>
             </a>
@@ -176,7 +176,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Intereses</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ intereses }}</span></h2>
+                  <h2 class="m-b-10">{{ intereses }}</h2>
                 </div>
               </div>
             </a>
@@ -190,7 +190,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Descuentos</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ descuentos }}</span></h2>
+                  <h2 class="m-b-10">{{ descuentos }}</h2>
                 </div>
               </div>
             </a>
@@ -209,7 +209,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Títulos contables</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ titulos }}</span></h2>
+                  <h2 class="m-b-10">{{ titulos }}</h2>
                 </div>
               </div>
             </a>
@@ -225,7 +225,7 @@
                 </div>
                 <div class="text-right">
                   <p class="m-t-5 text-uppercase font-14 font-600">Bonificaciones</p>
-                  <h2 class="m-b-10"><span data-plugin="counterup">{{ bonificaciones }}</span></h2>
+                  <h2 class="m-b-10">{{ bonificaciones }}</h2>
                 </div>
               </div>
             </a>
@@ -239,9 +239,4 @@
     </div>
 
   </div>
-{% endblock %}
-
-{% block js %}
-<script src='{% static "plugins/waypoints/jquery.waypoints.min.js" %}'></script>
-<script src='{% static "plugins/counterup/jquery.counterup.min.js" %}'></script>
 {% endblock %}

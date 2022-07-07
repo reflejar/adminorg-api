@@ -78,7 +78,7 @@ class ListView(
 	template_name = f'{config.TEMPLATE_FOLDER}/list-objects.html'	
 
 
-class CUDParametroView(
+class CUParametroView(
 		AddModuleContextData,
 		AdminParametrosCUDView, 
 		generic.CreateView,
@@ -87,3 +87,13 @@ class CUDParametroView(
 
 	MODULE = config.MODULE
 	template_name = f'{config.TEMPLATE_FOLDER}/cu-object.html'	
+
+
+class DParametroView(
+		AddModuleContextData,
+		AdminParametrosCUDView, 
+		generic.DeleteView,
+	):
+
+	MODULE = config.MODULE
+	template_name = f'{config.TEMPLATE_FOLDER}/d-object.html'	

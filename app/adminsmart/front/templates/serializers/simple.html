@@ -1,18 +1,18 @@
 {% load rest_framework %}
 
 <form id="process" action="{{ vista }}" method="{{method|default:'POST'}}" enctype="multipart/form-data">{% csrf_token %}
-  <div class="panel panel-default">
+  <div class="panel panel-border panel-default">
     {% if module_handler %}
     <div class="panel-heading">
       <h3 class="panel-title">{{ module_handler|capfirst }} {{ object }}</h3>
     </div>
     {% endif %}    
     <div class="panel-body">
-      {% if respuesta %}
-        <p>{{respuesta}}</p>
-      {% endif %}
-      {% if slug_archivo %}
-        <p>Descargar el archivo modelo haciendo <a href="{% url 'bib_descargar' slug=slug_archivo %}">click aqui</a> y rellena los campos.</p>
+      {% if 'titulo' in form.errors.keys %}
+        <div class="alert alert-icon alert-white alert-danger" role="alert">
+          <i class="fa fa-warning"></i>
+          {{form.errors.titulo.0}}
+        </div>      
       {% endif %}
       {% render_form form %}
     </div>

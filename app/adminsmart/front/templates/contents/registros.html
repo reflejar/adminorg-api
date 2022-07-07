@@ -4,9 +4,9 @@
 {% load add_attr %}
 
 {% block assets %}
-  {% include 'tools/css/datatable.html' %}
-  {% include 'tools/css/datepicker.html' %}
-  {% include 'tools/css/select-multiple.html' %}  
+  {% include 'assets/datatable.html' with print_excel=1 %}
+  {% include 'assets/datepicker.html' %}
+  {% include 'assets/select-multiple.html' %}  
 {% endblock %}
 
 {% block contenido %}
@@ -84,11 +84,4 @@
     {% endblock %}
 
 
-{% endblock %}
-
-
-{% block js %}
-    {% include 'tools/js/datatable-print-excel.html' %}
-    {% include 'tools/js/datepicker.html' %}
-    {% include 'tools/js/select-multiple.html' %}    
 {% endblock %}

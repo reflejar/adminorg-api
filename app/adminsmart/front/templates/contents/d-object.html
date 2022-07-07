@@ -1,12 +1,29 @@
 {% extends 'layout.html' %}
-{% load humanize %}
 {% load to_space %}
-{% load formatter %}
-{% load staticfiles %}
-
 
 {% block contenido %}
-
+    <form id="process" action="" method="POST">{% csrf_token %}
+    <div class="panel panel-border panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title">Eliminar {{object.naturaleza.nombre|to_space}}: {{ object }}</h3>
+      </div>
+      <div class="panel-body">
+        <p>Usted está por eliminar el {{object.naturaleza.nombre|to_space}} {{ object }}</p>
+        <p>Confirme solo si está seguro de que esta es la acción que desea realizar </p>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-xs-6">
+            <a href="javascript:history.back()" class="btn btn-bordered btn-default btn-block">Cancelar</a>
+          </div>
+          <div class="col-xs-6">
+            <button type="submit" class="accion_envio btn btn-bordered btn-danger btn-block">Entendido, Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 {% endblock %}
+
 
 

@@ -384,9 +384,9 @@ class BaseCUDView(BaseFrontView):
 		return super().form_valid(form)		
 
 	def get_success_url(self, **kwargs):
-		if self.MODULE['path'] != "front:configuracion:index":
-			return reverse_lazy(self.MODULE['path'])	
-		return reverse_lazy('front:configuracion:list', args=(self.MODULE_HANDLER,))		
+		if self.MODULE['path'] == "front:configuracion:index":
+			return reverse_lazy('front:configuracion:list', args=(self.MODULE_HANDLER,))		
+		return reverse_lazy(self.MODULE['path'])	
 
 class AdminParametrosCUDView(BaseCUDView):
 
@@ -421,11 +421,11 @@ class AdminDocumentosCUDView(BaseCUDView):
 
 	@property
 	def RECEIPT_TYPE(self):
-		tipo_cbte = self.request.GET.get('tipo_cbte')
+		receipt_type = self.request.GET.get('receipt_type')
 		if self.object:
 			return self.object.receipt.receipt_type
-		elif tipo_cbte:
-			return ReceiptType.objects.get(description=tipo_cbte)
+		elif receipt_type:
+			return ReceiptType.objects.get(description=receipt_type)
 		return ReceiptType()
 
 	def get_form_kwargs(self):
