@@ -444,6 +444,19 @@ class AdminDocumentosCUDView(BaseCUDView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['vertical_style'] = self.VERTICAL_STYLE
+		jsonify_choices = {}
+		for k0,v0 in context['form'].fields.items():
+			if getattr(v0, 'child', None) or getattr(v0, 'fields', None):
+				jsonify_choices[k0] = {}
+				if getattr(v0, 'fields', None):
+					for k1,v1 in v0.fields.items():
+						if getattr(v1, 'choices', None):
+							jsonify_choices[k0][k1] = v1.choices
+				if getattr(v0, 'child', None):
+					for k1,v1 in v0.child.fields.items():
+						if getattr(v1, 'choices', None):
+							jsonify_choices[k0][k1] = v1.choices							
+		context['jsonify_choices'] = jsonify_choices
 		return context
 
 	def dispatch(self, request, *args, **kwargs):	
