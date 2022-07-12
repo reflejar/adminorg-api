@@ -58,7 +58,7 @@ class Operacion(BaseModel):
 
 		# Por ahora no genera concepto si la operacion no es de un cliente o un dominio
 		if not self.naturaleza in ['cliente', "dominio"]:
-			return ""
+			return "S/C"
 		
 		# conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
 		# Esto se hace asi porque el prefetch_related ya trajo todos

@@ -1,4 +1,5 @@
 from datetime import date
+from itertools import chain
 
 from adminsmart.api.core.serializers.operaciones.base import *
 from adminsmart.api.core.serializers.estados.saldos import *
@@ -20,14 +21,22 @@ class UtilizacionModelSerializer(OperacionModelSerializer):
 
 
 	def __init__(self, *args, **kwargs):
+		initial_saldos = kwargs.pop('initial_saldos')
+		instance_method = kwargs.pop('instance_method')
 		super().__init__(*args, **kwargs)
+		if initial_saldos == "disponibilidades":
+			queryset = []
+			for c in Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="caja"):
+				queryset = list(chain(queryset, c.estado_saldos()))
+		else:
+			queryset = self.context['cuenta'].estado_saldos()
+		if self.instance:
+			queryset = list(chain(queryset, getattr(self.instance, instance_method)()))
 		self.fields['vinculo'] = serializers.PrimaryKeyRelatedField(
-				queryset=Operacion.objects.filter(
-						comunidad=self.context['comunidad'], 
-						cuenta__naturaleza__nombre__in=['cliente', 'caja', 'proveedor'],
-					), 
+				queryset=queryset, 
 				allow_null=False
 			)
+		self.fields['vinculo'].display_value = self.display_vinculo
 
 	def get_origen(self, obj):
 		if 'retrieve' in self.context.keys():

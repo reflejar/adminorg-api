@@ -13,8 +13,6 @@
 {% block contenido %}
   {{ form.data|json_script:"initialData" }}
   {{ jsonify_choices|json_script:"choices" }}
-  <div id="app">
-
-  </div>
+  <div id="app"></div>
 {% endblock %}
 

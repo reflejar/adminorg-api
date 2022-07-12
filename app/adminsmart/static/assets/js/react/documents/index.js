@@ -1,7 +1,7 @@
 // ! React
 
+const initialData = JSON.parse(document.getElementById('initialData').textContent)
 const CHOICES = JSON.parse(document.getElementById('choices').textContent)
-
 
 const Portlet = ({
   title,
@@ -215,6 +215,36 @@ const Appendable = ({ documento, setDocumento, onlyRead, title, handler, fields,
 )  
 };
 
+const Selectable = ({ documento, setDocumento, onlyRead, title, handler, rows }) => {
+
+
+
+  return (
+    <Portlet title={title} handler={handler}>
+      <div className="row">
+        <div className="col-md-12">
+          <table className="table table-condensed">
+            <thead>
+              <tr>
+                <th>Apa1</th>
+                <th>Apalalala2</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(rows).map((row, i) => (
+                <tr key={i}>
+                  <td><input className="form-control" type="checkbox" name={`algo`} /></td>
+                  <td><input className="form-control" type="number" name={`monto`} /></td>
+                </tr>
+              ))}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </Portlet>
+)  
+};
 
 
 const Comprobante = ({ initialData, onlyRead }) => {
@@ -264,7 +294,6 @@ const Comprobante = ({ initialData, onlyRead }) => {
 
     return (
       <form onSubmit={handleSubmit}>
-        {console.log(documento)}
         <Encabezado 
           documento={documento} 
           setDocumento={setDocumento} 
@@ -334,6 +363,16 @@ const Comprobante = ({ initialData, onlyRead }) => {
           }}
           />
         }
+        {/* Clientes: Seccion de Cobros */}
+        {Object.keys(fieldsLists).length > 0 && fieldsLists.cobros && <Selectable 
+          documento={documento} 
+          setDocumento={setDocumento} 
+          onlyRead={onlyRead}
+          title="Items pendientes de cobro"
+          handler="cobros"
+          rows={CHOICES.cobros.vinculo}
+          />
+        }        
   
         
         {/* Seccion de Cajas */}
@@ -455,7 +494,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
 
 
 const app = document.querySelector('#app')
-const initialData = JSON.parse(document.getElementById('initialData').textContent)
+
 ReactDOM.createRoot(
     app
 ).render(

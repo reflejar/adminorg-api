@@ -49,15 +49,29 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 				self.fields['creditos'] = CreditoModelSerializer(context=self.context, read_only=False, many=True)
 
 			elif self.context['receipt_type'].code in disminuciones:
-				self.fields['cobros'] = CobroModelSerializer(context=self.context, read_only=False, many=True)
+				self.fields['cobros'] = CobroModelSerializer(context=self.context, read_only=False, many=True, instance=self.instance)
 				self.fields['a_cuenta'] = ACuentaModelSerializer(context=self.context, read_only=True, many=True)
 
 				# Incorporacion para Recibo X
 				if self.context['receipt_type'].code == '54':
 					self.fields['condonacion'] = serializers.BooleanField(required=True)
 					self.fields['cajas'] = CajaModelSerializer(context=self.context, read_only=False, many=True)
-					self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(context=self.context, read_only=False, many=True)
-					self.fields['utilizaciones_disponibilidades'] = UtilizacionModelSerializer(context=self.context, read_only=False, many=True)
+					self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(
+							context=self.context, 
+							read_only=False, 
+							many=True, 
+							instance=self.instance,
+							initial_saldos="cuenta",
+							instance_method="utilizaciones_saldos"
+							)
+					self.fields['utilizaciones_disponibilidades'] = UtilizacionModelSerializer(
+							context=self.context, 
+							read_only=False, 
+							many=True, 
+							instance=self.instance,
+							initial_saldos="disponibilidades",
+							instance_method="utilizaciones_disponibilidades"
+							)
 
 				# Incorporacion para Nota de Credito
 				else:

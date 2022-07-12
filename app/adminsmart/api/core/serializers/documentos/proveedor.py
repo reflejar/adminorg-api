@@ -51,7 +51,7 @@ class OrigenProveedorModelSerializer(DocumentoModelSerializer):
 				self.fields['debitos'] = DebitoModelSerializer(context=self.context, read_only=False, many=True) # Equivalente al "creditos" de Clientes
 
 			if self.context['receipt_type'].code in disminuciones:
-				self.fields['pagos'] = PagoModelSerializer(context=self.context, read_only=False, many=True)
+				self.fields['pagos'] = PagoModelSerializer(context=self.context, read_only=False, many=True, instance=self.instance)
 				if self.context['receipt_type'].code == "301":
 					self.fields['cajas'] = CajaModelSerializer(context=self.context, read_only=False, many=True)
 					self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(context=self.context, read_only=False, many=True)

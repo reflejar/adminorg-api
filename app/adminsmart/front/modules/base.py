@@ -455,7 +455,7 @@ class AdminDocumentosCUDView(BaseCUDView):
 				if getattr(v0, 'child', None):
 					for k1,v1 in v0.child.fields.items():
 						if getattr(v1, 'choices', None):
-							jsonify_choices[k0][k1] = v1.choices							
+							jsonify_choices[k0][k1] = v1.choices
 		context['jsonify_choices'] = jsonify_choices
 		return context
 
