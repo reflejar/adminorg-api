@@ -1,6 +1,6 @@
-# Admin Smart - Backend
+# Admin Smart
 
-_Backend del proyecto AdminSmart. Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades_
+_Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades_
 
 ### Pre-requisitos técnicos
 

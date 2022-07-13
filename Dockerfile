@@ -16,8 +16,8 @@ RUN chmod +x /*.sh
 ADD app /app 
 RUN chmod +x /app
 
-RUN mkdir -p /app/adminsmart/media 
-RUN chmod +x /app/adminsmart/media
+RUN mkdir -p /app/media 
+RUN chmod +x /app/media
 
 ARG BUILD_DATE
 ARG REVISION

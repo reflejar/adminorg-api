@@ -23,7 +23,7 @@ services:
       - redis
     volumes:
       - ./app:/app
-      - media:/app/adminsmart/media
+      - media:/app/media
     env_file:
       - ./config/db/dev.env
       - ./config/django/dev.env

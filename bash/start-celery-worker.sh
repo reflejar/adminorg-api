@@ -1,3 +1,3 @@
 #!/bin/bash
 
-celery -A adminsmart.taskapp worker -l INFO --concurrency=2
+celery -A taskapp worker -l INFO --concurrency=2

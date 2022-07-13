@@ -3,7 +3,7 @@
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR.path('adminsmart')
+APPS_DIR = ROOT_DIR
 FRONT_DIR = APPS_DIR.path('front')
 
 
@@ -69,17 +69,17 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-	'adminsmart.apps.utils.apps.UtilsAppConfig',
-	'adminsmart.apps.users.apps.UsersAppConfig',
-	'adminsmart.apps.core.apps.OperativeAppConfig',
-	'adminsmart.apps.platforms.apps.PlatformsAppConfig',
-	'adminsmart.apps.files.apps.FilesAppConfig',
-	'adminsmart.apps.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
-	'adminsmart.apps.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
-	'adminsmart.apps.communications.apps.CommunicationsAppConfig',
-	'adminsmart.apps.informes.apps.InformesAppConfig',
-	'adminsmart.api._public.apps.PublicAPIAppConfig',
-	'adminsmart.front.apps.FrontendAppConfig'
+	'apps.utils.apps.UtilsAppConfig',
+	'apps.users.apps.UsersAppConfig',
+	'apps.core.apps.OperativeAppConfig',
+	'apps.platforms.apps.PlatformsAppConfig',
+	'apps.files.apps.FilesAppConfig',
+	'apps.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
+	'apps.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
+	'apps.communications.apps.CommunicationsAppConfig',
+	'apps.informes.apps.InformesAppConfig',
+	'api._public.apps.PublicAPIAppConfig',
+	'front.apps.FrontendAppConfig'
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -201,7 +201,7 @@ CACHES = {
 	}
 }
 # Celery
-INSTALLED_APPS += ['adminsmart.taskapp.celery.CeleryAppConfig']
+INSTALLED_APPS += ['taskapp.celery.CeleryAppConfig']
 if USE_TZ:
 	CELERY_TIMEZONE = TIME_ZONE
 CELERY_BROKER_URL = REDIS_URL

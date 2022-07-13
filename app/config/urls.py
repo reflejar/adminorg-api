@@ -18,7 +18,7 @@ urlpatterns = [
 	path('k8s/liveness/', liveness),
 	
 	# API
-	path('api/', include(('adminsmart.api.urls', 'api'), namespace="api")),
+	path('api/', include(('api.urls', 'api'), namespace="api")),
 
 	# Views
 	## Authentication
@@ -28,6 +28,6 @@ urlpatterns = [
 	path('signup/', LoginView.as_view(), name='signup'),
 
 	## Frontend
-	path('', include(('adminsmart.front.urls', 'views'), namespace='front')),
+	path('', include(('front.urls', 'views'), namespace='front')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
