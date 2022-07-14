@@ -217,6 +217,38 @@ const Appendable = ({ documento, setDocumento, onlyRead, title, handler, fields,
 
 const Selectable = ({ documento, setDocumento, onlyRead, title, handler, rows }) => {
 
+  const [grouped, setGrouped] = React.useState(
+    Object.entries(rows).map(obj=> ({
+        vinculo: obj[0], 
+        monto:obj[1].monto, 
+        checked:false,
+        descripcion: obj[1].descripcion
+      }))
+  )
+
+  const titles = Object.keys(Object.entries(rows)[0][1])
+
+  const handleChange = (e) => {
+    e.preventDefault()
+    const [row, name] = e.target.name.split('.')
+    setGrouped(() => {
+      if (name === "vinculo") {
+        grouped[row]['checked'] = !grouped[row]['checked']
+      } else {
+        grouped[row][name] = e.target.value
+      }
+      return [...grouped]
+    })
+  }
+
+  React.useEffect(() => {
+    console.log(grouped.filter(g => (g.checked === true)))
+    setDocumento(() => ({
+      ...documento,
+      [handler]: grouped.filter(g => (g.monto > 0 && g.checked === true))
+    }))
+
+  }, [grouped])
 
 
   return (
@@ -226,17 +258,35 @@ const Selectable = ({ documento, setDocumento, onlyRead, title, handler, rows })
           <table className="table table-condensed">
             <thead>
               <tr>
-                <th>Apa1</th>
-                <th>Apalalala2</th>
+                <th></th>
+                {titles.map((t, i) => (<th key={i}>{t}</th>))}
               </tr>
             </thead>
             <tbody>
-              {Object.keys(rows).map((row, i) => (
-                <tr key={i}>
-                  <td><input className="form-control" type="checkbox" name={`algo`} /></td>
-                  <td><input className="form-control" type="number" name={`monto`} /></td>
-                </tr>
-              ))}
+              {grouped.map((row, i) => {
+                return (<tr key={i}>
+                  <td>
+                    <input 
+                      className="form-control" 
+                      type="checkbox" 
+                      value={row.vinculo} 
+                      name={`${i}.vinculo`} 
+                      checked={row.checked} 
+                      onChange={handleChange}
+                    />
+                  </td>
+                  <td>{row.descripcion}</td>
+                  <td>
+                    <input 
+                      className="form-control" 
+                      type="number" 
+                      value={row.monto} 
+                      name={`${i}.monto`} 
+                      onChange={handleChange}
+                    />
+                  </td>
+                </tr>)
+              })}
 
             </tbody>
           </table>
@@ -291,7 +341,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
     const handleBack = (e) => {
       history.back()
     }
-
+    console.log(documento)
     return (
       <form onSubmit={handleSubmit}>
         <Encabezado 
