@@ -115,6 +115,7 @@ class MayoresView(AdminRegistroView):
 		if any_filters:		
 			datos = Operacion.objects.filter(
 				comunidad=self.comunidad,
+				documento__isnull=False
 			).select_related(
 				"cuenta", 
 				"cuenta__perfil", # Para el nombre de la cuenta
