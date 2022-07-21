@@ -77,5 +77,5 @@ class RegistroView(AdminRegistroView):
 
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'
 	INITAL_FILTERS = {'destinatario__naturaleza__nombre':'cliente'}
+	template_name = f'{config.TEMPLATE_FOLDER}/registros.html'

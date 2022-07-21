@@ -1,7 +1,8 @@
 // ! React
 
-const initialData = JSON.parse(document.getElementById('initialData').textContent)
+const INITIAL_DATA = JSON.parse(document.getElementById('initialData').textContent)
 const CHOICES = JSON.parse(document.getElementById('choices').textContent)
+const CSRF_TOKEN = document.getElementsByName('csrfmiddlewaretoken')
 
 const Portlet = ({
   title,
@@ -143,6 +144,14 @@ const Appendable = ({ documento, setDocumento, onlyRead, title, handler, fields,
 
   const [grouped, setGrouped] = React.useState([...documento[handler], cleanedField])
 
+  React.useEffect(() => {
+    setDocumento(() => ({
+      ...documento,
+      [handler]: grouped
+    }))
+
+  }, [grouped])
+
   const handleChange = (e) => {
     e.preventDefault()
     const [row, name] = e.target.name.split('.')
@@ -152,13 +161,18 @@ const Appendable = ({ documento, setDocumento, onlyRead, title, handler, fields,
     })
   }
 
-  React.useEffect(() => {
-    setDocumento(() => ({
-      ...documento,
-      [handler]: grouped
-    }))
+  const AppendCleanFieldsGroup = () => {
+    setGrouped((groups) => ([...groups, cleanedField]))
+  }
+  const RemoveLastFieldsGroup = () => {
+    const lastElement = grouped.length-1
+    if (lastElement >= 1) {
+      setGrouped((groups) => ([...groups.filter((_, i) => i !== lastElement)]))
+    }
+  }
 
-  }, [grouped])
+
+
 
   const renderField = (field, value, fi) => {
     switch (field.type) {
@@ -207,8 +221,8 @@ const Appendable = ({ documento, setDocumento, onlyRead, title, handler, fields,
           </table>
         </div>            
         <div className="col-md-offset-11">
-          <button className="btn btn-sm btn-danger text-right"><span className="fa fa-minus"></span></button>
-          <button className="btn btn-sm btn-success text-right"><span className="fa fa-plus"></span></button>
+          <button onClick={() => RemoveLastFieldsGroup()} className="btn btn-sm btn-danger text-right"><span className="fa fa-minus"></span></button>
+          <button onClick={() => AppendCleanFieldsGroup()} className="btn btn-sm btn-success text-right"><span className="fa fa-plus"></span></button>
         </div>
       </div>
     </Portlet>
@@ -242,7 +256,6 @@ const Selectable = ({ documento, setDocumento, onlyRead, title, handler, rows })
   }
 
   React.useEffect(() => {
-    console.log(grouped.filter(g => (g.checked === true)))
     setDocumento(() => ({
       ...documento,
       [handler]: grouped.filter(g => (g.monto > 0 && g.checked === true))
@@ -330,20 +343,21 @@ const Comprobante = ({ initialData, onlyRead }) => {
       });  
   
     const canSend = () => {
-      return false;
+      return true;
     } 
   
     const handleSubmit = React.useCallback((event) => {
       event.preventDefault();
-      console.log(event)
+      document.form_cbte.appendChild(CSRF_TOKEN[0])
+      document.form_cbte.submit()
     }, []);
 
     const handleBack = (e) => {
       history.back()
     }
-    console.log(documento)
+
     return (
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} name="form_cbte" method="POST">
         <Encabezado 
           documento={documento} 
           setDocumento={setDocumento} 
@@ -548,5 +562,5 @@ const app = document.querySelector('#app')
 ReactDOM.createRoot(
     app
 ).render(
-    <Comprobante initialData={initialData} onlyRead={false} />
+    <Comprobante initialData={INITIAL_DATA} onlyRead={false} />
 )
