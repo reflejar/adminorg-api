@@ -140,21 +140,11 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 				Nota 07/09/2020. Se decidió que si se podia cargar con el mismo numero_documento
 		"""
 
-
-		# if self.context['naturaleza'] in ['cliente', 'proveedor']:
-		# 	try:
-		# 		query = Cuenta.objects.get(
-		# 					comunidad=self.context['comunidad'],
-		# 					perfil__numero_documento=perfil['numero_documento'], 
-		# 					naturaleza__nombre=self.context['naturaleza'], 
-		# 				)
-		# 	except:
-		# 		query = None
-			
-		# 	if query:
-		# 		if self.context['request'].method == 'POST' or self.instance != query:
-		# 			raise serializers.ValidationError({'numero_documento': 'El numero de documento seleccionado ya existe en el sistema'})
-						
+		# validacion conjunta (debe existir razon social, nombre o apellido)
+		if not perfil['apellido'] and not perfil['razon_social']:
+			mj_error = ['Es necesario configurar un Apellido o una Razon social']
+			raise serializers.ValidationError({'apellido': mj_error, 'razon_social': mj_error})
+		
 		return perfil
 
 	def validate(self, data):
@@ -163,6 +153,9 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			data['titulo'] = Titulo.objects.get(comunidad=self.context['comunidad'], predeterminado__nombre=tipo)
 		except:
 			raise serializers.ValidationError({'titulo': 'Para agregar/modificar un nuevo {} es necesario configurar un Título Contable predeterminado'.format(self.context['naturaleza'])})
+
+
+
 		return data
 
 	@transaction.atomic

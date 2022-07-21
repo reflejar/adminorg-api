@@ -14,6 +14,12 @@
           {{form.errors.titulo.0}}
         </div>      
       {% endif %}
+      {% if disabled %}
+      <div class="alert alert-icon alert-white alert-warning" role="alert">
+        <i class="fa fa-warning"></i>
+        {{disabled}}
+      </div>      
+    {% endif %}
       {% render_form form %}
     </div>
     <div class="panel-footer">
@@ -22,9 +28,20 @@
           <a href="javascript:history.back()" class="btn btn-bordered btn-default btn-block">Cancelar</a>
         </div>
         <div class="col-xs-6">
-          <button type="submit" class="accion_envio btn btn-bordered btn-primary btn-block">Guardar</button>
+          <button 
+            type="submit" 
+            class="accion_envio btn btn-bordered btn-primary btn-block"
+            {% if disabled %}disabled{% endif %}
+            >
+            Guardar
+        </button>
         </div>
       </div>
     </div>
   </div>
 </form>
+{% if disabled %}
+  <script>
+    $('.form-control').attr('disabled', 'disabled')
+  </script>
+{% endif %}

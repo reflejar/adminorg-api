@@ -410,6 +410,12 @@ class AdminParametrosCUDView(BaseCUDView):
 		kwargs = super().get_form_kwargs()
 		kwargs['context'].update({'naturaleza': self.MODULE_HANDLER})
 		return kwargs
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		if self.object and self.MODULE_HANDLER in ['interes', 'descuento']:
+			context['disabled'] = "No se puede realizar esta acción"
+		return context
 
 
 class AdminDocumentosCUDView(BaseCUDView):
@@ -467,6 +473,10 @@ class AdminDocumentosCUDView(BaseCUDView):
 			raise Http404('There is no parameter cuenta_pk')
 		return super().dispatch(request, *args, **kwargs)
 
+
+	def form_invalid(self, form):
+		print(form.errors)
+		return super().form_invalid(form)
 
 class SocioFrontView(BaseFrontView):
 
