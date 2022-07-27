@@ -18,16 +18,18 @@ class MetodoModelSerializer(serializers.ModelSerializer):
 			'tipo',
 			'plazo',
 			'monto',
+			'reconocimiento',
+			'base_calculo'
 		)    
 
 	def __init__(self, *args, **kwargs):
 		super(MetodoModelSerializer, self).__init__(*args, **kwargs)
 
 		# Incorporacion de Nombre
-		if self.context['naturaleza'] in ['interes']:
-			self.fields['reconocimiento'] = serializers.IntegerField()
-			self.fields['base_calculo'] = serializers.IntegerField()
-
+		if self.context['naturaleza'] in ['descuento']:
+			self.fields.pop('reconocimiento')
+			self.fields.pop('base_calculo')
+			
 
 	def validate(self, data):
 		'''
