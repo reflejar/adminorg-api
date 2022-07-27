@@ -75,20 +75,20 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		# Incorporacion de Metodos
 		if self.context['naturaleza'] == 'ingreso':
 			self.fields['interes'] = serializers.PrimaryKeyRelatedField(
-					queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="interes"), 
+					queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="interes", is_active=True), 
 					label="Metodología de intereses",
 					allow_null=True
 				)
 			self.fields['descuento'] = serializers.PrimaryKeyRelatedField(
-					queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="descuento"), 
+					queryset=Metodo.objects.filter(comunidad=self.context['comunidad'], naturaleza="descuento", is_active=True), 
 					label="Metodología de descuentos",
 					allow_null=True
 				)
 	
 		# Incorporacion de Propietario y Ocupante (para Dominios)
 		if self.context['naturaleza'] in ['dominio']:
-			self.fields['propietario'] = serializers.PrimaryKeyRelatedField(queryset=Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="cliente"), allow_null=True)
-			self.fields['inquilino'] = serializers.PrimaryKeyRelatedField(queryset=Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="cliente"), allow_null=True)
+			self.fields['propietario'] = serializers.PrimaryKeyRelatedField(queryset=Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="cliente", is_active=True).order_by('perfil__apellido'), allow_null=True)
+			self.fields['inquilino'] = serializers.PrimaryKeyRelatedField(queryset=Cuenta.objects.filter(comunidad=self.context['comunidad'], naturaleza__nombre="cliente", is_active=True).order_by('perfil__apellido'), allow_null=True)
 
 	def validate_nombre(self, nombre):
 		"""

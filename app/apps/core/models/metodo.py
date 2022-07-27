@@ -47,6 +47,7 @@ class Metodo(BaseModel):
 		)
 	reconocimiento = models.IntegerField(choices=BASES_CHOICES, default=DIARIO)
 	base_calculo = models.IntegerField(choices=BASES_CHOICES, default=MENSUAL)
+	is_active = models.BooleanField(default=True)
 
 	CONDICION_CHOICES = (
 			(None, 'Sin condicion'),

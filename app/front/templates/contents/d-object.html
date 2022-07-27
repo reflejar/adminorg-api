@@ -3,12 +3,13 @@
 
 {% block contenido %}
     <form id="process" action="" method="POST">{% csrf_token %}
-    <div class="panel panel-border panel-danger">
+    <div class="panel panel-border panel-{% if object.is_active %}danger{% else %}success{% endif %}">
       <div class="panel-heading">
-        <h3 class="panel-title">Eliminar {{object.naturaleza.nombre|to_space}}: {{ object }}</h3>
+        
+        <h3 class="panel-title">{% if object.is_active %}Desactivar{% else %}Activar{% endif %} {{object.naturaleza.nombre|to_space}}: {{ object }}</h3>
       </div>
       <div class="panel-body">
-        <p>Usted está por eliminar el {{object.naturaleza.nombre|to_space}} {{ object }}</p>
+        <p>Usted está por {% if object.is_active %}desactivar{% else %}activar{% endif %} el {{object.naturaleza.nombre|to_space}} {{ object }}</p>
         <p>Confirme solo si está seguro de que esta es la acción que desea realizar </p>
       </div>
       <div class="panel-footer">
@@ -17,7 +18,7 @@
             <a href="javascript:history.back()" class="btn btn-bordered btn-default btn-block">Cancelar</a>
           </div>
           <div class="col-xs-6">
-            <button type="submit" class="accion_envio btn btn-bordered btn-danger btn-block">Entendido, Eliminar</button>
+            <button type="submit" class="accion_envio btn btn-bordered btn-{% if object.is_active %}danger{% else %}success{% endif %} btn-block">Entendido, {% if object.is_active %}desactivar{% else %}activar{% endif %}</button>
           </div>
         </div>
       </div>

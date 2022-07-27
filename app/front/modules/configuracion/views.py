@@ -1,4 +1,6 @@
 from django.views import generic
+from django.http import HttpResponseRedirect
+
 from apps.core.models import (
 	Cuenta,
 	Metodo,
@@ -97,3 +99,11 @@ class DParametroView(
 
 	MODULE = config.MODULE
 	template_name = f'{config.TEMPLATE_FOLDER}/d-object.html'	
+
+
+	def delete(self, request, *args, **kwargs):
+		success_url = self.get_success_url()
+		self.object = self.get_object()
+		self.object.is_active = False if self.object.is_active else True
+		self.object.save()
+		return HttpResponseRedirect(success_url)

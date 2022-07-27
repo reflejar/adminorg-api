@@ -108,12 +108,15 @@ class AdminListObjectsView(BaseAdminView):
 			))
 		
 	def get_all_caja(self): 
-		default_fields = ['id', 'nombre', 'tipo', 'titulo_contable']
+		default_fields = ['id', 'nombre', 'tipo', 'titulo_contable','is_active']
 		field_display = self.MODULE_FIELD_DISPLAY \
 						if getattr(self, 'MODULE_FIELD_DISPLAY', None) \
 						else default_fields		
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
-					.order_by("nombre")\
+		filters = {'comunidad':self.comunidad, 'naturaleza__nombre':self.MODULE_HANDLER}						
+		if getattr(self, 'MODULE_FIELD_DISPLAY', None):
+			filters['is_active'] = True
+		return list(Cuenta.objects.filter(**filters)\
+					.order_by('-is_active',"nombre")\
 					.annotate(
 						tipo=F('taxon__nombre'),
 						titulo_contable=F('titulo__nombre'),						
@@ -125,14 +128,17 @@ class AdminListObjectsView(BaseAdminView):
 	get_all_bien_de_cambio = get_all_caja
 
 	def get_all_ingreso(self):
-		cuentas = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
-			.order_by("nombre")\
+		filters = {'comunidad':self.comunidad, 'naturaleza__nombre':self.MODULE_HANDLER}		
+		if getattr(self, 'MODULE_FIELD_DISPLAY', None):
+			filters['is_active'] = True
+		cuentas = Cuenta.objects.filter(**filters)\
+			.order_by('-is_active',"nombre")\
 			.annotate(
 				metodos_descuento_interes=F('metodos__nombre'),
 				titulo_contable=F('titulo__nombre'),
 			)\
 			.values(
-				'id', 'nombre', 'metodos_descuento_interes', 'titulo_contable'
+				'id', 'nombre', 'metodos_descuento_interes', 'titulo_contable','is_active'
 			)				
 		
 		objects = []
@@ -145,11 +151,14 @@ class AdminListObjectsView(BaseAdminView):
 		return objects		
 
 	def get_all_interes(self):
-		return list(Metodo.objects.filter(comunidad=self.comunidad, naturaleza=self.MODULE_HANDLER)\
-				.order_by('-id')\
+		filters = {'comunidad':self.comunidad, 'naturaleza':self.MODULE_HANDLER}		
+		if getattr(self, 'MODULE_FIELD_DISPLAY', None):
+			filters['is_active'] = True
+		return list(Metodo.objects.filter(**filters)\
+				.order_by('-is_active', '-id' )\
 				.values(
 				'id',"nombre","tipo",
-				"plazo","monto",
+				"plazo","monto", 'is_active'
 				))
 	get_all_descuento = get_all_interes
 	
@@ -157,13 +166,16 @@ class AdminListObjectsView(BaseAdminView):
 	def get_all_cliente(self): 
 		default_fields = [
 			'id', 'apellido_cliente','nombre_cliente',
-			'razon_social', 'tipo_documento','documento','titulo_contable'
+			'razon_social', 'tipo_documento','documento','titulo_contable', 'is_active'
 		]
 		field_display = self.MODULE_FIELD_DISPLAY \
 						if getattr(self, 'MODULE_FIELD_DISPLAY', None) \
 						else default_fields
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
-					.order_by("perfil__apellido")\
+		filters = {'comunidad':self.comunidad, 'naturaleza__nombre':self.MODULE_HANDLER}						
+		if getattr(self, 'MODULE_FIELD_DISPLAY', None):
+			filters['is_active'] = True
+		return list(Cuenta.objects.filter(**filters)\
+					.order_by("-is_active", "perfil__apellido")\
 					.annotate(
 						apellido_cliente=F('perfil__apellido'),
 						nombre_cliente=F('perfil__nombre'),
@@ -179,13 +191,16 @@ class AdminListObjectsView(BaseAdminView):
 	def get_all_proveedor(self): 
 		default_fields = [
 			'id', 'razon_social','apellido_proveedor','nombre_proveedor',
-			'tipo_documento','documento','titulo_contable',
+			'tipo_documento','documento','titulo_contable', 'is_active'
 		]
 		field_display = self.MODULE_FIELD_DISPLAY \
 						if getattr(self, 'MODULE_FIELD_DISPLAY', None) \
 						else default_fields		
-		return list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
-					.order_by("perfil__razon_social", "perfil__apellido")\
+		filters = {'comunidad':self.comunidad, 'naturaleza__nombre':self.MODULE_HANDLER}						
+		if getattr(self, 'MODULE_FIELD_DISPLAY', None):
+			filters['is_active'] = True
+		return list(Cuenta.objects.filter(**filters)\
+					.order_by('-is_active',"perfil__razon_social", "perfil__apellido")\
 					.annotate(
 						razon_social=F('perfil__razon_social'),
 						apellido_proveedor=F('perfil__apellido'),
@@ -199,12 +214,15 @@ class AdminListObjectsView(BaseAdminView):
 					))		
 
 	def get_all_dominio(self): 
-		cuentas = list(Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre=self.MODULE_HANDLER)\
-					.order_by('numero')\
+		filters = {'comunidad':self.comunidad, 'naturaleza__nombre':self.MODULE_HANDLER}		
+		if getattr(self, 'MODULE_FIELD_DISPLAY', None):
+			filters['is_active'] = True
+		cuentas = list(Cuenta.objects.filter(**filters)\
+					.order_by('-is_active','numero')\
 					.values(
 						'id', 'numero', 
 						'vinculo2__cuenta__perfil__apellido','vinculo2__cuenta__perfil__nombre', 
-						'vinculo2__definicion__nombre'
+						'vinculo2__definicion__nombre',  'is_active'
 					))	
 		objects = []
 		for _, value in groupby(cuentas, lambda x: x['numero']):

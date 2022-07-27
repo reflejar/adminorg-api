@@ -35,6 +35,7 @@ class Cuenta(BaseModel):
 	perfil = models.ForeignKey("users.Perfil", blank=True, null=True, on_delete=models.SET_NULL)
 	vinculos = models.ManyToManyField("self", through='DefinicionVinculo', blank=True, symmetrical=False) #agregar vonculacion 'mediante'
 	metodos = models.ManyToManyField(Metodo, blank=True)
+	is_active = models.BooleanField(default=True)
 
 	def __str__(self):
 					# else '#' + str(int(x['CUENTA_NUMERO'])) if x['NATURALEZA'] in ['dominio'] \

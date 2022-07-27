@@ -31,7 +31,7 @@
               <tr>
                 <th width="20"></th>
                 {% for title in titles %}
-                  {% if title != "id" %}
+                  {% if title != "id" and title != "is_active" %}
                     <th>{{title|to_space|capfirst}}</th>
                   {% endif %}
                 {% endfor %}
@@ -43,13 +43,15 @@
                 <td>
                   <a href="{% url 'front:configuracion:edit' naturaleza=module_handler pk=object.id %}" title="Editar" class="btn btn-icon btn-bordered btn-warning tooltip-animation btn-xs">
                     <i class="fa fa-pencil"></i>
-                  </a>                  
-                  <a href="{% url 'front:configuracion:delete' naturaleza=module_handler pk=object.id %}" title="Eliminar/Desactivar" class="btn btn-icon btn-bordered btn-danger tooltip-animation btn-xs">
-                    <i class="fa fa-trash"></i>
+                  </a>    
+                  {% if module_handler != 'titulo' %}              
+                  <a href="{% url 'front:configuracion:delete' naturaleza=module_handler pk=object.id %}" title="Eliminar/Desactivar" class="btn btn-icon btn-bordered {% if not object.is_active %}btn-success{% else %}btn-danger{% endif %} tooltip-animation btn-xs">
+                    <i class="fa {% if not object.is_active %}fa-undo{% else %}fa-trash{% endif %}"></i>
                   </a>
+                  {% endif %}
                 </td>
                 {% for key, value in object.items %}
-                  {% if key != "id" %}
+                  {% if key != "id" and key != "is_active" %}
                     <td>{{ value|default:"" }}</td>
                   {% endif %}
                 {% endfor %}
