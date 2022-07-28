@@ -347,14 +347,29 @@ const Comprobante = ({ initialData, onlyRead }) => {
     } 
   
     const handleSubmit = React.useCallback((event) => {
-      event.preventDefault();
-      document.form_cbte.appendChild(CSRF_TOKEN[0])
-      document.form_cbte.submit()
+      // event.preventDefault();
+      // document.form_cbte.appendChild(CSRF_TOKEN[0])
+      // document.form_cbte.submit()
+      window.fetch(document.form_cbte.action, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        content: {
+          'csrfmiddlewaretoken': CSRF_TOKEN
+        }
+        form
+      })      
     }, []);
 
     const handleBack = (e) => {
       history.back()
     }
+    const data = new FormData(document.form_cbte);
+    const json = Object.fromEntries(data.entries());
+    console.log(json)
 
     return (
       <form onSubmit={handleSubmit} name="form_cbte" method="POST">

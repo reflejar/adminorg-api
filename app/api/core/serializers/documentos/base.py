@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from datetime import date
 
 from django_afip.models import (
 	Receipt,
@@ -27,7 +28,7 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 
 		fields = (
 			'id',
-			'fecha_operacion',
+			# 'fecha_operacion',
 			'descripcion',
 			'fecha_anulacion',
 			'nombre',
@@ -36,6 +37,7 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 		
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
+		self.fields['fecha_operacion'] = serializers.DateField(initial=date.today())		
 		# Fields comunes:
 		# self.fields['pdf'] = serializers.FileField(read_only=True)
 		if self.context.keys():

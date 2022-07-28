@@ -15,23 +15,30 @@ from apps.core.models import OwnReceipt
 class ReceiptModelSerializer(serializers.ModelSerializer):
 	'''Receipt model serializer'''
 
+	RECEIPT_TYPE_CHOICES = {
+		'cliente': ['51', '53', '54'],
+		'proveedor': [],
+		'caja': []
+	}
+
 	class Meta:
 		model = OwnReceipt
 
 		fields = (
-			'issued_date',
+			# 'issued_date',
 		)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-
+		self.fields['issued_date'] = serializers.DateField(initial=date.today())
 		self.fields['total_amount'] = serializers.DecimalField(
 				max_digits=15, 
 				decimal_places=2, 
 				read_only=True
 			)
+
 		self.fields['receipt_type'] = serializers.ChoiceField(
-			choices=list(ReceiptType.objects.all().values_list('description', flat=True)),
+			choices=list(ReceiptType.objects.filter(code__in=self.RECEIPT_TYPE_CHOICES[self.context['causante']]).values_list('description', flat=True)),
 			label="Tipo"
 		)
 		point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))
