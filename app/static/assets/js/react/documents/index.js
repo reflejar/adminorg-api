@@ -2,7 +2,7 @@
 
 const INITIAL_DATA = JSON.parse(document.getElementById('initialData').textContent)
 const CHOICES = JSON.parse(document.getElementById('choices').textContent)
-const CSRF_TOKEN = document.getElementsByName('csrfmiddlewaretoken')
+const CSRF_TOKEN = document.getElementsByName('csrfmiddlewaretoken')[0].value
 
 const Portlet = ({
   title,
@@ -345,32 +345,23 @@ const Comprobante = ({ initialData, onlyRead }) => {
     const canSend = () => {
       return true;
     } 
-  
+
     const handleSubmit = React.useCallback((event) => {
-      // event.preventDefault();
-      // document.form_cbte.appendChild(CSRF_TOKEN[0])
-      // document.form_cbte.submit()
+      event.preventDefault();
       window.fetch(document.form_cbte.action, {
         method: 'POST',
-        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+            "Content-Type": "application/json",
+            "X-CSRFToken": CSRF_TOKEN,
         },
-        content: {
-          'csrfmiddlewaretoken': CSRF_TOKEN
-        }
-        form
+        body: JSON.stringify(documento),
       })      
-    }, []);
+    },[]);
 
     const handleBack = (e) => {
       history.back()
     }
-    const data = new FormData(document.form_cbte);
-    const json = Object.fromEntries(data.entries());
-    console.log(json)
-
+    
     return (
       <form onSubmit={handleSubmit} name="form_cbte" method="POST">
         <Encabezado 
@@ -563,7 +554,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
               <button onClick={handleBack} className="btn btn-bordered btn-default btn-block">Cancelar</button>
             </div>
             <div className="col-xs-6">
-              <button type="submit" disabled={!canSend()} onClick={handleSubmit} className="btn btn-bordered btn-primary btn-block">Guardar</button>
+              <button disabled={!canSend()} onClick={handleSubmit} className="btn btn-bordered btn-primary btn-block">Guardar</button>
             </div>
           </div>
         </div>
