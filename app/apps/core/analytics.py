@@ -16,7 +16,7 @@ class Report:
 		'documento__receipt__receipt_type__description': 'TIPO_DOCUMENTO',
 		'documento__receipt__point_of_sales': 'DOCUMENTO_PUNTO',	
 		'documento__receipt__receipt_number': 'DOCUMENTO_NUMERO',	
-		'cuenta': 'CUENTA_ID',
+		'cuenta_id': 'CUENTA_ID',
 		'cuenta__numero': 'CUENTA_NUMERO',
 		'cuenta__nombre': 'CUENTA_NOMBRE',
 		'cuenta__perfil__nombre': 'PERFIL_NOMBRE',
@@ -24,7 +24,7 @@ class Report:
 		'cuenta__perfil__razon_social': 'PERFIL_RAZON_SOCIAL',
 		'cuenta__titulo__nombre': 'TITULO_NOMBRE',
 		'cuenta__titulo__numero': 'TITULO_NUMERO',
-		'vinculo': 'VINCULO_ID',
+		'vinculo_id': 'VINCULO_ID',
 		'documento__destinatario': "COMPROBANTE_DESTINATARIO_ID",
 		'detalle': 'DETALLE',
 		'documento__descripcion': 'DESCRIPCION',
@@ -42,8 +42,10 @@ class Report:
 			self, 
 			comunidad,
 			data=None,
-			keep=[]
+			keep=[],
+			# filters=""
 		):
+
 		self.comunidad = comunidad
 		self.keep = keep
 		self.labels = pd.DataFrame.from_records([
@@ -62,26 +64,11 @@ class Report:
 		if data:
 			self.df = self.generate_initial_df(data.values(*self.COLUMN_NAMES.keys()))
 		else:
-			self.df = self.generate_initial_df(Operacion.objects.filter(comunidad=self.comunidad).select_related(
-					"cuenta", 
-					"cuenta__perfil", # Para el nombre de la cuenta
-					"cuenta__titulo", 
-					"cuenta__naturaleza",
-					"documento__receipt", 
-					"documento__receipt__receipt_type", 
-					"vinculo",
-				).prefetch_related(
-					"vinculos",
-					"vinculos__cuenta",
-					"vinculos__cuenta__naturaleza",
-					"vinculo__vinculos",
-					"vinculo__vinculos__cuenta",
-					"vinculo__vinculos__cuenta__naturaleza",
-				))
+			self.df = self.generate_initial_df(Operacion.objects.filter(comunidad=self.comunidad).values(*self.COLUMN_NAMES.keys()))
 		
 
 	def generate_initial_df(self, values):
-		df = pd.DataFrame.from_records(values).copy()
+		df = pd.DataFrame(list(values))
 		if len(df):
 			# Se renombran las variables
 			df = df.rename(columns = self.COLUMN_NAMES)
@@ -215,6 +202,11 @@ class Report:
 	):
 		# Retorno de data cruda
 		if raw_data:
+			self.df = self.df.drop([
+				'NATURALEZA', 'CUENTA_NOMBRE', 'PERFIL_APELLIDO',
+				'PERFIL_NOMBRE','PERFIL_RAZON_SOCIAL','CUENTA_ID',
+				'COMPROBANTE_DESTINATARIO_ID','ID','VINCULO_ID'
+			], axis=1)
 			return self.df
 		
 		# Retorno vacío

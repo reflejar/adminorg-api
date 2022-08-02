@@ -1,3 +1,4 @@
+import json
 from itertools import groupby
 
 from django.db.models import F
@@ -454,6 +455,11 @@ class AdminDocumentosCUDView(BaseCUDView):
 			return ReceiptType.objects.get(description=receipt_type)
 		return ReceiptType()
 
+	def get_cuenta(self):
+		if 'cuenta_pk' in self.request.GET:
+			return Cuenta.objects.get(id=self.request.GET['cuenta_pk'])
+		return self.object.destinatario
+
 	def get_form_kwargs(self):
 		kwargs = super().get_form_kwargs()
 		kwargs['context'].update({
@@ -462,7 +468,7 @@ class AdminDocumentosCUDView(BaseCUDView):
 			'receipt_type': self.RECEIPT_TYPE,
 		})
 		if 'cuenta_pk' in self.request.GET:
-			kwargs['context']['cuenta']	= Cuenta.objects.get(id=self.request.GET['cuenta_pk'])
+			kwargs['context']['cuenta']	= self.get_cuenta()
 		elif self.object.destinatario:
 			kwargs['context']['cuenta'] = self.object.destinatario
 		return kwargs
@@ -489,8 +495,12 @@ class AdminDocumentosCUDView(BaseCUDView):
 	def dispatch(self, request, *args, **kwargs):	
 		if not 'cuenta_pk' in self.request.GET and not 'pk' in kwargs:
 			raise Http404('There is no parameter cuenta_pk')
+		
+		
+		if self.request.method == "POST":
+			self.request.POST = json.loads(self.request.body)
+			self.request.POST['destinatario'] = self.get_cuenta().id
 		return super().dispatch(request, *args, **kwargs)
-
 
 	def form_invalid(self, form):
 		print(form.errors)

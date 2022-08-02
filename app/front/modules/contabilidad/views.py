@@ -116,21 +116,6 @@ class MayoresView(AdminRegistroView):
 			datos = Operacion.objects.filter(
 				comunidad=self.comunidad,
 				documento__isnull=False
-			).select_related(
-				"cuenta", 
-				"cuenta__perfil", # Para el nombre de la cuenta
-				"cuenta__titulo", 
-				"cuenta__naturaleza",
-				"documento__receipt", 
-				"documento__receipt__receipt_type", 
-				"vinculo",
-			).prefetch_related(
-				"vinculos",
-				"vinculos__cuenta",
-				"vinculos__cuenta__naturaleza",
-				"vinculo__vinculos",
-				"vinculo__vinculos__cuenta",
-				"vinculo__vinculos__cuenta__naturaleza",
 			)
 		else:
 			datos = Operacion.objects.none()
