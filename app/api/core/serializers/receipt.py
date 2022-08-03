@@ -25,12 +25,11 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 		model = OwnReceipt
 
 		fields = (
-			# 'issued_date',
+			'issued_date',
 		)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.fields['issued_date'] = serializers.DateField(initial=date.today())
 		self.fields['total_amount'] = serializers.DecimalField(
 				max_digits=15, 
 				decimal_places=2, 

@@ -19,7 +19,7 @@ class IndexView(AdminListObjectsView):
 	MODULE = config.MODULE
 	MODULE_BUTTONS = config.MODULE_BUTTONS
 	MODULE_HANDLER = config.MODULE_HANDLER
-	MODULE_FIELD_DISPLAY = ['id', 'apellido_cliente', 'nombre_cliente', 'razon_social']
+	MODULE_FIELD_DISPLAY = ['id', 'apellido_cliente', 'nombre_cliente']
 	MODULE_CHART = Chart(kind='pie', title="¿Cuánto queda por cobrar?",keep=["cliente", "dominio"], labels="fecha_indicativa", rank=3)
 	template_name = f"{config.TEMPLATE_FOLDER}/index.html"
 

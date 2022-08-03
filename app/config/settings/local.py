@@ -19,7 +19,7 @@ EMAIL_USE_TLS=False
 EMAIL_USE_SSL=False
 
 REACT = {
-    'core': 'https://unpkg.com/react@18/umd/react.development.js',
-    'dom': 'https://unpkg.com/react-dom@18/umd/react-dom.development.js',
-    'babel': 'https://unpkg.com/@babel/standalone/babel.min.js'
+    'core': 'assets/js/react/react.development.js',
+    'dom': 'assets/js/react/react-dom.development.js',
+    'babel': 'assets/js/react/babel.min.js'
 }

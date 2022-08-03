@@ -125,9 +125,9 @@ LOGGING = {
 DEBUG = True
 
 REACT = {
-    'core': 'https://unpkg.com/react@18/umd/react.production.min.js',
-    'dom': 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
-    'babel': 'https://unpkg.com/@babel/standalone/babel.min.js'
+    'core': 'assets/js/react/react.production.min.js',
+    'dom': 'assets/js/react/react-dom.production.min.js',
+    'babel': 'assets/js/react/babel.min.js'
 }
 
 import sentry_sdk

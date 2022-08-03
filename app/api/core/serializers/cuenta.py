@@ -66,7 +66,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 
 		# Incorporacion de Perfil
 		if self.context['naturaleza'] in ['cliente', 'proveedor']:
-			self.fields['perfil'] = PerfilModelSerializer(read_only=False)
+			self.fields['perfil'] = PerfilModelSerializer(read_only=False, context=self.context)
 
 		# Incorporacion de Domicilio (solo para Dominio)
 		if self.context['naturaleza'] in ['dominio']:
@@ -141,10 +141,15 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		"""
 
 		# validacion conjunta (debe existir razon social, nombre o apellido)
-		if not perfil['apellido'] and not perfil['razon_social']:
-			mj_error = ['Es necesario configurar un Apellido o una Razon social']
-			raise serializers.ValidationError({'apellido': mj_error, 'razon_social': mj_error})
-		
+		if self.context['naturaleza'] == "cliente":
+			if not perfil['apellido']:
+				mj_error = ['Es necesario configurar un Apellido']
+				raise serializers.ValidationError({'apellido': mj_error})
+		if self.context['naturaleza'] == "proveedor":
+			if not perfil['razon_social']:
+				mj_error = ['Es necesario configurar una Razón social']
+				raise serializers.ValidationError({'razon_social': mj_error})		
+
 		return perfil
 
 	def validate(self, data):

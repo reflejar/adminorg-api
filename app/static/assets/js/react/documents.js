@@ -3,6 +3,8 @@
 const INITIAL_DATA = JSON.parse(document.getElementById('initialData').textContent)
 const CHOICES = JSON.parse(document.getElementById('choices').textContent)
 const CSRF_TOKEN = document.getElementsByName('csrfmiddlewaretoken')[0].value
+const TODAY = new Date().toISOString().split("T")[0]
+
 
 const Portlet = ({
   title,
@@ -121,7 +123,13 @@ const Encabezado = ({
             </div>              
             <div className="col-md-2">
               <label htmlFor="receipt.issued_date">Fecha Cbte.</label>
-              <input className="form-control" name="receipt.issued_date" type="date" onChange={handleChange}/>
+              <input 
+                className="form-control" 
+                name="receipt.issued_date" 
+                type="date" 
+                onChange={handleChange}
+                value={documento.receipt.issued_date || ''}
+              />
             </div>               
             <div className="col-md-2">
               <label htmlFor="fecha_operacion">Fecha Op.</label>
@@ -130,7 +138,7 @@ const Encabezado = ({
                 name="fecha_operacion" 
                 type="date" 
                 onChange={reload}
-                value={documento && documento.fecha_operacion || ''}
+                value={documento.fecha_operacion || ''}
               />
             </div>                    
           </div>
@@ -331,12 +339,12 @@ const Comprobante = ({ initialData, onlyRead }) => {
           queryParams.fecha_operacion : 
           initialData.fecha_operacion ? 
           initialData.fecha_operacion : 
-          Date.now(),
+          TODAY,
         descripcion: '',
         receipt: {
           receipt_type: (queryParams && queryParams.receipt_type) ? queryParams.receipt_type : initialData.receipt.receipt_type,
           point_of_sales: initialData.receipt.point_of_sales ? initialData.receipt.point_of_sales : '',
-          issued_date: initialData.receipt.issued_date ? initialData.receipt.issued_date : Date.now(),
+          issued_date: initialData.receipt.issued_date ? initialData.receipt.issued_date : TODAY,
           receipt_number: initialData.receipt.receipt_number ? initialData.receipt.receipt_number : '',
         },
         ...fieldsLists
@@ -345,7 +353,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
     const canSend = () => {
       return true;
     } 
-
+    
     const handleSubmit = React.useCallback((event) => {
       event.preventDefault();
       window.fetch(document.form_cbte.action, {
@@ -356,12 +364,11 @@ const Comprobante = ({ initialData, onlyRead }) => {
         },
         body: JSON.stringify(documento),
       })      
-    },[]);
+    },[documento]);
 
     const handleBack = (e) => {
       history.back()
     }
-    
     return (
       <form onSubmit={handleSubmit} name="form_cbte" method="POST">
         <Encabezado 
@@ -397,7 +404,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
             },
             {
               type: 'date',
-              name: 'fecha_descuento',
+              name: 'fecha_gracia',
               label: 'Descuento',
             },            
             {
@@ -424,9 +431,9 @@ const Comprobante = ({ initialData, onlyRead }) => {
           cleanedField={{
             destinatario: '',
             concepto: '',
-            fecha_indicativa: '',
-            fecha_descuento: '',
-            fecha_vencimiento: '',
+            fecha_indicativa: TODAY,
+            fecha_gracia: TODAY,
+            fecha_vencimiento: TODAY,
             detalle: '',
             cantidad: 0,
             monto: 0,

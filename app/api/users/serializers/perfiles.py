@@ -30,6 +30,13 @@ class PerfilModelSerializer(serializers.ModelSerializer):
 			'cuenta'
 		)
 
+	def __init__(self, instance=None, data=..., **kwargs):
+		super().__init__(instance, data, **kwargs)
+		if 'context' in kwargs.keys():
+			if kwargs['context']['naturaleza'] == "proveedor":
+				self.fields.pop('apellido')
+				self.fields.pop('nombre')
+
 	def get_cuenta(self, obj):
 		cuenta = obj.cuenta_set.first()
 		if cuenta:

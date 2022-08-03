@@ -4,10 +4,10 @@
 {% load rest_framework %}
 
 {% block assets %}
-  <script crossorigin src="{{react.core}}"></script>
-  <script crossorigin src="{{react.dom}}"></script>
-  <script src="{{react.babel}}"></script>
-  <script type="text/babel" src='{% static "assets/js/react/documents/index.js" %}'></script>
+  <script src='{% static react.core %}'></script>
+  <script src='{% static react.dom %}'></script>
+  <script src='{% static react.babel %}'></script>
+  <script type="text/babel" src='{% static "assets/js/react/documents.js" %}'></script>
 {% endblock %}
 
 {% block contenido %}
