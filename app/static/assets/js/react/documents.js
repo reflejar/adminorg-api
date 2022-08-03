@@ -351,7 +351,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
       });  
   
     const canSend = () => {
-      return true;
+      return false;
     } 
     
     const handleSubmit = React.useCallback((event) => {
