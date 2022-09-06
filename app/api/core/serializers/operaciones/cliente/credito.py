@@ -8,7 +8,7 @@ class CreditoModelSerializer(OperacionModelSerializer):
 		super().__init__(*args, **kwargs)
 		fields = Operacion()._meta
 		self.fields['cantidad'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0, allow_null=True)
-		self.fields['fecha_indicativa'] = serializers.DateField(label="Periodo")
+		self.fields['periodo'] = serializers.DateField(label="Periodo")
 		self.fields['fecha_gracia'] = serializers.DateField(allow_null=True, label="Descuento")
 		self.fields['fecha_vencimiento'] = serializers.DateField(allow_null=True, label="Vencimiento")
 		if 'retrieve' in self.context.keys():

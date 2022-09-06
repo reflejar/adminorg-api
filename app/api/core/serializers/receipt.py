@@ -17,7 +17,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 
 	RECEIPT_TYPE_CHOICES = {
 		'cliente': ['51', '53', '54'],
-		'proveedor': [],
+		'proveedor': ['1','2','3', '6', '7', '8', '11', '12', '13', '51', '52', '53','63', '64', '301', '302'],
 		'caja': []
 	}
 

@@ -476,7 +476,7 @@ class AdminDocumentosCUDView(BaseCUDView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['vertical_style'] = self.VERTICAL_STYLE
-		jsonify_choices = {}
+		jsonify_choices = {'module_handler': self.MODULE_HANDLER}
 		for k0,v0 in context['form'].fields.items():
 			if getattr(v0, 'child', None) or getattr(v0, 'fields', None):
 				jsonify_choices[k0] = {}

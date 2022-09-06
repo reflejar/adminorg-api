@@ -54,7 +54,17 @@ class OrigenProveedorModelSerializer(DocumentoModelSerializer):
 				self.fields['pagos'] = PagoModelSerializer(context=self.context, read_only=False, many=True, instance=self.instance)
 				if self.context['receipt_type'].code == "301":
 					self.fields['cajas'] = CajaModelSerializer(context=self.context, read_only=False, many=True)
-					self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(context=self.context, read_only=False, many=True)
+					# self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(context=self.context, read_only=False, many=True)
+
+					self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(
+							context=self.context, 
+							read_only=False, 
+							many=True, 
+							instance=self.instance,
+							initial_saldos="cuenta",
+							instance_method="utilizaciones_saldos"
+							)
+
 					self.fields['retenciones'] = RetencionModelSerializer(context=self.context, read_only=False, many=True)
 					self.fields['a_cuenta'] = ACuentaModelSerializer(context=self.context, read_only=True, many=True)
 				else:	

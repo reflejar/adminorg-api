@@ -19,8 +19,7 @@ urlpatterns = [
 
 	# Comprobantes
 	path('cbte/', CUDDocumentoView.as_view(), name='cbte-create'),
-	path('cbte/<int:pk>', CUDDocumentoView.as_view(), name='cbte-edit'),
-
+	
 	# Registros
 	path('registros/', RegistroView.as_view(), name='registros'),
 	

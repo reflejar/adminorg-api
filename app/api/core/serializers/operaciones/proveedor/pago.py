@@ -1,5 +1,4 @@
 from itertools import chain
-
 from api.core.serializers.operaciones.base import *
 from api.core.serializers.operaciones.proveedor import DebitoModelSerializer
 
@@ -16,5 +15,6 @@ class PagoModelSerializer(OperacionModelSerializer):
 				queryset=queryset, 
 				allow_null=False
 			)		
+		self.fields['vinculo'].display_value = self.display_vinculo
 		self.fields['origen'] = DebitoModelSerializer(context=self.context, read_only=True, many=False)
 				

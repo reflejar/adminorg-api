@@ -27,7 +27,6 @@ class IndexView(AdminListObjectsView):
 class CUDParametroView(
 		AdminParametrosCUDView, 
 		generic.CreateView,
-		generic.UpdateView,
 	):
 
 	MODULE = config.MODULE
@@ -39,7 +38,6 @@ class CUDParametroView(
 class CUDDocumentoView(
 		AdminDocumentosCUDView, 
 		generic.CreateView,
-		generic.UpdateView,
 	):
 
 	MODULE = config.MODULE
@@ -56,7 +54,7 @@ class EstadoDeudasView(AdminEstadoView):
 	SUBMODULE = {'name': 'Detalle de deudas'}
 	MODULE_HANDLER = "estado_deuda"
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	EDIT_URL = 'front:clientes:cbte-edit'			
+		
 	template_name = f'{config.TEMPLATE_FOLDER}/estados.html'
 
 class EstadoCuentaView(AdminEstadoView):
@@ -67,7 +65,7 @@ class EstadoCuentaView(AdminEstadoView):
 	SUBMODULE = {'name': 'Cuenta histórica'}
 	MODULE_HANDLER = "estado_cuenta"
 	MODULE_BUTTONS = config.MODULE_BUTTONS
-	EDIT_URL = 'front:clientes:cbte-edit'		
+	
 	template_name = f'{config.TEMPLATE_FOLDER}/estados.html'	
 
 

@@ -9,9 +9,9 @@ const TODAY = new Date().toISOString().split("T")[0]
 const Portlet = ({
   title,
   handler,
-  children
+  children,
+  display="in"
 }) => {
-
   return (
     <div className="row">
     <div className="col-md-12">
@@ -23,7 +23,7 @@ const Portlet = ({
             </div>
             <div className="clearfix"></div>
         </div>
-        <div id={`#portlet-${handler}`} className="panel-collapse collapse in">
+        <div id={`portlet-${handler}`} className={`panel-collapse collapse ${display}`}>
             <div className="portlet-body">
               {children}
             </div>
@@ -42,7 +42,7 @@ const Encabezado = ({
     }) => {
 
     const types = Object.keys(CHOICES.receipt.receipt_type)
-    const point_of_sales = Object.keys(CHOICES.receipt.point_of_sales)
+    const point_of_sales = CHOICES.receipt.point_of_sales && Object.keys(CHOICES.receipt.point_of_sales)
 
     const reload = (e)=> {
         let param = e.target.name
@@ -97,7 +97,7 @@ const Encabezado = ({
             </div>
             <div className="col-md-2">
               <label htmlFor="receipt.point_of_sales">Punto Vta</label>
-              <select 
+              {point_of_sales ? <select 
               className="form-control"
               name="receipt.point_of_sales" 
               id="receipt.point_of_sales" 
@@ -108,13 +108,30 @@ const Encabezado = ({
                 {point_of_sales.map((point, i) => (
                     <option key={i} value={point}>{point}</option>
                 ))}
-              </select>
+              </select> : 
+                 <input 
+                 type="number" 
+                 className="form-control" 
+                 name="receipt.point_of_sales" 
+                 id="receipt.point_of_sales"
+                 min="0" 
+                 onChange={handleChange}
+                 value={documento.receipt.point_of_sales || ''}
+               />           
+              
+              
+              }
+              
             </div>            
             <div className="col-md-2">
               <label htmlFor="receipt.receipt_number">N°</label>
               <input 
                 type="number" 
                 className="form-control" 
+                disabled={
+                  (CHOICES.module_handler === "documento_cliente") || 
+                  (documento.receipt && ["Orden de Pago X", "Transferencia X"].indexOf(documento.receipt.receipt_type) === 0)
+                }
                 name="receipt.receipt_number" 
                 id="receipt.receipt_number" 
                 onChange={handleChange}
@@ -169,10 +186,12 @@ const Appendable = ({ documento, setDocumento, onlyRead, title, handler, fields,
     })
   }
 
-  const AppendCleanFieldsGroup = () => {
+  const AppendCleanFieldsGroup = (e) => {
+    e.preventDefault()
     setGrouped((groups) => ([...groups, cleanedField]))
   }
-  const RemoveLastFieldsGroup = () => {
+  const RemoveLastFieldsGroup = (e) => {
+    e.preventDefault()
     const lastElement = grouped.length-1
     if (lastElement >= 1) {
       setGrouped((groups) => ([...groups.filter((_, i) => i !== lastElement)]))
@@ -228,9 +247,9 @@ const Appendable = ({ documento, setDocumento, onlyRead, title, handler, fields,
             </tbody>
           </table>
         </div>            
-        <div className="col-md-offset-11">
-          <button onClick={() => RemoveLastFieldsGroup()} className="btn btn-sm btn-danger text-right"><span className="fa fa-minus"></span></button>
-          <button onClick={() => AppendCleanFieldsGroup()} className="btn btn-sm btn-success text-right"><span className="fa fa-plus"></span></button>
+        <div className="col-md-offset-6 text-right">
+          <button onClick={RemoveLastFieldsGroup} className="btn btn-sm btn-danger text-right"><span className="fa fa-minus"></span></button>
+          <button onClick={AppendCleanFieldsGroup} className="btn btn-sm btn-success text-right"><span className="fa fa-plus"></span></button>
         </div>
       </div>
     </Portlet>
@@ -273,10 +292,10 @@ const Selectable = ({ documento, setDocumento, onlyRead, title, handler, rows })
 
 
   return (
-    <Portlet title={title} handler={handler}>
+    <Portlet title={title} handler={handler} display={(["utilizaciones_disponibilidades", "utilizaciones_saldos"].includes(handler) ? "" : "in")}>
       <div className="row">
         <div className="col-md-12">
-          <table className="table table-condensed">
+          <table className="table table-condensed table-responsive">
             <thead>
               <tr>
                 <th></th>
@@ -288,7 +307,7 @@ const Selectable = ({ documento, setDocumento, onlyRead, title, handler, rows })
                 return (<tr key={i}>
                   <td>
                     <input 
-                      className="form-control" 
+                      className="form-control input-sm" 
                       type="checkbox" 
                       value={row.vinculo} 
                       name={`${i}.vinculo`} 
@@ -299,7 +318,7 @@ const Selectable = ({ documento, setDocumento, onlyRead, title, handler, rows })
                   <td>{row.descripcion}</td>
                   <td>
                     <input 
-                      className="form-control" 
+                      className="form-control input-sm" 
                       type="number" 
                       value={row.monto} 
                       name={`${i}.monto`} 
@@ -348,13 +367,47 @@ const Comprobante = ({ initialData, onlyRead }) => {
           receipt_number: initialData.receipt.receipt_number ? initialData.receipt.receipt_number : '',
         },
         ...fieldsLists
-      });  
+      });
+
+    const [canSend, setCanSend] = React.useState(false)
   
-    const canSend = () => {
-      return false;
-    } 
+    React.useEffect(() => {
+
+      let cantSend = true
+      if (documento.receipt.receipt_type && documento.receipt.point_of_sales) {
+        
+        // Si hay creditos significa que es una Factura a cliente
+        if (documento.creditos && documento.creditos.length > 0) {
+          const incomplete = documento.creditos.filter(c => (c.destinatario === "" || c.concepto === "" || c.monto === "" || c.monto == 0))
+          incomplete.length > 0 ? cantSend = true : cantSend = false
+        }
+
+        // Si hay cobros significa que es un Recibo o una Nota de Credito
+        if (documento.cobros) {
+          const totalCobros = documento.cobros.reduce((total, current) => total + Number(current['monto']), 0)
+          
+          // Si hay resultados significa que es una Nota de Credito
+          if (documento.resultados) {
+            const totalResultados = documento.resultados.filter(r => r.cuenta !== "").reduce((total, current) => total + Number(current['monto']), 0)
+            totalCobros > 0 && totalCobros === totalResultados ? cantSend = false : cantSend = true
+          }
+
+          // Si hay cajas significa que es un Recibo
+          if (documento.cajas) {
+
+          }
+        }
+      } 
+      if (cantSend) {
+        setCanSend(false)
+      } else {
+        setCanSend(true)
+      }
+
+    }, [documento])
     
     const handleSubmit = React.useCallback((event) => {
+      setCanSend(false)
       event.preventDefault();
       window.fetch(document.form_cbte.action, {
         method: 'POST',
@@ -363,7 +416,11 @@ const Comprobante = ({ initialData, onlyRead }) => {
             "X-CSRFToken": CSRF_TOKEN,
         },
         body: JSON.stringify(documento),
-      })      
+      }).then(response => {
+        if (response.redirected) {
+          window.location = response.url
+        }
+      })
     },[documento]);
 
     const handleBack = (e) => {
@@ -399,7 +456,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
             },
             {
               type: 'date',
-              name: 'fecha_indicativa',
+              name: 'periodo',
               label: 'Periodo',
             },
             {
@@ -431,7 +488,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
           cleanedField={{
             destinatario: '',
             concepto: '',
-            fecha_indicativa: TODAY,
+            periodo: TODAY,
             fecha_gracia: TODAY,
             fecha_vencimiento: TODAY,
             detalle: '',
@@ -440,6 +497,56 @@ const Comprobante = ({ initialData, onlyRead }) => {
           }}
           />
         }
+
+        {/* Clientes: Seccion de Creditos */}
+        {Object.keys(fieldsLists).length > 0 && fieldsLists.debitos && <Appendable 
+          documento={documento} 
+          setDocumento={setDocumento} 
+          onlyRead={onlyRead}
+          title="Debitos"
+          handler="debitos"
+          fields={[
+            {
+              type: 'select',
+              name: 'cuenta',
+              label: 'Cuenta',
+              choices: CHOICES.debitos.cuenta
+            },
+            {
+              type: 'date',
+              name: 'periodo',
+              label: 'Periodo',
+            },       
+            {
+              type: 'date',
+              name: 'fecha_vencimiento',
+              label: 'Vencimiento',
+            },
+            {
+              type: 'text',
+              name: 'detalle',
+              label: 'Detalle',
+            },
+          
+            {
+              type: 'number',
+              name: 'monto',
+              label: 'Monto',
+            },                        
+          ]}
+          cleanedField={{
+            destinatario: '',
+            concepto: '',
+            periodo: TODAY,
+            fecha_gracia: TODAY,
+            fecha_vencimiento: TODAY,
+            detalle: '',
+            cantidad: 0,
+            monto: 0,
+          }}
+          />
+        }        
+
         {/* Clientes: Seccion de Cobros */}
         {Object.keys(fieldsLists).length > 0 && fieldsLists.cobros && <Selectable 
           documento={documento} 
@@ -450,8 +557,18 @@ const Comprobante = ({ initialData, onlyRead }) => {
           rows={CHOICES.cobros.vinculo}
           />
         }        
-  
-        
+
+        {/* Proveedores: Seccion de Deudas */}
+        {Object.keys(fieldsLists).length > 0 && fieldsLists.pagos && <Selectable 
+          documento={documento} 
+          setDocumento={setDocumento} 
+          onlyRead={onlyRead}
+          title="Items pendientes de pago"
+          handler="pagos"
+          rows={CHOICES.pagos.vinculo}
+          />
+        }              
+
         {/* Seccion de Cajas */}
         {Object.keys(fieldsLists).length > 0 && fieldsLists.cajas && <Appendable 
           documento={documento} 
@@ -491,7 +608,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
           />
         }
 
-        {/* Seccion de Cajas */}
+        {/* Seccion de Resultados */}
         {Object.keys(fieldsLists).length > 0 && fieldsLists.resultados && <Appendable 
           documento={documento} 
           setDocumento={setDocumento} 
@@ -512,7 +629,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
             },                 
             {
               type: 'date',
-              name: 'fecha_indicativa',
+              name: 'periodo',
               label: 'Período',
             },          
             {
@@ -524,19 +641,42 @@ const Comprobante = ({ initialData, onlyRead }) => {
           cleanedField={{
             cuenta: '',
             detalle: '',
-            fecha_indicativa: '',
+            periodo: TODAY,
             monto: 0,
           }}
           />
-        }                
-  
-        <Portlet 
+        }    
+
+        {/* Seccion de Utilización de saldos */}
+        {Object.keys(fieldsLists).length > 0 && fieldsLists.utilizaciones_saldos && Object.keys(CHOICES.utilizaciones_saldos).length > 0 && <Selectable 
+          documento={documento} 
+          setDocumento={setDocumento} 
+          onlyRead={onlyRead}
+          title="Utilizar saldos anteriores"
+          handler="utilizaciones_saldos"
+          rows={CHOICES.utilizaciones_saldos.vinculo}
+          />
+        }   
+
+        {/* Seccion de Utilización de disponibilidades */}
+        {Object.keys(fieldsLists).length > 0 && fieldsLists.utilizaciones_disponibilidades && Object.keys(CHOICES.utilizaciones_disponibilidades).length > 0 && <Selectable 
+          documento={documento} 
+          setDocumento={setDocumento} 
+          onlyRead={onlyRead}
+          title="Utilizar disponibilidades"
+          handler="utilizaciones_disponibilidades"
+          rows={CHOICES.utilizaciones_disponibilidades.vinculo}
+          />
+        }                  
+
+            
+        {documento.receipt.receipt_type && documento.fecha_operacion && <Portlet 
           title="Descripción"
           handler="descripcion">
           <div className="row">
             <div className="col-md-12">
-              <label htmlFor="descripcion">Descripción</label>
-              <input 
+              
+              <textarea 
                 type="text" 
                 id='descripcion' 
                 name="descripcion" 
@@ -546,7 +686,8 @@ const Comprobante = ({ initialData, onlyRead }) => {
               />
             </div>            
           </div>                        
-        </Portlet>
+        </Portlet>}
+
   
         {/* {!onlyRead && 
           <Contado 
@@ -561,7 +702,7 @@ const Comprobante = ({ initialData, onlyRead }) => {
               <button onClick={handleBack} className="btn btn-bordered btn-default btn-block">Cancelar</button>
             </div>
             <div className="col-xs-6">
-              <button disabled={!canSend()} onClick={handleSubmit} className="btn btn-bordered btn-primary btn-block">Guardar</button>
+              <button disabled={!canSend} onClick={handleSubmit} className="btn btn-bordered btn-primary btn-block">Guardar</button>
             </div>
           </div>
         </div>
