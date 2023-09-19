@@ -17,7 +17,7 @@ services:
   app: &app
     build:
       context: .
-    image: anopa/adminsmart_django:latest
+    image: ghcr.io/adminsmartlab/django:latest
     depends_on:
       - postgres
       - redis
@@ -33,19 +33,19 @@ services:
       - postgres:postgres
     command: /start-app-dev.sh
 
-  celeryworker:
-    <<: *app
-    depends_on:
-      - redis
-      - postgres
-    ports: []
-    command: /start-celery-worker.sh
+  # celeryworker:
+  #   <<: *app
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   ports: []
+  #   command: /start-celery-worker.sh
 
-  celerybeat:
-    <<: *app
-    user: root
-    depends_on:
-      - redis
-      - postgres
-    ports: []
-    command: /start-celery-beat.sh
+  # celerybeat:
+  #   <<: *app
+  #   user: root
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   ports: []
+  #   command: /start-celery-beat.sh
