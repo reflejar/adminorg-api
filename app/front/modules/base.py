@@ -1,5 +1,6 @@
 import json
 from itertools import groupby
+from datetime import datetime
 
 from django.db.models import F
 from django.http import Http404
@@ -471,6 +472,8 @@ class AdminDocumentosCUDView(BaseCUDView):
 			kwargs['context']['cuenta']	= self.get_cuenta()
 		elif self.object.destinatario:
 			kwargs['context']['cuenta'] = self.object.destinatario
+		if 'fecha_operacion' in self.request.GET:
+			kwargs['context']['fecha_operacion'] = datetime.strptime(self.request.GET['fecha_operacion'], '%Y-%m-%d').date()
 		return kwargs
 
 	def get_context_data(self, **kwargs):

@@ -23,5 +23,5 @@ class OperacionModelSerializer(serializers.ModelSerializer):
 	def display_vinculo(self, instance):
 		return {
 			'descripcion': ' - '.join([str(instance.cuenta), str(instance.concepto()), str(instance.periodo())]),
-			'monto': instance.saldo()
+			'monto': instance.saldo(fecha=self.context['fecha_operacion'])
 		}
