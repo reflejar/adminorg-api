@@ -282,6 +282,7 @@
             vinculo: obj[0], 
             monto:obj[1].monto, 
             checked:false,
+            detalle: "",
             descripcion: obj[1].descripcion
           }))
       )
@@ -385,16 +386,19 @@
               issued_date: initialData.receipt.issued_date ? initialData.receipt.issued_date : TODAY,
               receipt_number: initialData.receipt.receipt_number ? initialData.receipt.receipt_number : '',
             },
+            condonacion: false,
             ...fieldsLists
           });
 
         const [canSend, setCanSend] = React.useState(false)
       
         React.useEffect(() => {
-
+          // Validacion de los tipos de comprobante
           let cantSend = true
+
+          
           if (documento.receipt.receipt_type && documento.receipt.point_of_sales) {
-            
+            // Validaciones para comprobantes a clientes
             // Si hay creditos significa que es una Factura a cliente
             if (documento.creditos && documento.creditos.length > 0) {
               const incomplete = documento.creditos.filter(c => (c.destinatario === "" || c.concepto === "" || c.monto === "" || c.monto == 0))
@@ -413,7 +417,13 @@
 
               // Si hay cajas significa que es un Recibo
               if (documento.cajas) {
-
+                const totalCajas = documento.cajas.filter(r => r.cuenta !== "").reduce((total, current) => total + Number(current['monto']), 0)
+                totalCobros <= totalCajas ? cantSend = false : cantSend = true
+              }
+            } else {
+              if (documento.cajas) {
+                const totalCajas = documento.cajas.filter(r => r.cuenta !== "").reduce((total, current) => total + Number(current['monto']), 0)
+                totalCajas > 0 ? cantSend = false : cantSend = true
               }
             }
           } 
@@ -426,7 +436,7 @@
         }, [documento])
         
         const handleSubmit = React.useCallback((event) => {
-          setCanSend(false)
+          setCanSend(false);
           event.preventDefault();
           window.fetch(document.form_cbte.action, {
             method: 'POST',
@@ -567,7 +577,7 @@
             }        
 
             {/* Clientes: Seccion de Cobros */}
-            {Object.keys(fieldsLists).length > 0 && fieldsLists.cobros && <Selectable 
+            {CHOICES.cobros && Object.keys(CHOICES.cobros).length > 0 && Object.keys(fieldsLists).length > 0 && fieldsLists.cobros && <Selectable 
               documento={documento} 
               setDocumento={setDocumento} 
               onlyRead={onlyRead}
@@ -578,7 +588,7 @@
             }        
 
             {/* Proveedores: Seccion de Deudas */}
-            {Object.keys(fieldsLists).length > 0 && fieldsLists.pagos && <Selectable 
+            {CHOICES.pagos && Object.keys(CHOICES.pagos).length > 0 && Object.keys(fieldsLists).length > 0 && fieldsLists.pagos && <Selectable 
               documento={documento} 
               setDocumento={setDocumento} 
               onlyRead={onlyRead}
@@ -667,7 +677,7 @@
             }    
 
             {/* Seccion de Utilización de saldos */}
-            {Object.keys(fieldsLists).length > 0 && fieldsLists.utilizaciones_saldos && Object.keys(CHOICES.utilizaciones_saldos).length > 0 && <Selectable 
+            {CHOICES.utilizaciones_saldos && Object.keys(CHOICES.utilizaciones_saldos).length > 0 && Object.keys(fieldsLists).length > 0 && fieldsLists.utilizaciones_saldos && <Selectable 
               documento={documento} 
               setDocumento={setDocumento} 
               onlyRead={onlyRead}
@@ -678,7 +688,7 @@
             }   
 
             {/* Seccion de Utilización de disponibilidades */}
-            {Object.keys(fieldsLists).length > 0 && fieldsLists.utilizaciones_disponibilidades && Object.keys(CHOICES.utilizaciones_disponibilidades).length > 0 && <Selectable 
+            {CHOICES.utilizaciones_disponibilidades && Object.keys(CHOICES.utilizaciones_disponibilidades).length > 0 && Object.keys(fieldsLists).length > 0 && fieldsLists.utilizaciones_disponibilidades && <Selectable 
               documento={documento} 
               setDocumento={setDocumento} 
               onlyRead={onlyRead}
