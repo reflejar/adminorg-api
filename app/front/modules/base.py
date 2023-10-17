@@ -474,6 +474,8 @@ class AdminDocumentosCUDView(BaseCUDView):
 			kwargs['context']['cuenta'] = self.object.destinatario
 		if 'fecha_operacion' in self.request.GET:
 			kwargs['context']['fecha_operacion'] = datetime.strptime(self.request.GET['fecha_operacion'], '%Y-%m-%d').date()
+		else:
+			kwargs['context']['fecha_operacion'] = None
 		return kwargs
 
 	def get_context_data(self, **kwargs):
