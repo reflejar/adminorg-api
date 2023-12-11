@@ -2,7 +2,7 @@
 
 # AdminCU - Edición Insight
 
-[![GitHub license](https://img.shields.io/github/license/DemocraciaEnRed/dialogo-legislativo-web)](https://github.com/DemocraciaEnRed/dialogo-legislativo-notifier/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/AdminSmartLab/insight-edition)](https://github.com/AdminSmartLab/insight-edition/blob/master/LICENSE)
 
 Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades. Edición de entorno de escritorio "Insight"
 
