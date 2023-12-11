@@ -287,3 +287,4 @@ ramosagustin2103
 *.pub
 .idea/
 config-prod.env
+tmp/

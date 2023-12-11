@@ -11,6 +11,8 @@ env = environ.Env()
 
 # Base
 DEBUG = env.bool('DJANGO_DEBUG', False)
+SECRET_KEY = 'PB3aGvTmCkzaLGRAxDc3aMayKTPTDd5usT8gw4pCmKOk5AlJjh12pTrnNgQyOHCH'
+
 
 ALLOWED_HOSTS = [
 	"*"
@@ -27,11 +29,11 @@ USE_TZ = True
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql',
+		'HOST': env('POSTGRES_HOST'),
+		'PORT': env('POSTGRES_PORT'),
 		'NAME': env('POSTGRES_DB'),
 		'USER': env('POSTGRES_USER'),
 		'PASSWORD': env('POSTGRES_PASSWORD'),
-		'HOST': env('POSTGRES_HOST'),
-		'PORT': env('POSTGRES_PORT'),
 	}
 }
 
@@ -122,9 +124,9 @@ MIDDLEWARE = [
 
 # Static files
 STATIC_ROOT = str(ROOT_DIR('staticfiles'))
-STATIC_URL = '/static/'
+STATIC_URL = '/app/static/'
 STATICFILES_DIRS = [
-	str(APPS_DIR.path('static')),
+	str(APPS_DIR.path('/app/static')),
 ]
 STATICFILES_FINDERS = [
 	'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -170,7 +172,14 @@ SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 
 # Email
-DEFAULT_FROM_EMAIL = 'Equipo de AdminSmart <info@admin-smart.com>'
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='172.21.0.1')
+EMAIL_PORT = env('EMAIL_PORT', default=25)
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=False)
+EMAIL_USE_SSL = env('EMAIL_USE_SSL', default=False)
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', default='AdminSmart <info@admin-smart.com>')
+SERVER_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', default=DEFAULT_FROM_EMAIL)
+
 
 # Email con plantillas
 # Creo que esto esta al pedo
@@ -184,28 +193,11 @@ ADMINS = [
 ]
 MANAGERS = ADMINS
 
-# Cache
-REDIS_URL = "redis://:{password}@{host}:{port}/0".format(
-	password=env('REDIS_PASSWORD'),
-	host=env('REDIS_HOST'),
-	port=env('REDIS_PORT')
-)
-CACHES = {
-	'default': {
-		'BACKEND': 'django_redis.cache.RedisCache',
-		'LOCATION': REDIS_URL,
-		'OPTIONS': {
-			'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-			'IGNORE_EXCEPTIONS': True,
-		}
-	}
-}
+
 # Celery
 INSTALLED_APPS += ['taskapp.celery.CeleryAppConfig']
 if USE_TZ:
 	CELERY_TIMEZONE = TIME_ZONE
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -243,3 +235,50 @@ USER_SOCIO_LOGIN_REDIRECT = "deudas/"
 # Redireccion cuando el logout es correcto.
 LOGOUT_REDIRECT_URL = '/login/'
 
+REACT = {
+    'core': 'assets/js/react/react.development.js',
+    'dom': 'assets/js/react/react-dom.development.js',
+    'babel': 'assets/js/react/babel.min.js'
+}
+
+
+
+LOGGING = {
+	'version': 1,
+	'disable_existing_loggers': False,
+	'filters': {
+		'require_debug_false': {
+			'()': 'django.utils.log.RequireDebugFalse'
+		}
+	},
+	'formatters': {
+		'verbose': {
+			'format': '%(levelname)s %(asctime)s %(module)s '
+					  '%(process)d %(thread)d %(message)s'
+		},
+	},
+	'handlers': {
+		'mail_admins': {
+			'level': 'ERROR',
+			'filters': ['require_debug_false'],
+			'class': 'django.utils.log.AdminEmailHandler'
+		},
+		'console': {
+			'level': 'DEBUG',
+			'class': 'logging.StreamHandler',
+			'formatter': 'verbose',
+		},
+	},
+	'loggers': {
+		'django.request': {
+			'handlers': ['mail_admins'],
+			'level': 'ERROR',
+			'propagate': True
+		},
+		'django.security.DisallowedHost': {
+			'level': 'ERROR',
+			'handlers': ['console', 'mail_admins'],
+			'propagate': True
+		}
+	}
+}

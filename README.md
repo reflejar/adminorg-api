@@ -1,66 +1,112 @@
-# Admin Smart
+![Header](docs/logo-as.png)
 
-_Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades_
+# AdminCU - Edición Insight
 
-### Pre-requisitos técnicos
+[![GitHub license](https://img.shields.io/github/license/DemocraciaEnRed/dialogo-legislativo-web)](https://github.com/DemocraciaEnRed/dialogo-legislativo-notifier/blob/master/LICENSE)
 
-_Es necesario tener instalado docker. https://docs.docker.com/engine/install/_
+Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades. Edición de entorno de escritorio "Insight"
 
-### Instalación
+## Setup
 
-_Hay que buildear la imagen. Esto genera la imagen desde python alpine, le instala todas las dependencias y deja listo el proyecto_
+Hay 2 maneras de preparar el entorno para desarrollo. A a través de Docker o a través de un entorno virtual de python. Recomendamos utilizar en docker
 
-```
-docker-compose build
-```
+### 1 - Docker
 
-_O indicando el yml_
+> #### ⚠️ Prerequisitos
+> 
+> Este entorno virtual requiere de:
+> - [Docker](https://docs.docker.com/engine/install/_) y (docker) compose (que en las nuevas versiones ya viene en la instalación de docker)
 
-```
-docker-compose -f docker-compose.yml build
-```
+#### Instalación
 
-### Ejecución
+Abrí una terminal del sistema en el directorio raiz del proyecto y construí la imagen de docker
 
-_Hay que correr la imagen. Esto corre las migraciones y corre el servidor_
-
-```
-docker-compose up
+```bash
+$ docker compose build
 ```
 
-### Ingresando al contenedor
+Luego se debe migrar la base de datos y ejecutar los scripts necesarios para dejar el sistema a punto
 
-
-_Y si se está ejecutando docker pero quiero, ademas, entrar al shell_plus para interactuar?_
-
-```
-docker-compose exec api sh
-```
-
-_y luego..._
-
-```
-python manage.py shell_plus
+```bash
+$ docker compose run app python manage.py migrate
+$ docker compose run app python manage.py runscript crear_base 
+$ docker compose run app python manage.py runscript crear_comunidad
+$ docker compose run app python manage.py runscript crear_usuario
 ```
 
-_o la versión rápida_
 
-```
-docker-compose exec api python manage.py shell_plus
+#### Ejecución
+
+Abrí una terminal del sistema en el directorio raiz del proyecto y ejecutá la imagen en un contenedor
+
+```bash
+$ docker compose up
 ```
 
-### Consideraciones de db
+#### Consideraciones de db
 
 _Si se necesita generar una migración porque se creó o se modificó un modelo hay que hacer lo siguiente_
 
 ```
-docker-compose -f docker-compose.yml run --rm api python manage.py makemigrations
+docker-compose run --rm api python manage.py makemigrations
 ```
 
 _Y luego, al ejecutarse el "up", se migra sola_
 
+
+
+### 2 - Entorno virtual de python (virtualenv)
+
+> #### ⚠️ Prerequisitos
+> 
+> Este entorno virtual requiere de:
+> - [Python 3](https://www.python.org/)
+> - [pip](https://www.pypi.org/)
+> - [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
+> - [postgres](https://www.postgresql.org/download/)
+>
+
+
+#### Instalación
+
+Abrí una terminal del sistema en el directorio raiz del proyecto, creá el entorno virtual, activalo, instalá las dependencias del proyecto y ejecutá la plataforma
+
+```bash
+$ conda create --name env python=3.7
+$ conda activate env
+$ pip install -r requirements.txt
+```
+
+Luego se debe migrar la base de datos y ejecutar los scripts necesarios para dejar el sistema a punto
+
+> Hay que asegurarse tener bien configurado Postgres. 
+>
+
+
+```bash
+$ python manage.py migrate
+$ python manage.py runscript initial_populate
+```
+
+
+#### Ejecución
+
+Abrí una terminal del sistema en el directorio raiz del proyecto, activá el entorno virtual y ejecutá la plataforma
+
+
+```bash
+$ conda activate env
+$ python manage.py runserver
+```
+
+
+## Licencia
+
+El siguiente repositorio es un desarrollo de codigo abierto bajo la licencia GNU General Public License v3.0. Pueden acceder a la haciendo [click aqui](./LICENSE).
+
+
 ---
-⌨️ con ❤️ por [ElPano](https://github.com/mpvaldez) 😊
+⌨️ con ❤️ por [AdminSmart](https://github.com/AdminSmartLab/) 😊
 
 
 

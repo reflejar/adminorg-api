@@ -1,51 +1,28 @@
 version: '3'
 
-volumes:
-  media: {}
-
 services:
   postgres:
     image: postgres:10.5
     env_file:
-      - ./config/db/dev.env
+      - .env
     ports:
-      - "5432:5432"
+      - "5432:5432"  
+    volumes:
+      - ./tmp/postgresql:/var/lib/postgresql/data
 
-  redis:
-    image: redis:6.0.9      
-
-  app: &app
+  app:
     build:
       context: .
     image: ghcr.io/adminsmartlab/django:latest
     depends_on:
       - postgres
-      - redis
     volumes:
       - ./app:/app
-      - media:/app/media
+      - ./media:/app/media
     env_file:
-      - ./config/db/dev.env
-      - ./config/django/dev.env
+      - .env
     ports:
       - "8000:8000"
     links:
       - postgres:postgres
-    command: /start-app-dev.sh
-
-  # celeryworker:
-  #   <<: *app
-  #   depends_on:
-  #     - redis
-  #     - postgres
-  #   ports: []
-  #   command: /start-celery-worker.sh
-
-  # celerybeat:
-  #   <<: *app
-  #   user: root
-  #   depends_on:
-  #     - redis
-  #     - postgres
-  #   ports: []
-  #   command: /start-celery-beat.sh
+    command: python manage.py runserver 0.0.0.0:8000
