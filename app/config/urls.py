@@ -20,13 +20,13 @@ urlpatterns = [
 	path('api/', include(('api.urls', 'api'), namespace="api")),
 
 	# Views
-	## Authentication
-	path('recuperar-pass/', include('django.contrib.auth.urls')),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-	path('signup/', LoginView.as_view(), name='signup'),
+	# ## Authentication
+	# path('recuperar-pass/', include('django.contrib.auth.urls')),
+    # path('login/', LoginView.as_view(), name='login'),
+    # path('logout/', LogoutView.as_view(), name='logout'),
+	# path('signup/', LoginView.as_view(), name='signup'),
 
-	## Frontend
-	path('', include(('front.urls', 'views'), namespace='front')),
+	# ## Frontend
+	# path('', include(('front.urls', 'views'), namespace='front')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
