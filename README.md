@@ -29,9 +29,7 @@ Luego se debe migrar la base de datos y ejecutar los scripts necesarios para dej
 
 ```bash
 $ docker compose run app python manage.py migrate
-$ docker compose run app python manage.py runscript crear_base 
-$ docker compose run app python manage.py runscript crear_comunidad
-$ docker compose run app python manage.py runscript crear_usuario
+$ docker compose run app python manage.py runscript setup
 ```
 
 

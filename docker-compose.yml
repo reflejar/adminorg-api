@@ -8,8 +8,9 @@ services:
     ports:
       - "5432:5432"  
     volumes:
-      - ./tmp/postgresql:/var/lib/postgresql/data
+      - ./tmp:/var/lib/postgresql/data
 
+      
   app:
     build:
       context: .

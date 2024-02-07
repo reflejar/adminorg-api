@@ -1,0 +1,11 @@
+[
+	{"id": 1, "nombre": "cliente"},
+	{"id": 2, "nombre": "dominio"},
+	{"id": 3, "nombre": "proveedor"},
+	{"id": 4, "nombre": "caja"},
+	{"id": 5, "nombre": "ingreso"},
+	{"id": 6, "nombre": "gasto"},
+	{"id": 7, "nombre": "bien_de_uso"},
+	{"id": 8, "nombre": "bien_de_cambio"},
+    {"id": 9, "nombre": "patrimonio"}
+]

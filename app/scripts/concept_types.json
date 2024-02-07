@@ -1,0 +1,5 @@
+[
+    {"code" : "1", "description": "Producto"},
+    {"code" : "2", "description": "Servicios"},
+    {"code" : "3", "description": "Productos y servicios"}
+]

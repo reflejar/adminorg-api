@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from apps.core.models import Documento, Operacion
 from import_export.admin import ImportExportMixin
-from api.core.serializers.documentos.cliente import DestinoClienteModelSerializer
+from apps.core.serializers.documentos.cliente import DestinoClienteModelSerializer
 
 # from apps.communications.tasks import send_emails
 

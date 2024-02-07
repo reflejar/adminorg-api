@@ -80,8 +80,6 @@ LOCAL_APPS = [
 	'apps.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
 	'apps.communications.apps.CommunicationsAppConfig',
 	'apps.informes.apps.InformesAppConfig',
-	'api._public.apps.PublicAPIAppConfig',
-	'front.apps.FrontendAppConfig'
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

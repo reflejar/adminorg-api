@@ -1,0 +1,14 @@
+[
+    {"id": 1, "code": "99", "description": "Doc. (Otro)", "valid_from": null, "valid_to": null},
+    {"id": 2, "code": "96", "description": "DNI", "valid_from": null, "valid_to": null},
+    {"id": 3, "code": "93", "description": "Acta nacimiento", "valid_from": null, "valid_to": null},
+    {"id": 4, "code": "92", "description": "En tramite", "valid_from": null, "valid_to": null},
+    {"id": 5, "code": "91", "description": "CI Extranjera", "valid_from": null, "valid_to": null},
+    {"id": 6, "code": "90", "description": "LC", "valid_from": null, "valid_to": null},
+    {"id": 7, "code": "89", "description": "LE", "valid_from": null, "valid_to": null},
+    {"id": 8, "code": "87", "description": "CDI", "valid_from": null, "valid_to": null},
+    {"id": 9, "code": "86", "description": "CUIL", "valid_from": null, "valid_to": null},
+    {"id": 10, "code": "80", "description": "CUIT", "valid_from": null, "valid_to": null},
+    {"id": 11, "code": "94", "description": "PASAPORTE", "valid_from": null, "valid_to": null}
+
+]

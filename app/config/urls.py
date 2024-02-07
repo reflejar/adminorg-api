@@ -17,7 +17,7 @@ urlpatterns = [
 	path('ready/', ready),
 	
 	# API
-	path('api/', include(('api.urls', 'api'), namespace="api")),
+	path('', include(('apps.urls', 'api'), namespace="api")),
 
 	# Views
 	# ## Authentication
@@ -29,4 +29,4 @@ urlpatterns = [
 	# ## Frontend
 	# path('', include(('front.urls', 'views'), namespace='front')),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

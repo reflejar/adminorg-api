@@ -1,0 +1,22 @@
+[
+    {"code" : "400", "description": "Asiento"},
+    {"code" : "303", "description": "Transferencia X"},
+    {"code" : "302", "description": "Retencion X"},
+    {"code" : "301", "description": "Orden de Pago X"},
+    {"code" : "54", "description": "Recibo X"},
+    {"code" : "53", "description": "Nota de Credito X"},
+    {"code" : "52", "description": "Nota de Debito X"},
+    {"code" : "51", "description": "Factura X"},
+    {"code" : "64", "description": "Liquidacion B"},
+    {"code" : "63", "description": "Liquidacion A"},
+    {"code" : "15", "description": "Recibo C"},
+    {"code" : "13", "description": "Nota de Credito C"},
+    {"code" : "12", "description": "Nota de Debito C"},
+    {"code" : "11", "description": "Factura C"},
+    {"code" : "8", "description": "Nota de Credito B"},
+    {"code" : "7", "description": "Nota de Debito B"},
+    {"code" : "6", "description": "Factura B"},
+    {"code" : "3", "description": "Nota de Credito A"},
+    {"code" : "2", "description": "Nota de Debito A"},
+    {"code" : "1", "description": "Factura A"}
+]
