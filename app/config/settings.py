@@ -4,7 +4,6 @@ import environ
 
 ROOT_DIR = environ.Path(__file__) - 3
 APPS_DIR = ROOT_DIR
-FRONT_DIR = APPS_DIR.path('front')
 
 
 env = environ.Env()
@@ -136,12 +135,12 @@ MEDIA_ROOT = str(ROOT_DIR('media'))
 MEDIA_URL = '/media/'
 
 # Templates
+
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
 		'DIRS': [
-			str(APPS_DIR.path('templates')),
-			str(FRONT_DIR.path('templates')),
+			str(APPS_DIR.path('/app/templates')),
 		],
 		'OPTIONS': {
 			'debug': DEBUG,

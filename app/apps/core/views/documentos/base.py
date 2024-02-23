@@ -23,6 +23,7 @@ from apps.core.serializers import (
 )
 from apps.core.models import (
 	Documento,
+	Cuenta
 )
 from apps.core.filters import (
 	DocumentoFilter
@@ -83,6 +84,7 @@ class BaseViewSet(custom_viewsets.CustomModelViewSet):
 				serializer_context['receipt_type'] = ReceiptType.objects.get(
 					description=self.request.data['receipt']['receipt_type'] 
 				)
+				serializer_context['cuenta'] = Cuenta.objects.get(id=self.request.data['destinatario'])
 
 		return serializer_context
 

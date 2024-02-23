@@ -13,7 +13,6 @@
   <tbody>
     {% for c in pdf.CREDITOS %}
       <tr>
-        <td>{{ c.CUENTA }}</td>
         <td>{{ c.CONCEPTO }}{% if c.DETALLE %}*{% endif %}</td>
         <td>{{ c.PERIODO }}</td>
         <td>{{ c.MONTO }}</td>
