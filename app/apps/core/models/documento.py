@@ -275,11 +275,6 @@ class Documento(BaseModel):
 			cuenta__naturaleza__nombre='proveedor',
 			documento__receipt__receipt_type__code="302",
 		).exclude(descripcion="ANULACION")
-	
-	def condonacion(self):
-		""" Esto es para que salga en el serializer la opcion que se eligió en su momento """
-		# Hay que hacer que retorne True si hay alguna operacion que diga "compensacion de intereses" o algo asi
-		return False
 
 	def pagos_recibidos(self):
 		""" Esto retorna el ultimo pago si es que el saldo es distinto al valor original """

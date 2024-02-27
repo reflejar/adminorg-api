@@ -11,8 +11,8 @@ class EstadoDeudasSerializer(EstadoBaseSerializer):
 
 
 		pago_capital = o.pago_capital(fecha=self.context['end_date'])
-		interes = o.interes(fecha=self.context['end_date'], condonacion=self.context['condonacion'])
-		descuento = o.descuento(fecha=self.context['end_date'], condonacion=self.context['condonacion'])
+		interes = o.interes(fecha=self.context['end_date'])
+		descuento = o.descuento(fecha=self.context['end_date'])
 		receipt_type = str(o.documento.receipt.receipt_type)
 		formatted_number = str(o.documento.receipt.formatted_number)
 

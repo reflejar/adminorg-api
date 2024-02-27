@@ -28,13 +28,11 @@ class CU:
 		self.punto_de_venta = self.comunidad.contribuyente.points_of_sales.get(number=self.receipt.point_of_sales)
 
 		if self.receipt.receipt_type.code == "54":
-			self.condonacion = validated_data['condonacion']
 			self.cajas = validated_data['cajas']
 			self.utilizaciones_saldos = validated_data['utilizaciones_saldos']
 			self.utilizaciones_disponibilidades = validated_data['utilizaciones_disponibilidades']
 		
 		elif self.receipt.receipt_type.code in ["13", "53"]:
-			self.condonacion = True
 			self.resultados = validated_data['resultados']
 
 		try:
@@ -75,17 +73,13 @@ class CU:
 		""" Realiza las operaciones de cobros de creditos """
 		for i in self.cobros:
 			self.suma_cobros += i['monto']
-			if not self.condonacion:
-				if i['vinculo'].saldo(fecha=self.fecha_operacion) == i['monto']:
-					descuento = i['vinculo'].descuento(fecha=self.fecha_operacion)
-				else:
-					descuento = 0
-				interes = i['vinculo'].interes(fecha=self.fecha_operacion)
-				if i['monto'] <= interes: # Solo si el pago no supera el interes adeudado, todo el monto del pago se destina a interes.
-					interes = i['monto']
+			if i['vinculo'].saldo(fecha=self.fecha_operacion) == i['monto']:
+				descuento = i['vinculo'].descuento(fecha=self.fecha_operacion)
 			else:
 				descuento = 0
-				interes = 0
+			interes = i['vinculo'].interes(fecha=self.fecha_operacion)
+			if i['monto'] <= interes: # Solo si el pago no supera el interes adeudado, todo el monto del pago se destina a interes.
+				interes = i['monto']
 
 			# Creación del descuento.
 			if descuento > 0:

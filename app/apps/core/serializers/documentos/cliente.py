@@ -54,7 +54,6 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 
 				# Incorporacion para Recibo X
 				if self.context['receipt_type'].code == '54':
-					self.fields['condonacion'] = serializers.BooleanField(required=True)
 					self.fields['cajas'] = CajaModelSerializer(context=self.context, read_only=False, many=True)
 					self.fields['utilizaciones_saldos'] = UtilizacionModelSerializer(
 							context=self.context, 
@@ -106,7 +105,6 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 		grupo = destinatario_documento.grupo
 		fecha_operacion = data['fecha_operacion']
 		cobros = data['cobros']
-		condonacion = data['condonacion'] if self.context['receipt_type'].code == '54' else True
 		for d in cobros:
 			credito = d['vinculo']
 			if not credito.cuenta in grupo:
@@ -117,7 +115,7 @@ class DestinoClienteModelSerializer(DocumentoModelSerializer):
 				if pagos.filter(fecha__gt=fecha_operacion, documento__fecha_anulacion__isnull=True):
 					raise serializers.ValidationError({'cobros': {credito.id: "El credito posee un pago de capital posterior"}})
 
-			if credito.saldo(fecha=fecha_operacion, condonacion=condonacion) < d['monto']:
+			if credito.saldo(fecha=fecha_operacion) < d['monto']:
 				raise serializers.ValidationError({'cobros': {credito.id: "El valor colocado es mayor al saldo del credito"}})
 
 		return data

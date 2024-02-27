@@ -161,14 +161,12 @@ class Operacion(BaseModel):
 		return self.pago_capital(fecha=fecha) + self.pago_interes(fecha=fecha)
 
 
-	def interes(self, fecha=None, condonacion=False):
+	def interes(self, fecha=None):
 		"""
 			Retorna el calculo de interes a la fecha
 		"""
 		fecha = fecha if fecha else date.today()
 		calculo = 0
-		if condonacion:
-			return calculo
 		try:
 			interes = self.metodos.get(naturaleza='interes')
 		except:
@@ -201,14 +199,12 @@ class Operacion(BaseModel):
 					
 		return Decimal("%.2f" % calculo)		
 
-	def descuento(self, fecha=None, condonacion=False):
+	def descuento(self, fecha=None):
 		"""
 			Retorna el calculo de descuento a la fecha
 		"""		
 		fecha = fecha if fecha else date.today()
 		calculo = 0
-		if condonacion:
-			return calculo
 		try:
 			descuento = self.metodos.get(naturaleza='descuento')
 		except:
@@ -231,12 +227,12 @@ class Operacion(BaseModel):
 		fecha = fecha if fecha else date.today()
 		return abs(self.valor) - abs(self.pago_capital(fecha=fecha))
 	
-	def saldo(self, fecha=None, condonacion=False):
+	def saldo(self, fecha=None):
 		"""
 			Retorna siempre positivo el saldo adeudado a la fecha
 		"""
 		fecha = fecha if fecha else date.today()
-		return self.subtotal(fecha=fecha) + self.interes(fecha=fecha, condonacion=condonacion) - self.descuento(fecha=fecha, condonacion=condonacion)
+		return self.subtotal(fecha=fecha) + self.interes(fecha=fecha) - self.descuento(fecha=fecha)
 
 
 	def interes_generado(self, fecha=None):

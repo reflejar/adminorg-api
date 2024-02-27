@@ -40,9 +40,6 @@ class UtilizacionModelSerializer(OperacionModelSerializer):
 
 	def get_origen(self, obj):
 		if 'retrieve' in self.context.keys():
-			context = {
-				'end_date': date.today(),
-				'condonacion': False
-			}
+			context = {'end_date': date.today()}
 			return EstadoSaldosSerializer(queryset=[obj.origen()], context=context).data[0]
 		return ""

@@ -22,12 +22,10 @@ class DocumentoFilter(FilterSet):
 			field_name="receipt__issued_date", 
 			lookup_expr='lte'
 		)
-	receipt__receipt_type__description = filters.ModelMultipleChoiceFilter(
+	receipt__receipt_type__description = filters.CharFilter(
 			# choices=TIPO_CHOICES,
 			label="Tipo de cbte",
-			lookup_expr='in',
 			field_name="receipt__receipt_type__description",
-			queryset=ReceiptType.objects.all()
 		)
 	receipt__point_of_sales = filters.CharFilter(
 			label="Punto Vta.",
