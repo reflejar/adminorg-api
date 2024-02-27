@@ -19,6 +19,7 @@ class Operacion(BaseModel):
 	fecha_indicativa = models.DateField(blank=True, null=True) # Fecha indicativa de periodo para diversas cuestiones/evaluar eliminar
 	asiento = models.CharField(max_length=30)
 	cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name="operaciones")
+	concepto = models.ForeignKey(Cuenta, blank=True, null=True, on_delete=models.PROTECT, related_name="conceptos")
 	documento = models.ForeignKey(Documento, blank=True, null=True, on_delete=models.PROTECT, related_name="operaciones")
 	cantidad = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
 	valor = models.DecimalField(max_digits=9, decimal_places=2)
@@ -52,36 +53,6 @@ class Operacion(BaseModel):
 	def destinatario(self):
 		""" Devuelve la Cuenta(cliente, dominio) por la que se creó el credito """
 		return self.cuenta
-
-	def concepto(self):
-		""" Devuelve la Cuenta(ingreso) por la que se creó el credito """
-
-		# Por ahora no genera concepto si la operacion no es de un cliente o un dominio
-		if not self.naturaleza in ['cliente', "dominio"]:
-			return "S/C"
-		
-		# conceptos = self.vinculos.filter(cuenta__naturaleza__nombre__in=["ingreso", "gasto", "caja"]) # Tambien está gasto para que tome "descuento" en el estado de cuenta
-		# Esto se hace asi porque el prefetch_related ya trajo todos
-		# Si se hace filtrando se duplican las consultas a DB
-		conceptos = list(filter(lambda x: x.naturaleza in ["ingreso", "gasto", "caja"], self.vinculos.all()))
-		if not (conceptos) and self.vinculo:
-			# Unico momento donde efectivamente tiene que hacer una consulta SQL
-			conceptos = list(filter(lambda x: x.naturaleza in ["ingreso", "gasto", "caja"], self.vinculo.vinculos.all()))
-		if conceptos:
-			return conceptos[0].cuenta
-		return self.cuenta
-
-		# conceptos = self.vinculos.all()
-		# if not any([True if o.naturaleza() in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
-		# 	return ""
-		# if not conceptos:
-		# 	if self.vinculo:
-		# 		conceptos = self.vinculo.vinculos.all()
-		# 		if not any([True if o.naturaleza() in ["ingreso", "gasto", "caja"] else False  for o in conceptos]):
-		# 			return ""
-		# 		return conceptos[0].cuenta
-		# 	return ""
-		# return conceptos[0].cuenta
 
 
 	def periodo(self):

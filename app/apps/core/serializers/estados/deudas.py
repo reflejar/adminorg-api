@@ -30,7 +30,7 @@ class EstadoDeudasSerializer(EstadoBaseSerializer):
 			}, 
 			'nombre': receipt_type + " " + formatted_number,
 			'cuenta': str(o.cuenta),
-			'concepto': str(o.concepto()), 
+			'concepto': str(o.concepto), 
 			'periodo': o.periodo(),
 			'monto': o.monto,
 			'pago_capital': pago_capital,

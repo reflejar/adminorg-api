@@ -28,6 +28,7 @@ class CU:
 				documento = self.documento,
 				asiento=self.identifier,
 				cuenta=credito['destinatario'],
+				concepto=credito['concepto'],
 				cantidad=credito['cantidad'],
 				valor=credito['monto'],
 				detalle=credito['detalle'],

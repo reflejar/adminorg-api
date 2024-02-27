@@ -36,7 +36,7 @@ def makeJSON(d, cuenta):
 		},
 		'operaciones': [{
 			'cuenta': str(o.cuenta),
-			'concepto': str(o.concepto()),
+			'concepto': str(o.concepto),
 			'periodo': o.periodo(),
 			'valor': o.valor,
 		} for o in operaciones],
