@@ -25,7 +25,7 @@ LABEL maintainer "marianovaldez92@protonmail.com"
 LABEL created $BUILD_DATE
 LABEL version $VERSION
 LABEL revision $REVISION
-LABEL title "AdminOrg Insight Edition"
+LABEL title "AdminOrg - API"
 
 WORKDIR /app
 EXPOSE 8000
