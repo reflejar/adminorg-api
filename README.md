@@ -2,7 +2,7 @@
 
 # AdminOrg API
 
-[![GitHub license](https://img.shields.io/github/license/reflejar/adminorg-api)](https://github.com/reflejar/adminorg-api/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/reflejar/adminorg-api)](https://github.com/reflejar/adminorg-api/blob/main/LICENSE)
 
 Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades.
 
