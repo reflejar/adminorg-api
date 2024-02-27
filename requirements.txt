@@ -29,7 +29,7 @@ importlib-metadata==4.13.0
 celery==4.4.7
 flower==0.9.7
 
-# AdminSmart
+# Django
 Cython==0.29.24
 cffi==1.15.0 
 django-import-export==1.0.0

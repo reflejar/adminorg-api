@@ -96,7 +96,7 @@ class UserSignupSerializer(serializers.Serializer):
 	def send_email(self, user):
 		'''Envia el email para confirmar la cuenta'''
 		verification_token = self.gen_verification_token(user)
-		subject = "Bienvenido/a {} a AdminSmart! Verifica tu cuenta...".format(user.username)
+		subject = "Bienvenido/a {} a AdminOrg! Verifica tu cuenta...".format(user.username)
 		html_string = render_to_string(
 			'emails/users/account_verification.html',
 			context={

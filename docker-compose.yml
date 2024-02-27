@@ -14,7 +14,7 @@ services:
   app:
     build:
       context: .
-    image: ghcr.io/adminsmartlab/django:latest
+    image: ghcr.io/reflejar/django:latest
     depends_on:
       - postgres
     volumes:

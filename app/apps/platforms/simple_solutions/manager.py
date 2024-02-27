@@ -16,7 +16,7 @@ class Dispatcher():
 	clientes = AccountSS.objects.all()
 	hoy = date.today()
 	hostname = "s-ddd967132e9f42198.server.transfer.us-east-1.amazonaws.com"
-	usuario = "adminsmart"
+	usuario = "adminorg"
 	# key_path = settings.MEDIA_ROOT + "/adminsmart_ss"
 	opciones = [
 		{

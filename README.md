@@ -1,10 +1,10 @@
 ![Header](docs/logo-as.png)
 
-# AdminCU - Edición Insight
+# AdminOrg API
 
-[![GitHub license](https://img.shields.io/github/license/AdminSmartLab/insight-edition)](https://github.com/AdminSmartLab/insight-edition/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/reflejar/adminorg-api)](https://github.com/reflejar/adminorg-api/blob/master/LICENSE)
 
-Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades. Edición de entorno de escritorio "Insight"
+Sistema web creado para la administración, gestión, comunicación y contabilidad de comunidades.
 
 ## Setup
 
@@ -104,8 +104,4 @@ El siguiente repositorio es un desarrollo de codigo abierto bajo la licencia GNU
 
 
 ---
-⌨️ con ❤️ por [AdminSmart](https://github.com/AdminSmartLab/) 😊
-
-
-
-
+⌨️ con ❤️ por [reflejar](https://github.com/reflejar/) 😊

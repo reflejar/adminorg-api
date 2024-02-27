@@ -63,7 +63,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
 		serializer = AccountVerificationSerializer(data={"token": request.GET['token']})
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
-		return HttpResponseRedirect("https://admin-smart.com/login/")
+		return HttpResponseRedirect("https://adminorg.com.ar/login/")
 
 
 	@action(detail=False, methods=['post'])

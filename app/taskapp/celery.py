@@ -11,7 +11,7 @@ if not settings.configured:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')  # pragma: no cover
 
 
-app = Celery('adminsmart')
+app = Celery('adminorg')
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
 # - namespace='CELERY' means all celery-related configuration keys

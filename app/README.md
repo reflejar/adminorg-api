@@ -5,7 +5,7 @@ Estas ubicado dentro del directorio "app". Aquí dentro se encuentran todas las 
 ## Sobre el directorio config
 Allí se encuentran todas las configuraciones básicas de Django
 - Las "settings" de Django
-- Las "urls" iniciales. Donde nace el árbol de rutas de admin-smart
+- Las "urls" iniciales. Donde nace el árbol de rutas de adminorg
 - Un archivo "views" que sólo tiene endpoints para kubernetes
 - El archivo "wsgi"
 

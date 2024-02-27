@@ -174,7 +174,7 @@ EMAIL_HOST = env('EMAIL_HOST', default='172.21.0.1')
 EMAIL_PORT = env('EMAIL_PORT', default=25)
 EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=False)
 EMAIL_USE_SSL = env('EMAIL_USE_SSL', default=False)
-DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', default='AdminSmart <info@admin-smart.com>')
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', default='AdminOrg <info@adminorg.com.ar>')
 SERVER_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 

@@ -3,7 +3,7 @@
 ### Qué soy?
 
 Módulo que almacena y ejecuta todos los envíos (comunicaciones) que salen de la aplicación
-Los demás modulos de adminsmart se comunican conmigo para realizar envíos - ellos son mis clientes (me solicitan enviar algo)
+Los demás modulos de adminorg se comunican conmigo para realizar envíos - ellos son mis clientes (me solicitan enviar algo)
 Envío las cosas por diferentes plataformas (Mails, Simple Solutions, Expensas Pagas, etc) - ellos son mis proveedores
 
 ### A donde envío la información?
