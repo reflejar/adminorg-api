@@ -4,7 +4,6 @@
 <table>
   <thead>
     <tr>
-      <th>Destinatario</th>
       <th>Concepto</th>
       <th>Periodo</th>
       <th>Subtotal</th>
@@ -31,16 +30,3 @@
     {% endfor %}
   </ul>
 </p>
-
-<!-- <p><strong>** Descuentos:</strong></p>
-<p>
-  <ul>
-    {% for credito in pdf.CREDITOS %}
-      {% if credito.fecha_gracia %}
-        {% if credito.fecha_gracia != credito.fecha %}
-          <li>Descuento por pronto pago hasta el {{credito.fecha_gracia|date:"d/m/Y"}}</li>
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-  </ul>
-</p> -->
