@@ -106,7 +106,7 @@ class Cuenta(BaseModel):
 				"operaciones__vinculos",
 				"operaciones__vinculos__cuenta",
 				"operaciones__vinculos__cuenta__naturaleza",
-			).order_by('fecha_operacion', 'id')
+			).order_by('-fecha_operacion', '-id')
 
 		
 	def estado_saldos(self, fecha=None):

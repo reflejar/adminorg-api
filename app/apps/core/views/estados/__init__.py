@@ -1,5 +1,6 @@
 from datetime import datetime, date
 from django.http import Http404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404 
@@ -171,5 +172,21 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 			'end_date': end_date,
 			'cuenta': self.get_object()
 		}
+		paginator_response = {}
+		if 'page' in filtro.keys():
+			try:
+
+				paginator = Paginator(queryset, 15)
+				queryset = paginator.page(filtro['page'])
+				paginator_response.update({
+					'has_previous': queryset.has_previous(),
+					'has_next': queryset.has_next(),
+					'num_pages': paginator.num_pages
+				})
+			except:
+				pass
+			
+		
 		serializer = self.get_serializer_class()(queryset, context)
-		return Response(reversed(serializer.data))
+
+		return Response({'data': serializer.data, 'paginator': paginator_response})
