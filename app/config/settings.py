@@ -73,10 +73,7 @@ LOCAL_APPS = [
 	'apps.utils.apps.UtilsAppConfig',
 	'apps.users.apps.UsersAppConfig',
 	'apps.core.apps.OperativeAppConfig',
-	'apps.platforms.apps.PlatformsAppConfig',
 	'apps.files.apps.FilesAppConfig',
-	'apps.platforms.expensas_pagas.apps.ExpensasPagasAppConfig',
-	'apps.platforms.simple_solutions.apps.SimpleSolutionsAppConfig',
 	'apps.communications.apps.CommunicationsAppConfig',
 	'apps.informes.apps.InformesAppConfig',
 ]
@@ -190,16 +187,6 @@ ADMINS = [
 ]
 MANAGERS = ADMINS
 
-
-# Celery
-INSTALLED_APPS += ['taskapp.celery.CeleryAppConfig']
-if USE_TZ:
-	CELERY_TIMEZONE = TIME_ZONE
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERYD_TASK_TIME_LIMIT = 5 * 60
-CELERYD_TASK_SOFT_TIME_LIMIT = 60
 
 # Django REST Framework
 REST_FRAMEWORK = {

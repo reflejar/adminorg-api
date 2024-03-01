@@ -1,6 +1,6 @@
 # Sobre este directorio
 
-Estas ubicado dentro del directorio "app". Aquí dentro se encuentran todas las tecnologías que utiliza el proyecto en tanto código - osea aquí no hay nada de infraestructura ni de generaciones de la imagen. Aquí se encuentran cosas de Django + Celery + React
+Estas ubicado dentro del directorio "app". Aquí dentro se encuentran todas las tecnologías que utiliza el proyecto en tanto código - osea aquí no hay nada de infraestructura ni de generaciones de la imagen. Aquí se encuentran cosas de Django
 
 ## Sobre el directorio config
 Allí se encuentran todas las configuraciones básicas de Django

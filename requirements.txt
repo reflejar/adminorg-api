@@ -24,10 +24,7 @@ argon2-cffi==20.1.0
 # Static files
 whitenoise==4.1.2
 
-# Celery
 importlib-metadata==4.13.0
-celery==4.4.7
-flower==0.9.7
 
 # Django
 Cython==0.29.24

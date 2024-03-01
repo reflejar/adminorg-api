@@ -11,7 +11,7 @@ class BaseCommunication(BaseModel):
 	Base de cualquier comunicacion 
 	Cuando salga de aqui un envio puede enviarse
 	por mail o hacia las plataformas de comunicacion 
-		a la fecha: simple_solutions, expensas_pagas
+		a la fecha: simple_solutions, expensas_pagas (SE ELIMINARON PARA ADMINORG)
 	"""
 
 	addressee = models.ForeignKey('users.Perfil', on_delete=models.PROTECT)

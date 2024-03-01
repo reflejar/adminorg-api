@@ -14,7 +14,7 @@ Cuando salga de aqui una comunicación puede:
 
 ### Cómo hago?
 
-Tengo una tarea de celery vinculada para ejecutarse (actualmente cada 30 segundos) en la que "atiendo la cola" (ola, usté que quiere?)
+Tengo una tarea de vinculada para ejecutarse (actualmente cada 30 segundos) en la que "atiendo la cola" (ola, usté que quiere?)
 Y ejecuto su solicitud
 
 ### Por dónde la ejecuto?
@@ -42,5 +42,3 @@ Cada Provider tiene un Dispatcher que se encarga de su propia logica de envío. 
 | Nombre | Cómo hace |
 | ------ | ------ |
 | mail | Envía directo por mail al socio si la comunidad está autorizada para realizar envios por mails |
-| simple_solutions | La lógica está linkeada con la propia del modulo platforms/simple_solutions (But it's not done yet) |
-| expensas_pagas | La lógica está linkeada con la propia del modulo platforms/expensas_pagas (But it's not done yet) |

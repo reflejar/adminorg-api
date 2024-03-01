@@ -38,8 +38,6 @@ class DocumentoModelSerializer(serializers.ModelSerializer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.fields['fecha_operacion'] = serializers.DateField(initial=date.today())		
-		# Fields comunes:
-		# self.fields['pdf'] = serializers.FileField(read_only=True)
 		if self.context.keys():
 			if not self.context['sin_destinatario']:
 				self.fields['destinatario'] = serializers.PrimaryKeyRelatedField(
