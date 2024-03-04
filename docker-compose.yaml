@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  postgres:
+  ddbb:
     image: postgres:10.5
     env_file:
       - .env
@@ -11,12 +11,12 @@ services:
       - ./tmp:/var/lib/postgresql/data
 
       
-  app:
+  api:
     build:
       context: .
-    image: ghcr.io/reflejar/django:latest
+    image: ghcr.io/reflejar/adminorg-api:latest
     depends_on:
-      - postgres
+      - ddbb
     volumes:
       - ./app:/app
       - ./media:/app/media
@@ -25,5 +25,5 @@ services:
     ports:
       - "8000:8000"
     links:
-      - postgres:postgres
+      - ddbb:postgres
     command: python manage.py runserver 0.0.0.0:8000
