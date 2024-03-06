@@ -7,7 +7,7 @@ class Metodo(BaseModel):
 
 	"""
 		Modelo de de metodos
-        Representa metodos de calculo para diferentes cuestiones (intereses, descuentos, retenciones, amortizaciones)
+        Representa metodos de calculo para diferentes cuestiones (intereses, descuentos, amortizaciones)
         
 	"""
 

@@ -2,6 +2,7 @@ from datetime import date
 from itertools import chain
 from django.db import models
 from django.apps import apps
+from django.db.models import F, Sum, Window
 
 from apps.utils.models import (
 	BaseModel,
@@ -90,6 +91,25 @@ class Cuenta(BaseModel):
 				operaciones__cuenta__in=self.grupo, 
 				# fecha__lte=fecha,
 			).order_by('receipt').distinct('receipt')
+
+		documentos = self.get_model('Documento').objects.filter(
+				id__in=documentos, 
+				# fecha__lte=fecha,
+			).select_related(
+				"destinatario", 
+				"destinatario__perfil", # Para el nombre de la cuenta
+				"destinatario__naturaleza",
+				"receipt", 
+				"receipt__receipt_type", 
+			).prefetch_related(
+				"operaciones",
+				"operaciones__cuenta",
+				"operaciones__cuenta__naturaleza",
+				"operaciones__vinculos",
+				"operaciones__vinculos__cuenta",
+				"operaciones__vinculos__cuenta__naturaleza",
+			).order_by('-fecha_operacion', '-id')
+
 		return self.get_model('Documento').objects.filter(
 				id__in=documentos, 
 				# fecha__lte=fecha,

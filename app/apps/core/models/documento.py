@@ -264,18 +264,6 @@ class Documento(BaseModel):
 			valor__lt=0,
 		).exclude(documento__receipt__receipt_type__code="302")
 
-	def retenciones(self):
-		"""
-			Proveedores: OP
-		"""		
-		identifier = self.operaciones.first().asiento
-		return self.get_model('Operacion').objects.filter(
-			asiento=identifier,
-			vinculo__isnull=True,
-			cuenta__naturaleza__nombre='proveedor',
-			documento__receipt__receipt_type__code="302",
-		).exclude(descripcion="ANULACION")
-
 	def pagos_recibidos(self):
 		""" Esto retorna el ultimo pago si es que el saldo es distinto al valor original """
 		identifier = self.operaciones.first().asiento	
@@ -438,9 +426,9 @@ class Documento(BaseModel):
 		if self.receipt.receipt_type.code == "400":
 			return "asiento"
 
-	@property
-	def total(self):
-		return sum([o.valor for o in self.operaciones.all() if o.cuenta in self.destinatario.grupo])
+	# @property
+	# def total(self):
+	# 	return sum([o.valor for o in self.operaciones.all() if o.cuenta in self.destinatario.grupo])
 
 	# def vinculos(self):
 	# 	identifier = self.operaciones.first().asiento

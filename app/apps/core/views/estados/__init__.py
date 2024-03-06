@@ -172,21 +172,21 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 			'end_date': end_date,
 			'cuenta': self.get_object()
 		}
-		paginator_response = {}
-		if 'page' in filtro.keys():
-			try:
+		# paginator_response = {}
+		# if 'page' in filtro.keys():
+		# 	try:
 
-				paginator = Paginator(queryset, 15)
-				queryset = paginator.page(filtro['page'])
-				paginator_response.update({
-					'has_previous': queryset.has_previous(),
-					'has_next': queryset.has_next(),
-					'num_pages': paginator.num_pages
-				})
-			except:
-				pass
+		# 		paginator = Paginator(queryset, 15)
+		# 		queryset = paginator.page(filtro['page'])
+		# 		paginator_response.update({
+		# 			'has_previous': queryset.has_previous(),
+		# 			'has_next': queryset.has_next(),
+		# 			'num_pages': paginator.num_pages
+		# 		})
+		# 	except:
+		# 		pass
 			
 		
 		serializer = self.get_serializer_class()(queryset, context)
-
-		return Response({'data': serializer.data, 'paginator': paginator_response})
+		return Response({'data': serializer.data})
+		# return Response({'data': serializer.data, 'paginator': paginator_response})

@@ -44,7 +44,6 @@ class OrigenProveedorModelSerializer(DocumentoModelSerializer):
 				'pagos': 0, 
 				'cajas': 0,
 				'utilizaciones_saldos': 0,
-				'retenciones': 0,
 				'resultados': 0,
 			}
 			if self.context['receipt_type'].code in debitos: 
@@ -65,7 +64,6 @@ class OrigenProveedorModelSerializer(DocumentoModelSerializer):
 							instance_method="utilizaciones_saldos"
 							)
 
-					self.fields['retenciones'] = RetencionModelSerializer(context=self.context, read_only=False, many=True)
 					self.fields['a_cuenta'] = ACuentaModelSerializer(context=self.context, read_only=True, many=True)
 				else:	
 					self.fields['resultados'] = ResultadoModelSerializer(context=self.context, read_only=False, many=True)
@@ -80,7 +78,7 @@ class OrigenProveedorModelSerializer(DocumentoModelSerializer):
 				self.sumas[clave] = sum([i['monto'] for i in data[clave]])
 
 		self.suma_debe = self.sumas['pagos'] + self.sumas['debitos']
-		self.suma_haber = self.sumas['cajas'] + self.sumas['utilizaciones_saldos'] + self.sumas['retenciones'] + self.sumas['resultados']
+		self.suma_haber = self.sumas['cajas'] + self.sumas['utilizaciones_saldos'] + self.sumas['resultados']
 		
 
 	def valid_totales(self, data):

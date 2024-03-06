@@ -28,7 +28,6 @@ class CU:
 		if self.receipt.receipt_type.code in self.op:
 			self.cajas = validated_data['cajas']
 			self.utilizaciones_saldos = validated_data['utilizaciones_saldos']
-			self.retenciones = validated_data['retenciones']
 		elif self.receipt.receipt_type.code in self.notas_credito:
 			self.resultados = validated_data['resultados']
 
@@ -91,53 +90,6 @@ class CU:
 			self.operaciones.append(operacion_haber_saldo)
 
 
-	def hacer_retenciones(self):
-		""" Realiza las operaciones de retenciones """
-		receipt_type = ReceiptType.objects.get(code="302")
-		for i in self.retenciones:
-			self.suma_haber += i['monto']
-
-			cuenta_retencion = i['retencion'].cuenta_set.first()
-			
-			receipt = OwnReceipt.objects.create(
-					point_of_sales=self.receipt.point_of_sales,
-					receipt_type=receipt_type,
-					concept=self.receipt.concept,
-					document_type=cuenta_retencion.perfil.tipo_documento,
-					document_number=cuenta_retencion.perfil.numero_documento,
-					issued_date=self.fecha_operacion,
-					total_amount=i['monto'],
-					net_untaxed=0,
-					net_taxed=i['monto'],
-					exempt_amount=0,
-					service_start=self.fecha_operacion,
-					service_end=self.fecha_operacion,
-					expiration_date=self.fecha_operacion,
-					currency=self.receipt.currency,
-				)
-
-			documento_retencion = Documento.objects.create(
-					comunidad=self.comunidad,
-					receipt=receipt,
-					destinatario=cuenta_retencion,
-					fecha_operacion=self.fecha_operacion,
-					descripcion="Retencion",
-				)
-			documento_retencion.chequear_numeros()
-
-			operacion_haber_retencion = Operacion(
-				comunidad=self.comunidad,
-				fecha=self.fecha_operacion,
-				documento=documento_retencion,
-				fecha_indicativa=self.fecha_operacion,
-				asiento=self.identifier,
-				cuenta=cuenta_retencion,
-				valor=-i['monto'],
-				detalle=i['retencion'].nombre,
-			)
-			self.operaciones.append(operacion_haber_retencion)
-
-
 	def hacer_saldo_a_favor(self):
 		""" Realiza la operacion de saldo a favor """
 		if self.suma_haber > self.suma_debe:
@@ -177,7 +129,6 @@ class CU:
 		if self.receipt.receipt_type.code in self.op:
 			self.hacer_cajas()
 			self.hacer_utilizaciones_saldos()
-			self.hacer_retenciones()
 			self.hacer_saldo_a_favor()
 
 		elif self.receipt.receipt_type.code in self.notas_credito:

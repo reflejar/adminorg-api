@@ -5,18 +5,27 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 
 	def __init__(self, queryset, context):
 		super().__init__(queryset, context)
-		self.saldo = Decimal(0.00)
-		self.orden = 0
+		# Esto hay que mejorar en pandas
+		queryset = []
+		saldo = Decimal(0.00)
+		
+		obj = self.context['cuenta']
+		for q in list(self.queryset)[::-1]:
+			if isinstance(obj, Cuenta):
+				q.total = sum([o.valor for o in q.operaciones.all() if o.cuenta == obj])
+				saldo += q.total
+				q.saldo = saldo
+			else:
+				total = sum([o.valor for o in q.operaciones.all() if o.cuenta.titulo == obj])			
+			queryset.append(q)
+
+		self.queryset = list(queryset)[::-1]
 
 	def makeJSON(self, d:Documento) -> Dict[str, Any]:
-		obj = self.context['cuenta']
+		
 		receipt_type = str(d.receipt.receipt_type)
 		formatted_number = str(d.receipt.formatted_number)
-		if isinstance(obj, Cuenta):
-			total = sum([o.valor for o in d.operaciones.all() if o.cuenta in obj.grupo])
-		else:
-			total = sum([o.valor for o in d.operaciones.all() if o.cuenta.titulo in obj.grupo])
-		self.saldo += total
+
 		return {
 			'id': d.id,
 			'fecha': d.fecha_operacion,
@@ -27,6 +36,6 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 				'receipt_type': receipt_type,
 				'formatted_number': formatted_number
 			},
-			'total': total,
-			'saldo': self.saldo
+			'total': d.total,
+			'saldo': d.saldo
 		}
