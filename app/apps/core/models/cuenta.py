@@ -107,6 +107,10 @@ class Cuenta(BaseModel):
 		df['saldo'] = df['valor'] + df['pago_capital']
 		df['saldo'] = df['saldo'].fillna(df['valor'])
 		df = df[df['saldo']!=0]
+		direccion = 1 if self.naturaleza.nombre in ['cliente'] else -1
+		df['pago_capital'] = df['pago_capital']*direccion
+		df['valor'] = df['valor']*direccion
+		df['saldo'] = df['saldo']*direccion
 		return df
 
 
@@ -121,29 +125,11 @@ class Cuenta(BaseModel):
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
 		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type'})
 		df['saldo'] = df['valor'][::-1].cumsum()
+		direccion = 1 if self.naturaleza.nombre in ['cliente'] else -1
+		df['valor'] = df['valor']*direccion
+		df['saldo'] = df['saldo']*direccion
 		return df
 
-		
-	def estado_saldos(self, fecha=None):
-		fecha = fecha if fecha else date.today()
-		kwargs = {
-			'cuenta': self,
-			'vinculo__isnull': True,
-			'documento__isnull': False,
-			'documento__fecha_anulacion__isnull': True
-		}
-		if self.naturaleza.nombre in ['cliente', 'caja']:
-			kwargs.update({'valor__lt': 0})
-			if self.naturaleza.nombre == 'caja':
-				kwargs.update({'cuenta__taxon__nombre': 'stockeable'})				
-		else:
-			kwargs.update({'valor__gt': 0})
-		saldos = self.get_model('Operacion').objects.filter(**kwargs)
-		excluir = []
-		for s in saldos:
-			if s.saldo(fecha=fecha) <= 0:
-				excluir.append(s.id)
-		return saldos.exclude(id__in=excluir).order_by('-fecha', '-id')
 
 	def vinculaciones(self):
 		return self.vinculo1.all()

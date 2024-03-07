@@ -1,4 +1,4 @@
-from apps.core.serializers.operaciones.base import *
+from .base import *
 
 
 class CajaModelSerializer(OperacionModelSerializer):
@@ -11,6 +11,6 @@ class CajaModelSerializer(OperacionModelSerializer):
 						comunidad=self.context['comunidad'], 
 						naturaleza__nombre="caja"
 					), 
-				allow_null=False
+				allow_null=True
 			)
 		self.fields['fecha_vencimiento'] = serializers.DateField(allow_null=True)

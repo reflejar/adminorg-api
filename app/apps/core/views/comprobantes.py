@@ -14,13 +14,8 @@ from django_afip.models import (
 )
 from apps.users.permissions import IsComunidadMember, IsAdministrativoUser
 from apps.utils.generics import custom_viewsets
-from apps.core.serializers import (
-	MasivoClienteModelSerializer,
-	DestinoClienteModelSerializer,
-	OrigenProveedorModelSerializer,
-	TesoroModelSerializer,
-	AsientoModelSerializer
-)
+from apps.core.serializers.comprobante import ComprobanteModelSerializer
+
 from apps.core.models import (
 	Documento,
 	Cuenta
@@ -29,13 +24,14 @@ from apps.core.filters import (
 	DocumentoFilter
 )
 
-class BaseViewSet(custom_viewsets.CustomModelViewSet):
+class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
 		Base de Documentos
 	"""
 
 	sin_destinatario = False
 	filterset_class = DocumentoFilter
+	serializer_class = ComprobanteModelSerializer
 
 	def get_object(self):
 		obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
@@ -48,9 +44,9 @@ class BaseViewSet(custom_viewsets.CustomModelViewSet):
 			kwargs = {
 				'comunidad': self.comunidad,
 			}
-			if not self.causante in ["caja", "asiento"]:
+			if not self.kwargs['naturaleza'] in ["caja", "asiento"]:
 				kwargs.update({
-					'destinatario__naturaleza__nombre': self.causante
+					'destinatario__naturaleza__nombre': self.kwargs['naturaleza']
 				})
 
 			return Documento.objects.filter(**kwargs)
@@ -69,8 +65,7 @@ class BaseViewSet(custom_viewsets.CustomModelViewSet):
 		'''Agregado de naturaleza 'cliente' al context serializer.'''
 		serializer_context = super().get_serializer_context()
 		serializer_context.update({
-			'causante': self.causante,
-			'sin_destinatario': self.sin_destinatario,
+			'causante': self.kwargs['naturaleza'],
 		})		
 		if "pk" in self.kwargs.keys():
 			obj = self.get_object()

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from apps.core.models import Documento, Operacion
 from import_export.admin import ImportExportMixin
-from apps.core.serializers.documentos.cliente import DestinoClienteModelSerializer
+# from apps.core.serializers.documentos.cliente import DestinoClienteModelSerializer
 
 # from apps.communications.tasks import send_emails
 
@@ -12,12 +12,12 @@ def hacer_pdf(modeladmin, request, queryset):
 	messages.add_message(request, messages.SUCCESS, "Hecho.")
 hacer_pdf.short_description = "Hacer PDF"
 
-def send_email(modeladmin, request, queryset):
-	for d in queryset:
-		documento = DestinoClienteModelSerializer(instance=d)
-		documento.send_email(d)
-	messages.add_message(request, messages.SUCCESS, "Hecho.")
-send_email.short_description = "Enviar por mail"
+# def send_email(modeladmin, request, queryset):
+# 	for d in queryset:
+# 		documento = DestinoClienteModelSerializer(instance=d)
+# 		documento.send_email(d)
+# 	messages.add_message(request, messages.SUCCESS, "Hecho.")
+# send_email.short_description = "Enviar por mail"
 
 
 def hard_delete(modeladmin, request, queryset):
@@ -35,7 +35,11 @@ class OperacionInline(admin.TabularInline):
 class DocumentoAdmin(ImportExportMixin, admin.ModelAdmin):
 	list_display = ['receipt', 'destinatario']
 	list_filter = ['comunidad', 'receipt__receipt_type']
-	actions = [hacer_pdf, send_email, hard_delete]
+	actions = [
+		hacer_pdf, 
+		# send_email, 
+		hard_delete
+		]
 	inlines = [
 		OperacionInline,
 	]	

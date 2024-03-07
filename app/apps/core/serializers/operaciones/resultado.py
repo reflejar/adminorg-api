@@ -1,4 +1,4 @@
-from apps.core.serializers.operaciones.base import *
+from .base import *
 
 
 class ResultadoModelSerializer(OperacionModelSerializer):
@@ -12,6 +12,6 @@ class ResultadoModelSerializer(OperacionModelSerializer):
 						comunidad=self.context['comunidad'], 
 						naturaleza__nombre__in=["ingreso", "gasto"]
 					), 
-				allow_null=False
+				allow_null=True
 			)
 		self.fields['periodo'] = serializers.ModelField(model_field=fields.get_field("fecha_indicativa"))

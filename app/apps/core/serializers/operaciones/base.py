@@ -18,9 +18,11 @@ class OperacionModelSerializer(serializers.ModelSerializer):
 		)
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.fields['monto'] = serializers.DecimalField(decimal_places=2, max_digits=15, min_value=0.00)
+		self.fields['monto'] = serializers.DecimalField(decimal_places=2, max_digits=15)
 
 	def display_vinculo(self, instance):
+		if not instance:
+			return ""
 		return {
 			'descripcion': ' - '.join([str(instance.cuenta), str(instance.concepto), str(instance.periodo())]),
 			'monto': instance.saldo(fecha=self.context['fecha_operacion'])

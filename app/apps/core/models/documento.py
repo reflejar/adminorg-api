@@ -45,223 +45,75 @@ class Documento(BaseModel):
 	def get_model(self, nombre):
 		return apps.get_model('operative', nombre)
 
-	def portador(self):
-		return str(self.destinatario)
-
 	def tipo(self):
 		return str(self.receipt.receipt_type)
 
 	def numero(self):
 		return str(self.receipt.formatted_number)		
 
-	# Funciones Serializadoras
-	def creditos(self):
-		"""
-			Clientes: Factura C, X y Nota de Debito C, X manuales 
-		"""		
-		identifier = self.operaciones.first().asiento
-		return self.get_model('Operacion').objects.filter(
-			asiento=identifier,
-			cuenta__in=self.destinatario.grupo,
-			# vinculo__isnull=True,
-			cuenta__naturaleza__nombre__in=['cliente', 'dominio'],
-			valor__gt=0,
-		)		
 
-	def debitos(self):
-		"""
-			Proveedores: Documentos de debitos (No OP ni Notas de Credito)
-		"""
-		identifier = self.operaciones.first().asiento
-		return self.get_model('Operacion').objects.filter(
-			asiento=identifier,
-			vinculo__isnull=True,
-			cuenta__naturaleza__nombre__in=["caja", "gasto", "bien_de_cambio", "bien_de_uso"],
-			valor__gt=0,
-		).exclude(descripcion="ANULACION")
-
+	# Funciones serializadoras
 	def cargas(self):
-		"""
-			Tesoreria: Documento tipo Transferencia
-		"""
+		""" Cargas generadas"""
 		identifier = self.operaciones.first().asiento
-		return self.get_model('Operacion').objects.filter(
-			asiento=identifier,
-			documento__destinatario__isnull=True,
-			vinculo__isnull=True,
-			valor__gt=0,
-		).exclude(descripcion="ANULACION")
+		filtro = {
+			'asiento':identifier,
+			'cuenta':self.destinatario,
+			'vinculo__isnull':True,
+		}
+		if self.destinatario.naturaleza.nombre in ['cliente']:
+			filtro.update({'valor__gt': 0})
+		else:
+			filtro.update({'valor__lt': 0})
+		return self.get_model('Operacion').objects.filter(**filtro)
 
-	def pagos(self):
-		"""
-			Proveedores: Documentos de disminuciones (OP y Notas de Credito)
-		"""		
-		identifier = self.operaciones.first().asiento
-		return self.get_model('Operacion').objects.filter(
-			asiento=identifier,
-			vinculo__isnull=False,
-			cuenta=self.destinatario,
-			valor__gt=0,
-		).exclude(descripcion="ANULACION")
 
 	def cobros(self):
-		"""
-			Clientes: Recibo X y Nota de Credito C manuales 
-		"""
+		""" Cobros hechos """
 		identifier = self.operaciones.first().asiento
-		return self.get_model('Operacion').objects.filter(
-			asiento=identifier,
-			vinculo__isnull=False,
-			cuenta__naturaleza__nombre__in=['cliente', 'dominio'],
-			valor__lt=0,
-		).exclude(descripcion="ANULACION")
+		filtro = {
+			'asiento':identifier,
+			'cuenta':self.destinatario,
+			'vinculo__isnull':False,
+		}
+		return self.get_model('Operacion').objects.filter(**filtro)
+	
 
 	def resultados(self):
-		"""
-			Clientes: Notas de Credito C
-			Proveedores: Todas las Notas de Credito
-		"""		
+		""" Resultados de una nota de credito """		
 		identifier = self.operaciones.first().asiento
-		kwargs = {
+		filtro = {
 			'asiento': identifier,
 			'vinculo__isnull': True,
 			'cuenta__naturaleza__nombre__in': ['ingreso', 'gasto'],
 		}
-		if self.destinatario.naturaleza.nombre == "cliente":
-			kwargs.update({'valor__gt': 0})
-		elif self.destinatario.naturaleza.nombre == "proveedor":
-			kwargs.update({'valor__lt': 0})
 
+		if self.destinatario.naturaleza.nombre in ['cliente']:
+			filtro.update({'valor__gt': 0})
+		else:
+			filtro.update({'valor__gt': 0})
 
-		return self.get_model('Operacion').objects.filter(**kwargs)
+		return self.get_model('Operacion').objects.filter(**filtro)
+
 
 	def cajas(self):
-		"""
-			Clientes: Recibo X
-			Proveedores: OP
-		"""		
+		""" Formas de pago """		
 		identifier = self.operaciones.first().asiento
-		kwargs = {
+		filtro = {
 			'asiento': identifier,
 			'vinculo__isnull': True,
 			'cuenta__naturaleza__nombre': 'caja',
 		}
-		if self.destinatario:
 
-			if self.destinatario.naturaleza.nombre == "cliente":
-				kwargs.update({
-					'valor__gt': 0,
-				})
-			elif self.destinatario.naturaleza.nombre == "proveedor":
-				kwargs.update({
-					'valor__lt': 0,
-				})
+		if self.destinatario.naturaleza.nombre in ['cliente']:
+			filtro.update({'valor__gt': 0})
 		else:
-			if self.receipt.receipt_type.code == "303":
-				kwargs.update({
-					'valor__lt': 0,
-				})
+			filtro.update({'valor__gt': 0})
 
-		result = self.get_model('Operacion').objects.filter(**kwargs).exclude(cuenta__naturaleza__nombre="stockeable")
-		return result.exclude(descripcion="ANULACION")
+		return self.get_model('Operacion').objects.filter(**filtro)
 
-	def utilizaciones_saldos(self):
-		"""
-			Clientes: Recibo X
-			Proveedores: OP
-		"""		
-		identifier = self.operaciones.first().asiento
-		kwargs = {
-			'asiento': identifier,
-			'vinculo__isnull': False,
-		}
-		if self.destinatario.naturaleza.nombre == "cliente":
-			kwargs.update({
-				'cuenta__naturaleza__nombre__in': ['cliente'],
-				'valor__gt': 0,
-				'documento__receipt__receipt_type': self.receipt.receipt_type # Las utilizaciones de saldo solo se tienen documento tipo Recibo X en clientes
-			})
-		elif self.destinatario.naturaleza.nombre == "proveedor":
-			kwargs.update({
-				'cuenta': self.destinatario,
-				'valor__lt': 0,
-			})
-		return self.get_model('Operacion').objects.filter(**kwargs).exclude(descripcion="ANULACION")
 
-	def a_cuenta(self):
-		"""
-			Clientes: Recibo X
-			Proveedores: OP
-		"""		
-		identifier = self.operaciones.first().asiento
-		kwargs = {
-			'asiento': identifier,
-			'vinculo__isnull': True,
-		}
-		if self.destinatario.naturaleza.nombre == "cliente":
-			kwargs.update({
-				'cuenta__naturaleza__nombre': 'cliente',
-				'valor__lt': 0,
-			})
-		elif self.destinatario.naturaleza.nombre == "proveedor":
-			kwargs.update({
-				'cuenta': self.destinatario,
-				'valor__gt': 0,
-			})
 
-		return self.get_model('Operacion').objects.filter(**kwargs).exclude(descripcion="ANULACION")
-
-	def a_cuenta_utilizaciones(self):
-		""" Esto retorna los documentos de los pagos si es que el saldo es distinto al valor original """
-		a_cuenta = self.a_cuenta().first()
-		if a_cuenta:
-			documentos = []
-
-			if a_cuenta.saldo() != a_cuenta.monto:
-				for p in a_cuenta.pagos_capital():
-					documentos.append(p.documento)
-				return set(documentos)
-
-		return 		
-
-	def utilizaciones_disponibilidades(self):
-		"""
-			Clientes: Recibo X
-			Proveedores: Todo
-		"""		
-		identifier = self.operaciones.first().asiento
-		kwargs = {
-			'asiento': identifier,
-			'vinculo__isnull': False,
-			'cuenta__naturaleza__nombre': 'caja',
-			'cuenta__taxon__nombre': 'stockeable',
-		}
-		return self.get_model('Operacion').objects.filter(**kwargs).exclude(descripcion="ANULACION")
-
-	def disponibilidades_utilizaciones(self):
-		""" Esto retorna los documentos de las utilizaciones de las disponibilidades creadas si es que el saldo es distinto al valor original """
-		disponibilidades = self.cajas().filter(cuenta__taxon__nombre="stockeable")
-		if disponibilidades:
-			documentos = []
-			for d in disponibilidades:
-				if d.saldo() != d.monto:
-					for p in d.pagos_capital():
-						documentos.append(p.documento)
-					return set(documentos)
-
-		return 		
-
-	def deuda(self):
-		"""
-			Proveedores: solo operaciones de debitos que no sean Ordenes de Pago
-		"""		
-		identifier = self.operaciones.first().asiento
-		return self.get_model('Operacion').objects.filter(
-			asiento=identifier,
-			vinculo__isnull=True,
-			cuenta=self.destinatario,
-			valor__lt=0,
-		).exclude(documento__receipt__receipt_type__code="302")
 
 	def pagos_recibidos(self):
 		""" Esto retorna el ultimo pago si es que el saldo es distinto al valor original """
@@ -427,7 +279,7 @@ class Documento(BaseModel):
 
 	# @property
 	# def total(self):
-	# 	return sum([o.valor for o in self.operaciones.all() if o.cuenta in self.destinatario.grupo])
+	# 	return sum([o.valor for o in self.operaciones.all() if o.cuenta in self.destinatario])
 
 	# def vinculos(self):
 	# 	identifier = self.operaciones.first().asiento
@@ -519,8 +371,7 @@ class Documento(BaseModel):
 	def hacer_pdf(self):
 		
 		if self.pdf:
-			self.pdf.remove()
-			self.pdf.delete()		
+			self.pdf.delete()
 
 		if self.receipt.receipt_type.code == "400":
 			return 

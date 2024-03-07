@@ -15,12 +15,6 @@ from apps.core.models import OwnReceipt
 class ReceiptModelSerializer(serializers.ModelSerializer):
 	'''Receipt model serializer'''
 
-	RECEIPT_TYPE_CHOICES = {
-		'cliente': ['51', '53', '54'],
-		'proveedor': ['1','2','3', '6', '7', '8', '11', '12', '13', '51', '52', '53','63', '64', '301', '302'],
-		'caja': []
-	}
-
 	class Meta:
 		model = OwnReceipt
 
@@ -37,7 +31,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			)
 
 		self.fields['receipt_type'] = serializers.ChoiceField(
-			choices=list(ReceiptType.objects.filter(code__in=self.RECEIPT_TYPE_CHOICES[self.context['causante']]).values_list('description', flat=True)),
+			choices=list(ReceiptType.objects.all().values_list('description', flat=True)),
 			label="Tipo"
 		)
 		point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))
@@ -52,12 +46,6 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 				label="Número"
 			)
 			
-		elif self.context['causante'] == "cliente-masivo":
-			self.fields['point_of_sales'] = serializers.ChoiceField(
-				choices=point_of_sales_owner,
-				label="Punto de venta"
-			)
-	
 		elif self.context['causante'] == "proveedor":
 			if 'receipt_type' in self.context.keys():
 				self.fields['point_of_sales'] = serializers.CharField(
