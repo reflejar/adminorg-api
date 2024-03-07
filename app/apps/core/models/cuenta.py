@@ -1,8 +1,10 @@
 from datetime import date
+import pandas as pd
 from itertools import chain
 from django.db import models
 from django.apps import apps
 from django.db.models import F, Sum, Window
+from django_pandas.io import read_frame
 
 from apps.utils.models import (
 	BaseModel,
@@ -61,72 +63,66 @@ class Cuenta(BaseModel):
 	def get_model(self, nombre):
 		return apps.get_model('operative', nombre)
 
-	def estado_deuda(self, fecha=None):
-		fecha = fecha if fecha else date.today()
-		kwargs = {
-			'cuenta__in': self.grupo,
-			'vinculo__isnull': True,
-			'documento__isnull': False,
-			'documento__fecha_anulacion__isnull': True
-		}
-		if self.naturaleza.nombre in ['cliente', 'caja']:
-			kwargs.update({'valor__gt': 0})
-			if self.naturaleza.nombre == 'caja':
-				kwargs.update({'cuenta__taxon__nombre': 'stockeable'})				
-		else:
-			kwargs.update({'valor__lt': 0})
-		deudas = self.get_model('Operacion').objects.filter(**kwargs)
-		excluir = []
-		for d in deudas:
-			# if d.saldo(fecha=fecha) <= 0: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA
-			if d.saldo() <= 0.00: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA pero excluyendo las pagadas posteriormente
-				excluir.append(d.id)
+	# def estado_deuda(self, fecha=None):
+	# 	fecha = fecha if fecha else date.today()
+	# 	kwargs = {
+	# 		'cuenta__in': self.grupo,
+	# 		'vinculo__isnull': True,
+	# 		'documento__isnull': False,
+	# 		'documento__fecha_anulacion__isnull': True
+	# 	}
+	# 	if self.naturaleza.nombre in ['cliente', 'caja']:
+	# 		kwargs.update({'valor__gt': 0})
+	# 		if self.naturaleza.nombre == 'caja':
+	# 			kwargs.update({'cuenta__taxon__nombre': 'stockeable'})				
+	# 	else:
+	# 		kwargs.update({'valor__lt': 0})
+	# 	deudas = self.get_model('Operacion').objects.filter(**kwargs)
+	# 	excluir = []
+	# 	for d in deudas:
+	# 		# if d.saldo(fecha=fecha) <= 0: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA
+	# 		if d.saldo() <= 0.00: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA pero excluyendo las pagadas posteriormente
+	# 			excluir.append(d.id)
 		
-		return deudas.exclude(id__in=excluir).order_by('-fecha', 'id')
+	# 	return deudas.exclude(id__in=excluir).order_by('-fecha', 'id')
+
+	def estado_deuda(self, fecha=None):	
+		fecha = fecha if fecha else date.today()
+		df = read_frame(self.get_model('Operacion').objects.filter(
+				cuenta=self, 
+				documento__isnull=False,
+				documento__fecha_anulacion__isnull=True
+			), fieldnames=['id', 'fecha', 'documento', 'concepto', 'fecha_indicativa','valor', 'documento__id', 'documento__receipt__receipt_type', 'vinculo__id'])
+		df['fecha'] = pd.to_datetime(df['fecha'])
+		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
+		df['periodo'] = pd.to_datetime(df['fecha_indicativa'])
+		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')
+		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type'})
+		
+		pagos_capital = df.groupby('vinculo__id')['valor'].sum().reset_index()
+		pagos_capital.columns = ['vinculo__id', 'valor']
+		pagos_capital = pagos_capital.rename(columns={'vinculo__id': 'id', 'valor': 'pago_capital'})
+		df = df.merge(pagos_capital, how='left', on='id')
+		df['pago_capital'] = df['pago_capital'].fillna(0)
+		df = df[df['vinculo__id'].isna()]
+		df['saldo'] = df['valor'] + df['pago_capital']
+		df['saldo'] = df['saldo'].fillna(df['valor'])
+		df = df[df['saldo']!=0]
+		return df
 
 
 	def estado_cuenta(self, fecha=None):	
 		fecha = fecha if fecha else date.today()
-		documentos = self.get_model('Documento').objects.filter(
-				operaciones__cuenta__in=self.grupo, 
+		df = read_frame(self.get_model('Operacion').objects.filter(
+				cuenta=self, 
 				# fecha__lte=fecha,
-			).order_by('receipt').distinct('receipt')
+			).order_by('-fecha', '-id'), fieldnames=['fecha', 'documento', 'concepto', 'valor', 'documento__id', 'documento__receipt__receipt_type'])
+		df['fecha'] = pd.to_datetime(df['fecha'])
 
-		documentos = self.get_model('Documento').objects.filter(
-				id__in=documentos, 
-				# fecha__lte=fecha,
-			).select_related(
-				"destinatario", 
-				"destinatario__perfil", # Para el nombre de la cuenta
-				"destinatario__naturaleza",
-				"receipt", 
-				"receipt__receipt_type", 
-			).prefetch_related(
-				"operaciones",
-				"operaciones__cuenta",
-				"operaciones__cuenta__naturaleza",
-				"operaciones__vinculos",
-				"operaciones__vinculos__cuenta",
-				"operaciones__vinculos__cuenta__naturaleza",
-			).order_by('-fecha_operacion', '-id')
-
-		return self.get_model('Documento').objects.filter(
-				id__in=documentos, 
-				# fecha__lte=fecha,
-			).select_related(
-				"destinatario", 
-				"destinatario__perfil", # Para el nombre de la cuenta
-				"destinatario__naturaleza",
-				"receipt", 
-				"receipt__receipt_type", 
-			).prefetch_related(
-				"operaciones",
-				"operaciones__cuenta",
-				"operaciones__cuenta__naturaleza",
-				"operaciones__vinculos",
-				"operaciones__vinculos__cuenta",
-				"operaciones__vinculos__cuenta__naturaleza",
-			).order_by('-fecha_operacion', '-id')
+		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
+		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type'})
+		df['saldo'] = df['valor'][::-1].cumsum()
+		return df
 
 		
 	def estado_saldos(self, fecha=None):

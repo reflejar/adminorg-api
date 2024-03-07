@@ -37,7 +37,6 @@ class Documento(BaseModel):
 
 	def __str__(self):
 		nombre = str(self.receipt)
-		nombre += " a {}".format(str(self.destinatario))
 		return nombre
 
 	def nombre(self):

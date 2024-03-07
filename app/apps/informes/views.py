@@ -52,61 +52,14 @@ class InformesViewSet(custom_viewsets.CustomModelViewSet):
 		except:
 			raise Http404
 
-	def get_serializer_context(self):
-		'''Agregado de naturaleza 'cliente' al context serializer.'''
-		serializer_context = super().get_serializer_context()
-		end_date = datetime.strptime(self.request.GET['end_date'], "%Y-%m-%d").date()
-		serializer_context['end_date'] = end_date
-		return serializer_context
-
-
-	def get_nombres(self):
-		cuentas = Cuenta.objects.filter(
-					comunidad=self.comunidad, 
-					).select_related(
-						"naturaleza",
-					).prefetch_related(
-						"vinculo2",
-					)
-		nombres = [
-			{
-				'CUENTA_ID': c.id, 
-				'NATURALEZA': c.naturaleza.nombre,
-				'NOMBRE': str(c) if c.naturaleza.nombre != "dominio" else str(c.inquilino())
-			} for c in cuentas
-		]		
-		return nombres
 
 	def list(self, request):
 		queryset = self.get_queryset()
 		analisis_config = eval(request.GET['analisis'])
-		analisis = OperacionAnalisis(
-				queryset=queryset, 
-				nombres=self.get_nombres(), 
-				analisis_config=analisis_config
-			)
-		df_json = analisis.get_df().to_json(orient='split')
-		return Response(json.loads(df_json))
 
-	@action(detail=False, methods=['get'])
-	def xlsx(self, request):
-		queryset = self.get_queryset()
-		analisis_config = eval(request.GET['analisis'])
 		analisis = OperacionAnalisis(
 				queryset=queryset, 
-				nombres=self.get_nombres(), 
 				analisis_config=analisis_config
 			)
-		xlsx = analisis.get_excel()
-		return HttpResponse("OK")
-		df = analisis.get_df(raw_data=True)
-		with BytesIO() as b:
-			# Use the StringIO object as the filehandle.
-			writer = pd.ExcelWriter(b, engine='xlsxwriter')
-			df.to_excel(writer, sheet_name='Informe')
-			writer.save()
-			filename = 'informe'
-			content_type = 'application/vnd.ms-excel'
-			response = HttpResponse(b.getvalue(), content_type=content_type)
-			response['Content-Disposition'] = 'attachment; filename="' + filename + '.xlsx"'
-			return response			
+		df_json = analisis.get_df().to_json(orient='records')
+		return Response(json.loads(df_json))

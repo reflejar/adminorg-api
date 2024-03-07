@@ -12,8 +12,7 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 		obj = self.context['cuenta']
 		for q in list(self.queryset)[::-1]:
 			if isinstance(obj, Cuenta):
-				q.total = sum([o.valor for o in q.operaciones.all() if o.cuenta == obj])
-				saldo += q.total
+				saldo += q.valor
 				q.saldo = saldo
 			else:
 				total = sum([o.valor for o in q.operaciones.all() if o.cuenta.titulo == obj])			
@@ -21,21 +20,25 @@ class EstadoCuentaSerializer(EstadoBaseSerializer):
 
 		self.queryset = list(queryset)[::-1]
 
-	def makeJSON(self, d:Documento) -> Dict[str, Any]:
+	def makeJSON(self, o:Operacion) -> Dict[str, Any]:
 		
-		receipt_type = str(d.receipt.receipt_type)
-		formatted_number = str(d.receipt.formatted_number)
+		receipt_type = str(o.documento.receipt.receipt_type)
+		formatted_number = str(o.documento.receipt.formatted_number)
 
 		return {
-			'id': d.id,
-			'fecha': d.fecha_operacion,
-			'causante': d.causante,
-			'fecha_anulacion': d.fecha_anulacion,
-			'nombre': receipt_type + " " + formatted_number,
-			'receipt': {
-				'receipt_type': receipt_type,
-				'formatted_number': formatted_number
+			'fecha': o.fecha,
+			'documento': {
+				'id': o.documento.id,
+				'fecha_anulacion': o.documento.fecha_anulacion,
+				'receipt': {
+					'receipt_type': receipt_type,
+					'formatted_number': formatted_number
+				},
+				'nombre': receipt_type + " " + formatted_number,
+
 			},
-			'total': d.total,
-			'saldo': d.saldo
+			'causante': o.documento.causante,
+			'concepto': str(o.concepto or ''),
+			'total': o.valor,
+			'saldo': o.saldo
 		}

@@ -156,7 +156,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 
 		# validacion conjunta (debe existir razon social, nombre o apellido)
 		if self.context['naturaleza'] in ["cliente", "proveedor"]:
-			if not perfil['apellido'] and not perfil['razon_social']:
+			if not 'apellido' in perfil.keys() and not 'razon_social' in perfil.keys():
 				mj_error = ['Es necesario configurar un Nombre y Apellido o una Razón social']
 				raise serializers.ValidationError({'apellido': mj_error})
 

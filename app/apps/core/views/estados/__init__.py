@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, date
 from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -126,7 +127,7 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 			datos = obj.estado_cuenta(fecha=fecha)
 		elif self.kwargs['tipo'] == "saldos":
 			datos = obj.estado_saldos(fecha=fecha)
-
+		return datos
 		self.filter = self.filterset_class(self.request.GET, queryset=datos)
 		return self.filter.qs
 
@@ -165,7 +166,9 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 
 	def retrieve(self, request, pk=None, **kwargs):
 		queryset = self.get_queryset()
-		filtro = self.filter.data
+		# filtro = self.filter.data
+		return Response({'data': json.loads(queryset.to_json(orient="records"))})
+
 		end_date = filtro['end_date'] if 'end_date' in filtro.keys() else date.today()
 		end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 		context = {
