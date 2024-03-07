@@ -103,7 +103,6 @@ class Cuenta(BaseModel):
 		pagos_capital.columns = ['vinculo__id', 'valor']
 		pagos_capital = pagos_capital.rename(columns={'vinculo__id': 'id', 'valor': 'pago_capital'})
 		df = df.merge(pagos_capital, how='left', on='id')
-		df['pago_capital'] = df['pago_capital'].fillna(0)
 		df = df[df['vinculo__id'].isna()]
 		df['saldo'] = df['valor'] + df['pago_capital']
 		df['saldo'] = df['saldo'].fillna(df['valor'])
