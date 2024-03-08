@@ -1,1 +1,0 @@
-from apps.utils.generics.setups import *

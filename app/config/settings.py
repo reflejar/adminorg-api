@@ -70,12 +70,11 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-	'apps.utils.apps.UtilsAppConfig',
-	'apps.users.apps.UsersAppConfig',
-	'apps.core.apps.OperativeAppConfig',
-	'apps.files.apps.FilesAppConfig',
-	'apps.communications.apps.CommunicationsAppConfig',
-	'apps.reportes.apps.InformesAppConfig',
+	'utils.apps.UtilsAppConfig',
+	'users.apps.UsersAppConfig',
+	'core.apps.OperativeAppConfig',
+	'communications.apps.CommunicationsAppConfig',
+	'reportes.apps.InformesAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

@@ -1,11 +1,11 @@
 # scripts/initial_data.py
 import json
 from datetime import date
-from apps.core.models import *
+from core.models import *
 from django_afip.models import *
 from django.contrib.auth.models import Group
-from apps.users.models import *
-from apps.utils.models import *
+from users.models import *
+from utils.models import *
 
 def crer_superusuario():
 	"""Creación de superusuario"""
@@ -81,12 +81,6 @@ def crear_cosas_core_de_aplicacion():
 	for d in data:
 		Provincia.objects.create(**d)		
 
-	# Crear Modulos
-	modulos = open('scripts/modulos.json', 'r')
-	data = json.load(modulos)
-	for d in data:
-		Modulo.objects.create(**d)		
-
 	# Crear Tipos de comunidad
 	tipos_comunidad = open('scripts/tipos_comunidad.json', 'r')
 	data = json.load(tipos_comunidad)
@@ -137,8 +131,6 @@ def crear_comunidad():
 		tipo=TipoComunidad.objects.get(codigo_afip="0"),
 		domicilio=domicilio
 	)
-	for m in Modulo.objects.all():
-		comunidad.modulos.add(m)
 
 	# Crear Plan de cuentas basico
 	plan_cuentas = open('scripts/plan_cuentas.json', 'r')

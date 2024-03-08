@@ -1,8 +1,0 @@
-[
-    {"id": 1, "handler": "cliente", "nombre": "Cuentas a cobrar", "icon": "bi-download", "path": "cuentas-a-cobrar"},
-    {"id": 2, "handler": "proveedor", "nombre": "Cuentas a pagar", "icon": "bi-upload", "path": "cuentas-a-pagar"},
-    {"id": 3, "handler": "caja", "nombre": "Tesorería", "icon": "bi-shuffle", "path": "tesoreria"},
-    {"id": 4, "handler": "bien_de_cambio", "nombre": "Stock", "icon": "bi-layers", "path": "stock"},
-    {"id": 5, "handler": "titulo", "nombre": "Contabilidad", "icon": "bi-briefcase", "path": "contabilidad"}
-
-]

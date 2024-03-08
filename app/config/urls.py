@@ -17,8 +17,10 @@ urlpatterns = [
 	path('ready/', ready),
 	
 	# API
-	path('', include(('apps.urls', 'api'), namespace="api")),
-
+	path('users/', include(('users.urls', 'users'), namespace='users')),
+	path('utils/', include(('utils.urls', 'utils'), namespace='utils')),
+	path('operative/', include(('core.urls', 'operative'), namespace='operative')),
+	path('reportes/', include(('reportes.urls', 'reportes'), namespace='reportes')),
 	# Views
 	# ## Authentication
 	# path('recuperar-pass/', include('django.contrib.auth.urls')),
