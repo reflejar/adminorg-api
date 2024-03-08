@@ -28,8 +28,8 @@ $ docker compose build
 Luego se debe migrar la base de datos y ejecutar los scripts necesarios para dejar el sistema a punto
 
 ```bash
-$ docker compose run app python manage.py migrate
-$ docker compose run app python manage.py runscript setup
+$ docker compose run api python manage.py migrate
+$ docker compose run api python manage.py runscript setup
 ```
 
 

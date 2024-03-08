@@ -19,7 +19,7 @@ services:
       - ddbb
     volumes:
       - ./app:/app
-      - ./media:/app/media
+      - ./app/media:/app/media
     env_file:
       - .env
     ports:
