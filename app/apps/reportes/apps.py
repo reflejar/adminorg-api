@@ -7,5 +7,5 @@ from django.apps import AppConfig
 class InformesAppConfig(AppConfig):
     """Informes app config."""
 
-    name = 'apps.informes'
+    name = 'apps.reportes'
     verbose_name = 'Informes'

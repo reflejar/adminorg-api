@@ -7,6 +7,6 @@ urlpatterns = [
 	path('users/', include(('apps.users.urls', 'users'), namespace='users')),
 	path('utils/', include(('apps.utils.urls', 'utils'), namespace='utils')),
 	path('operative/', include(('apps.core.urls', 'operative'), namespace='operative')),
-	path('informes/', include(('apps.informes.urls', 'informes'), namespace='informes')),
+	path('reportes/', include(('apps.reportes.urls', 'reportes'), namespace='reportes')),
 
 ]

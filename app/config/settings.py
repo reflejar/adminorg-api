@@ -75,7 +75,7 @@ LOCAL_APPS = [
 	'apps.core.apps.OperativeAppConfig',
 	'apps.files.apps.FilesAppConfig',
 	'apps.communications.apps.CommunicationsAppConfig',
-	'apps.informes.apps.InformesAppConfig',
+	'apps.reportes.apps.InformesAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -213,8 +213,6 @@ LOGIN_URL = '/login/'
 
 # Redireccion cuando el login es correcto.
 LOGIN_REDIRECT_URL = "/"
-USER_ADMIN_LOGIN_REDIRECT = "informes/"
-USER_SOCIO_LOGIN_REDIRECT = "deudas/"
 
 # Redireccion cuando el logout es correcto.
 LOGOUT_REDIRECT_URL = '/login/'

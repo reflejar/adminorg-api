@@ -18,8 +18,8 @@ class CU:
 		self.cobros_guardados = []
 		self.cajas_guardadas = []
 		self.resultados_guardados = []
-		self.direccion = 1 if self.documento.destinatario.naturaleza.nombre in ['cliente'] else -1
-		self.total = 0
+		self.direccion = self.documento.destinatario.direccion
+
 
 
 	def hacer_cargas(self):
@@ -38,7 +38,7 @@ class CU:
 				fecha_gracia=o['fecha_gracia'],
 				fecha_vencimiento=o['fecha_vencimiento'],
 			))
-			_ = Operacion.objects.create(
+			self.cargas_guardadas.append(Operacion.objects.create(
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
 				documento = self.documento,
@@ -50,7 +50,7 @@ class CU:
 				fecha_indicativa=o['periodo'] or self.fecha_operacion,
 				fecha_gracia=o['fecha_gracia'],
 				fecha_vencimiento=o['fecha_vencimiento'],
-			)
+			))
 
 
 
@@ -124,20 +124,20 @@ class CU:
 				))						
 			
 
-
-	# def hacer_saldo_a_favor(self):
-	# 	saldo = sum([o.valor for o in self.operaciones])
-	# 	if saldo != 0:
-	# 		self.operaciones.append(Operacion.objects.create(
-	# 			comunidad=self.comunidad,
-	# 			fecha=self.fecha_operacion,
-	# 			documento = self.documento,
-	# 			asiento=self.identifier,
-	# 			cuenta=self.documento.destinatario,
-	# 			fecha_indicativa=self.fecha_operacion,
-	# 			valor=-saldo*self.direccion,
-	# 			detalle="Saldo a favor",
-	# 		))
+	def hacer_cierre(self):
+		""" Genera un movimiento más si el saldo de todas las operaciones hechas es != de 0"""
+		operaciones = self.cargas_guardadas+self.cobros_guardados+self.cajas_guardadas+self.resultados_guardados
+		saldo = sum([o.valor for o in operaciones])
+		if saldo != 0:
+			_ = Operacion.objects.create(
+				comunidad=self.comunidad,
+				fecha=self.fecha_operacion,
+				documento = self.documento,
+				asiento=self.identifier,
+				cuenta=self.documento.destinatario,
+				fecha_indicativa=self.fecha_operacion,
+				valor=-saldo*self.direccion,
+			)
 
 	def create(self):
 
@@ -148,4 +148,6 @@ class CU:
 		self.hacer_cajas()
 
 		self.hacer_resultados()
+
+		self.hacer_cierre()
 

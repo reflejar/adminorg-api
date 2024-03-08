@@ -61,7 +61,7 @@ class Documento(BaseModel):
 			'cuenta':self.destinatario,
 			'vinculo__isnull':True,
 		}
-		if self.destinatario.naturaleza.nombre in ['cliente']:
+		if self.destinatario.direccion == 1:
 			filtro.update({'valor__gt': 0})
 		else:
 			filtro.update({'valor__lt': 0})
@@ -88,7 +88,7 @@ class Documento(BaseModel):
 			'cuenta__naturaleza__nombre__in': ['ingreso', 'gasto'],
 		}
 
-		if self.destinatario.naturaleza.nombre in ['cliente']:
+		if self.destinatario.direccion == 1:
 			filtro.update({'valor__gt': 0})
 		else:
 			filtro.update({'valor__gt': 0})
@@ -105,7 +105,7 @@ class Documento(BaseModel):
 			'cuenta__naturaleza__nombre': 'caja',
 		}
 
-		if self.destinatario.naturaleza.nombre in ['cliente']:
+		if self.destinatario.direccion == 1:
 			filtro.update({'valor__gt': 0})
 		else:
 			filtro.update({'valor__gt': 0})
@@ -308,8 +308,8 @@ class Documento(BaseModel):
 			'COMUNIDAD_ACTIVIDAD': fillna(self.comunidad.contribuyente.active_since.strftime("%d/%m/%Y")),
 			
 			'TITULAR_NOMBRE': fillna(self.destinatario),
-			'TITULAR_DOC_TIPO': fillna(self.destinatario.perfil.tipo_documento if self.destinatario else None),
-			'TITULAR_DOC_NUM': fillna(self.destinatario.perfil.numero_documento if self.destinatario else None),
+			'TITULAR_DOC_TIPO': fillna(self.destinatario.perfil.tipo_documento if self.destinatario.perfil else None),
+			'TITULAR_DOC_NUM': fillna(self.destinatario.perfil.numero_documento if self.destinatario.perfil else None),
 
 			'ANULACION': fillna(self.fecha_anulacion.strftime("%d/%m/%Y") if self.fecha_anulacion else None),
 			'FECHA_OP': fillna(self.fecha_operacion.strftime("%d/%m/%Y") if self.fecha_operacion else None),

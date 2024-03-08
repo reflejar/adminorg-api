@@ -14,8 +14,8 @@ from apps.core.models import (
 	Operacion,
 	Cuenta
 )
-from apps.informes.filter import InformesFilter
-from apps.informes.analisis import OperacionAnalisis
+from apps.reportes.filter import InformesFilter
+from apps.reportes.analisis import OperacionAnalisis
 
 class InformesViewSet(custom_viewsets.CustomModelViewSet):
 	"""

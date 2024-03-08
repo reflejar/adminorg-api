@@ -34,15 +34,11 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 	def get_queryset(self, **kwargs):
 		fecha = datetime.strptime(self.request.GET['end_date'], "%Y-%m-%d").date() if 'end_date' in self.request.GET.keys() else date.today()
 		obj = self.get_object()
-		if self.kwargs['tipo'] == "deudas":
-			datos = obj.estado_deuda(fecha=fecha)
-		elif self.kwargs['tipo'] == "cuenta":
-			datos = obj.estado_cuenta(fecha=fecha)
-		elif self.kwargs['tipo'] == "saldos":
-			datos = obj.estado_saldos(fecha=fecha)
+		if self.kwargs['tipo'] == "saldos":
+			datos = Cuenta.saldos(cuentas=obj, fecha=fecha)
+		elif self.kwargs['tipo'] == "movimientos":
+			datos = Cuenta.mayores(cuentas=obj,fecha=fecha)
 		return datos
-		self.filter = self.filterset_class(self.request.GET, queryset=datos)
-		return self.filter.qs
 
 	def get_permissions(self):
 		'''Manejo de permisos'''
@@ -56,18 +52,13 @@ class EstadosViewSet(custom_viewsets.CustomModelViewSet):
 	def get_object(self):
 		if self.kwargs["pk"].isdigit():
 			if 'titulo' in self.request.GET.keys():
-				obj = get_object_or_404(
-						Titulo.objects.filter(comunidad=self.comunidad), 
-						pk=self.kwargs["pk"]
-					)
+				titulo = Titulo.objects.get(id=self.kwargs["pk"])
+				obj = Cuenta.objects.filter(comunidad=self.comunidad, titulo=titulo)
 			else:
-				obj = get_object_or_404(
-						Cuenta.objects.filter(comunidad=self.comunidad), 
-						pk=self.kwargs["pk"]
-					)
+				obj = Cuenta.objects.filter(comunidad=self.comunidad, pk=self.kwargs["pk"])
 		else:
-			obj = Totalidad(naturaleza=self.kwargs["pk"], comunidad=self.comunidad)
-		self.check_object_permissions(self.request, obj)
+			obj = Cuenta.objects.filter(comunidad=self.comunidad)
+		# self.check_object_permissions(self.request, obj)
 		return obj
 		
 

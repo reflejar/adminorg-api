@@ -35,7 +35,6 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			label="Tipo"
 		)
 		point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))
-		
 		if self.context['causante'] in ["cliente", "caja"]:
 			self.fields['point_of_sales'] = serializers.ChoiceField(
 				choices=point_of_sales_owner, 

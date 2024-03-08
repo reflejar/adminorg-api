@@ -60,39 +60,41 @@ class Cuenta(BaseModel):
 		grupo |= Cuenta.objects.filter(id=self.id)
 		return grupo
 
-	def get_model(self, nombre):
+	@staticmethod
+	def get_model(nombre):
 		return apps.get_model('operative', nombre)
 
-	# def estado_deuda(self, fecha=None):
-	# 	fecha = fecha if fecha else date.today()
-	# 	kwargs = {
-	# 		'cuenta__in': self.grupo,
-	# 		'vinculo__isnull': True,
-	# 		'documento__isnull': False,
-	# 		'documento__fecha_anulacion__isnull': True
-	# 	}
-	# 	if self.naturaleza.nombre in ['cliente', 'caja']:
-	# 		kwargs.update({'valor__gt': 0})
-	# 		if self.naturaleza.nombre == 'caja':
-	# 			kwargs.update({'cuenta__taxon__nombre': 'stockeable'})				
-	# 	else:
-	# 		kwargs.update({'valor__lt': 0})
-	# 	deudas = self.get_model('Operacion').objects.filter(**kwargs)
-	# 	excluir = []
-	# 	for d in deudas:
-	# 		# if d.saldo(fecha=fecha) <= 0: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA
-	# 		if d.saldo() <= 0.00: # Esta es la logica para consultar CUANTO SE DEBIA A UNA FECHA pero excluyendo las pagadas posteriormente
-	# 			excluir.append(d.id)
-		
-	# 	return deudas.exclude(id__in=excluir).order_by('-fecha', 'id')
-
-	def estado_deuda(self, fecha=None):	
+	@property
+	def direccion(self):
+		return 1 if str(self.titulo.numero)[0] in ["1", "5"] else -1
+	
+	@classmethod
+	def mayores(cls, cuentas, fecha=None):	
 		fecha = fecha if fecha else date.today()
-		df = read_frame(self.get_model('Operacion').objects.filter(
-				cuenta=self, 
+		df = read_frame(cls.get_model('Operacion').objects.filter(
+				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
+				# fecha__lte=fecha,
+			).order_by('-fecha', '-id'), fieldnames=['fecha', 'documento', 'concepto', 'valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'cuenta__titulo__numero'])
+		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
+		df['fecha'] = pd.to_datetime(df['fecha'])
+		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
+		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type'})
+		df['saldo'] = df['valor'][::-1].cumsum()
+		df['debe'] = df['valor'].apply(lambda x: x if x > 0 else 0)
+		df['haber'] = df['valor'].apply(lambda x: x if x < 0 else 0)
+		df['monto'] = df['valor']*df['direccion']
+		df['saldo'] = df['saldo']*df['direccion']
+		return df	
+
+	@classmethod
+	def saldos(cls, cuentas, fecha=None):	
+		fecha = fecha if fecha else date.today()
+		df = read_frame(cls.get_model('Operacion').objects.filter(
+				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				documento__isnull=False,
 				documento__fecha_anulacion__isnull=True
-			), fieldnames=['id', 'fecha', 'documento', 'concepto', 'fecha_indicativa','valor', 'documento__id', 'documento__receipt__receipt_type', 'vinculo__id'])
+			), fieldnames=['id', 'fecha', 'documento', 'concepto', 'fecha_indicativa','valor', 'documento__id', 'documento__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero'])
+		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
 		df['periodo'] = pd.to_datetime(df['fecha_indicativa'])
@@ -107,28 +109,12 @@ class Cuenta(BaseModel):
 		df['saldo'] = df['valor'] + df['pago_capital']
 		df['saldo'] = df['saldo'].fillna(df['valor'])
 		df = df[df['saldo']!=0]
-		direccion = 1 if self.naturaleza.nombre in ['cliente'] else -1
-		df['pago_capital'] = df['pago_capital']*direccion
-		df['valor'] = df['valor']*direccion
-		df['saldo'] = df['saldo']*direccion
+		df['monto'] = df['valor']*df['direccion']
+		df['pago_capital'] = df['pago_capital']*df['direccion']
+		df['saldo'] = df['saldo']*df['direccion']
 		return df
 
 
-	def estado_cuenta(self, fecha=None):	
-		fecha = fecha if fecha else date.today()
-		df = read_frame(self.get_model('Operacion').objects.filter(
-				cuenta=self, 
-				# fecha__lte=fecha,
-			).order_by('-fecha', '-id'), fieldnames=['fecha', 'documento', 'concepto', 'valor', 'documento__id', 'documento__receipt__receipt_type'])
-		df['fecha'] = pd.to_datetime(df['fecha'])
-
-		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
-		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type'})
-		df['saldo'] = df['valor'][::-1].cumsum()
-		direccion = 1 if self.naturaleza.nombre in ['cliente'] else -1
-		df['valor'] = df['valor']*direccion
-		df['saldo'] = df['saldo']*direccion
-		return df
 
 
 	def vinculaciones(self):

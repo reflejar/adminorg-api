@@ -5,7 +5,7 @@ from .views import InformesViewSet
 
 router = DefaultRouter()
 
-router.register(r'', InformesViewSet, basename='informes')
+router.register(r'', InformesViewSet, basename='reportes')
 
 urlpatterns = [
      path('', include(router.urls))

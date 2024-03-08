@@ -41,15 +41,7 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 
 	def get_queryset(self):
 		try:
-			kwargs = {
-				'comunidad': self.comunidad,
-			}
-			if not self.kwargs['naturaleza'] in ["caja", "asiento"]:
-				kwargs.update({
-					'destinatario__naturaleza__nombre': self.kwargs['naturaleza']
-				})
-
-			return Documento.objects.filter(**kwargs)
+			return Documento.objects.filter(comunidad=self.comunidad)
 		except:
 			raise Http404
 
@@ -63,10 +55,7 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 
 	def get_serializer_context(self):
 		'''Agregado de naturaleza 'cliente' al context serializer.'''
-		serializer_context = super().get_serializer_context()
-		serializer_context.update({
-			'causante': self.kwargs['naturaleza'],
-		})		
+		serializer_context = super().get_serializer_context()	
 		if "pk" in self.kwargs.keys():
 			obj = self.get_object()
 			serializer_context['retrieve'] = True
@@ -74,13 +63,16 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 				description=obj.receipt.receipt_type
 			)			
 			serializer_context['cuenta'] = obj.destinatario
+			serializer_context['causante'] = obj.destinatario.naturaleza.nombre
 		else:
+			if self.request.method == 'GET':
+				serializer_context['causante'] = self.request.GET['modulo']
 			if self.request.method == 'POST':	
 				serializer_context['receipt_type'] = ReceiptType.objects.get(
-					description=self.request.data['receipt']['receipt_type'] 
+					description=self.request.data['receipt']['receipt_type']
 				)
 				serializer_context['cuenta'] = Cuenta.objects.get(id=self.request.data['destinatario'])
-
+				serializer_context['causante'] = self.request.data['modulo']
 		return serializer_context
 
 	def get_fecha(self):

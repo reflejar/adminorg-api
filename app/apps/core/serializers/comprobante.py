@@ -164,12 +164,12 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 	@transaction.atomic		
 	def create(self, validated_data):
 		destinatario = validated_data['destinatario'] or None
-		if not destinatario:
-			document_type = None
-			document_number = None
-		else:
-			document_type = destinatario.perfil.tipo_documento
-			document_number = destinatario.perfil.numero_documento
+		document_type = None
+		document_number = None
+		if destinatario:
+			if destinatario.perfil:
+				document_type = destinatario.perfil.tipo_documento
+				document_number = destinatario.perfil.numero_documento
 
 		fecha_operacion = validated_data['fecha_operacion']
 		descripcion = validated_data['descripcion']
