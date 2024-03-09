@@ -18,9 +18,8 @@ from core.models import (
 class CU:
 
 	perfiles = ['cliente', 'proveedor']
-	domicilios = ['dominio']
+	domicilios = ['cliente', 'proveedor']
 	taxones = ['cliente', 'caja', 'ingreso', 'gasto']
-	vinculaciones = ['dominio']
 
 	def __init__(self, validate_data):
 
@@ -28,12 +27,7 @@ class CU:
 		
 		self.naturaleza = Naturaleza.objects.get(nombre=self.validate_data.pop('naturaleza'))
 
-		# Para ver desde donde se toman los datos para el domicilio
-		if self.naturaleza.nombre in self.domicilios:
-			self.domicilio_data = self.validate_data.pop('domicilio')
-			self.provincia = Provincia.objects.get(nombre=self.domicilio_data.pop('provincia')) # Llega la data en forma de string y no como objeto
-
-		elif self.naturaleza.nombre in self.perfiles:
+		if self.naturaleza.nombre in self.perfiles:
 			self.perfil_data = self.validate_data.pop('perfil')
 			self.perfil_data['comunidad'] = self.validate_data['comunidad']
 			self.domicilio_data = self.perfil_data.pop('domicilio')

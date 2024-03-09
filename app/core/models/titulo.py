@@ -26,7 +26,7 @@ class Titulo(BaseModel):
 		return self.cuenta_set.all()
 
 	def get_model(self, nombre):
-			return apps.get_model('operative', nombre)
+			return apps.get_model('core', nombre)
 
 	@property
 	def grupo(self):
@@ -38,30 +38,4 @@ class Titulo(BaseModel):
 					Q(supertitulo__supertitulo__supertitulo__supertitulo=self)
 		)
 		return titulos
-
-	def estado_cuenta(self, fecha=None):
-		fecha = fecha if fecha else date.today()
-		documentos = self.get_model('Documento').objects.filter(
-				operaciones__cuenta__titulo__in=self.grupo, 
-				# fecha__lte=fecha,
-			).order_by('receipt').distinct('receipt')
-		return self.get_model('Documento').objects.filter(
-				id__in=documentos, 
-				# fecha__lte=fecha,
-			).select_related(
-				"destinatario", 
-				"destinatario__perfil", # Para el nombre de la cuenta
-				"destinatario__naturaleza",
-				"receipt", 
-				"receipt__receipt_type", 
-			).prefetch_related(
-				"operaciones",
-				"operaciones__cuenta",
-				"operaciones__cuenta__naturaleza",
-				"operaciones__vinculos",
-				"operaciones__vinculos__cuenta",
-				"operaciones__vinculos__cuenta__naturaleza",
-			).order_by('fecha_operacion', 'id')
-
-
 

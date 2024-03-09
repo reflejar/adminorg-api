@@ -74,7 +74,6 @@ LOCAL_APPS = [
 	'users.apps.UsersAppConfig',
 	'core.apps.OperativeAppConfig',
 	'communications.apps.CommunicationsAppConfig',
-	'reportes.apps.InformesAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

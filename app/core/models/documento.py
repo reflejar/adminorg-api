@@ -43,7 +43,7 @@ class Documento(BaseModel):
 		return str(self.receipt)
 
 	def get_model(self, nombre):
-		return apps.get_model('operative', nombre)
+		return apps.get_model('core', nombre)
 
 	def tipo(self):
 		return str(self.receipt.receipt_type)

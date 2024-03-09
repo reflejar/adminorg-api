@@ -91,10 +91,7 @@ class Operacion(BaseModel):
 		calculo = self.pagos_capital(fecha=fecha).aggregate(calculo=models.Sum('valor'))['calculo'] or 0
 		return abs(calculo)
 
-
-
-
-	def subtotal(self, fecha=None):
+	def saldo(self, fecha=None):
 		"""
 			Retorna siempre positivo
 		"""

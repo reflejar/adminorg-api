@@ -34,7 +34,6 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 	Crea, actualiza, detalla y lista Cuentas de diferentes naturaleza.
 	Crea, actualiza, detalla y lista Titulos.
 	Crea, actualiza, detalla y lista Documentos.
-	Estado de cuenta para Clientes, Proveedores y Cajas.
 	Deudas pendientes de cancelacion para Clientes y Proveedores.
 	'''
 	cuentas = CUENTAS
