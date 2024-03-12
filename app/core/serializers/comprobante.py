@@ -194,10 +194,6 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 
 		receipt, receipt_afip = self.fields['receipt'].create(receipt_data)
 		
-
-		
-
-
 		documento = Documento.objects.create(
 			comunidad=self.context['comunidad'],
 			receipt=receipt,

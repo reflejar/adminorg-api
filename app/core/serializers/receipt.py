@@ -103,8 +103,9 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			receipt_afip = Receipt.objects.create(**validate_data)
 			try:
 				error = receipt_afip.validate()
-			except:
-				raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')			
+			except Exception as e:
+				print(e)
+				raise serializers.ValidationError({'afip_error':'No se pudo validar en AFIP. Vuelve a intentarlo mas tarde'})			
 
 		receipt.save()
 

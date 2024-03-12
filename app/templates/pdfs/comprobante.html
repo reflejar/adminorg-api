@@ -246,10 +246,10 @@
 
           <div class="client-data">
             {% if pdf.TITULAR_NOMBRE %}
-              <strong>TITULAR:</strong>
-              {{ pdf.TITULAR_NOMBRE }} <br>
-              <strong>{{ pdf.TITULAR_DOC_TIPO }}:</strong>
-              {{ pdf.TITULAR_DOC_NUM }} <br>
+              <strong>TITULAR:</strong> {{ pdf.TITULAR_NOMBRE }} <br>
+            {% endif %}
+            {% if pdf.TITULAR_DOC_NUM %} 
+              <strong>{{ pdf.TITULAR_DOC_TIPO }}:</strong> {{ pdf.TITULAR_DOC_NUM }} <br>
             {% else %}
               <strong>DOCUMENTO INTERNO</strong>
             {% endif %}
@@ -341,24 +341,24 @@
 
     
 
-      {% if documento.receipt_afip %}
-      {% if documento.receipt_afip.validation %}
+      
+      {% if pdf.AFIP_CAE %}
         <footer>
             <div class="{% if items.count > 25 %}footer_varias_paginas{% else %}footer_recibo{% endif %}">
             <hr>
               <div class="cae">
                 <strong>CAE</strong>
-                {{ documento.receipt_afip.validation.cae }}
+                {{ pdf.AFIP_CAE }}
                 <strong>Vto CAE</strong>
-                {{ documento.receipt_afip.validation.cae_expiration|date:"d/m/Y" }}
+                {{ pdf.AFIP_CAE_EXPIRATION }}
               </div>
               <div class="barcode">
-                <img src="data:image/png;base64,{{barcode}}">
+                <img src="data:image/png;base64,{{pdf.BARCODE}}">
               </div>
             </div>
         </footer>
+
       {% endif%}
-    {% endif %}
       
     </div>
   </body>

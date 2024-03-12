@@ -272,12 +272,22 @@ class Documento(BaseModel):
 		def fillna(dispatcher):
 			return str(dispatcher) if dispatcher else ''
 
+		if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
+			generator = ReceiptBarcodeGenerator(self.receipt_afip)
+			barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
+		else:
+			barcode = None
+
 		header_fields = {
 			'DOC_TIPO': fillna(self.receipt.receipt_type),
 			'DOC_NUM': fillna(self.receipt.formatted_number),
 			'DOC_CODIGO': fillna(self.receipt.receipt_type.code),
 			'DOC_FECHA': fillna(self.receipt.issued_date.strftime("%d/%m/%Y")),
 			'DOC_TOTAL': fillna(self.receipt.total_amount),
+			
+			'AFIP_CAE': fillna(self.receipt_afip.validation.cae if self.receipt_afip else None),
+			'AFIP_CAE_EXPIRATION': fillna(self.receipt_afip.validation.cae_expiration if self.receipt_afip else None),
+			'BARCODE': barcode,
 
 			'COMUNIDAD_LOGO': fillna(self.comunidad.logo if self.comunidad.logo else None),
 			'COMUNIDAD_NOMBRE': fillna(self.comunidad),
@@ -348,10 +358,6 @@ class Documento(BaseModel):
 		if self.destinatario:
 			if self.destinatario.naturaleza.nombre == "proveedor" and self.receipt.receipt_type.code != "301":
 				return 			
-
-			# if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
-			# 	generator = ReceiptBarcodeGenerator(self.receipt_afip)
-			# 	barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
 
 		self.pdf = PDF.objects.create(comunidad=self.comunidad,context=self.generate_context_pdf())
 		
