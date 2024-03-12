@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 from datetime import datetime, date
 from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -35,10 +36,8 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 		objects = self.get_object()
 		if self.kwargs['tipo'] == "saldos":
 			datos = Cuenta.saldos(cuentas=objects, fecha=fecha)
-		elif self.kwargs['tipo'] == "movimientos":
+		elif self.kwargs['tipo'] in ["movimientos", "analisis"]:
 			datos = Cuenta.mayores(cuentas=objects,fecha=fecha)
-		elif self.kwargs['tipo'] == "analisis":
-			datos = Cuenta.analisis(cuentas=objects,fecha=fecha)
 		return datos
 
 	def get_permissions(self):
@@ -58,7 +57,8 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 			else:
 				obj = Cuenta.objects.filter(comunidad=self.comunidad, pk=self.kwargs["pk"])
 		else:
-			obj = Cuenta.objects.filter(comunidad=self.comunidad)
+			if 'analizar' in self.request.GET.keys():
+				obj = Cuenta.objects.filter(comunidad=self.comunidad, naturaleza__nombre__in=self.request.GET['analizar'].split(","))
 		# self.check_object_permissions(self.request, obj)
 		return obj
 		
@@ -70,8 +70,25 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 	
 	def list(self, request, pk=None, **kwargs):
 		df = self.get_queryset()
+		totalizar = request.GET['totalizar']
+		df['total'] = df.groupby('cuenta')[totalizar].transform('sum')
+		columns = ['cuenta']
+		if request.GET['agrupar_por']:
+			columns.append(request.GET['agrupar_por'])
+		if request.GET['encolumnar']:
+			columns.append(request.GET['encolumnar'])
+		
+		df['total'] = df.groupby(columns)[totalizar].transform('sum')
+		df = df.sort_values(by='total', ascending=False)
+		
+		df = df.drop_duplicates(columns, keep='first')
+		if request.GET['encolumnar']:
+			df = df.pivot_table(index=columns[:-1], columns=columns[-1], values='total', aggfunc='sum').reset_index()
 
-		# filtro = self.filter.data
+		else:
+			columns.append('total')
+			df = df[columns]
+			df = df[df['total'] != 0]
 		return Response({'data': json.loads(df.to_json(orient="records"))})	
 	
 

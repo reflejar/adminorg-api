@@ -93,7 +93,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 
 
 	def create(self, validate_data):
-		afip = validate_data.pop('afip') if 'afip' in validate_data.keys() else False  
+		afip = validate_data.pop('afip') 
 
 		receipt = OwnReceipt.objects.create(**validate_data)
 

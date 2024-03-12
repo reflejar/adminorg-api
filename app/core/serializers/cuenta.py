@@ -80,7 +80,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 	def validate_nombre(self, nombre):
 		"""
 			No puede haber con el mismo nombre 
-				cajas
+				descargas
 				ingresos
 				gastos
 		"""

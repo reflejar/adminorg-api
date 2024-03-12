@@ -15,7 +15,7 @@ class ComunidadModelSerializer(serializers.ModelSerializer):
 	
 	class Meta:
 		model = Comunidad
-		fields = ('nombre', 'tipo', 'afip')
+		fields = ('nombre', 'tipo', 'afip', 'logo')
 
 
 	def get_afip(self, obj):

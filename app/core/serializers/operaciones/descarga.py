@@ -1,17 +1,16 @@
 from .base import *
 
 
-class ResultadoModelSerializer(OperacionModelSerializer):
+class DescargaModelSerializer(OperacionModelSerializer):
 	'''Operacion de creditos realizada a cliente'''
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		fields = Operacion()._meta
 		self.fields['cuenta'] = serializers.PrimaryKeyRelatedField(
 				queryset=Cuenta.objects.filter(
 						comunidad=self.context['comunidad'], 
-						naturaleza__nombre__in=["ingreso", "gasto"]
+						naturaleza__nombre__in=["caja", "ingreso", "gasto"]
 					), 
 				allow_null=True
 			)
-		self.fields['periodo'] = serializers.ModelField(model_field=fields.get_field("periodo"))
+		self.fields['fecha_vencimiento'] = serializers.DateField(allow_null=True)

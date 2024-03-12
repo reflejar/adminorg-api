@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404 
 from django.db import transaction
 
@@ -32,6 +32,16 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 	sin_destinatario = False
 	filterset_class = DocumentoFilter
 	serializer_class = ComprobanteModelSerializer
+
+
+	def retrieve(self, request, pk=None, **kwargs):
+		if 'pdf' in request.GET.keys():
+			obj = self.get_object()
+			pdf = obj.pdf.serve()
+			response = HttpResponse(pdf, content_type='application/pdf')
+			response['Content-Disposition'] = f'filename="{obj}.pdf"'
+			return response
+		return super().retrieve(request, pk, **kwargs)
 
 	def get_object(self):
 		obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])

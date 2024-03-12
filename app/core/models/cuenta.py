@@ -3,6 +3,7 @@ import pandas as pd
 from django.db import models
 from django.apps import apps
 from django_pandas.io import read_frame
+from decimal import Decimal
 
 from utils.models import (
 	BaseModel,
@@ -52,20 +53,17 @@ class Cuenta(BaseModel):
 		return 1 if str(self.titulo.numero)[0] in ["1", "5"] else -1
 	
 	@classmethod
-	def analisis(cls, cuentas, fecha=None):
-		df = cls.mayores(cuentas, fecha)
-		return df
-	
-	@classmethod
 	def mayores(cls, cuentas, fecha=None):	
 		fecha = fecha if fecha else date.today()
 		df = read_frame(cls.get_model('Operacion').objects.filter(
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				# fecha__lte=fecha,
-			).order_by('-fecha', '-id'), fieldnames=['fecha', 'cuenta', 'documento', 'concepto', 'valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'cuenta__titulo__numero'])
+			).order_by('-fecha', '-id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'documento', 'concepto', 'periodo', 'valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad'])
 		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
+		df['periodo'] = pd.to_datetime(df['periodo'])
+		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')		
 		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type'})
 		df['saldo'] = df['valor'][::-1].cumsum()
 		df['debe'] = df['valor'].apply(lambda x: x if x > 0 else 0)
@@ -99,7 +97,9 @@ class Cuenta(BaseModel):
 			pagos_capital.columns = ['vinculo__id', 'valor']
 			pagos_capital = pagos_capital.rename(columns={'vinculo__id': 'id', 'valor': 'pago_capital'})
 			df = df.merge(pagos_capital, how='left', on='id')
+			df['pago_capital'] = df['pago_capital'].fillna(Decimal(0.00))
 			df = df[df['vinculo__id'].isna()]
+
 		# Si es caja, el saldo se obtiene desde el detalle.
 		else:
 			df['detalle'] = df['detalle'].fillna("")

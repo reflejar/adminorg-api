@@ -25,6 +25,7 @@ class Comunidad(models.Model):
 	dominioweb = models.CharField(max_length=70, blank=True, null=True)
 	costo_mp = models.BooleanField(default=False) # Si es True el club se hace cargo
 	cierre = models.DateField(blank=True, null=True)
+	logo = models.CharField(max_length=70, blank=True, null=True)
 
 	def __str__(self):
 		return self.nombre

@@ -76,40 +76,29 @@ class Documento(BaseModel):
 			'cuenta':self.destinatario,
 			'vinculo__isnull':False,
 		}
-		return self.get_model('Operacion').objects.filter(**filtro)
+		if self.destinatario.direccion == 1:
+			filtro.update({'valor__lt': 0})
+		else:
+			filtro.update({'valor__gt': 0})		
+		return self.get_model('Operacion').objects.filter(**filtro).exclude(vinculo__documento=self)
 	
 
-	def resultados(self):
-		""" Resultados de una nota de credito """		
-		identifier = self.operaciones.first().asiento
-		filtro = {
-			'asiento': identifier,
-			'vinculo__isnull': True,
-			'cuenta__naturaleza__nombre__in': ['ingreso', 'gasto'],
-		}
-
-		if self.destinatario.direccion == 1:
-			filtro.update({'valor__gt': 0})
-		else:
-			filtro.update({'valor__gt': 0})
-
-		return self.get_model('Operacion').objects.filter(**filtro)
-
-
-	def cajas(self):
+	def descargas(self):
 		""" Formas de pago """		
 		identifier = self.operaciones.first().asiento
 		filtro = {
 			'asiento': identifier,
 			'vinculo__isnull': True,
-			'cuenta__naturaleza__nombre': 'caja',
+			'cuenta__naturaleza__nombre__in': ['caja', 'ingreso', 'gasto'],
 		}
 
 		if self.destinatario.direccion == 1:
 			filtro.update({'valor__gt': 0})
 		else:
-			filtro.update({'valor__gt': 0})
+			filtro.update({'valor__lt': 0})
 
+		if self.destinatario.naturaleza.nombre in ['caja', 'ingreso', 'gasto']:
+			return []
 		return self.get_model('Operacion').objects.filter(**filtro)
 
 
@@ -290,7 +279,7 @@ class Documento(BaseModel):
 			'DOC_FECHA': fillna(self.receipt.issued_date.strftime("%d/%m/%Y")),
 			'DOC_TOTAL': fillna(self.receipt.total_amount),
 
-			'COMUNIDAD_LOGO': fillna(self.comunidad.contribuyente.extras.logo.url if self.comunidad.contribuyente.extras else None),
+			'COMUNIDAD_LOGO': fillna(self.comunidad.logo if self.comunidad.logo else None),
 			'COMUNIDAD_NOMBRE': fillna(self.comunidad),
 			'COMUNIDAD_DOMICILIO': fillna(self.comunidad.domicilio),
 			'COMUNIDAD_CUIT': fillna(self.comunidad.contribuyente.cuit),
@@ -313,20 +302,11 @@ class Documento(BaseModel):
 			'monto': 'MONTO',
 			'valor': 'VALOR',
 			'detalle': "DETALLE",
-			'vinculo.documento.receipt.receipt_type': "VINCULO_DOC_TIPO",
-			'vinculo.documento.receipt.formatted_number': "VINCULO_DOC_NUM",
-			'documento.receipt.receipt_type': 'DOC_TIPO'
 		}
 		content_fields = {
-			'CREDITOS': [],
-			'COBROS': [],
-			'A_CUENTA': [],
-			'PAGOS': [],
-			'UTILIZACIONES_SALDOS': [],
-			'UTILIZACIONES_DISPONIBILIDADES': [],
-			'CAJAS': [],
 			'CARGAS': [],
-			'RETENCIONES': []
+			'COBROS': [],
+			'DESCARGAS': [],
 		}
 		for key in content_fields.keys():
 			list_objects = []
@@ -373,11 +353,8 @@ class Documento(BaseModel):
 			# 	generator = ReceiptBarcodeGenerator(self.receipt_afip)
 			# 	barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
 
-		self.pdf = PDF.objects.create(
-				comunidad=self.comunidad,
-				template='pdfs/{}.html'.format(self.receipt.receipt_type.code),
-				context=self.generate_context_pdf()
-			)
+		self.pdf = PDF.objects.create(comunidad=self.comunidad,context=self.generate_context_pdf())
+		
 		self.save()
 
 		

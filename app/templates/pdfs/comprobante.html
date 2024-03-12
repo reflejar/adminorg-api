@@ -5,7 +5,6 @@
   <head>
     <meta charset="utf-8">
     <title>{{ pdf.DOC_TIPO}} {{ pdf.DOC_NUM}}</title>
-    <!-- <link href="{% static 'anopa/pdf.css' %}" rel="stylesheet" type="text/css" /> -->
     <style>
       html, body {
           font-family: "Open Sans",sans-serif;
@@ -261,28 +260,106 @@
 
       </header>
 
+      {% if pdf.CARGAS %}
+        <p><strong>Detalle de cargas generadas:</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Periodo</th>
+              <th>Detalle</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in pdf.CARGAS %}
+              <tr>
+                <td>{{ c.CONCEPTO }}</td>
+                <td>{{ c.PERIODO }}</td>
+                <td>{{ c.DETALLE }}</td>
+                <td>{{ c.CANTIDAD }}</td>
+                <td>{{ c.MONTO }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>      
+      {% endif %}
       
-      
-      {% block content %}
-      {% endblock %}
+      {% if pdf.COBROS %}
+        <p styles="margin-top: 2rem;"><strong>Detalle de cobros generados:</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Periodo</th>
+              <th>Detalle</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in pdf.COBROS %}
+              <tr>
+                <td>{{ c.CONCEPTO }}</td>
+                <td>{{ c.PERIODO }}</td>
+                <td>{{ c.DETALLE }}</td>
+                <td>{{ c.MONTO }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>      
+      {% endif %}
+
+      {% if pdf.DESCARGAS %}
+        <p styles="margin-top: 2rem;"><strong>Formas de pago:</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Cuenta</th>
+              <th>Detalle</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in pdf.DESCARGAS %}
+              <tr>
+                <td>{{ c.CUENTA }}</td>
+                <td>{{ c.DETALLE }}</td>
+                <td>{{ c.MONTO }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>      
+    {% endif %}
+
       
       {% if pdf.DESCRIPCION %}
         <p><strong>Descripcion:</strong></p>
         <i>{{ pdf.DESCRIPCION}}</i>
       {% endif %}
       
-      <div class="taxpayer-details group">
-        <div class="receipt-details">
-          <table>      
-            {% block totals %}
-            {% endblock %}      
-          </table>
-        </div>
-      </div>            
 
-      {% block footer %}
-      {% endblock %}      
+    
 
+      {% if documento.receipt_afip %}
+      {% if documento.receipt_afip.validation %}
+        <footer>
+            <div class="{% if items.count > 25 %}footer_varias_paginas{% else %}footer_recibo{% endif %}">
+            <hr>
+              <div class="cae">
+                <strong>CAE</strong>
+                {{ documento.receipt_afip.validation.cae }}
+                <strong>Vto CAE</strong>
+                {{ documento.receipt_afip.validation.cae_expiration|date:"d/m/Y" }}
+              </div>
+              <div class="barcode">
+                <img src="data:image/png;base64,{{barcode}}">
+              </div>
+            </div>
+        </footer>
+      {% endif%}
+    {% endif %}
+      
     </div>
   </body>
 </html>

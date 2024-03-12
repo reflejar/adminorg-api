@@ -15,10 +15,10 @@ from django_afip.models import (
 )
 from core.serializers import ReceiptModelSerializer
 
+
 from .operaciones.carga import CargaModelSerializer
 from .operaciones.cobro import CobroModelSerializer
-from .operaciones.caja import CajaModelSerializer
-from .operaciones.resultado import ResultadoModelSerializer
+from .operaciones.descarga import DescargaModelSerializer
 
 from core.CU.comprobante import CU
 
@@ -56,8 +56,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 				
 			self.fields['cargas'] = CargaModelSerializer(context=self.context, read_only=False, many=True)
 			self.fields['cobros'] = CobroModelSerializer(context=self.context, read_only=False, many=True, instance=self.instance)
-			self.fields['cajas'] = CajaModelSerializer(context=self.context, read_only=False, many=True)
-			self.fields['resultados'] = ResultadoModelSerializer(context=self.context, read_only=False, many=True)
+			self.fields['descargas'] = DescargaModelSerializer(context=self.context, read_only=False, many=True)
 			
 
 	def validate_fecha_operacion(self, fecha_operacion):
@@ -71,12 +70,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		return fecha_operacion			
 
 	def get_pdf(self, instance):
-		return None
-		request = self.context['request']
-		if instance.pdf:
-			pdf_url = instance.pdf.serve().url
-			return request.build_absolute_uri(pdf_url)
-		return None
+		return instance.pdf != None
 	
 	def valid_cobros(self, data):
 		"""
@@ -108,14 +102,13 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		"""
 			Validacion de total en recibos.
 			No se permite si:
-				la suma de los cobros es mayor a la suma de las cajas y las utilizaciones_saldos
+				la suma de los cobros es mayor a la suma de las descargas y las utilizaciones_saldos
 		"""
 		suma = 0
 		suma_cobros = sum([i['monto'] for i in data['cobros']])
-		suma_cajas = sum([i['monto'] for i in data['cajas']])
-		suma_resultados = sum([i['monto'] for i in data['resultados']])
+		suma_descargas = sum([i['monto'] for i in data['descargas']])
 
-		if suma_cobros > suma_cajas + suma_resultados:
+		if suma_cobros > suma_descargas:
 			raise serializers.ValidationError('El valor de las cargas que intenta cobrar es mayor al total por formas de cobro')
 
 		return suma
@@ -154,8 +147,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 	def hacer_total(self, validated_data):
 		"""Crea el total_amount"""
 
-		total = sum([i['monto'] for i in validated_data['cajas']]) \
-			 or sum([i['monto'] for i in validated_data['resultados']]) \
+		total = sum([i['monto'] for i in validated_data['descargas']]) \
 		     or sum([i['monto'] for i in validated_data['cargas']]) \
 			 or 0.00
 		
@@ -166,7 +158,12 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		destinatario = validated_data['destinatario'] or None
 		document_type = None
 		document_number = None
+		afip = False
 		if destinatario:
+			if self.context['comunidad'].contribuyente.certificate and \
+			destinatario.naturaleza.nombre == "cliente" and \
+			self.context['receipt_type'].description[-1] == "C":
+				afip = True
 			if destinatario.perfil:
 				document_type = destinatario.perfil.tipo_documento
 				document_number = destinatario.perfil.numero_documento
@@ -178,6 +175,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		receipt_data = validated_data['receipt']
 		validated_data['receipt']['total_amount'] = self.hacer_total(validated_data)
 		receipt_data.update({
+			'afip': afip,
 			'receipt_type': self.context['receipt_type'],
 			'document_type': document_type,
 			'document_number': document_number,
@@ -193,13 +191,10 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			'currency': CurrencyType.objects.get(code="PES"),
 			'concept': ConceptType.objects.get(description="Productos y servicios")
 		})
+
 		receipt, receipt_afip = self.fields['receipt'].create(receipt_data)
 		
-		# if self.context['comunidad'].contribuyente.certificate: # Si la comunidad tiene un certificado en el contribuyente de afip
-		# 	if destinatario: # Si el documento tiene destinatario
-		# 		if destinatario.naturaleza.nombre == "cliente" and self.context['receipt_type'].code in ['11', '12', '13']:
-		# 			receipt_data['afip'] = True
-				
+
 		
 
 
