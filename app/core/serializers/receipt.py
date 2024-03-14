@@ -79,6 +79,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 				label="Número"
 			)
 
+
 	def get_point_of_sales(self, point_of_sales):
 
 		return PointOfSales.objects.get(owner=self.context['comunidad'].contribuyente, number=point_of_sales)

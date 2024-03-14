@@ -25,6 +25,8 @@ from core.CU.comprobante import CU
 
 class ComprobanteModelSerializer(serializers.ModelSerializer):
 	'''Documento model serializer'''
+	afip = serializers.SerializerMethodField()
+	modulo = serializers.SerializerMethodField()
 	pdf = serializers.SerializerMethodField()
 	
 	class Meta:
@@ -32,6 +34,8 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 
 		fields = (
 			'id',
+			'afip',	
+			'modulo',
 			'descripcion',
 			'fecha_anulacion',
 			'nombre',
@@ -58,16 +62,13 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			self.fields['cobros'] = CobroModelSerializer(context=self.context, read_only=False, many=True, instance=self.instance)
 			self.fields['descargas'] = DescargaModelSerializer(context=self.context, read_only=False, many=True)
 			
+	def get_afip(self, instance): 
+		return instance.receipt_afip is not None
 
-	def validate_fecha_operacion(self, fecha_operacion):
-
-		"""
-			Validacion de fecha_operacio
-			Hoy en dia se puede cualquier fecha.
-			Habria que agregar que no se pueden hacer con fecha anterior a un periodo cerrado
-		"""
-		
-		return fecha_operacion			
+	def get_modulo(self, instance): 
+		if instance.destinatario:
+			return instance.destinatario.naturaleza.nombre
+		return ''
 
 	def get_pdf(self, instance):
 		return instance.pdf != None
@@ -113,6 +114,11 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 
 		return suma
 
+	def valid_update_or_delete(self):
+		for c in self.instance.cargas():
+			if c.vinculos.all():
+				cobrado_en = [str(v.documento) for v in c.vinculos.all()]
+				raise serializers.ValidationError(f'Primero debe anular o modificar el/los cobro/s realizado/s en {", ".join(cobrado_en)}')
 
 	def validate(self, data):
 		"""
@@ -141,6 +147,8 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		
 		self.valid_cobros(data)
 		self.valid_totales(data)
+		if self.instance:
+			self.valid_update_or_delete()
 
 		return data
 
@@ -210,3 +218,25 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 
 		# # self.send_email(documento)
 		return documento
+	
+
+	def update(self, instance, validated_data):
+		if instance.receipt_afip: return instance
+		# instance.receipt.update(
+		# 	point_of_sales=validated_data['receipt']['point_of_sales'],
+		# 	issued_date=validated_data['receipt']['issued_date']
+		# )
+		comprobante = Documento.objects.filter(pk=instance.pk)
+		comprobante.update(
+			fecha_operacion=validated_data['fecha_operacion'],
+			descripcion=validated_data['descripcion'],		
+		)
+
+		instance = comprobante.first()
+		instance.operaciones.all().delete()
+		
+		CU(instance, validated_data).create()
+		instance.hacer_pdf()
+
+
+		return instance

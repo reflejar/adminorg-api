@@ -58,7 +58,7 @@ class Cuenta(BaseModel):
 		df = read_frame(cls.get_model('Operacion').objects.filter(
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				# fecha__lte=fecha,
-			).order_by('-fecha', '-id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'documento', 'concepto', 'periodo', 'valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad'])
+			).order_by('-fecha', '-documento__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'documento', 'concepto', 'periodo', 'valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad'])
 		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
