@@ -17,20 +17,20 @@ from utils.generics import custom_viewsets
 from core.serializers.comprobante import ComprobanteModelSerializer
 
 from core.models import (
-	Documento,
+	Comprobante,
 	Cuenta
 )
 from core.filters import (
-	DocumentoFilter
+	ComprobanteFilter
 )
 
 class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 	"""
-		Base de Documentos
+		Base de Comprobantes
 	"""
 
 	sin_destinatario = False
-	filterset_class = DocumentoFilter
+	filterset_class = ComprobanteFilter
 	serializer_class = ComprobanteModelSerializer
 
 
@@ -51,7 +51,7 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 
 	def get_queryset(self):
 		try:
-			return Documento.objects.filter(comunidad=self.comunidad)
+			return Comprobante.objects.filter(comunidad=self.comunidad)
 		except:
 			raise Http404
 
@@ -114,4 +114,4 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 
 	def destroy_valid_anulado(self, obj):
 		if obj.fecha_anulacion:
-			raise serializers.ValidationError("El documento ya se encuentra anulado")
+			raise serializers.ValidationError("El comprobante ya se encuentra anulado")

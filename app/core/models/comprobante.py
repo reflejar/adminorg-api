@@ -18,19 +18,19 @@ from core.models.own_receipt import OwnReceipt
 from core.models.pdf import PDF
 
 
-class Documento(BaseModel):
+class Comprobante(BaseModel):
 	"""
-		Modelo de Documentos
-		Representa TODOS los documentos posibles de la entidad
-		Todas las operaciones tienen documento, si no la tienen el documento se llama Asiento Contable
+		Modelo de Comprobantes
+		Representa TODOS los comprobantes posibles de la entidad
+		Todas las operaciones tienen comprobante, si no la tienen el comprobante se llama Asiento Contable
 		attr receipt es para realizar envio a afip (solo clientes)
 		attr own_receipt se establece SIEMPRE. (Copia la data de receipt en el caso de cliente, en los otros casos se establece directamente aqui) 
 	"""
 
-	receipt_afip = models.ForeignKey(Receipt, blank=True, null=True, on_delete=models.PROTECT, related_name="documentos") # Solo para "clientes"
-	receipt = models.ForeignKey(OwnReceipt, blank=True, null=True, on_delete=models.PROTECT, related_name="documentos") # Todos
-	destinatario = models.ForeignKey("core.Cuenta", blank=True, null=True, on_delete=models.SET_NULL, related_name="documentos")
-	pdf = models.ForeignKey("core.PDF", blank=True, null=True, on_delete=models.SET_NULL, related_name="documentos")
+	receipt_afip = models.ForeignKey(Receipt, blank=True, null=True, on_delete=models.PROTECT, related_name="comprobantes") # Solo para "clientes"
+	receipt = models.ForeignKey(OwnReceipt, blank=True, null=True, on_delete=models.PROTECT, related_name="comprobantes") # Todos
+	destinatario = models.ForeignKey("core.Cuenta", blank=True, null=True, on_delete=models.SET_NULL, related_name="comprobantes")
+	pdf = models.ForeignKey("core.PDF", blank=True, null=True, on_delete=models.SET_NULL, related_name="comprobantes")
 	descripcion = models.CharField(max_length=150, blank=True, null=True)
 	fecha_operacion = models.DateField()
 	fecha_anulacion = models.DateField(blank=True, null=True)
@@ -77,7 +77,7 @@ class Documento(BaseModel):
 			filtro.update({'valor__lt': 0})
 		else:
 			filtro.update({'valor__gt': 0})		
-		return self.get_model('Operacion').objects.filter(**filtro).exclude(vinculo__documento=self)
+		return self.get_model('Operacion').objects.filter(**filtro).exclude(vinculo__comprobante=self)
 	
 
 	def descargas(self):
@@ -110,13 +110,13 @@ class Documento(BaseModel):
 			vinculo__isnull=True
 		)
 		if deudas_generadas:
-			documentos = []
+			comprobantes = []
 
 			for d in deudas_generadas:
 				if d.saldo() != d.monto:
 					for p in d.pagos_capital():
-						documentos.append(p.documento)
-			return set(documentos)
+						comprobantes.append(p.comprobante)
+			return set(comprobantes)
 		return 
 		
 	def debe(self):
@@ -139,77 +139,39 @@ class Documento(BaseModel):
 		return self.cobros_plataforma.first()
 
 
-	def anulacion_documentos(self, documentos_relacionados):
+	def anulacion_comprobantes(self, comprobantes_relacionados):
 		"""
-			Genera los documentos necesarios de anulacion de los automaticos
+			Genera los comprobantes necesarios de anulacion de los automaticos
 			ANOTACION TEMPORAL: Como solo se está usando Facturas tipo X
 			No está generando las nc por nd ni viceversa... solo le pone fecha de anulacion
 		"""
-		documentos = {
+		comprobantes = {
 			'original': self,
 			'nc-automatica': None,
 			'nd-automatica': None,
 			'nc-automatica-anulacion': None,
 			'nd-automatica-anulacion': None
 		}		
-		if len(documentos_relacionados) > 1:
-			for d in documentos_relacionados:
+		if len(comprobantes_relacionados) > 1:
+			for d in comprobantes_relacionados:
 				if d != self:
 					d.fecha_anulacion = self.fecha_anulacion
 					d.save()
 
-					# if d.receipt.receipt_type.code in ["13", "53"]:
-					# 	documentos['nc-automatica'] = d
-					# 	nota_debito = d
-					# 	nota_debito.pk = None
-					# 	receipt = nota_debito.receipt
-					# 	receipt.pk = None
-					# 	receipt.receipt_number = None
-					# 	receipt_type_code = "12" if d.receipt.receipt_type.code == "13" else "52"
-					# 	receipt.receipt_type = ReceiptType.objects.get(code=receipt_type_code)
-					# 	receipt.issued_date = date.today()
-					# 	receipt.save()
-					# 	try:
-					# 		error = receipt.validate()
-					# 	except:
-					# 		error = True
-					# 	if error:
-					# 		raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
-					# 	nota_debito.receipt = receipt
-					# 	nota_debito.save()
-					# 	documentos['nd-automatica-anulacion'] = nota_debito
-					# elif d.receipt.receipt_type.code in ["12", "52"]:
-					# 	documentos['nd-automatica'] = d
-					# 	nota_credito = d
-					# 	nota_credito.pk = None
-					# 	receipt = nota_credito.receipt
-					# 	receipt.pk = None
-					# 	receipt.receipt_number = None	
-					# 	receipt_type_code = "13" if d.receipt.receipt_type.code == "12" else "53"					
-					# 	receipt.receipt_type = ReceiptType.objects.get(code=receipt_type_code)
-					# 	receipt.issued_date = date.today()
-					# 	receipt.save()
-					# 	try:
-					# 		error = receipt.validate()
-					# 	except:
-					# 		raise serializers.ValidationError('No se pudo validar en AFIP. Vuelve a intentarlo mas tarde')
-					# 	nota_credito.receipt = receipt
-					# 	nota_credito.save()
-					# 	documentos['nd-automatica-anulacion'] = nota_credito
 
-		return documentos
+		return comprobantes
 
 	def anular(self, fecha=None):
 		fecha = fecha if fecha else date.today()
 		""" Esto duplica las operaciones pero reversadas y con la fecha recibida """
-		fecha = self.fecha_operacion # Como react no esta trayendo la fecha deseada por el administrativo, hacemos que impacte el mismo dia de la realizacion del documento
+		fecha = self.fecha_operacion # Como react no esta trayendo la fecha deseada por el administrativo, hacemos que impacte el mismo dia de la realizacion del comprobante
 		self.fecha_anulacion = fecha # Logica bien hecha... hay que hacer que react envie la fecha
 		self.save()
 		self.hacer_pdf()
 		identifier = self.operaciones.first().asiento
 		operaciones = self.get_model('Operacion').objects.filter(asiento=identifier)
-		documentos_generados = set([o.documento for o in operaciones])
-		documentos = self.anulacion_documentos(documentos_generados)
+		comprobantes_generados = set([o.comprobante for o in operaciones])
+		comprobantes = self.anulacion_comprobantes(comprobantes_generados)
 
 
 		for i in operaciones:
@@ -218,11 +180,6 @@ class Documento(BaseModel):
 			i.valor = -i.valor
 			i.fecha = fecha
 			i.descripcion = "ANULACION"
-			# if i.documento != self:
-			# 	if i.documento.receipt.receipt_type.code in ["12", "52"]:
-			# 		i.documento = documentos['nc-automatica-anulacion']
-			# 	elif i.documento.receipt.receipt_type.code in ["13", "53"]:
-			# 		i.documento = documentos['nd-automatica-anulacion']
 			i.save()
 
 	def eliminar_operaciones(self):
@@ -244,7 +201,7 @@ class Documento(BaseModel):
 			if self.receipt_afip:
 				self.receipt.receipt_number = self.receipt_afip.receipt_number
 			else:
-				last = Documento.objects.filter(
+				last = Comprobante.objects.filter(
 					comunidad=self.comunidad,
 					receipt__receipt_type=self.receipt.receipt_type,
 					receipt__point_of_sales=self.receipt.point_of_sales,

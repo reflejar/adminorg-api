@@ -7,7 +7,7 @@ from django_pandas.io import read_frame
 from decimal import Decimal
 
 from utils.models import BaseModel
-from core.models import Cuenta, Documento, Proyecto
+from core.models import Cuenta, Comprobante, Proyecto
 
 class Operacion(BaseModel):
 
@@ -23,7 +23,7 @@ class Operacion(BaseModel):
 	cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name="operaciones")
 	concepto = models.ForeignKey(Cuenta, blank=True, null=True, on_delete=models.PROTECT, related_name="conceptos")
 	proyecto = models.ForeignKey(Proyecto, blank=True, null=True, on_delete=models.SET_NULL, related_name="operaciones")
-	documento = models.ForeignKey(Documento, blank=True, null=True, on_delete=models.PROTECT, related_name="operaciones")
+	comprobante = models.ForeignKey(Comprobante, blank=True, null=True, on_delete=models.PROTECT, related_name="operaciones")
 	cantidad = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
 	valor = models.DecimalField(max_digits=9, decimal_places=2)
 	vinculo = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="vinculos")
@@ -60,11 +60,11 @@ class Operacion(BaseModel):
 		return self.vinculo
 
 	def causante(self):
-		if self.documento.destinatario:
-			return self.documento.destinatario.naturaleza.nombre
-		if self.documento.receipt.receipt_type.code == "303":
+		if self.comprobante.destinatario:
+			return self.comprobante.destinatario.naturaleza.nombre
+		if self.comprobante.receipt.receipt_type.code == "303":
 			return "caja"
-		if self.documento.receipt.receipt_type.code == "400":
+		if self.comprobante.receipt.receipt_type.code == "400":
 			return "asiento"
 
 	def titulo(self):
@@ -77,13 +77,13 @@ class Operacion(BaseModel):
 		df = read_frame(cls.get_model('Operacion').objects.filter(
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				# fecha__lte=fecha,
-			).order_by('-fecha', '-documento__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'documento', 'concepto', 'proyecto__nombre', 'periodo', 'valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad'])
+			).order_by('-fecha', '-comprobante__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo', 'valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad'])
 		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
 		df['periodo'] = pd.to_datetime(df['periodo'])
 		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')		
-		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
+		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
 		df['saldo'] = df['valor'][::-1].cumsum()
 		df['debe'] = df['valor'].apply(lambda x: x if x > 0 else 0)
 		df['haber'] = df['valor'].apply(lambda x: x if x < 0 else 0)
@@ -97,9 +97,9 @@ class Operacion(BaseModel):
 		modulo = cuentas[0].naturaleza.nombre
 		df = read_frame(cls.get_model('Operacion').objects.filter(
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
-				documento__isnull=False,
-				documento__fecha_anulacion__isnull=True
-			), fieldnames=['id', 'fecha', 'documento', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento'])
+				comprobante__isnull=False,
+				comprobante__fecha_anulacion__isnull=True
+			), fieldnames=['id', 'fecha', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento'])
 		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
@@ -107,7 +107,7 @@ class Operacion(BaseModel):
 		df['fecha_vencimiento'] = df['fecha_vencimiento'].dt.strftime('%Y-%m-%d')		
 		df['periodo'] = pd.to_datetime(df['periodo'])
 		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')
-		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
+		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
 		
 		# Si es cliente o proveedor, el saldo se obtiene desde el vinculo.
 
@@ -149,7 +149,7 @@ class Operacion(BaseModel):
 				vinculo=self, 
 				cuenta=self.cuenta, 
 				fecha__lte=fecha, 
-				documento__fecha_anulacion__isnull=True
+				comprobante__fecha_anulacion__isnull=True
 			).exclude(vinculos__cuenta__in=cuentas_intereses).order_by('fecha')
 
 	def pago_capital(self, fecha=None):

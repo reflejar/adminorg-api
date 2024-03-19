@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib import messages
-from core.models import Documento, Operacion
+from core.models import Comprobante, Operacion
 from import_export.admin import ImportExportMixin
-# from core.serializers.documentos.cliente import DestinoClienteModelSerializer
+# from core.serializers.comprobantes.cliente import DestinoClienteModelSerializer
 
 # from communications.tasks import send_emails
 
@@ -12,19 +12,12 @@ def hacer_pdf(modeladmin, request, queryset):
 	messages.add_message(request, messages.SUCCESS, "Hecho.")
 hacer_pdf.short_description = "Hacer PDF"
 
-# def send_email(modeladmin, request, queryset):
-# 	for d in queryset:
-# 		documento = DestinoClienteModelSerializer(instance=d)
-# 		documento.send_email(d)
-# 	messages.add_message(request, messages.SUCCESS, "Hecho.")
-# send_email.short_description = "Enviar por mail"
-
 
 def hard_delete(modeladmin, request, queryset):
-	for documento in queryset:
-		documento.operaciones.all().hard_delete()
-		receipt = documento.receipt
-		documento.hard_delete()
+	for comprobante in queryset:
+		comprobante.operaciones.all().hard_delete()
+		receipt = comprobante.receipt
+		comprobante.hard_delete()
 		receipt.delete()
 		messages.add_message(request, messages.SUCCESS, "Hecho.")
 hard_delete.short_description = "Hard delete"
@@ -32,7 +25,7 @@ hard_delete.short_description = "Hard delete"
 class OperacionInline(admin.TabularInline):
 	model = Operacion
 
-class DocumentoAdmin(ImportExportMixin, admin.ModelAdmin):
+class ComprobanteAdmin(ImportExportMixin, admin.ModelAdmin):
 	list_display = ['receipt', 'destinatario']
 	list_filter = ['comunidad', 'receipt__receipt_type']
 	actions = [
@@ -44,4 +37,4 @@ class DocumentoAdmin(ImportExportMixin, admin.ModelAdmin):
 		OperacionInline,
 	]	
 
-admin.site.register(Documento, DocumentoAdmin)
+admin.site.register(Comprobante, ComprobanteAdmin)

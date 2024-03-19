@@ -9,7 +9,7 @@ from utils.models import (
 
 from core.models import (
 	Operacion,
-	Documento,
+	Comprobante,
 	Titulo
 )
 
@@ -17,7 +17,7 @@ from django_afip.models import Receipt
 
 def borrar_data(modeladmin, request, queryset):
 	Operacion.objects.filter(comunidad__in=queryset).delete()
-	Documento.objects.filter(comunidad__in=queryset).delete()
+	Comprobante.objects.filter(comunidad__in=queryset).delete()
 	
 
 borrar_data.short_description = "Borrar toda la data operativa excepto las cuentas"

@@ -4,10 +4,10 @@ from django_afip.models import *
 
 class OwnReceipt(models.Model):
 	"""
-		Modelo para receipt en "Documento".
+		Modelo para receipt en "Comprobante".
 
 		Se toma como base el modelo de django afip. 
-		El de afip queda unicamente para replicar los objetos que hay en este cuando el Documento es 
+		El de afip queda unicamente para replicar los objetos que hay en este cuando el Comprobante es 
 		de un cliente y se necesite validar en afip
 	"""
 

@@ -1,4 +1,4 @@
-from core.models import Documento
+from core.models import Comprobante
 from django_afip.models import ReceiptType
 from django_filters.rest_framework import FilterSet, filters
 
@@ -10,7 +10,7 @@ except:
 
 
 
-class DocumentoFilter(FilterSet):
+class ComprobanteFilter(FilterSet):
 
 	receipt__issued_date_from = filters.DateFilter(
 			label="Fecha desde",
@@ -37,5 +37,5 @@ class DocumentoFilter(FilterSet):
 		)               
 
 	class Meta:
-		model = Documento
+		model = Comprobante
 		fields = []

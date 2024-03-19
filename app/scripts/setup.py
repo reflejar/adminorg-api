@@ -94,6 +94,8 @@ def crear_comunidad():
 	provincia = input("Provincia de la comunidad: ")
 	localidad = input("Localidad de la comunidad: ")
 	calle = input("Domicilio de la comunidad: ")
+	logo = input("URL de Logo de la comunidad: ")
+	
 
 	contribuyente = TaxPayer.objects.create(
 		name=nombre,
@@ -129,7 +131,8 @@ def crear_comunidad():
 		nombre=nombre,
 		abreviatura=nombre.lower()[:5],
 		tipo=TipoComunidad.objects.get(codigo_afip="0"),
-		domicilio=domicilio
+		domicilio=domicilio,
+		logo=logo
 	)
 
 	# Crear Plan de cuentas basico

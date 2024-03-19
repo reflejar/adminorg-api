@@ -6,7 +6,7 @@ from rest_framework import serializers
 from datetime import date
 
 from core.models import (
-	Documento,
+	Comprobante,
 	Cuenta, 
 )
 from django_afip.models import (
@@ -24,13 +24,13 @@ from core.CU.comprobante import CU
 
 
 class ComprobanteModelSerializer(serializers.ModelSerializer):
-	'''Documento model serializer'''
+	'''Comprobante model serializer'''
 	afip = serializers.SerializerMethodField()
 	modulo = serializers.SerializerMethodField()
 	pdf = serializers.SerializerMethodField()
 	
 	class Meta:
-		model = Documento
+		model = Comprobante
 
 		fields = (
 			'id',
@@ -82,17 +82,17 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 				existe un pago de capital posterior a la fecha_operacion recibida
 				el "valor" colocado para la carga es mayor a su saldo a la "fecha_operacion" colocada
 		"""
-		destinatario_documento = data['destinatario']
+		destinatario_comprobante = data['destinatario']
 		fecha_operacion = data['fecha_operacion']
 		cobros = data['cobros']
 		for d in cobros:
 			carga = d['vinculo']
-			if carga.cuenta != destinatario_documento:
+			if carga.cuenta != destinatario_comprobante:
 				raise serializers.ValidationError({'cobros': {carga.id: "No es una carga perteneciente al cliente"}})
 
 			pagos = carga.pagos_capital()
 			if pagos:
-				if pagos.filter(fecha__gt=fecha_operacion, documento__fecha_anulacion__isnull=True):
+				if pagos.filter(fecha__gt=fecha_operacion, comprobante__fecha_anulacion__isnull=True):
 					raise serializers.ValidationError({'cobros': {carga.id: "La carga que desea abonar posee un pago de capital posterior"}})
 
 			if carga.saldo(fecha=fecha_operacion) < d['monto']:
@@ -117,7 +117,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 	def valid_update_or_delete(self):
 		for c in self.instance.cargas():
 			if c.vinculos.all():
-				cobrado_en = [str(v.documento) for v in c.vinculos.all()]
+				cobrado_en = [str(v.comprobante) for v in c.vinculos.all()]
 				raise serializers.ValidationError(f'Primero debe anular o modificar el/los cobro/s realizado/s en {", ".join(cobrado_en)}')
 
 	def validate(self, data):
@@ -125,7 +125,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			Validacion de issued_date. 
 			Solo se puede hacer en la validacion grupal para poder acceder a point_of_sales e issued_date juntos
 			No se permite si
-				Ya tiene un documento con fecha anterior a la solicitada
+				Ya tiene un comprobante con fecha anterior a la solicitada
 				10 dias anterior o posterior a la fecha actual
 		"""
 
@@ -133,7 +133,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			point_of_sales = data["receipt"]["point_of_sales"]
 			issued_date = data["receipt"]["issued_date"]
 			receipt_type = self.context['receipt_type']
-			query = Documento.objects.filter(
+			query = Comprobante.objects.filter(
 				comunidad=self.context['comunidad'],
 				receipt__point_of_sales=point_of_sales,
 				receipt__receipt_type=receipt_type,
@@ -202,7 +202,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 
 		receipt, receipt_afip = self.fields['receipt'].create(receipt_data)
 		
-		documento = Documento.objects.create(
+		comprobante = Comprobante.objects.create(
 			comunidad=self.context['comunidad'],
 			receipt=receipt,
 			receipt_afip=receipt_afip,
@@ -210,14 +210,14 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			fecha_operacion=fecha_operacion,
 			descripcion=descripcion,
 		)		
-		documento.chequear_numeros()
+		comprobante.chequear_numeros()
 
 		
-		CU(documento, validated_data).create()
-		documento.hacer_pdf()
+		CU(comprobante, validated_data).create()
+		comprobante.hacer_pdf()
 
-		# # self.send_email(documento)
-		return documento
+		# # self.send_email(comprobante)
+		return comprobante
 	
 
 	def update(self, instance, validated_data):
@@ -226,7 +226,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		# 	point_of_sales=validated_data['receipt']['point_of_sales'],
 		# 	issued_date=validated_data['receipt']['issued_date']
 		# )
-		comprobante = Documento.objects.filter(pk=instance.pk)
+		comprobante = Comprobante.objects.filter(pk=instance.pk)
 		comprobante.update(
 			fecha_operacion=validated_data['fecha_operacion'],
 			descripcion=validated_data['descripcion'],		
