@@ -19,3 +19,7 @@ class CargaModelSerializer(OperacionModelSerializer):
 						), 
 					allow_null=True
 				)
+		self.fields['proyecto'] = serializers.PrimaryKeyRelatedField(
+					queryset=Proyecto.objects.filter(comunidad=self.context['comunidad']).order_by('nombre'), 
+					allow_null=True
+				)		

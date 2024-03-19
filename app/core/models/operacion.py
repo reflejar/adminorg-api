@@ -1,11 +1,13 @@
 from decimal import Decimal
-from datetime import datetime, date, timedelta
+from datetime import date
+import pandas as pd
 
 from django.db import models
-from django.apps import apps
+from django_pandas.io import read_frame
+from decimal import Decimal
 
 from utils.models import BaseModel
-from core.models import Cuenta, Documento
+from core.models import Cuenta, Documento, Proyecto
 
 class Operacion(BaseModel):
 
@@ -20,6 +22,7 @@ class Operacion(BaseModel):
 	asiento = models.CharField(max_length=30)
 	cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT, related_name="operaciones")
 	concepto = models.ForeignKey(Cuenta, blank=True, null=True, on_delete=models.PROTECT, related_name="conceptos")
+	proyecto = models.ForeignKey(Proyecto, blank=True, null=True, on_delete=models.SET_NULL, related_name="operaciones")
 	documento = models.ForeignKey(Documento, blank=True, null=True, on_delete=models.PROTECT, related_name="operaciones")
 	cantidad = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
 	valor = models.DecimalField(max_digits=9, decimal_places=2)
@@ -66,6 +69,72 @@ class Operacion(BaseModel):
 
 	def titulo(self):
 		return self.cuenta.titulo
+
+
+	@classmethod
+	def mayores(cls, cuentas, fecha=None):	
+		fecha = fecha if fecha else date.today()
+		df = read_frame(cls.get_model('Operacion').objects.filter(
+				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
+				# fecha__lte=fecha,
+			).order_by('-fecha', '-documento__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'documento', 'concepto', 'proyecto__nombre', 'periodo', 'valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad'])
+		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
+		df['fecha'] = pd.to_datetime(df['fecha'])
+		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
+		df['periodo'] = pd.to_datetime(df['periodo'])
+		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')		
+		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
+		df['saldo'] = df['valor'][::-1].cumsum()
+		df['debe'] = df['valor'].apply(lambda x: x if x > 0 else 0)
+		df['haber'] = df['valor'].apply(lambda x: x if x < 0 else 0)
+		df['monto'] = df['valor']*df['direccion']
+		df['saldo'] = df['saldo']*df['direccion']
+		return df	
+
+	@classmethod
+	def saldos(cls, cuentas, fecha=None):	
+		fecha = fecha if fecha else date.today()
+		modulo = cuentas[0].naturaleza.nombre
+		df = read_frame(cls.get_model('Operacion').objects.filter(
+				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
+				documento__isnull=False,
+				documento__fecha_anulacion__isnull=True
+			), fieldnames=['id', 'fecha', 'documento', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'documento__id', 'documento__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento'])
+		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
+		df['fecha'] = pd.to_datetime(df['fecha'])
+		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
+		df['fecha_vencimiento'] = pd.to_datetime(df['fecha_vencimiento'])
+		df['fecha_vencimiento'] = df['fecha_vencimiento'].dt.strftime('%Y-%m-%d')		
+		df['periodo'] = pd.to_datetime(df['periodo'])
+		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')
+		df = df.rename(columns={'documento__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
+		
+		# Si es cliente o proveedor, el saldo se obtiene desde el vinculo.
+
+		if modulo in ['cliente', 'proveedor']:
+			pagos_capital = df.groupby('vinculo__id')['valor'].sum().reset_index()
+			pagos_capital.columns = ['vinculo__id', 'valor']
+			pagos_capital = pagos_capital.rename(columns={'vinculo__id': 'id', 'valor': 'pago_capital'})
+			df = df.merge(pagos_capital, how='left', on='id')
+			df['pago_capital'] = df['pago_capital'].fillna(Decimal(0.00))
+			df = df[df['vinculo__id'].isna()]
+
+		# Si es caja, el saldo se obtiene desde el detalle.
+		else:
+			df['detalle'] = df['detalle'].fillna("")
+			df['pago_capital'] = df.groupby('detalle')['valor'].transform('sum')
+			df = df.drop_duplicates(subset='detalle', keep='first')
+			df['valor'] = 0
+
+
+		df['saldo'] = df['valor'] + df['pago_capital']
+		df['saldo'] = df['saldo'].fillna(df['valor'])
+		df['monto'] = df['valor']*df['direccion']
+		df = df[df['saldo']!=0]
+		df['pago_capital'] = df['pago_capital']*df['direccion']
+		df['saldo'] = df['saldo']*df['direccion']
+		return df
+
 
 
 

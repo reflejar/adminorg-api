@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.utils import timezone
+from django.apps import apps
 
 class SoftDeletionQuerySet(models.query.QuerySet):
 	def delete(self):
@@ -83,3 +84,7 @@ class BaseModel(models.Model):
 
 	def hard_delete(self):
 		super(BaseModel, self).delete()
+
+	@staticmethod
+	def get_model(nombre):
+		return apps.get_model('core', nombre)

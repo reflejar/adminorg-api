@@ -14,7 +14,6 @@ from utils.generics import custom_viewsets
 from core.filters.operacion import OperacionFilter
 
 from core.models import (
-	Naturaleza,
 	Cuenta,
 	Operacion,
 	Titulo
@@ -35,9 +34,9 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 		fecha = datetime.strptime(self.request.GET['end_date'], "%Y-%m-%d").date() if 'end_date' in self.request.GET.keys() else date.today()
 		objects = self.get_object()
 		if self.kwargs['tipo'] == "saldos":
-			datos = Cuenta.saldos(cuentas=objects, fecha=fecha)
+			datos = Operacion.saldos(cuentas=objects, fecha=fecha)
 		elif self.kwargs['tipo'] in ["movimientos", "analisis"]:
-			datos = Cuenta.mayores(cuentas=objects,fecha=fecha)
+			datos = Operacion.mayores(cuentas=objects,fecha=fecha)
 		return datos
 
 	def get_permissions(self):

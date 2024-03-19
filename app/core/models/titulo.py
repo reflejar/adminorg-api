@@ -25,9 +25,6 @@ class Titulo(BaseModel):
 		"""Esto esta puesto aqui porque no se coloco oportunamente el related_name en el modelo de Cuenta"""
 		return self.cuenta_set.all()
 
-	def get_model(self, nombre):
-			return apps.get_model('core', nombre)
-
 	@property
 	def grupo(self):
 		titulos = Titulo.objects.filter(
