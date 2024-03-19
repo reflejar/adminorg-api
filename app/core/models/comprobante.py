@@ -32,6 +32,7 @@ class Comprobante(BaseModel):
 	destinatario = models.ForeignKey("core.Cuenta", blank=True, null=True, on_delete=models.SET_NULL, related_name="comprobantes")
 	pdf = models.ForeignKey("core.PDF", blank=True, null=True, on_delete=models.SET_NULL, related_name="comprobantes")
 	descripcion = models.CharField(max_length=150, blank=True, null=True)
+	link = models.URLField(max_length=300, blank=True, null=True)
 	fecha_operacion = models.DateField()
 	fecha_anulacion = models.DateField(blank=True, null=True)
 

@@ -39,6 +39,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			'descripcion',
 			'fecha_anulacion',
 			'nombre',
+			'link',
 			'pdf'
 		)
 		
@@ -178,6 +179,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 
 		fecha_operacion = validated_data['fecha_operacion']
 		descripcion = validated_data['descripcion']
+		link = validated_data['link']
 
 		# Receipt
 		receipt_data = validated_data['receipt']
@@ -209,6 +211,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			destinatario=destinatario,
 			fecha_operacion=fecha_operacion,
 			descripcion=descripcion,
+			link=link
 		)		
 		comprobante.chequear_numeros()
 
@@ -230,6 +233,7 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		comprobante.update(
 			fecha_operacion=validated_data['fecha_operacion'],
 			descripcion=validated_data['descripcion'],		
+			link=validated_data['link'],		
 		)
 
 		instance = comprobante.first()
