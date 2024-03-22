@@ -64,12 +64,8 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto', 'bien_de_cambio']:
 			self.fields['nombre'] = serializers.CharField(max_length=150, required=True)
 
-		# Incorporacion de Numero
-		if self.context['naturaleza'] in ['dominio']:
-			self.fields['numero'] = serializers.IntegerField(read_only=False)
-
 		# Incorporacion de Taxon
-		if self.context['naturaleza'] in ['cliente', 'caja', 'ingreso', 'gasto']:
+		if self.context['naturaleza'] in ['caja']:
 			self.fields['taxon'] = serializers.ChoiceField(required=True, choices=list(Taxon.objects.filter(naturaleza__nombre=self.context['naturaleza']).values_list('nombre', flat=True)))
 
 		# Incorporacion de Perfil
@@ -98,27 +94,6 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		return nombre
 
 
-	def validate_numero(self, numero):
-		"""
-			No puede haber con el mismo numero 
-				clientes 
-				dominios
-				proveedores
-		"""
-
-		query = Cuenta.objects.filter(
-				comunidad=self.context['comunidad'], 
-				naturaleza__nombre=self.context['naturaleza'], 
-				numero=numero
-			)
-
-		if query and self.context['naturaleza'] in ['dominio']:
-			if not self.instance in query:
-				raise serializers.ValidationError('Ya existe un {} con el numero solicitado'.format(self.context['naturaleza']))
-
-		return numero
-
-
 	def validate_perfil(self, perfil):
 		"""
 			No puede haber con el mismo numero_documento 
@@ -127,16 +102,16 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 				Nota 07/09/2020. Se decidió que si se podia cargar con el mismo numero_documento
 		"""
 
-		# validacion conjunta (debe existir razon social, nombre o apellido)
+		# validacion conjunta (debe existir razon social, nombre)
 		if self.context['naturaleza'] in ["cliente", "proveedor"]:
-			if not 'apellido' in perfil.keys() and not 'razon_social' in perfil.keys():
-				mj_error = ['Es necesario configurar un Nombre y Apellido o una Razón social']
-				raise serializers.ValidationError({'apellido': mj_error})
+			if not 'nombre' in perfil.keys() and not 'razon_social' in perfil.keys():
+				mj_error = ['Es necesario configurar un Nombre o una Razón social']
+				raise serializers.ValidationError({'nombre': mj_error})
 
 		return perfil
 
 	def validate(self, data):
-		tipo = self.context['naturaleza'] if self.context['naturaleza'] != 'dominio' else 'cliente'
+		tipo = self.context['naturaleza']
 		try:
 			data['titulo'] = Titulo.objects.get(comunidad=self.context['comunidad'], predeterminado__nombre=tipo)
 		except:
@@ -149,7 +124,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 	@transaction.atomic
 	def create(self, validate_data):
 		"""
-			Se construye un objeto completo de tipo dominio, cliente, proveedor, caja, ingreso o gasto.
+			Se construye un objeto completo de tipo cliente, proveedor, caja, ingreso o gasto.
 
 			1 - Se crea Perfil y Domicilio en CU/cuenta/cuenta.
 			2 - Se crea aqui la Cuenta
@@ -180,13 +155,9 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		# Actualizacion de Nombre
 		if self.context['naturaleza'] in ['caja', 'ingreso', 'gasto']:
 			instance.nombre = validate_data['nombre']
-				
-		# Actualizacion de Numero
-		if self.context['naturaleza'] in ['dominio']:
-			instance.numero = validate_data['numero']
 
 		# Actualizacion de Taxon
-		if self.context['naturaleza'] in ['cliente', 'caja', 'ingreso', 'gasto']:
+		if self.context['naturaleza'] in ['caja']:
 			instance.taxon = Taxon.objects.get(nombre=validate_data['taxon'])
 
 		# Actualizacion de Perfil
@@ -201,7 +172,6 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			domicilio.localidad = domicilio_data.get('localidad', domicilio.localidad)
 			domicilio.save()
 			perfil.nombre = perfil_data.get('nombre', perfil.nombre)
-			perfil.apellido = perfil_data.get('apellido', perfil.apellido)
 			perfil.razon_social = perfil_data.get('razon_social', perfil.razon_social)
 			perfil.numero_documento = perfil_data.get('numero_documento', perfil.numero_documento)
 			perfil.fecha_nacimiento = perfil_data.get('fecha_nacimiento', perfil.fecha_nacimiento)
@@ -212,16 +182,6 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			perfil.domicilio = domicilio
 			perfil.save()
 			instance.perfil = perfil
-
-		if self.context['naturaleza'] in ['dominio']:
-			# Actualizacion de Domicilio (solo para Dominio)
-			domicilio = instance.domicilio
-			domicilio_data = validate_data['domicilio']
-			domicilio.provincia = Provincia.objects.get(nombre=domicilio_data['provincia'])
-			domicilio.calle = domicilio_data.get('calle', domicilio.calle)
-			domicilio.numero = domicilio_data.get('numero', domicilio.numero)
-			domicilio.localidad = domicilio_data.get('localidad', domicilio.localidad)
-			domicilio.save()
 
 		instance.save()
 

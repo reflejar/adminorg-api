@@ -71,7 +71,7 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 			serializer_context['retrieve'] = True
 			serializer_context['receipt_type'] = ReceiptType.objects.get(
 				description=obj.receipt.receipt_type
-			)			
+			)
 			serializer_context['cuenta'] = obj.destinatario
 			serializer_context['causante'] = obj.destinatario.naturaleza.nombre
 		else:

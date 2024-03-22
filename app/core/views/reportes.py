@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404 
 from decimal import Decimal
 
+from django_afip.models import CurrencyType
 from users.permissions import IsAccountOwner, IsComunidadMember, IsAdministrativoUser
 from utils.generics import custom_viewsets
 
@@ -36,7 +37,7 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 		if self.kwargs['tipo'] == "saldos":
 			datos = Operacion.saldos(cuentas=objects, fecha=fecha)
 		elif self.kwargs['tipo'] in ["movimientos", "analisis"]:
-			datos = Operacion.mayores(cuentas=objects,fecha=fecha)
+			datos = Operacion.mayores(cuentas=objects, fecha=fecha)
 		return datos
 
 	def get_permissions(self):

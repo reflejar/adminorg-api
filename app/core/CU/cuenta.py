@@ -19,7 +19,7 @@ class CU:
 
 	perfiles = ['cliente', 'proveedor']
 	domicilios = ['cliente', 'proveedor']
-	taxones = ['cliente', 'caja', 'ingreso', 'gasto']
+	taxones = ['caja']
 
 	def __init__(self, validate_data):
 

@@ -20,7 +20,6 @@ class PerfilModelSerializer(serializers.ModelSerializer):
 		model = Perfil
 		fields = (
 			'nombre',
-			'apellido',
 			'razon_social',
 			'tipo_documento',
 			'numero_documento',

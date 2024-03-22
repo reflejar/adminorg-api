@@ -1,5 +1,5 @@
 [
-    {"code": "PES", "description": "Pesos Argentinos"},
-    {"code": "DOL", "description": "Dólar Estadounidense"}
+    {"id": 1,"code": "PES", "description": "$ARS"},
+    {"id": 2,"code": "DOL", "description": "$DOL"}
 
 ]

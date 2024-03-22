@@ -107,7 +107,7 @@ class Comprobante(BaseModel):
 		identifier = self.operaciones.first().asiento	
 		deudas_generadas = self.get_model('Operacion').objects.filter(
 			asiento=identifier,
-			cuenta__naturaleza__nombre__in=["cliente", "dominio", "proveedor"], 
+			cuenta__naturaleza__nombre__in=["cliente", "proveedor"], 
 			vinculo__isnull=True
 		)
 		if deudas_generadas:
@@ -227,7 +227,10 @@ class Comprobante(BaseModel):
 		def fillna(dispatcher):
 			return str(dispatcher) if dispatcher else ''
 
-		if self.destinatario.naturaleza.nombre == "cliente" and self.receipt.receipt_type.code in ['11', '12', '13']:
+		if self.comunidad.contribuyente.certificate and \
+		self.destinatario.naturaleza.nombre == "cliente" and \
+		self.receipt.receipt_type.code in ['11', '12', '13']:
+
 			generator = ReceiptBarcodeGenerator(self.receipt_afip)
 			barcode = base64.b64encode(generator.generate_barcode()).decode("utf-8")
 		else:

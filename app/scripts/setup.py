@@ -136,11 +136,15 @@ def crear_comunidad():
 	)
 
 	# Crear Plan de cuentas basico
-	plan_cuentas = open('scripts/plan_cuentas.json', 'r')
-	data = json.load(plan_cuentas)
-	for d in data:
-		d['comunidad_id'] = comunidad.id
-		Titulo.objects.create(**d)				
+	ACTIVO = Titulo.objects.create(comunidad=comunidad, nombre="ACTIVO", numero=100000)
+	PASIVO = Titulo.objects.create(comunidad=comunidad, nombre="PASIVO", numero=200000)
+	PATRIMONIO_NETO= Titulo.objects.create(comunidad=comunidad, nombre="PATRIMONIO NETO", numero=300000)
+	RECURSOS = Titulo.objects.create(comunidad=comunidad, nombre="RECURSOS", numero=400000, predeterminado_id=7)
+	GASTOS = Titulo.objects.create(comunidad=comunidad, nombre="GASTOS", numero=500000, predeterminado_id=8)
+	TESORERIA = Titulo.objects.create(comunidad=comunidad, nombre="TESORERIA", numero=111101, supertitulo=ACTIVO, predeterminado_id=2)
+	CUENTAS_A_COBRAR = Titulo.objects.create(comunidad=comunidad, nombre="CUENTAS A COBRAR", numero=112101, supertitulo=ACTIVO, predeterminado_id=1)
+	BIENES_DE_CAMBIO = Titulo.objects.create(comunidad=comunidad, nombre="BIENES DE CAMBIO", numero=113101, supertitulo=ACTIVO, predeterminado_id=3)
+	PROVEEDORES = Titulo.objects.create(comunidad=comunidad, nombre="PROVEEDORES", numero=211101, supertitulo=PASIVO, predeterminado_id=5)		
 		
 	# Crear usuario administrativo?
 	username = input("Usuario administrativo - username: ")
@@ -162,11 +166,30 @@ def crear_comunidad():
 
 	perfil_admin = Perfil.objects.create(
 		comunidad=comunidad,
-		nombre=nombre,
-		apellido=apellido,
+		nombre=f'{nombre} {apellido}',
 		numero_documento="00000000",
 	)
 	perfil_admin.users.add(user_admin)
+
+	Cuenta.objects.create(
+		comunidad=comunidad,
+		titulo=RECURSOS,
+		naturaleza_id=7,
+		taxon_id=5,
+		moneda_id=1,
+		nombre="Resultado (+) TC",
+		is_active=True,
+	)
+	Cuenta.objects.create(
+		comunidad=comunidad,
+		titulo=GASTOS,
+		naturaleza_id=8,
+		taxon_id=6,
+		moneda_id=1,
+		nombre="Resultado (-) TC",
+		is_active=True,
+	)	
+
 
 def run():
 	solicitudes = [

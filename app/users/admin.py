@@ -28,7 +28,7 @@ admin.site.register(User, CustomUserAdmin)
 
 
 class PerfilAdmin(admin.ModelAdmin):
-	list_display = ['id','apellido', 'nombre', 'razon_social', "tipo_documento", "numero_documento", "mail", "comunidad"]
+	list_display = ['id','nombre', 'razon_social', "tipo_documento", "numero_documento", "mail", "comunidad"]
 	list_filter = ['comunidad']
 
 admin.site.register(Perfil, PerfilAdmin)

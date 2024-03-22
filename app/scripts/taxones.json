@@ -1,15 +1,8 @@
 [
-    {"naturaleza_id": 1, "nombre": "socio"},
-    {"naturaleza_id": 2, "nombre": "propietario"},
-    {"naturaleza_id": 2, "nombre": "inquilino"},
-    {"naturaleza_id": 4, "nombre": "efectivo"},
-    {"naturaleza_id": 4, "nombre": "banco"},
-    {"naturaleza_id": 4, "nombre": "plataformas"},
-    {"naturaleza_id": 4, "nombre": "stockeable"},
-    {"naturaleza_id": 5, "nombre": "prioritario"},
-    {"naturaleza_id": 5, "nombre": "no_prioritario"},
-    {"naturaleza_id": 5, "nombre": "interes_predeterminado"},
-    {"naturaleza_id": 6, "nombre": "comun"},
-    {"naturaleza_id": 6, "nombre": "descuento_predeterminado"}
-
+    {"id": 1, "naturaleza_id": 2, "nombre": "efectivo"},
+    {"id": 2, "naturaleza_id": 2, "nombre": "banco"},
+    {"id": 3, "naturaleza_id": 2, "nombre": "billetera"},
+    {"id": 4, "naturaleza_id": 2, "nombre": "seguimiento"},
+    {"id": 5, "naturaleza_id": 7, "nombre": "tipo_cambio"},
+    {"id": 6, "naturaleza_id": 8, "nombre": "tipo_cambio"}
 ]

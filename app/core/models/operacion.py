@@ -5,6 +5,7 @@ import pandas as pd
 from django.db import models
 from django_pandas.io import read_frame
 from decimal import Decimal
+from django_afip.models import CurrencyType
 
 from utils.models import BaseModel
 from core.models import Cuenta, Comprobante, Proyecto
@@ -26,6 +27,9 @@ class Operacion(BaseModel):
 	comprobante = models.ForeignKey(Comprobante, blank=True, null=True, on_delete=models.PROTECT, related_name="operaciones")
 	cantidad = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
 	valor = models.DecimalField(max_digits=9, decimal_places=2)
+	moneda = models.ForeignKey(CurrencyType, on_delete=models.PROTECT, related_name="operaciones")
+	tipo_cambio = models.DecimalField(max_digits=9, decimal_places=2)
+	total_pesos = models.DecimalField(max_digits=9, decimal_places=2)
 	vinculo = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="vinculos")
 	fecha_vencimiento = models.DateField(blank=True, null=True)
 	detalle = models.CharField(max_length=150, blank=True, null=True)
@@ -52,7 +56,7 @@ class Operacion(BaseModel):
 		return -self.valor if self.valor < 0 else 0		
 
 	def destinatario(self):
-		""" Devuelve la Cuenta(cliente, dominio) por la que se creó el credito """
+		""" Devuelve la Cuenta(cliente) por la que se creó el credito """
 		return self.cuenta
 
 
@@ -77,17 +81,17 @@ class Operacion(BaseModel):
 		df = read_frame(cls.get_model('Operacion').objects.filter(
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				# fecha__lte=fecha,
-			).order_by('-fecha', '-comprobante__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo', 'valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad'])
+			).order_by('-fecha', '-comprobante__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo', 'valor', 'total_pesos', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad', 'comprobante__receipt__currency__description', 'tipo_cambio'])
 		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
 		df['periodo'] = pd.to_datetime(df['periodo'])
 		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')		
-		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
-		df['saldo'] = df['valor'][::-1].cumsum()
-		df['debe'] = df['valor'].apply(lambda x: x if x > 0 else 0)
-		df['haber'] = df['valor'].apply(lambda x: x if x < 0 else 0)
-		df['monto'] = df['valor']*df['direccion']
+		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto', 'comprobante__receipt__currency__description': 'moneda'})
+		df['saldo'] = df['total_pesos'][::-1].cumsum()
+		df['debe'] = df['total_pesos'].apply(lambda x: x if x > 0 else 0)
+		df['haber'] = df['total_pesos'].apply(lambda x: x if x < 0 else 0)
+		df['monto'] = df['total_pesos']*df['direccion']
 		df['saldo'] = df['saldo']*df['direccion']
 		return df	
 
@@ -98,8 +102,8 @@ class Operacion(BaseModel):
 		df = read_frame(cls.get_model('Operacion').objects.filter(
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				comprobante__isnull=False,
-				comprobante__fecha_anulacion__isnull=True
-			), fieldnames=['id', 'fecha', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento'])
+				comprobante__fecha_anulacion__isnull=True,
+			), fieldnames=['id', 'fecha', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento', 'comprobante__receipt__currency__description', 'tipo_cambio'])
 		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
@@ -107,7 +111,7 @@ class Operacion(BaseModel):
 		df['fecha_vencimiento'] = df['fecha_vencimiento'].dt.strftime('%Y-%m-%d')		
 		df['periodo'] = pd.to_datetime(df['periodo'])
 		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')
-		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto'})
+		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto', 'comprobante__receipt__currency__description': 'moneda'})
 		
 		# Si es cliente o proveedor, el saldo se obtiene desde el vinculo.
 
@@ -144,13 +148,12 @@ class Operacion(BaseModel):
 			Retorna QUERYSET de pagos realizados de capital
 		"""
 		fecha = fecha if fecha else date.today()
-		cuentas_intereses = Cuenta.all_objects.filter(comunidad=self.comunidad, taxon__nombre="interes_predeterminado")
 		return Operacion.objects.filter(
 				vinculo=self, 
 				cuenta=self.cuenta, 
 				fecha__lte=fecha, 
 				comprobante__fecha_anulacion__isnull=True
-			).exclude(vinculos__cuenta__in=cuentas_intereses).order_by('fecha')
+			).order_by('fecha')
 
 	def pago_capital(self, fecha=None):
 		"""

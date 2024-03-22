@@ -1,4 +1,6 @@
 from django.db import models
+from django_afip.models import CurrencyType
+
 
 from utils.models import (
 	BaseModel,
@@ -21,22 +23,17 @@ class Cuenta(BaseModel):
 	titulo = models.ForeignKey(Titulo, on_delete=models.PROTECT) # El ordenamiento contable
 	naturaleza = models.ForeignKey(Naturaleza, on_delete=models.PROTECT) # Para definir el modulo en que se utiliza
 	taxon = models.ForeignKey(Taxon, blank=True, null=True, on_delete=models.PROTECT) # Para definir una caracterizacion
+	moneda = models.ForeignKey(CurrencyType, blank=True, null=True, on_delete=models.PROTECT) # Moneda por defecto
 	domicilio = models.ForeignKey(Domicilio, blank=True, null=True, on_delete=models.PROTECT)
-	numero = models.IntegerField(blank=True, null=True)
 	nombre = models.CharField(max_length=150, blank=True, null=True)
-	slug = models.CharField(max_length=150, blank=True, null=True)
 	perfil = models.ForeignKey("users.Perfil", blank=True, null=True, on_delete=models.SET_NULL)
 	is_active = models.BooleanField(default=True)
 
 	def __str__(self):
-					# else '#' + str(int(x['CUENTA_NUMERO'])) if x['NATURALEZA'] in ['dominio'] \
-					# else x['CUENTA_NOMBRE'], 
 		if self.perfil:
 			if self.perfil.razon_social:
 				return self.perfil.razon_social
-			return ', '.join([self.perfil.apellido, self.perfil.nombre])
-		if self.numero:
-			return f"#{self.numero}"
+			return self.perfil.nombre
 		return self.nombre
 
 	@property

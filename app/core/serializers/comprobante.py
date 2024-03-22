@@ -198,7 +198,8 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 			'service_start': receipt_data['issued_date'],
 			'service_end': receipt_data['issued_date'],
 			'expiration_date': receipt_data['issued_date'],
-			'currency': CurrencyType.objects.get(code="PES"),
+			'currency': receipt_data['currency'],
+			'currency_quote': receipt_data['currency_quote'],
 			'concept': ConceptType.objects.get(description="Productos y servicios")
 		})
 
@@ -218,8 +219,6 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		
 		CU(comprobante, validated_data).create()
 		comprobante.hacer_pdf()
-
-		# # self.send_email(comprobante)
 		return comprobante
 	
 

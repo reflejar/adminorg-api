@@ -6,7 +6,8 @@ class CU:
 
 	def __init__(self, comprobante, validated_data):
 		self.comprobante = comprobante
-		self.receipt = comprobante.receipt
+		self.moneda = comprobante.receipt.currency
+		self.tipo_cambio = comprobante.receipt.currency_quote
 		self.comunidad = comprobante.comunidad
 		self.fecha_operacion = comprobante.fecha_operacion
 		self.identifier = randomIdentifier(Operacion, 'asiento')
@@ -32,9 +33,11 @@ class CU:
 				proyecto=o['proyecto'],
 				cantidad=o['cantidad'],
 				valor=o['monto']*self.direccion,
+				moneda=self.moneda,
+				tipo_cambio=self.tipo_cambio,
+				total_pesos=o['monto']*self.direccion*self.tipo_cambio,
 				detalle=o['detalle'],
-				periodo=o['periodo'] or self.fecha_operacion,
-				fecha_vencimiento=o['fecha_vencimiento'],
+				periodo=self.fecha_operacion,
 			))
 			self.cargas_guardadas.append(Operacion.objects.create(
 				comunidad=self.comunidad,
@@ -45,9 +48,11 @@ class CU:
 				proyecto=o['proyecto'],
 				cantidad=o['cantidad'],
 				valor=-o['monto']*self.direccion,
+				moneda=self.moneda,
+				tipo_cambio=self.tipo_cambio,
+				total_pesos=-o['monto']*self.direccion*self.tipo_cambio,
 				detalle=o['detalle'],
-				periodo=o['periodo'] or self.fecha_operacion,
-				fecha_vencimiento=o['fecha_vencimiento'],
+				periodo=self.fecha_operacion,
 			))
 
 
@@ -62,8 +67,11 @@ class CU:
 				cuenta=o['vinculo'].cuenta,
 				concepto=o['vinculo'].concepto,
 				proyecto=o['vinculo'].proyecto,
-				periodo=o['vinculo'].periodo or self.fecha_operacion,
+				periodo=o['vinculo'].periodo,
 				valor=-o['monto']*self.direccion,
+				moneda=self.moneda,
+				tipo_cambio=self.tipo_cambio,
+				total_pesos=-o['monto']*self.direccion*self.tipo_cambio,						
 				detalle=o['detalle'],
 				vinculo=o['vinculo'],
 			))
@@ -80,6 +88,9 @@ class CU:
 				cuenta=o['cuenta'],
 				fecha_vencimiento=o['fecha_vencimiento'],
 				valor=o['monto']*self.direccion,
+				moneda=self.moneda,
+				tipo_cambio=self.tipo_cambio,
+				total_pesos=o['monto']*self.direccion*self.tipo_cambio,
 				detalle=o['detalle'],
 			))
 		if self.descargas:
@@ -94,6 +105,9 @@ class CU:
 					proyecto=o.proyecto,
 					periodo=o.periodo,
 					valor=-o.valor,
+					moneda=self.moneda,
+					tipo_cambio=self.tipo_cambio,
+					total_pesos=-o.valor*self.tipo_cambio,					
 					detalle=o.detalle,
 					vinculo=o,
 				))			

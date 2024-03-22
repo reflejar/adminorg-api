@@ -7,19 +7,22 @@ from django_afip.models import (
 	ConceptType,
 	PointOfSales,
 	Receipt,
-	ReceiptType
+	ReceiptType,
+	CurrencyType
 )
 from utils.models import Comunidad
 from core.models import OwnReceipt 
 
 class ReceiptModelSerializer(serializers.ModelSerializer):
 	'''Receipt model serializer'''
+	# currency = serializers.SerializerMethodField()
 
 	class Meta:
 		model = OwnReceipt
 
 		fields = (
 			'issued_date',
+			'currency_quote',
 		)
 
 	def __init__(self, *args, **kwargs):
@@ -34,6 +37,10 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			choices=list(ReceiptType.objects.all().values_list('description', flat=True)),
 			label="Tipo"
 		)
+		self.fields['currency'] = serializers.ChoiceField(
+			choices=list(CurrencyType.objects.all().values_list('code', flat=True)),
+			label="Moneda"
+		)		
 		point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))
 		if self.context['causante'] in ["cliente", "caja"]:
 			self.fields['point_of_sales'] = serializers.ChoiceField(
@@ -79,11 +86,22 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 				label="Número"
 			)
 
+	def to_representation(self, instance):
+		representation = super().to_representation(instance)
+		representation['currency'] = instance.currency.code  # Obtiene el código de la moneda
+		return representation
+
+
 
 	def get_point_of_sales(self, point_of_sales):
 
 		return PointOfSales.objects.get(owner=self.context['comunidad'].contribuyente, number=point_of_sales)
 
+	def validate_currency(self, currency):
+		"""
+			Para convertir el currency en objeto CurrencyType
+		"""
+		return CurrencyType.objects.get(code=currency)	
 
 	def validate_concept(self, concept):
 		"""
@@ -109,5 +127,4 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 				raise serializers.ValidationError({'afip_error':'No se pudo validar en AFIP. Vuelve a intentarlo mas tarde'})			
 
 		receipt.save()
-
 		return receipt, receipt_afip

@@ -14,9 +14,7 @@ class Perfil(BaseModel):
 	"""
 
     users = models.ManyToManyField('users.User', blank=True)
-
-    nombre = models.CharField(max_length=80, blank=True, null=True)
-    apellido = models.CharField(max_length=80, blank=True, null=True)
+    nombre = models.CharField(max_length=160, blank=True, null=True)
     razon_social = models.CharField(max_length=80, blank=True, null=True)
     tipo_documento = models.ForeignKey(DocumentType, blank=True, null=True, on_delete=models.SET_NULL)
     numero_documento = models.CharField(max_length=13)
@@ -32,11 +30,9 @@ class Perfil(BaseModel):
     comunidades = models.ManyToManyField("utils.Comunidad", blank=True, related_name="admins")
 
     def __str__(self):
-        nombre = ""
-        nombre += "{} ".format(self.razon_social) if self.razon_social else ""
-        nombre += "{} ".format(self.apellido) if self.apellido else ""
-        nombre += "{}".format(self.nombre) if self.nombre else ""
-        return nombre
+        if self.razon_social:
+            return self.razon_social
+        return self.nombre
 
     def get_emails_destinatarios(self):
         destinatarios = []
