@@ -88,7 +88,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 
 	def to_representation(self, instance):
 		representation = super().to_representation(instance)
-		representation['currency'] = instance.currency.code  # Obtiene el código de la moneda
+		representation['currency'] = instance.currency.description  # Obtiene el código de la moneda
 		return representation
 
 
@@ -101,7 +101,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 		"""
 			Para convertir el currency en objeto CurrencyType
 		"""
-		return CurrencyType.objects.get(code=currency)	
+		return CurrencyType.objects.get(description=currency)	
 
 	def validate_concept(self, concept):
 		"""
