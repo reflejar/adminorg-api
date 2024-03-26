@@ -81,13 +81,13 @@ class Operacion(BaseModel):
 		df = read_frame(cls.get_model('Operacion').objects.filter(
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				# fecha__lte=fecha,
-			).order_by('-fecha', '-comprobante__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo', 'valor', 'total_pesos', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad', 'comprobante__receipt__currency__description', 'tipo_cambio'])
-		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
+			).order_by('-fecha', '-comprobante__id'), fieldnames=['fecha', 'cuenta', 'cuenta__naturaleza', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo', 'valor', 'total_pesos', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'cuenta__titulo__numero', 'cantidad', 'moneda__description', 'tipo_cambio'])
+		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
 		df['periodo'] = pd.to_datetime(df['periodo'])
 		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')		
-		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto', 'comprobante__receipt__currency__description': 'moneda'})
+		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto', 'moneda__description': 'moneda'})
 		df['saldo'] = df['total_pesos'][::-1].cumsum()
 		df['debe'] = df['total_pesos'].apply(lambda x: x if x > 0 else 0)
 		df['haber'] = df['total_pesos'].apply(lambda x: x if x < 0 else 0)
@@ -104,7 +104,7 @@ class Operacion(BaseModel):
 				comprobante__isnull=False,
 				comprobante__fecha_anulacion__isnull=True,
 			), fieldnames=['id', 'fecha', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento', 'comprobante__receipt__currency__description', 'tipo_cambio'])
-		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1", "5"] else -1)
+		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
 		df['fecha_vencimiento'] = pd.to_datetime(df['fecha_vencimiento'])

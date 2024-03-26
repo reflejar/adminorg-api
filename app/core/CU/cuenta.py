@@ -13,12 +13,12 @@ from core.models import (
 	Naturaleza,
 	Cuenta,
 )
+from django_afip.models import CurrencyType
 
 
 class CU:
 
 	perfiles = ['cliente', 'proveedor']
-	domicilios = ['cliente', 'proveedor']
 	taxones = ['caja']
 
 	def __init__(self, validate_data):
@@ -35,12 +35,17 @@ class CU:
 			self.provincia = Provincia.objects.get(nombre=self.domicilio_data.pop('provincia')) # Llega la data en forma de string y no como objeto
 
 		# Para agarrar el taxon
-		self.taxon = Taxon.objects.get(nombre=self.validate_data.pop('taxon')) if self.naturaleza.nombre in self.taxones else None
+		if self.naturaleza.nombre in ['caja']:
+			self.validate_data['taxon'] = Taxon.objects.get(nombre=self.validate_data.pop('taxon'))
+			self.validate_data['moneda'] = CurrencyType.objects.get(description=self.validate_data.pop('moneda'))
+			
+		
+		self.validate_data['naturaleza'] = self.naturaleza
 
 	
 	def make_domicilio(self):
 		# Esta funcion solo se ejecuta si el domicilio se establece en la cuenta y no en el perfil
-		if self.naturaleza.nombre in self.domicilios:
+		if self.naturaleza.nombre in self.perfiles:
 			return Domicilio.objects.create(**self.domicilio_data, provincia=self.provincia)
 		return
 
@@ -52,9 +57,4 @@ class CU:
 			return perfil
 		return
 
-	def get_clean_data(self):
-		
-		self.validate_data['naturaleza'] = self.naturaleza
-		self.validate_data['taxon'] = self.taxon
-		
-		return self.validate_data
+	def get_clean_data(self): return self.validate_data

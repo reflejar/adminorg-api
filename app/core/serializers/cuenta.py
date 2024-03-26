@@ -21,7 +21,7 @@ from core.serializers import (
 	TituloModelSerializer,
 )
 from core.CU.cuenta import CU
-
+from django_afip.models import CurrencyType
 
 class TaxonRelatedField(serializers.RelatedField):
     """
@@ -67,10 +67,18 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		# Incorporacion de Taxon
 		if self.context['naturaleza'] in ['caja']:
 			self.fields['taxon'] = serializers.ChoiceField(required=True, choices=list(Taxon.objects.filter(naturaleza__nombre=self.context['naturaleza']).values_list('nombre', flat=True)))
+			self.fields['moneda'] = serializers.ChoiceField(choices=list(CurrencyType.objects.all().values_list('description', flat=True)),label="Moneda")
 
 		# Incorporacion de Perfil
 		if self.context['naturaleza'] in ['cliente', 'proveedor']:
 			self.fields['perfil'] = PerfilModelSerializer(read_only=False, context=self.context)
+
+	def to_representation(self, instance):
+		representation = super().to_representation(instance)
+		if self.context['naturaleza'] in ['caja']:
+			representation['moneda'] = instance.moneda.description  # Obtiene el código de la moneda
+		return representation
+
 
 
 	def validate_nombre(self, nombre):
@@ -159,6 +167,7 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 		# Actualizacion de Taxon
 		if self.context['naturaleza'] in ['caja']:
 			instance.taxon = Taxon.objects.get(nombre=validate_data['taxon'])
+			instance.moneda = CurrencyType.objects.get(description=validate_data['moneda'])
 
 		# Actualizacion de Perfil
 		if self.context['naturaleza'] in ['cliente', 'proveedor']:		
