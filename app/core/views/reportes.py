@@ -71,6 +71,9 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 	def list(self, request, pk=None, **kwargs):
 		df = self.get_queryset()
 		totalizar = request.GET['totalizar']
+		if "$" in totalizar:
+			df = df[df['moneda'] == totalizar]
+			totalizar = "valor"
 		df['total'] = df.groupby('cuenta')[totalizar].transform('sum')
 		columns = ['cuenta']
 		if request.GET['agrupar_por']:
@@ -79,6 +82,7 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 			columns.append(request.GET['encolumnar'])
 		
 		df['total'] = df.groupby(columns)[totalizar].transform('sum')
+		df['total'] = df['total']*df['direccion']
 		df = df.sort_values(by='total', ascending=False)
 		
 		df = df.drop_duplicates(columns, keep='first')

@@ -38,7 +38,7 @@ class ReceiptModelSerializer(serializers.ModelSerializer):
 			label="Tipo"
 		)
 		self.fields['currency'] = serializers.ChoiceField(
-			choices=list(CurrencyType.objects.all().values_list('code', flat=True)),
+			choices=list(CurrencyType.objects.all().values_list('description', flat=True)),
 			label="Moneda"
 		)		
 		point_of_sales_owner = list(PointOfSales.objects.filter(owner=self.context['comunidad'].contribuyente).values_list('number', flat=True))

@@ -1,5 +1,7 @@
 from core.models import Operacion
 from utils.generics.functions import *
+from django_afip.models import CurrencyType
+from core.models import Cuenta
 
 class CU:
 	'''Operacion de creditos realizada a cliente'''
@@ -19,6 +21,9 @@ class CU:
 		self.descargas_guardadas = []
 		self.direccion = self.comprobante.destinatario.direccion
 
+		self.pesos = CurrencyType.objects.get(description="$ARS")
+		self.rdo_tipo_cambio_pos = Cuenta.objects.get(naturaleza__nombre="ingreso", taxon__nombre='tipo_cambio')
+		self.rdo_tipo_cambio_neg = Cuenta.objects.get(naturaleza__nombre="gasto", taxon__nombre='tipo_cambio')
 
 
 	def hacer_cargas(self):
@@ -59,6 +64,9 @@ class CU:
 
 	def hacer_cobros(self):
 		for o in self.cobros:
+			deuda = o['monto'] * o['vinculo'].tipo_cambio
+			pagado = o['monto'] * self.tipo_cambio
+			dif = pagado - deuda
 			self.cobros_guardados.append(Operacion.objects.create(
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
@@ -71,10 +79,27 @@ class CU:
 				valor=-o['monto']*self.direccion,
 				moneda=self.moneda,
 				tipo_cambio=self.tipo_cambio,
-				total_pesos=-o['monto']*self.direccion*self.tipo_cambio,						
+				total_pesos=-deuda*self.direccion,
 				detalle=o['detalle'],
 				vinculo=o['vinculo'],
 			))
+			if dif != 0:
+				cuenta = self.rdo_tipo_cambio_pos if dif*self.direccion > 0 else self.rdo_tipo_cambio_neg
+				self.cobros_guardados.append(Operacion.objects.create(
+					comunidad=self.comunidad,
+					fecha=self.fecha_operacion,
+					comprobante = self.comprobante,
+					asiento=self.identifier,
+					cuenta=cuenta,
+					proyecto=o['vinculo'].proyecto,
+					periodo=o['vinculo'].periodo,
+					valor=-dif*self.direccion,
+					moneda=self.pesos,
+					tipo_cambio=1,
+					total_pesos=-dif*self.direccion,
+					detalle=o['detalle'],
+					vinculo=o['vinculo'],
+				))							
 
 
 
