@@ -115,20 +115,23 @@ class Operacion(BaseModel):
 		
 		# Si es cliente o proveedor, el saldo se obtiene desde el vinculo.
 
+		df['detalle'] = df['detalle'].fillna("")
 		if modulo in ['cliente', 'proveedor']:
-			pagos_capital = df.groupby('vinculo__id')['valor'].sum().reset_index()
-			pagos_capital.columns = ['vinculo__id', 'valor']
-			pagos_capital = pagos_capital.rename(columns={'vinculo__id': 'id', 'valor': 'pago_capital'})
-			df = df.merge(pagos_capital, how='left', on='id')
-			df['pago_capital'] = df['pago_capital'].fillna(Decimal(0.00))
-			df = df[df['vinculo__id'].isna()]
+			df['identifier'] = df['id'].astype(int).astype(str)
+			df['cancela'] = df['vinculo__id'].fillna(0).astype(int).astype(str).replace('0', '')
+			pagos_capital = df.groupby('cancela')['valor'].sum().reset_index()
+			pagos_capital.columns = ['cancela', 'valor']
+			pagos_capital = pagos_capital.rename(columns={'cancela': 'identifier', 'valor': 'pago_capital'})
+			df = df.merge(pagos_capital, how='left', on='identifier')
+			df = df[df['cancela']==""]
 
-		# Si es caja, el saldo se obtiene desde el detalle.
 		else:
-			df['detalle'] = df['detalle'].fillna("")
-			df['pago_capital'] = df.groupby('detalle')['valor'].transform('sum')
-			df = df.drop_duplicates(subset='detalle', keep='first')
+			df['identifier'] = df['tipo_cambio'].astype(str) + df['detalle']
+			df['pago_capital'] = df.groupby('identifier')['valor'].transform('sum')
+			df = df.drop_duplicates(subset='identifier', keep='first')
 			df['valor'] = 0
+
+		df['pago_capital'] = df['pago_capital'].fillna(Decimal(0.00))
 
 
 		df['saldo'] = df['valor'] + df['pago_capital']

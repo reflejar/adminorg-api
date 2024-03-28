@@ -50,6 +50,7 @@ class CU:
 				comprobante = self.comprobante,
 				asiento=self.identifier,
 				cuenta=o['concepto'],
+				concepto=self.comprobante.destinatario,
 				proyecto=o['proyecto'],
 				cantidad=o['cantidad'],
 				valor=-o['monto']*self.direccion,
@@ -83,6 +84,7 @@ class CU:
 				detalle=o['detalle'],
 				vinculo=o['vinculo'],
 			))
+			# Diferencia por desfasaje del tipo de cambio 
 			if dif != 0:
 				cuenta = self.rdo_tipo_cambio_pos if dif*self.direccion > 0 else self.rdo_tipo_cambio_neg
 				self.cobros_guardados.append(Operacion.objects.create(
@@ -91,6 +93,7 @@ class CU:
 					comprobante = self.comprobante,
 					asiento=self.identifier,
 					cuenta=cuenta,
+					concepto=o['vinculo'].concepto,
 					proyecto=o['vinculo'].proyecto,
 					periodo=o['vinculo'].periodo,
 					valor=-dif*self.direccion,
@@ -111,6 +114,7 @@ class CU:
 				comprobante = self.comprobante,
 				asiento=self.identifier,
 				cuenta=o['cuenta'],
+				concepto=self.comprobante.destinatario,
 				fecha_vencimiento=o['fecha_vencimiento'],
 				valor=o['monto']*self.direccion,
 				moneda=self.moneda,

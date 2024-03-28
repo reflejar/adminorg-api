@@ -82,14 +82,12 @@ class ReportesViewSet(custom_viewsets.CustomModelViewSet):
 			columns.append(request.GET['encolumnar'])
 		
 		df['total'] = df.groupby(columns)[totalizar].transform('sum')
-		print(df['total'])
 		df['total'] = df['total']*df['direccion']
 		df = df.sort_values(by='total', ascending=False)
 		
 		df = df.drop_duplicates(columns, keep='first')
 		if request.GET['encolumnar']:
 			df = df.pivot_table(index=columns[:-1], columns=columns[-1], values='total', aggfunc='sum', fill_value=0).reset_index()
-			print(df)
 		else:
 			columns.append('total')
 			df = df[columns]
