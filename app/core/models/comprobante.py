@@ -136,10 +136,6 @@ class Comprobante(BaseModel):
 			valor__lt=0,
 		).exclude(descripcion="ANULACION")
 
-	def plataforma(self):
-		return self.cobros_plataforma.first()
-
-
 	def anulacion_comprobantes(self, comprobantes_relacionados):
 		"""
 			Genera los comprobantes necesarios de anulacion de los automaticos

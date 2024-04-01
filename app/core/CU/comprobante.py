@@ -8,7 +8,7 @@ class CU:
 
 	def __init__(self, comprobante, validated_data):
 		self.comprobante = comprobante
-		self.moneda = comprobante.receipt.currency
+		self.moneda_comprobante = comprobante.receipt.currency
 		self.tipo_cambio = comprobante.receipt.currency_quote
 		self.comunidad = comprobante.comunidad
 		self.fecha_operacion = comprobante.fecha_operacion
@@ -28,6 +28,8 @@ class CU:
 
 	def hacer_cargas(self):
 		for o in self.cargas:
+			# Alta de la carga
+			moneda = self.comprobante.destinatario.moneda or self.moneda_comprobante
 			self.cargas_guardadas.append(Operacion.objects.create(
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
@@ -37,13 +39,15 @@ class CU:
 				concepto=o['concepto'],
 				proyecto=o['proyecto'],
 				cantidad=o['cantidad'],
-				valor=o['monto']*self.direccion,
-				moneda=self.moneda,
-				tipo_cambio=self.tipo_cambio,
-				total_pesos=o['monto']*self.direccion*self.tipo_cambio,
+				moneda=moneda,
+				valor=o['total_pesos']*self.direccion if moneda.description == "$ARS" else o['monto']*self.direccion,
+				tipo_cambio=1 if moneda.description == "$ARS" else self.tipo_cambio,
+				total_pesos=o['total_pesos']*self.direccion,
 				detalle=o['detalle'],
 				periodo=self.fecha_operacion,
 			))
+			# Contracuenta de la carga
+			moneda = o['concepto'].moneda or self.moneda_comprobante
 			self.cargas_guardadas.append(Operacion.objects.create(
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
@@ -53,10 +57,10 @@ class CU:
 				concepto=self.comprobante.destinatario,
 				proyecto=o['proyecto'],
 				cantidad=o['cantidad'],
-				valor=-o['monto']*self.direccion,
-				moneda=self.moneda,
-				tipo_cambio=self.tipo_cambio,
-				total_pesos=-o['monto']*self.direccion*self.tipo_cambio,
+				moneda=moneda,
+				valor=-o['total_pesos']*self.direccion if moneda.description == "$ARS" else -o['monto']*self.direccion,
+				tipo_cambio=1 if moneda.description == "$ARS" else self.tipo_cambio,
+				total_pesos=-o['total_pesos']*self.direccion,
 				detalle=o['detalle'],
 				periodo=self.fecha_operacion,
 			))
@@ -77,8 +81,8 @@ class CU:
 				concepto=o['vinculo'].concepto,
 				proyecto=o['vinculo'].proyecto,
 				periodo=o['vinculo'].periodo,
+				moneda=self.moneda_comprobante,
 				valor=-o['monto']*self.direccion,
-				moneda=self.moneda,
 				tipo_cambio=self.tipo_cambio,
 				total_pesos=-deuda*self.direccion,
 				detalle=o['detalle'],
@@ -96,8 +100,8 @@ class CU:
 					concepto=o['vinculo'].concepto,
 					proyecto=o['vinculo'].proyecto,
 					periodo=o['vinculo'].periodo,
-					valor=-dif*self.direccion,
 					moneda=self.pesos,
+					valor=-dif*self.direccion,
 					tipo_cambio=1,
 					total_pesos=-dif*self.direccion,
 					detalle=o['detalle'],
@@ -108,6 +112,7 @@ class CU:
 
 	def hacer_descargas(self):
 		for o in self.descargas:
+			moneda = o['cuenta'].moneda or self.moneda_comprobante
 			self.descargas_guardadas.append(Operacion.objects.create(
 				comunidad=self.comunidad,
 				fecha=self.fecha_operacion,
@@ -116,10 +121,10 @@ class CU:
 				cuenta=o['cuenta'],
 				concepto=self.comprobante.destinatario,
 				fecha_vencimiento=o['fecha_vencimiento'],
-				valor=o['monto']*self.direccion,
-				moneda=self.moneda,
-				tipo_cambio=self.tipo_cambio,
-				total_pesos=o['monto']*self.direccion*self.tipo_cambio,
+				moneda=moneda,
+				valor=o['total_pesos']*self.direccion if moneda.description == "$ARS" else o['monto']*self.direccion,
+				tipo_cambio=1 if moneda.description == "$ARS" else self.tipo_cambio,				
+				total_pesos=o['total_pesos']*self.direccion,
 				detalle=o['detalle'],
 			))
 		if self.descargas:
@@ -134,7 +139,7 @@ class CU:
 					proyecto=o.proyecto,
 					periodo=o.periodo,
 					valor=-o.valor,
-					moneda=self.moneda,
+					moneda=self.moneda_comprobante,
 					tipo_cambio=self.tipo_cambio,
 					total_pesos=-o.valor*self.tipo_cambio,					
 					detalle=o.detalle,

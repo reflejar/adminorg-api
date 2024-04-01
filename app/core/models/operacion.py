@@ -43,6 +43,8 @@ class Operacion(BaseModel):
 	@property
 	def monto(self):
 		""" Devuelve el valor en positivo siempre """
+		if self.comprobante.receipt.currency != self.moneda:
+			return abs(self.valor/self.comprobante.receipt.currency_quote)
 		return abs(self.valor)
 
 	@property
@@ -103,7 +105,7 @@ class Operacion(BaseModel):
 				cuenta__id__in=[cuentas.values_list('id', flat=True)], 
 				comprobante__isnull=False,
 				comprobante__fecha_anulacion__isnull=True,
-			), fieldnames=['id', 'fecha', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento', 'comprobante__receipt__currency__description', 'tipo_cambio'])
+			), fieldnames=['id', 'fecha', 'comprobante', 'concepto', 'proyecto__nombre', 'periodo','valor', 'detalle', 'comprobante__id', 'comprobante__receipt__receipt_type', 'vinculo__id', 'cuenta__titulo__numero', 'cuenta__naturaleza', 'fecha_vencimiento', 'moneda__description', 'tipo_cambio'])
 		df['direccion'] = df['cuenta__titulo__numero'].apply(lambda x: 1 if str(x)[0] in ["1"] else -1)
 		df['fecha'] = pd.to_datetime(df['fecha'])
 		df['fecha'] = df['fecha'].dt.strftime('%Y-%m-%d')
@@ -111,7 +113,7 @@ class Operacion(BaseModel):
 		df['fecha_vencimiento'] = df['fecha_vencimiento'].dt.strftime('%Y-%m-%d')		
 		df['periodo'] = pd.to_datetime(df['periodo'])
 		df['periodo'] = df['periodo'].dt.strftime('%Y-%m')
-		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto', 'comprobante__receipt__currency__description': 'moneda'})
+		df = df.rename(columns={'comprobante__receipt__receipt_type': 'receipt_type', 'proyecto__nombre': 'proyecto', 'moneda__description': 'moneda'})
 		
 		# Si es cliente o proveedor, el saldo se obtiene desde el vinculo.
 
@@ -125,11 +127,18 @@ class Operacion(BaseModel):
 			df = df.merge(pagos_capital, how='left', on='identifier')
 			df = df[df['cancela']==""]
 
-		else:
-			df['identifier'] = df['tipo_cambio'].astype(str) + df['detalle']
-			df['pago_capital'] = df.groupby('identifier')['valor'].transform('sum')
-			df = df.drop_duplicates(subset='identifier', keep='first')
-			df['valor'] = 0
+		elif modulo in ['caja']:
+			taxon = cuentas[0].taxon.nombre
+			if taxon == "seguimiento":	
+				df['identifier'] = df['detalle']
+				df['pago_capital'] = df.groupby('identifier')['valor'].transform('sum')
+				df = df.drop_duplicates(subset='identifier', keep='first')
+				df['valor'] = 0
+			else:
+				suma = df['valor'].sum()
+				df = df.head(1)
+				df['pago_capital'] = suma
+				df['valor'] = 0
 
 		df['pago_capital'] = df['pago_capital'].fillna(Decimal(0.00))
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from django_afip.models import CurrencyType
 from core.models import (
 	Operacion,
 	Cuenta,
@@ -20,6 +21,8 @@ class OperacionModelSerializer(serializers.ModelSerializer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.fields['monto'] = serializers.DecimalField(decimal_places=2, max_digits=15)
+		self.fields['total_pesos'] = serializers.DecimalField(decimal_places=2, max_digits=15)
+
 
 	def display_vinculo(self, instance):
 		if not instance:
