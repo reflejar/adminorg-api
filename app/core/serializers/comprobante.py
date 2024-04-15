@@ -164,6 +164,8 @@ class ComprobanteModelSerializer(serializers.ModelSerializer):
 		
 	@transaction.atomic		
 	def create(self, validated_data):
+		# print(validated_data)
+		# return Comprobante.objects.first()
 		destinatario = validated_data['destinatario'] or None
 		document_type = None
 		document_number = None

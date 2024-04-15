@@ -47,6 +47,9 @@ class CU:
 				periodo=self.fecha_operacion,
 			))
 			# Contracuenta de la carga
+			original = o['monto'] * o['tipo_cambio'] # Tipo de cambio original
+			real = o['monto'] * self.tipo_cambio # Tipo de cambio real
+			dif = real - original   
 			moneda = o['concepto'].moneda or self.moneda_comprobante
 			self.cargas_guardadas.append(Operacion.objects.create(
 				comunidad=self.comunidad,
@@ -58,13 +61,30 @@ class CU:
 				proyecto=o['proyecto'],
 				cantidad=o['cantidad'],
 				moneda=moneda,
-				valor=-o['total_pesos']*self.direccion if moneda.description == "$ARS" else -o['monto']*self.direccion,
-				tipo_cambio=1 if moneda.description == "$ARS" else self.tipo_cambio,
-				total_pesos=-o['total_pesos']*self.direccion,
+				valor=-original*self.direccion if moneda.description == "$ARS" else -o['monto']*self.direccion,
+				tipo_cambio=1 if moneda.description == "$ARS" else o['tipo_cambio'],
+				total_pesos=-original*self.direccion,
 				detalle=o['detalle'],
 				periodo=self.fecha_operacion,
 			))
-
+			if dif != 0:
+				cuenta = self.rdo_tipo_cambio_pos if dif*self.direccion > 0 else self.rdo_tipo_cambio_neg			
+				self.cobros_guardados.append(Operacion.objects.create(
+					comunidad=self.comunidad,
+					fecha=self.fecha_operacion,
+					comprobante = self.comprobante,
+					asiento=self.identifier,
+					cuenta=cuenta,
+					concepto=self.comprobante.destinatario,
+					proyecto=o['proyecto'],
+					cantidad=o['cantidad'],
+					moneda=self.pesos,
+					valor=-dif*self.direccion,
+					tipo_cambio=1,
+					total_pesos=-dif*self.direccion,
+					detalle=o['detalle'],
+					periodo=self.fecha_operacion,
+				))	
 
 
 	def hacer_cobros(self):

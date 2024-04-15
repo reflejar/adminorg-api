@@ -135,9 +135,12 @@ class Operacion(BaseModel):
 				df = df.drop_duplicates(subset='identifier', keep='first')
 				df['valor'] = 0
 			else:
-				suma = df['valor'].sum()
-				df = df.head(1)
-				df['pago_capital'] = suma
+				df['pago_capital'] = df.groupby(['moneda', 'tipo_cambio'])['valor'].transform('sum')
+				df = df.drop_duplicates(subset=['moneda', 'tipo_cambio'], keep='first')
+				# df['valor'] = 0
+				# suma = df['valor'].sum()
+				# df = df.head(1)
+				# df['pago_capital'] = suma
 				df['valor'] = 0
 
 		df['pago_capital'] = df['pago_capital'].fillna(Decimal(0.00))
