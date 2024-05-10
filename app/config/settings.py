@@ -27,12 +27,12 @@ USE_TZ = True
 
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'HOST': env('POSTGRES_HOST'),
-		'PORT': env('POSTGRES_PORT'),
-		'NAME': env('POSTGRES_DB'),
-		'USER': env('POSTGRES_USER'),
-		'PASSWORD': env('POSTGRES_PASSWORD'),
+		'ENGINE': 'django.db.backends.mysql',
+		'HOST': env('DDBB_HOST'),
+		'PORT': env('DDBB_PORT'),
+		'NAME': env('DDBB_NAME'),
+		'USER': env('DDBB_USER'),
+		'PASSWORD': env('DDBB_PASSWORD'),
 	}
 }
 

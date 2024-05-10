@@ -8,10 +8,6 @@ RUN apt-get update
 ADD requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
-COPY ./entrypoint.sh /
-RUN sed -i 's/\r//' /*.sh 
-RUN chmod +x /*.sh
-
 ADD app /app 
 RUN chmod +x /app
 
@@ -29,5 +25,4 @@ LABEL title "AdminOrg - API"
 
 WORKDIR /app
 EXPOSE 8000
-ENTRYPOINT ["/entrypoint.sh"]
 CMD [ "gunicorn", "config.wsgi", "--bind", "0.0.0.0:8000", "--chdir=/app", "--timeout", "1800" ]

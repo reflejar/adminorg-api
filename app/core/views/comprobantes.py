@@ -115,3 +115,8 @@ class ComprobantesViewSet(custom_viewsets.CustomModelViewSet):
 	def destroy_valid_anulado(self, obj):
 		if obj.fecha_anulacion:
 			raise serializers.ValidationError("El comprobante ya se encuentra anulado")
+
+	def create(self, request, *args, **kwargs):
+		response = super().create(request, *args, **kwargs)
+		# response.status_text = "¡Comprobante realizado con éxito!"
+		return response 
