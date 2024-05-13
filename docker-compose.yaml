@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  mysql:
+  ddbb:
     image: mysql:8
     volumes:
       - './tmp/data:/var/lib/mysql'
@@ -17,7 +17,7 @@ services:
       context: .
     image: ghcr.io/reflejar/adminorg-api:latest
     depends_on:
-      - mysql
+      - ddbb
     volumes:
       - ./app:/app
     env_file:
@@ -25,5 +25,5 @@ services:
     ports:
       - "8000:8000"
     links:
-      - mysql
+      - ddbb:mysql
     command: python manage.py runserver 0.0.0.0:8000
