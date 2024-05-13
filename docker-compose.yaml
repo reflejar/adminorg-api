@@ -8,8 +8,8 @@ services:
     command: ["mysqld", "--innodb_force_recovery=0", "--innodb_fast_shutdown=1"]       
     ports:
       - '3306:3306'
-    env_file:
-      - .env
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
 
       
   api:
