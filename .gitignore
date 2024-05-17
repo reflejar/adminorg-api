@@ -285,3 +285,4 @@ ramosagustin2103
 .idea/
 config-prod.env
 tmp/
+db/
