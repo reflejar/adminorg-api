@@ -126,7 +126,6 @@ def crear_comunidad():
 	)
 
 	comunidad = Comunidad.objects.create(
-		id=9999,
 		contribuyente=contribuyente,
 		nombre=nombre,
 		abreviatura=nombre.lower()[:5],
