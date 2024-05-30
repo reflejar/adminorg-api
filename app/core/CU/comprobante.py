@@ -22,8 +22,8 @@ class CU:
 		self.direccion = self.comprobante.destinatario.direccion
 
 		self.pesos = CurrencyType.objects.get(description="$ARS")
-		self.rdo_tipo_cambio_pos = Cuenta.objects.get(naturaleza__nombre="ingreso", taxon__nombre='tipo_cambio')
-		self.rdo_tipo_cambio_neg = Cuenta.objects.get(naturaleza__nombre="gasto", taxon__nombre='tipo_cambio')
+		self.rdo_tipo_cambio_pos = Cuenta.objects.get(comunidad=self.comunidad, naturaleza__nombre="ingreso", taxon__nombre='tipo_cambio')
+		self.rdo_tipo_cambio_neg = Cuenta.objects.get(comunidad=self.comunidad, naturaleza__nombre="gasto", taxon__nombre='tipo_cambio')
 
 
 	def hacer_cargas(self):
