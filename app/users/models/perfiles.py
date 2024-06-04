@@ -22,11 +22,7 @@ class Perfil(BaseModel):
     es_extranjero = models.BooleanField(default=False)
     mail = models.EmailField(blank=True, null=True, max_length=254)
     domicilio = models.ForeignKey("utils.Domicilio", blank=True, null=True, on_delete=models.SET_NULL)
-    telefono_regex = RegexValidator(
-        regex=r'\+?1?\d{9,15}$',
-        message="Phone number must be entered in the format: +999999999. Up to 15 digits allowed.", 
-    )
-    telefono = models.CharField(validators=[telefono_regex], max_length=17, blank=True)
+    telefono = models.CharField(max_length=17, blank=True)
     comunidades = models.ManyToManyField("utils.Comunidad", blank=True, related_name="admins")
 
     def __str__(self):
