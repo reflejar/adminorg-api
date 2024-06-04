@@ -32,7 +32,8 @@ class CU:
 			self.perfil_data['comunidad'] = self.validate_data['comunidad']
 			self.domicilio_data = self.perfil_data.pop('domicilio')
 			self.tipo_documento = DocumentType.objects.get(description=self.perfil_data.pop('tipo_documento')) # Llega la data en forma de string y no como objeto
-			self.provincia = Provincia.objects.get(nombre=self.domicilio_data.pop('provincia')) # Llega la data en forma de string y no como objeto
+			prov = self.domicilio_data.pop('provincia')
+			self.provincia = Provincia.objects.get(nombre=prov) if prov else None # Llega la data en forma de string y no como objeto
 
 		# Para agarrar el taxon
 		if self.naturaleza.nombre in ['caja']:

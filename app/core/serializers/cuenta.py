@@ -175,7 +175,8 @@ class CuentaModelSerializer(serializers.ModelSerializer):
 			domicilio = perfil.domicilio
 			perfil_data = validate_data['perfil']
 			domicilio_data = perfil_data['domicilio']
-			domicilio.provincia = Provincia.objects.get(nombre=domicilio_data['provincia'])
+			prov = domicilio_data['provincia']
+			domicilio.provincia = Provincia.objects.get(nombre=domicilio_data['provincia']) if prov else None
 			domicilio.calle = domicilio_data.get('calle', domicilio.calle)
 			domicilio.numero = domicilio_data.get('numero', domicilio.numero)
 			domicilio.localidad = domicilio_data.get('localidad', domicilio.localidad)

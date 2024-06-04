@@ -13,7 +13,7 @@ except:
 class DomicilioModelSerializer(serializers.ModelSerializer):
 	'''Domicilio model serializer'''
 	
-	provincia = serializers.ChoiceField(choices=PROVINCIAS_CHOICES)
+	provincia = serializers.ChoiceField(choices=PROVINCIAS_CHOICES, allow_null=True)
 
 	class Meta:
 		model = Domicilio
