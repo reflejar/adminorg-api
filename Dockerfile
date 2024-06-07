@@ -1,7 +1,7 @@
 # Stage 1
 FROM python:3.7 as base
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && \
     apt-get install -y netcat-openbsd
@@ -28,6 +28,9 @@ LABEL revision $REVISION
 LABEL title "AdminOrg - API"
 
 WORKDIR /app
+
+RUN python manage.py collectstatic --noinput --clear
+
 EXPOSE 8000
 ENTRYPOINT ["/wait-for-mysql.sh"]
-CMD [ "gunicorn", "config.wsgi", "--bind", "0.0.0.0:8000", "--chdir=/app", "--timeout", "1800" ]
+CMD set -xe; python manage.py migrate --noinput; gunicorn config.wsgi --bind 0.0.0.0:8000

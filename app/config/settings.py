@@ -28,11 +28,11 @@ USE_TZ = True
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.mysql',
-		'HOST': env('DDBB_HOST'),
-		'PORT': env('DDBB_PORT'),
-		'NAME': env('DDBB_NAME'),
-		'USER': env('DDBB_USER'),
-		'PASSWORD': env('DDBB_PASSWORD'),
+		'HOST': env('DDBB_HOST', default=None),
+		'PORT': env('DDBB_PORT', default=None),
+		'NAME': env('DDBB_NAME', default=None),
+		'USER': env('DDBB_USER', default=None),
+		'PASSWORD': env('DDBB_PASSWORD', default=None),
 	}
 }
 
@@ -116,10 +116,9 @@ MIDDLEWARE = [
 
 # Static files
 STATIC_ROOT = str(ROOT_DIR('staticfiles'))
-STATIC_URL = '/app/static/'
-STATICFILES_DIRS = [
-	str(APPS_DIR.path('/app/static')),
-]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = []
+
 STATICFILES_FINDERS = [
 	'django.contrib.staticfiles.finders.FileSystemFinder',
 	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
