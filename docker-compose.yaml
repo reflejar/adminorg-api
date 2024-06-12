@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   ddbb:
     image: mysql:8
