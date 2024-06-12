@@ -67,7 +67,8 @@ class ParametrosViewSet(custom_viewsets.CustomModelViewSet):
 			elif self.kwargs['naturaleza'] == 'punto':
 				queryset = PointOfSales.objects.filter(
 					owner=self.comunidad.contribuyente
-				)		
+				)
+				return queryset
 			elif self.kwargs['naturaleza'] == 'proyecto':
 				queryset = Proyecto.all_objects.filter(
 					comunidad=self.comunidad
